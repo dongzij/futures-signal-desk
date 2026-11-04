@@ -1,0 +1,66 @@
+name: daily-scan
+on:
+  schedule:
+    - cron: '20 7 * * 1-5'    # 北京时间周一至周五 15:20
+    - cron: '50 7 * * 1-5'    # 15:50 兜底重试
+  workflow_dispatch:          # 手动触发按钮
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-scan
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 准备配置（凭据不入库）
+        run: cp config.ci.json config.json
+
+      - name: 扫描信号
+        run: python daily.py
+
+      - name: 重建数据包
+        run: python data_build.py
+
+      - name: 渲染页面
+        run: |
+          python render.py
+          # GitHub Pages 的站点根：页面 + 图表库 + 数据包
+          rm -rf data
+          cp -r dist/data data
+          cp dist/echarts.min.js echarts.min.js
+          touch .nojekyll
+
+      - name: 校验数据新鲜度
+        run: |
+          python - <<'PY'
+          import json, sys
+          d = json.load(open('dist/data/index.json', encoding='utf-8'))
+          last = max(b["main"][-1][0] for b in [json.load(open('dist/data/%s.json' % c, encoding='utf-8')) for c in ('FG','M','RB','MA','UR')])
+          print('latest bar:', last)
+          if last < __import__('datetime').date.today().isoformat():
+              print('WARNING: 数据未到当日，可能接口延迟或抓取失败')
+          PY
+
+      - name: 推送微信（有新信号时）
+        run: python notify.py || true
+        env:
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+
+      - name: 提交更新
+        run: |
+          git config user.name "bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -A state.json index.html dist/ data/ echarts.min.js .nojekyll
+          git diff --cached --quiet || git commit -m "scan $(date -u +%F-%H:%M) [skip ci]"
+          git push

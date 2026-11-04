@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0b0e13">
+<title>期货信号台</title>
+<style>
+:root{
+  --bg:#0b0e13; --bg2:#10141b; --card:#131820; --line:#1e2531; --line2:#2a333f;
+  --tx:#dfe5ee; --tx2:#96a1b3; --tx3:#5f6b7d;
+  --red:#f6465d; --green:#0ecb81; --gold:#f0b90b; --blue:#4a90e2;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{margin:0;background:var(--bg);color:var(--tx);overflow-x:hidden;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:14px;line-height:1.6;padding-bottom:34px;
+  -webkit-font-smoothing:antialiased;}
+.wrap{max-width:560px;margin:0 auto;padding:0 14px;}
+header{position:sticky;top:0;z-index:20;background:rgba(11,14,19,.94);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);padding:13px 14px 11px;}
+.hrow{max-width:560px;margin:0 auto;display:flex;align-items:baseline;gap:8px;}
+.brand{font-size:15px;font-weight:600;letter-spacing:.6px;}
+.upd{margin-left:auto;font-size:11px;color:var(--tx3);font-variant-numeric:tabular-nums;}
+.dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--green);
+  margin-right:5px;vertical-align:2px;}
+.dot.busy{background:var(--gold);animation:bl 1s infinite;}
+@keyframes bl{50%{opacity:.25}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;margin-top:12px;overflow:hidden;}
+/* hero */
+.hero{padding:20px 18px;}
+.hero .k{font-size:11px;letter-spacing:1.6px;color:var(--tx3);margin-bottom:10px;}
+.hero .big{font-size:26px;font-weight:600;letter-spacing:.5px;line-height:1.3;}
+.hero .big .dir{font-size:17px;font-weight:600;padding:2px 8px;border-radius:4px;margin-left:6px;
+  vertical-align:3px;}
+.dir.s{background:rgba(246,70,93,.15);color:var(--red);}
+.dir.l{background:rgba(14,203,129,.15);color:var(--green);}
+.hero .sub{font-size:12.5px;color:var(--tx2);margin-top:9px;line-height:1.75;}
+.hero.alert{border-color:#3a2b2f;background:linear-gradient(150deg,#1a1216 0%,#131820 60%);}
+.hero.calm{border-color:var(--line);}
+.act{margin-top:14px;font-size:13px;background:#0e131a;border:1px solid var(--line);border-radius:7px;padding:11px 13px;}
+.act div{display:flex;justify-content:space-between;padding:2px 0;color:var(--tx2);}
+.act div b{color:var(--tx);font-variant-numeric:tabular-nums;font-weight:600;}
+.act .hl b{color:var(--gold);font-size:15px;}
+/* pos list */
+.ct{font-size:11px;color:var(--tx3);letter-spacing:1.1px;padding:13px 16px 9px;}
+.pos{padding:13px 16px;border-top:1px solid #172029;display:flex;align-items:center;gap:12px;}
+.pos:first-of-type{border-top:none;}
+.pos .nm{font-size:15px;font-weight:600;letter-spacing:.4px;}
+.pos .nm span{font-size:11px;color:var(--tx3);font-weight:400;margin-left:5px;letter-spacing:0;}
+.pos .meta{font-size:11px;color:var(--tx3);margin-top:3px;font-variant-numeric:tabular-nums;}
+.pos .num{margin-left:auto;text-align:right;font-variant-numeric:tabular-nums;}
+.pos .num .p{font-size:17px;font-weight:600;}
+.pos .num .s{font-size:11px;color:var(--tx3);margin-top:2px;}
+.pend{border-left:2px solid var(--gold);}
+/* tabs */
+.tabs{display:flex;gap:6px;padding:11px 14px 0;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;background:var(--bg2);border:1px solid var(--line);color:var(--tx2);
+  border-radius:6px;padding:5px 10px;font-size:12px;cursor:pointer;transition:.12s;}
+.tab.on{background:#1d2632;border-color:#38445a;color:var(--tx);font-weight:600;}
+.tab .n{font-size:10px;color:var(--gold);margin-left:3px;}
+#kline{width:100%;height:250px;}
+/* history */
+.hi{padding:12px 16px;border-top:1px solid #172029;}
+.hi:first-of-type{border-top:none;}
+.hrow2{display:flex;align-items:center;gap:8px;}
+.hi .d{font-size:11px;color:var(--tx3);font-variant-numeric:tabular-nums;margin-left:auto;}
+.badge{font-size:10px;font-weight:600;padding:1px 6px;border-radius:3px;letter-spacing:.3px;}
+.b-s{background:rgba(246,70,93,.14);color:var(--red);}
+.b-l{background:rgba(14,203,129,.14);color:var(--green);}
+.b-t{background:rgba(240,185,11,.12);color:var(--gold);}
+.b-w{background:rgba(255,255,255,.05);color:var(--tx2);}
+.hi .nm{font-size:14px;font-weight:600;}
+.hi .res{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;margin-left:auto;}
+.hi .sm{font-size:11px;color:var(--tx3);margin-top:3px;}
+.hi .cd{display:none;margin-top:9px;background:#0e131a;border-radius:6px;padding:9px 11px;font-size:12px;}
+.hi.open .cd{display:block;}
+.cdi{display:flex;gap:7px;padding:3px 0;color:var(--tx2);}
+.cdi .ic{font-weight:700;width:12px;}
+.cdi .ok{color:var(--green);} .cdi .ng{color:#4d5866;} .cdi .na{color:var(--tx3);}
+.cdi .vv{margin-left:auto;color:var(--tx);font-variant-numeric:tabular-nums;}
+/* stats */
+.stat{display:flex;gap:8px;margin-top:12px;}
+.stat > div{flex:1;background:var(--card);border:1px solid var(--line);border-radius:8px;
+  padding:11px 12px;text-align:center;}
+.stat .v{font-size:18px;font-weight:600;font-variant-numeric:tabular-nums;}
+.stat .l{font-size:10.5px;color:var(--tx3);margin-top:2px;}
+footer{text-align:center;color:var(--tx3);font-size:11px;padding:22px 0 8px;line-height:1.9;}
+.btn{display:block;width:100%;margin-top:12px;padding:11px;border-radius:8px;
+  background:#1a2130;border:1px solid var(--line2);color:var(--tx2);font-size:13px;
+  cursor:pointer;font-family:inherit;}
+.btn:active{background:#222b3c;}
+.posv{color:var(--red);} .negv{color:var(--green);}
+.empty{color:var(--tx3);font-size:12.5px;padding:26px 16px;text-align:center;}
+</style>
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <div class="brand">期货信号台</div>
+    <div class="upd" id="upd">加载中…</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="card hero calm" id="hero"></div>
+  <div id="posbox"></div>
+
+  <div class="card">
+    <div class="tabs" id="tabs"></div>
+    <div id="kline"></div>
+    <div class="ct" style="padding-top:0" id="knote"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">最近信号 <span style="color:var(--tx3);letter-spacing:0;font-size:10.5px">点一条展开条件核对</span></div>
+    <div id="history"></div>
+  </div>
+
+  <div class="stat" id="stats"></div>
+  <button class="btn" onclick="refresh()">重新计算（约 3~5 分钟）</button>
+  <footer>
+    信号在日线拐点成立后确认（前后各 3 根），次日开盘入场 · 止损 3×ATR · 最长持有 20 个交易日<br>
+    仅供研究记录，不构成投资建议
+  </footer>
+</div>
+
+<script>
+const NAMES = {FG:'玻璃',SC:'原油',M:'豆粕',C:'玉米',RB:'螺纹钢',I:'铁矿石',TA:'PTA',CU:'铜',SA:'纯碱',SR:'白糖'};
+const C = {red:'#f6465d',green:'#0ecb81',gold:'#f0b90b',tx3:'#5f6b7d',line:'#1e2531'};
+let ST = null, curSym = null, chart = null;
+
+const f2 = x => (x==null?'—':(x>0?'+':'')+Number(x).toFixed(2));
+const dirTxt = s => s==='short' ? '预空' : '预多';
+const tierCls = t => t==='狙击'?'b-s':t==='重点'?'b-t':'b-w';
+
+async function load(){
+  ST = __STATE__;
+  render();
+}
+
+function render(){
+  const st = ST, sig = st.signals || [], stats = st.stats || {};
+  document.getElementById('upd').innerHTML =
+    `<span class="dot ${st.config&&st.config.running?'busy':''}"></span>${st.updated || '未运行'}`;
+
+  const pending = sig.filter(s=>s.status==='pending');
+  const open = sig.filter(s=>s.status==='open');
+  const fresh = pending.concat(open);
+
+  // ---- hero ----
+  const hero = document.getElementById('hero');
+  if (fresh.length){
+    const s = fresh[0];
+    hero.className = 'card hero alert';
+    hero.innerHTML = `
+      <div class="k">${s.status==='pending'?'待入场 · 明日开盘执行':'持仓中'}</div>
+      <div class="big">${s.sym} ${NAMES[s.sym]||''}
+        <span class="dir ${s.side==='short'?'s':'l'}">${dirTxt(s.side)}</span></div>
+      <div class="sub">${s.id} ${s.name} · ${s.tier}层 · 确认日 ${s.confDate}</div>
+      <div class="act">
+        <div class="hl"><span>入场（参考）</span><b>${s.entry}</b></div>
+        <div class="hl"><span>止损</span><b>${s.stop}</b></div>
+        <div><span>止损距离</span><b>${s.riskPct}%</b></div>
+        <div><span>建议手数</span><b>${s.lots>0?s.lots+' 手':'预算不足一手'}</b></div>
+        ${s.status==='open'?`<div><span>当前浮盈</span><b class="${s.float>0?'posv':'negv'}">${f2(s.float)}%</b></div>
+        <div><span>已持有</span><b>${s.held} / 20 天</b></div>`:''}
+      </div>`;
+  } else {
+    hero.className = 'card hero calm';
+    const last = sig.filter(s=>s.confDate).sort((a,b)=>a.confDate<b.confDate?1:-1)[0];
+    hero.innerHTML = `
+      <div class="k">本周状态</div>
+      <div class="big" style="font-size:22px">空仓等待</div>
+      <div class="sub">没有满足全部条件的日线拐点信号。<br>
+      ${last?`最近一次信号：${last.confDate} ${last.sym} ${dirTxt(last.side)}（${last.status==='closed'?f2(last.ret)+'%':'持仓中'}）`:'—'}</div>`;
+  }
+
+  // ---- 持仓列表（除 hero 外的其余） ----
+  const rest = fresh.slice(1);
+  document.getElementById('posbox').innerHTML = rest.length ? `
+    <div class="card">
+      <div class="ct">其他持仓</div>
+      ${rest.map(s=>`
+        <div class="pos ${s.status==='pending'?'pend':''}">
+          <div><div class="nm">${s.sym}<span>${NAMES[s.sym]||''}</span></div>
+            <div class="meta">${dirTxt(s.side)} · 入 ${s.entry} · 损 ${s.stop}${s.lots>0?' · '+s.lots+'手':''}</div></div>
+          <div class="num"><div class="p ${(s.float||0)>0?'posv':'negv'}">${s.float!=null?f2(s.float)+'%':'待入场'}</div>
+            <div class="s">${s.held!=null?s.held+' / 20 天':''}</div></div>
+        </div>`).join('')}
+    </div>` : '';
+
+  // ---- 品种 tabs ----
+  const syms = Object.keys(st.kline||{});
+  if (!curSym || !syms.includes(curSym)){
+    curSym = (fresh[0] && fresh[0].sym) || (syms[0] || null);
+  }
+  document.getElementById('tabs').innerHTML = syms.map(c=>{
+    const n = sig.filter(s=>s.sym===c && s.status!=='closed').length;
+    return `<div class="tab ${c===curSym?'on':''}" data-c="${c}">${c}${n?`<span class="n">●</span>`:''}</div>`;
+  }).join('');
+  document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{curSym=t.dataset.c;render();});
+
+  drawChart();
+
+  // ---- 历史 ----
+  const hist = sig.slice().sort((a,b)=>a.confDate<b.confDate?1:-1).slice(0,14);
+  document.getElementById('history').innerHTML = hist.length ? hist.map((s,i)=>`
+    <div class="hi" data-i="${i}">
+      <div class="hrow2">
+        <span class="badge ${s.side==='short'?'b-s':'b-l'}">${dirTxt(s.side)}</span>
+        <span class="badge ${tierCls(s.tier)}">${s.tier}</span>
+        <span class="nm">${s.sym} <span style="font-size:11px;color:var(--tx3)">${NAMES[s.sym]||''}</span></span>
+        <span class="res ${s.status==='closed'?(s.ret>0?'posv':'negv'):''}">
+          ${s.status==='closed'?f2(s.ret)+'%':(s.status==='pending'?'待入场':'持仓 '+f2(s.float)+'%')}</span>
+      </div>
+      <div class="sm">${s.id} ${s.name} · 确认 ${s.confDate} · 入 ${s.entry} / 损 ${s.stop}
+        ${s.status==='closed'?`· ${s.why} ${s.exitDate}`:''}</div>
+      <div class="cd">${(s.conds||[]).map(c=>`
+        <div class="cdi"><span class="ic ${c.ok===null?'na':(c.ok?'ok':'ng')}">${c.ok===null?'·':(c.ok?'✓':'✗')}</span>
+          <span>${c.t}</span><span class="vv">${c.v}</span></div>`).join('')}
+        <div style="color:var(--tx3);font-size:11px;margin-top:6px">
+          ${s.lots>0?'建议仓位 '+s.lots+' 手':'按 '+s.riskPct+'% 风险预算不足一手，可降低止损或提高风险比例'} · 单笔风险按止损距离折算</div>
+      </div>
+    </div>`).join('') : '<div class="empty">还没有信号记录</div>';
+
+  document.querySelectorAll('.hi').forEach(el=>el.onclick=()=>el.classList.toggle('open'));
+
+  // ---- 统计 ----
+  // 分层统计：回测结论只支持狙击层，重点层单列不混淆
+  const cl = sig.filter(x=>x.status==='closed');
+  const sn = cl.filter(x=>x.tier==='狙击');
+  const wOf = a => a.length? (a.filter(x=>x.ret>0).length/a.length*100) : null;
+  const snW = wOf(sn), allW = stats.win;
+  const snSum = sn.reduce((t,x)=>t+(x.ret||0),0);
+  document.getElementById('stats').innerHTML = `
+    <div><div class="v">${stats.total||0}</div><div class="l">累计信号</div></div>
+    <div><div class="v ${snW!=null&&snW>=50?'posv':''}">${snW!=null?snW.toFixed(1)+'%':'—'}</div><div class="l">狙击层胜率</div></div>
+    <div><div class="v ${snSum>0?'posv':'negv'}">${snSum>0?'+':''}${snSum.toFixed(1)}%</div><div class="l">狙击层累计</div></div>
+    <div><div class="v">${allW!=null?allW+'%':'—'}</div><div class="l">全部已平仓</div></div>`;
+}
+
+function drawChart(){
+  if (typeof echarts === 'undefined') return;   // 图表库未就绪，跳过（就绪后会补画）
+  const kl = (ST.kline||{})[curSym] || [];
+  const el = document.getElementById('kline');
+  if (!chart) chart = echarts.init(el);
+  if (!kl.length){ chart.clear(); return; }
+  const dates = kl.map(x=>x[0]);
+  const ohlc = kl.map(x=>[x[1],x[4],x[3],x[2]]);   // o,c,l,h
+  const sigs = (ST.signals||[]).filter(s=>s.sym===curSym);
+  const marks = sigs.filter(s=>s.status!=='closed'||s.confDate>=dates[0]).map(s=>{
+    const closed = s.status==='closed';
+    return {
+      coord:[s.confDate, s.side==='short'? (kl.find(x=>x[0]===s.confDate)||[0,0,0,0,0])[2] : (kl.find(x=>x[0]===s.confDate)||[0,0,0,0,0])[3]],
+      value: dirTxt(s.side),
+      itemStyle:{color: s.side==='short'?C.red:C.green, opacity: closed?.4:1},
+      label:{color: s.side==='short'?C.red:C.green, fontSize:9, formatter: dirTxt(s.side).slice(1),
+             position: s.side==='short'?'top':'bottom'}
+    };
+  });
+  chart.setOption({
+    backgroundColor:'transparent',
+    grid:{left:44,right:12,top:16,bottom:22},
+    tooltip:{trigger:'axis',axisPointer:{type:'cross'},backgroundColor:'#131820',
+      borderColor:'#2a333f',textStyle:{color:'#dfe5ee',fontSize:11}},
+    xAxis:{type:'category',data:dates,boundaryGap:true,axisLine:{lineStyle:{color:C.line}},
+      axisLabel:{color:C.tx3,fontSize:9,interval:Math.floor(dates.length/4)},
+      axisTick:{show:false},splitLine:{show:false}},
+    yAxis:{scale:true,axisLine:{show:false},axisTick:{show:false},
+      axisLabel:{color:C.tx3,fontSize:9},splitLine:{lineStyle:{color:'#151b24'}}},
+    series:[{
+      type:'candlestick', data:ohlc, barWidth:'62%',
+      itemStyle:{color:C.red,color0:C.green,borderColor:C.red,borderColor0:C.green},
+      markPoint:{symbol:'triangle',symbolSize:9,data:marks}
+    }]
+  }, true);
+  document.getElementById('knote').textContent =
+    `${curSym} ${NAMES[curSym]||''} · 近 ${kl.length} 根日线 · 标记为该品种历史信号位置（半透明＝已平仓）`;
+}
+
+async function refresh(){
+  alert('这是静态页面，没有后端可触发重算。\n云端每个交易日 15:10 自动更新一次。');
+}
+
+load();
+setInterval(load, 60000);
+
+// 图表库异步加载：信号数据立即渲染，echarts 就绪后再画 K 线
+(function(){
+  var sc = document.createElement('script');
+  sc.src = 'echarts.min.js' + location.search;   // 透传 sharecode，避免被托管层拦截
+  sc.onload = function(){ drawChart(); };
+  sc.onerror = function(){
+    var n = document.getElementById('knote');
+    if (n) n.textContent = '图表库加载失败（K线图不可用），信号数据不受影响';
+  };
+  document.head.appendChild(sc);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# 缓存与打包产物不入库
+cache/
+*.zip
+__pycache__/
+*.pyc
+
+# 临时与调试产物
+_vt/
+_min/
+_live.html
+nohup.out
+
+# 本地凭据不进仓库（CI 用 config.ci.json 覆盖）
+config.json
+
+# 运行产物
+state.bak.json
+nohup.out
+*.log
