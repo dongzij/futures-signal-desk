@@ -11,7 +11,7 @@ import json
 import os
 import re
 import shutil
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 import build
 import engine
@@ -221,7 +221,7 @@ def main():
         })
 
     manifest = {
-        "built": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "built": datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M"),
         "products": [{"sym": s, **PRODUCTS[s]} for s in ORDER],
         "strategyOpen": strat_open,
         "method": state.get("method"),
