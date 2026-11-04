@@ -17,6 +17,7 @@ import build
 import engine
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dist", "data")
+EXIT_ALL = []      # 跨品种出场成交汇总（算全局胜率/净 R）
 
 # 品种交易参数（模拟盘用）：乘数 / 手续费 / 保证金率
 # fee: ("lot", 元/手) 或 ("rate", 万分之几)
@@ -55,6 +56,21 @@ def probe_contracts(sym, back=2, ahead=8):
 def bars_to_arr(bars):
     return [[b["d"], b["o"], b["h"], b["l"], b["c"], b.get("v") or 0, b.get("oi") or 0]
             for b in bars]
+
+
+def _exit_all_stat():
+    if not EXIT_ALL:
+        return None
+    rs = [t["R"] for t in EXIT_ALL]
+    eq = peak = dd = 0.0
+    for t in sorted(EXIT_ALL, key=lambda x: x["d"]):
+        eq += t["R"]
+        peak = max(peak, eq)
+        dd = min(dd, eq - peak)
+    return {"n": len(rs), "win": round(sum(1 for r in rs if r > 0) / len(rs) * 100, 1),
+            "R": round(sum(rs), 1), "dd": round(dd, 1),
+            "avg": round(sum(rs) / len(rs), 2),
+            "perYear": round(sum(rs) / 10.0, 1)}
 
 
 def build_product(sym):
@@ -111,7 +127,12 @@ def build_product(sym):
                       "buf": s.get("bufYuan"), "el": s.get("exitLine"),
                       "holdTo": s.get("holdTo"),
                       "last": s.get("last"), "lastDate": s.get("lastDate"),
-                      "predDate": s.get("predDate")})
+                      "predDate": s.get("predDate"),
+                      # v9 快出：离场线 / 预警
+                      "ch": s.get("chLine"), "ml": s.get("maLine"),
+                      "ew": s.get("exitWarn"), "eww": s.get("exitWarnWhy"),
+                      "dch": s.get("distCh"), "dma": s.get("distMa"),
+                      "arm": s.get("armed"), "R": s.get("R")})
         return o
 
     sigs = [pack(s) for s in state.get("signals", []) if s["sym"] == sym]
@@ -147,6 +168,57 @@ def build_product(sym):
     except Exception as e:                                  # noqa: BLE001
         print("   tf failed: %s" % e)
 
+    # 出场雷达（v9 慢进快出）
+    exit_doc = {"cfg": {"ma": engine.EXIT_MA, "chK": engine.CH_K,
+                        "warnPull": engine.WARN_PULL},
+                "pos": None, "stat": None, "trades": []}
+    try:
+        devs, _ = engine.scan_symbol(sym, bars=main, unit="D")
+        trs = [x["exit"] for x in devs
+               if x["kind"] == "pred" and x.get("exit") and x["exit"]["status"] == "closed"]
+        if trs:
+            rs = [t["R"] for t in trs]
+            eq = peak = dd = 0.0
+            for x in sorted([x for x in devs if x["kind"] == "pred" and x.get("exit")
+                             and x["exit"]["status"] == "closed"], key=lambda y: y["date"]):
+                eq += x["exit"]["R"]
+                peak = max(peak, eq)
+                dd = min(dd, eq - peak)
+            exit_doc["stat"] = {
+                "n": len(rs),
+                "win": round(sum(1 for r in rs if r > 0) / len(rs) * 100, 1),
+                "R": round(sum(rs), 1),
+                "avg": round(sum(rs) / len(rs), 2),
+                "dd": round(dd, 1),
+                "hold": sorted(t["hold"] for t in trs)[len(trs) // 2],
+                "winR": round(sum(r for r in rs if r > 0) / max(1, sum(1 for r in rs if r > 0)), 2),
+                "losR": round(sum(r for r in rs if r <= 0) / max(1, sum(1 for r in rs if r <= 0)), 2),
+                "byMa": sum(1 for t in trs if "MA" in (t["why"] or "")),
+                "byCh": sum(1 for t in trs if "吊灯" in (t["why"] or "")),
+            }
+        EXIT_ALL.extend([{"d": x["date"], "R": x["exit"]["R"]}
+                         for x in devs if x["kind"] == "pred" and x.get("exit")
+                         and x["exit"]["status"] == "closed"])
+        exit_doc["trades"] = [{"d": x["date"], "out": x["exit"]["exitDate"],
+                               "sd": x["side"], "R": x["exit"]["R"],
+                               "hold": x["exit"]["hold"], "why": x["exit"]["why"],
+                               "warn": x["exit"].get("warnDate")}
+                              for x in devs if x["kind"] == "pred" and x.get("exit")
+                              and x["exit"]["status"] == "closed"][-12:]
+    except Exception as e:                                  # noqa: BLE001
+        print("   exit scan failed: %s" % e)
+
+    for s in state.get("signals", []):
+        if s["sym"] == sym and s["kind"] == "pred" and s.get("status") in ("open", "pending"):
+            exit_doc["pos"] = {"side": s["side"], "entry": s.get("entry"),
+                               "last": s.get("last"), "held": s.get("held"),
+                               "R": s.get("R"), "chLine": s.get("chLine"),
+                               "maLine": s.get("maLine"), "armed": s.get("armed"),
+                               "warn": s.get("exitWarn"), "why": s.get("exitWarnWhy"),
+                               "distCh": s.get("distCh"), "distMa": s.get("distMa"),
+                               "date": s.get("date"), "status": s.get("status")}
+            break
+
     # ---- 4) 主力连续的分钟数据（默认视图也要能看小时/分钟）----
     m60 = m15 = None
     try:
@@ -169,6 +241,7 @@ def build_product(sym):
         "sigM": unit_sigs.get("M", []),
         "radar": radar,
         "tf": tf,
+        "exit": exit_doc,
     }
     json.dump(doc, open(os.path.join(OUT, "%s.json" % sym), "w",
                         encoding="utf-8"), ensure_ascii=False,
@@ -242,6 +315,12 @@ def main():
             "hold": engine.TF_HOLD,
             "stat": engine.tf_stat(),
             "live": [dict(engine.tf_live(s), sym=s) for s in ORDER],
+        },
+        "exit": {
+            "ma": engine.EXIT_MA,
+            "chK": engine.CH_K,
+            "warnPull": engine.WARN_PULL,
+            "stat": _exit_all_stat(),
         },
     }
     json.dump(manifest, open(os.path.join(OUT, "index.json"), "w",

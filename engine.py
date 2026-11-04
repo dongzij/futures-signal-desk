@@ -54,6 +54,11 @@ ADX_MIN = 20       # 趋势门槛：ADX(14) 低于此值不建仓
 MAXHOLD = 250      # 安全上限（回测最长 83 根，正常靠反向穿越离场）
 BUF_ATR = 2.45     # 历史浮亏 P10（ATR），用于估算需要预留的浮亏空间
 
+# ---- 慢进快出（v9）：出场与进场解耦 ----
+EXIT_MA = 26       # 出场短均线（进场仍用 MA34 定义大趋势）
+CH_K = 3.0         # 吊灯止损：极值 ∓ 3 ATR
+WARN_PULL = 1.2    # 盘整预警：自极值回撤 ≥1.2 ATR（仅提示，不平仓）
+
 DEFAULT_MODEL = {
     "version": 4, "ma": 34,
     "calib": {
@@ -178,7 +183,10 @@ def make_S(bars):
             "atr": cyc.atr_series(bars),
             "ma": cyc.sma(closes, MA),
             "ma34": cyc.sma(closes, MA),
+            "ma5": cyc.sma(closes, 5),
             "ma10": cyc.sma(closes, 10),
+            "ma18": cyc.sma(closes, 18),
+            "ma26": cyc.sma(closes, EXIT_MA),
             "vma20": cyc.sma([float(b["v"]) for b in bars], 20),
             "macd": macd_hist(closes),
             "adx": ax, "pdi": pdi, "mdi": mdi}
@@ -298,6 +306,82 @@ def radar(bars, S, i, seg_hi=None, seg_lo=None):
 STAGES = {0: "平静", 1: "起变化", 2: "关注", 3: "预警", 4: "准备反转"}
 
 
+# ---------------------------------------------------------------- 出场雷达（v9）
+def exit_track(bars, S, ei, side, atr, entry=None):
+    """慢进快出的出场跟踪（与 mine_v9.sim 同源）。
+
+    ei    进场根（次日开盘进，ei 即该日）
+    side  +1 多 / -1 空（持仓方向，非原趋势方向）
+    离场  ① 吊灯：自进场后极值回撤 CH_K×ATR，收盘触及无条件走
+          ② 短均线：先站到仓位一侧（armed），之后收盘反向穿越 MA{EXIT_MA}
+    预警  自极值回撤 ≥WARN_PULL ATR 且（ATR 收缩 / 持仓 5 日下降 / 量能萎缩）
+          —— 只提示，不平仓
+    """
+    n = len(bars)
+    mam = S.get("ma%d" % EXIT_MA) or S.get("ma")
+    entry = bars[ei]["o"] if entry is None else entry
+    atr = atr or (entry * 0.01)
+    peak = bars[ei]["h"] if side == 1 else bars[ei]["l"]
+    armed = False
+    mfe = mae = 0.0
+    res = {"side": "long" if side == 1 else "short", "entry": round(entry, 1),
+           "armed": False, "status": "open", "exitIdx": None, "exitPx": None,
+           "exitDate": None, "why": None, "hold": max(0, n - 1 - ei),
+           "maLine": None, "chLine": None, "distMa": None, "distCh": None,
+           "warn": False, "warnWhy": [], "warnDate": None, "warnIdx": None,
+           "mfe": 0.0, "mae": 0.0,
+           "atr": atr, "ei": ei, "exitMa": EXIT_MA, "chK": CH_K}
+    for j in range(ei, n):
+        b = bars[j]
+        c = b["c"]
+        if side == 1:
+            peak = max(peak, b["h"])
+        else:
+            peak = min(peak, b["l"])
+        mj = mam[j] if mam else None
+        ch_line = (peak - CH_K * atr) if side == 1 else (peak + CH_K * atr)
+        if not armed and mj is not None:
+            if (side == 1 and c > mj) or (side == -1 and c < mj):
+                armed = True
+        ma_hit = bool(armed and mj is not None and
+                      ((side == 1 and c < mj) or (side == -1 and c > mj)))
+        ch_hit = (c <= ch_line) if side == 1 else (c >= ch_line)
+        fav = (b["h"] - entry) if side == 1 else (entry - b["l"])
+        adv = (b["l"] - entry) if side == 1 else (entry - b["h"])
+        mfe = max(mfe, fav)
+        mae = min(mae, adv)
+        pull = ((c - peak) / atr) if side == 1 else ((peak - c) / atr)
+        a20 = [S["atr"][k] for k in range(max(0, j - 19), j + 1) if S["atr"][k]]
+        shrink = bool(a20 and S["atr"][j] and S["atr"][j] / (sum(a20) / len(a20)) <= 0.85)
+        oi5 = None
+        if j >= 5 and b.get("oi") and bars[j - 5].get("oi"):
+            oi5 = (b["oi"] - bars[j - 5]["oi"]) / bars[j - 5]["oi"] * 100
+        dry = bool(S["vma20"][j] and b["v"] / S["vma20"][j] <= 0.8)
+        why = []
+        if shrink:
+            why.append("ATR 收缩")
+        if oi5 is not None and oi5 <= 0:
+            why.append("持仓 %+.1f%%" % oi5)
+        if dry:
+            why.append("缩量")
+        warn = bool(armed and pull <= -WARN_PULL and why)
+
+        if warn and res["warnDate"] is None:
+            res["warnDate"], res["warnIdx"] = b["d"], j
+        res.update({"armed": armed, "maLine": (round(mj, 1) if mj else None),
+                    "chLine": round(ch_line, 1), "warn": warn, "warnWhy": why,
+                    "mfe": round(mfe / atr, 2), "mae": round(mae / atr, 2),
+                    "distMa": (round((mj - c) / atr * side, 2) if mj else None),
+                    "distCh": round((c - ch_line) / atr * side, 2),
+                    "pull": round(pull, 2)})
+        if ch_hit or ma_hit:
+            res.update({"status": "closed", "exitIdx": j, "exitPx": round(c, 1),
+                        "exitDate": b["d"], "hold": j - ei,
+                        "why": ("吊灯止损" if ch_hit else "反向穿越 MA%d" % EXIT_MA),
+                        "R": round((c - entry) * side / atr, 2)})
+            break
+    return res
+
 def stage_of(k, gate=True):
     if k >= BUILD_K:
         return "准备反转" if gate else "形态到位·等趋势"
@@ -367,6 +451,8 @@ def scan_symbol(code, bars=None, years=10, unit="D"):
         entry = bars[ei]["o"] if ei < len(bars) else pb[pred_i]["c"]
         atr = S["atr"][pred_i] or entry * 0.01
         nxt = segs[si + 1][0] if si + 1 < len(segs) else None
+        xt = (exit_track(bars, S, ei, new_side, atr, entry)
+              if (pb is bars and ei < len(bars)) else None)
         out.append({
             "sym": code, "kind": "pred", "unit": unit,
             "side": "short" if new_side == -1 else "long",
@@ -382,7 +468,8 @@ def scan_symbol(code, bars=None, years=10, unit="D"):
             "atr": round(atr, 2),
             "bufYuan": round(BUF_ATR * atr * MULT.get(code, 10)),
             "lead": (nxt - pred_i) if nxt is not None else None,
-            "holdTo": "反向穿越 MA%d" % MA,
+            "holdTo": "反向穿越 MA%d / 吊灯 %.0fATR" % (EXIT_MA, CH_K),
+            "exit": xt,
         })
         if nxt is not None:
             out.append({"sym": code, "kind": "confirm", "unit": unit,

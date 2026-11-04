@@ -72,67 +72,66 @@ def engine_S(code):
 
 # ---------------------------------------------------------------- 持仓推进
 
-def update_open_positions(state):
-    """pred 持仓推进（与回测口径完全一致，不设止损）：
-    进场后先等价格站到仓位方向一侧（新趋势成立），之后一旦收盘反向穿越 MA34
-    → 新趋势结束，离场/反手。只有数据异常才靠 250 根上限兜底。"""
+def update_open_positions(state, all_pred=False):
+    """pred 持仓推进（v9 慢进快出）：
+    进场不变；离场走两条独立规则 ——
+      ① 吊灯：自进场后极值回撤 3ATR，收盘触及无条件走；
+      ② 短均线：站到仓位一侧后，收盘反向穿越 MA26。
+    盘整预警（自极值回撤≥1.2ATR 且 ATR收缩/持仓降/缩量）只提示，不平仓。
+    """
     for s in state["signals"]:
-        if s["kind"] != "pred" or s["status"] not in ("open", "pending"):
+        if s["kind"] != "pred":
+            continue
+        if not all_pred and s["status"] not in ("open", "pending"):
+            continue
+        if "entryIdx" not in s:
             continue
         bars = engine_bars(s["sym"])
         S = engine_S(s["sym"])
         if not bars:
             continue
         ei = s["entryIdx"]
+        long = s["side"] == "long"
+        side = 1 if long else -1
         if ei > len(bars) - 1:                 # 还没到进场日（次日开盘）
             s["status"] = "pending"
             s["held"] = 0
             cur = bars[-1]
             s["last"] = round(cur["c"], 1)
             s["lastDate"] = cur["d"]
-            s["exitLine"] = round(S["ma"][-1] or cur["c"], 1)
+            s["maLine"] = None
+            s["chLine"] = None
             s["float"] = 0.0
             continue
         s["status"] = "open"
-        long = s["side"] == "long"
         atr = s.get("atr") or s["entry"] * 0.01
-        exit_px = exit_date = why = None
-        armed = False                      # 是否已站到仓位方向一侧（新趋势成立）
-        for j in range(ei, min(ei + engine.MAXHOLD, len(bars))):
-            b, ma = bars[j], S["ma"][j]
-            if ma is None:
-                continue
-            if not armed:
-                if (long and b["c"] > ma) or ((not long) and b["c"] < ma):
-                    armed = True
-                continue
-            if long and b["c"] < ma:
-                exit_px, exit_date, why = b["c"], b["d"], "反向穿越 MA34"
-                break
-            if (not long) and b["c"] > ma:
-                exit_px, exit_date, why = b["c"], b["d"], "反向穿越 MA34"
-                break
-        if exit_px is None and len(bars) - 1 >= ei + engine.MAXHOLD:
-            j = ei + engine.MAXHOLD - 1
-            exit_px, exit_date, why = bars[j]["c"], bars[j]["d"], "时间到期"
-        if exit_px is not None:
-            pts = (exit_px - s["entry"]) * (1 if long else -1)
+        xt = engine.exit_track(bars, S, ei, side, atr, s["entry"])
+        s["maLine"] = xt["maLine"]
+        s["chLine"] = xt["chLine"]
+        s["distMa"] = xt["distMa"]
+        s["distCh"] = xt["distCh"]
+        s["armed"] = xt["armed"]
+        s["exitWarn"] = xt["warn"]
+        s["exitWarnWhy"] = xt["warnWhy"]
+        if xt["status"] == "closed":
+            pts = (xt["exitPx"] - s["entry"]) * side
             mult = engine.MULT.get(s["sym"], 10)
             fee = engine.FEE.get(s["sym"], 5) * 2
-            s.update({"status": "closed", "exit": round(exit_px, 1),
-                      "exitDate": exit_date, "why": why,
+            s.update({"status": "closed", "exit": xt["exitPx"],
+                      "exitDate": xt["exitDate"], "why": xt["why"],
                       "pts": round(pts, 1),
                       "ret": round(pts / s["entry"] * 100, 2),
-                      "yuan": round(pts * mult - fee)})
+                      "yuan": round(pts * mult - fee),
+                      "held": xt["hold"], "R": xt["R"],
+                      "exitWarn": False})
         else:
             cur = bars[-1]
-            ma = S["ma"][-1] or cur["c"]
             s["last"] = round(cur["c"], 1)
             s["lastDate"] = cur["d"]
-            s["exitLine"] = round(ma, 1)
-            s["floatPts"] = round((cur["c"] - s["entry"]) * (1 if long else -1), 1)
-            s["float"] = round((cur["c"] / s["entry"] - 1) * (1 if long else -1) * 100, 2)
-            s["held"] = len(bars) - 1 - ei
+            s["floatPts"] = round((cur["c"] - s["entry"]) * side, 1)
+            s["float"] = round((cur["c"] / s["entry"] - 1) * 100 * side, 2)
+            s["held"] = xt["hold"]
+            s["R"] = round((cur["c"] - s["entry"]) * side / atr, 2)
 
 
 # ---------------------------------------------------------------- 主流程
@@ -177,7 +176,8 @@ def main():
                 newest = s["date"]
 
     state["signals"] = sorted(state["signals"] + found, key=lambda x: x["date"])
-    update_open_positions(state)
+    # 全量重算：出场口径变更后，历史成交也按新规则统一（MA26 + 吊灯 3ATR）
+    update_open_positions(state, all_pred=True)
 
     preds = [s for s in state["signals"] if s["kind"] == "pred"]
     opens = [s for s in preds if s["status"] in ("open", "pending")]
@@ -188,6 +188,14 @@ def main():
             if s["sym"] == c and s["kind"] == "warn":
                 watches.append(s)
                 break
+
+    # ---------- 离场预警（v9）：盘整特征点亮，当天推一次 ----------
+    today = now.strftime("%Y-%m-%d")
+    exit_warns = []
+    for s in opens:
+        if s.get("exitWarn") and s.get("warnPushedAt") != today:
+            s["warnPushedAt"] = today
+            exit_warns.append(s)
 
     state["updated"] = now.strftime("%Y-%m-%d %H:%M")
     state["stats"] = {
@@ -201,10 +209,10 @@ def main():
     }
     mt = engine.MODEL.get("stat", {})
     state["method"] = {
-        "name": "反转预测雷达 v4",
-        "desc": "MA34 定义趋势段（7 个周期回测确认 34 最优）；反转前 4 条入选特征计分 + "
-                "ADX≥20 趋势门槛 → 命中条数对应反转概率；命中 4 条即「准备反转」，"
-                "次日开盘建仓，不设止损，持有到反向穿越 MA34",
+        "name": "反转预测雷达 v9（慢进快出）",
+        "desc": "进场不变：MA34 定义趋势段，反转前 4 条特征 + ADX≥20，命中 4 条即「准备反转」，"
+                "次日开盘建仓。出场改为独立快出：①吊灯止损（自进场后极值回撤 3ATR）；"
+                "②收盘反向穿越 MA26（先站到仓位一侧再穿回）。盘整预警只提示不平仓",
         "calib": engine.MODEL.get("calib", {}),
         "base": engine.MODEL.get("base", {}),
         "gate": engine.MODEL.get("gate", {}),
@@ -212,6 +220,7 @@ def main():
         "lead": engine.MODEL.get("lead", {}),
         "univ": engine.CODES,
         "ma": engine.MA,
+        "exit": {"ma": engine.EXIT_MA, "chK": engine.CH_K, "warnPull": engine.WARN_PULL},
     }
     # ---------- 趋势跟踪状态（v8）：方向变化时推送 ----------
     tf_prev = state.get("tf", {})
@@ -280,6 +289,31 @@ def main():
                 (s.get("prob", {}).get("5") or 0) * 100) for s in fresh))
         ok = post_push(cfg["pushplus"], title, "".join(cards))
         print("push:", ok)
+
+    # ---------- 推送：出场预警（顶/底盘整特征点亮） ----------
+    if exit_warns and cfg.get("pushplus"):
+        site = cfg.get("siteUrl", "")
+        cards = []
+        for s in exit_warns:
+            sd = "多" if s["side"] == "long" else "空"
+            cards.append(
+                '<div style="margin-bottom:16px">'
+                '<div style="font-size:16px;font-weight:700;color:#d97706">⚠ 出场预警：%s %s（持%s）</div>'
+                '<div style="background:#fffbeb;padding:10px;border-radius:6px;'
+                'font-size:13px;line-height:1.9;margin-top:6px">'
+                '当前 <b>%s</b> · 浮盈 <b>%+.2fR</b> · 已持 <b>%s</b> 根<br>'
+                '预警信号：%s<br>'
+                '离场线：吊灯 <b>%s</b>（触及无条件走）· MA%d <b>%s</b><br>'
+                '<span style="color:#666;font-size:12px">盘整特征已出现，趋势可能停滞。'
+                '不必立即平仓，但不要再加仓；跌破离场线即走。</span></div></div>'
+                % (s["sym"], engine.NAMES.get(s["sym"], ""), sd, s.get("last"),
+                   s.get("R", 0), s.get("held"), " · ".join(s.get("exitWarnWhy") or []),
+                   s.get("chLine"), engine.EXIT_MA, s.get("maLine")))
+        title = "出场预警 %d 条：%s" % (
+            len(exit_warns), "、".join("%s%s" % (s["sym"], "多" if s["side"] == "long" else "空")
+                                       for s in exit_warns))
+        ok = post_push(cfg["pushplus"], title, "".join(cards))
+        print("push exit-warn:", ok)
 
     # ---------- 推送：趋势跟踪方向确认 ----------
     if tf_flips and cfg.get("pushplus"):
