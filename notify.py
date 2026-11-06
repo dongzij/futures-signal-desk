@@ -24,10 +24,13 @@ try:
     min_prob = json.load(open("config.json", encoding="utf-8")).get("pushMinProb", 0.70)
 except Exception:                                             # noqa: BLE001
     pass
+# v11 甲方案：周线 MA45 智能降级 —— 顺势全推，逆势只推强档。
+# 被降级的信号【仍然写进 state.json、页面照常显示】，只是不发微信；绝不删除或延迟。
 fresh = [s for s in state.get("signals", [])
          if s.get("foundAt", "")[:10] == scanned
          and s.get("kind") == "pred" and s.get("status") in ("open", "pending")
-         and (s.get("prob", {}).get("5") or 0) >= min_prob]
+         and (s.get("prob", {}).get("5") or 0) >= min_prob
+         and s.get("meta", {}).get("push", True)]
 
 if not fresh:
     print("no fresh signals, skip push")
@@ -37,9 +40,17 @@ lines = []
 for s in fresh[:8]:
     d = "预空" if s["side"] == "short" else "预多"
     p5 = (s.get("prob", {}).get("5") or 0) * 100
-    lines.append("%s %s｜%s 概率%.0f%%  入 %s  认错 %s  建议 %s 手"
-                 % (s["sym"], s.get("name", ""), d, p5, s["entry"], s["stop"],
-                    s.get("lots", "?")))
+    meta = s.get("meta") or {}
+    wk = "顺势" if meta.get("weekAlign") else "逆势·强档"
+    tags = []
+    if meta.get("lowVol"):
+        tags.append("💤 低波动待观察")
+    if meta.get("confirm2") == "noFollow":
+        tags.append("⚠️ 2日未跟进")
+    lines.append("%s %s｜%s 概率%.0f%%  入 %s  建议 %s 手  ｜周线MA45 %s%s"
+                 % (s["sym"], s.get("name", ""), d, p5, s["entry"],
+                    s.get("lots", "?"), wk,
+                    ("  " + "·".join(tags)) if tags else ""))
 title = "准备反转 %d 条：%s" % (len(fresh), "、".join(s["sym"] for s in fresh[:4]))
 body = "\n".join(lines) + ("\n\n命中 4/4 条反转特征（MA34≤0.3ATR·10日逆行≥1.5ATR·"
                            "MA10转向·MACD翻向），认错=收盘反向穿越MA34超0.5ATR。\n"

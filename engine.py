@@ -31,8 +31,10 @@
        代价：持仓期浮亏中位 -0.95 ATR、P10 -2.45 ATR、极值 -8.70 ATR
        （≈ 8,860 元/手，占 10 万本金 8.9%），所以必须留足浮亏缓冲、不能满仓。
 """
+import bisect
 import datetime as _dt
 import json
+import math
 import os
 
 import build
@@ -45,6 +47,28 @@ import cyc
 #   逐品种调参在样本内提升明显，但盲测段与逐年滚动样本外准确率、盈利率均无显著差异，
 #   且参数逐年漂移。详见 README「v10.3」。若日后要改为逐品种，请先重跑该检验并通过判定阈值。
 CONFIG_MODE = "uniform"
+
+# ---- v11「甲方案」：周线 MA45 智能降级 + 复盘标签（只管推送，绝不删信号）----
+# 依据 reports/终极融合_AB对比表.txt（10 年 × 8 品种 A/B，304 条信号）：
+#   P1 仅周线 MA45 降级：净收益 +21.4 → +24.5，假信号 133 → 74（-44.4%），
+#   胜率 56.2% → 60.4%，正确点保留 66.1%，选择性 +10.5pp —— 是唯一双达标模块。
+#   「市场状态机」为拖累项（叠加后净收益 +11.0），故本版状态判定【只做信息展示】，
+#   绝不拦截、隐藏、降级任何信号，也不参与推送决策。
+# 红线：不延迟发信号、不删除信号。降级 = 页面照常显示并标【观察】，只是不推微信。
+WEEKLY_FILTER = "downgrade"   # 不是 hard / delay
+WEEKLY_MA = 45               # 用户指定 45（不是 34）
+KEEP_STRONG_ON_OPP = True    # 逆势时强档照常推送
+CONFIRM2_BARS = 2            # 复盘标签：信号后 2 根内是否顺向破极值
+VOL_RATIO_TAG = 1.0          # 当日标签：ATR / ATR20 < 1.0 → 低波动待观察
+
+# ---- 市场状态判定（纯信息展示，三选一）----
+MKT_FLAT = 0.02              # |MA60 斜率| < 此值 → 走平（ATR 归一化/每根）
+MKT_STRONG_SLOPE = 0.05      # |斜率| ≥ 此值 → 明显趋势
+MKT_BW_LOW_Q = 0.20          # 布林带宽处于过去 120 日最底部 20% 分位
+MKT_BW_HIGH_Q = 0.60         # 开口放大所需分位
+MKT_BW_EXPAND = 1.10         # 相对 20 日前放大比例
+MKT_MID_CROSS = 3            # 「价格在中轨反复」= 20 日内穿越中轨次数
+
 CODES = ["FG", "SA", "M", "SP", "SM", "MA", "SR", "C"]
 NAMES = {"FG": "玻璃", "SA": "纯碱", "M": "豆粕", "SP": "纸浆",
          "SM": "锰硅", "MA": "甲醇", "SR": "白糖", "C": "玉米"}
@@ -842,3 +866,144 @@ def lots(equity, risk_pct, entry, stop, code, atr=None):
     if per <= 0:
         return 0
     return max(0, int(equity * risk_pct / per))
+
+
+# ================================================================ v11 甲方案
+def weekly_pos_series(bars, ma_n=None):
+    """日线每根 i 对应的【信号日之前最后一根已收盘周线】的位置方向。
+
+    +1 = 周线收盘在 MA45 上方（周线偏多），-1 = 下方，0 = 历史不足不判定。
+    纯因果：当天所在周尚未收盘，只能看上一根已收盘周线，杜绝未来函数。
+    """
+    ma_n = ma_n or WEEKLY_MA
+    w = resample(bars, "W")
+    ma = cyc.sma([x["c"] for x in w], ma_n)
+    last = [x["last_idx"] for x in w]
+    out = []
+    for i in range(len(bars)):
+        k = bisect.bisect_left(last, i) - 1
+        if k >= ma_n and ma[k] is not None:
+            out.append(1 if w[k]["c"] > ma[k] else -1)
+        else:
+            out.append(0)
+    return out
+
+
+def signal_meta(bars, S, i, exp, tier="normal", wpos=None):
+    """给一条信号打「周线降级档位」与「复盘标签」。
+
+    exp:  预期方向，+1 涨 / -1 跌
+    tier: 'strong' / 'normal'
+    observe=True → 降级【观察】：页面照常显示、后台照常算盈亏，只是不推微信。
+    confirm2 需要事后 2 根 K 才可知，只做事后标签/复盘，绝不用于当日推送决策。
+    """
+    n = len(bars)
+    arr = weekly_pos_series(bars) if wpos is None else wpos
+    pos = arr[i] if 0 <= i < n and i < len(arr) else 0
+    align = (pos == 0) or (pos == exp)      # 周线数据不足按顺势，不误杀
+    strong = (tier == "strong")
+    observe = (not align) and not (KEEP_STRONG_ON_OPP and strong)
+
+    atr = S["atr"]
+    a0 = atr[i] or 1e-9
+    past = [x for x in atr[max(0, i - 20):i] if x]
+    ratio = a0 / (sum(past) / len(past)) if past else 1.0
+
+    c2 = "pending"                          # 数据不足 → 待复盘
+    if i + CONFIRM2_BARS < n:
+        H0, L0 = bars[i]["h"], bars[i]["l"]
+        broke = False
+        for j in range(i + 1, i + CONFIRM2_BARS + 1):
+            cc = bars[j]["c"]
+            if (cc > H0) if exp == 1 else (cc < L0):
+                broke = True
+                break
+        c2 = "followed" if broke else "noFollow"
+    return {"weekMA": WEEKLY_MA, "weekPos": pos, "weekAlign": bool(align),
+            "tier": tier, "observe": bool(observe), "push": not observe,
+            "volRatio": round(ratio, 3), "lowVol": bool(ratio < VOL_RATIO_TAG),
+            "confirm2": c2}
+
+
+def _market_series(bars, S, flat=None, strong_slope=None):
+    """市场状态序列，纯因果（只用 i 及之前的数据）。"""
+    flat = MKT_FLAT if flat is None else flat
+    strong_slope = MKT_STRONG_SLOPE if strong_slope is None else strong_slope
+    n = len(bars)
+    cl = [b["c"] for b in bars]
+    mid = [None] * n
+    sd = [None] * n
+    bw = [None] * n
+    for i in range(n):
+        if i < 19:
+            continue
+        win = cl[i - 19:i + 1]
+        m = sum(win) / 20.0
+        v = math.sqrt(sum((x - m) ** 2 for x in win) / 20.0)
+        mid[i], sd[i] = m, v
+        bw[i] = 4 * v / m if m else 0.0
+    ma60 = cyc.sma(cl, 60)
+    atr = S["atr"]
+    states = ["Range"] * n
+    for i in range(n):
+        if i < 130 or bw[i] is None or ma60[i] is None or ma60[i - 10] is None:
+            continue
+        win = [bw[j] for j in range(i - 119, i + 1) if bw[j] is not None]
+        q = sum(1 for x in win if x <= bw[i]) / len(win)
+        narrow = q <= MKT_BW_LOW_Q
+        crosses = 0
+        for j in range(i - 19, i + 1):
+            if j < 20 or mid[j] is None or mid[j - 1] is None:
+                continue
+            if (cl[j] - mid[j]) * (cl[j - 1] - mid[j - 1]) < 0:
+                crosses += 1
+        churn = crosses >= MKT_MID_CROSS
+        a0 = atr[i] or 1e-9
+        slope = (ma60[i] - ma60[i - 10]) / (10 * a0)
+        prev20 = bw[i - 20]
+        expand = (prev20 is not None and prev20 > 0
+                  and bw[i] > prev20 * MKT_BW_EXPAND and q >= MKT_BW_HIGH_Q)
+        brk = cl[i] > mid[i] + 2 * sd[i] or cl[i] < mid[i] - 2 * sd[i]
+        if (narrow and churn) or abs(slope) < flat:
+            states[i] = "Range"
+        elif (expand and brk) or abs(slope) >= strong_slope:
+            states[i] = "Up" if slope > 0 else "Down"
+        else:
+            # 三选一：过渡态按 MA60 斜率方向归类，近乎完全走平归入震荡
+            if abs(slope) < flat * 0.5:
+                states[i] = "Range"
+            else:
+                states[i] = "Up" if slope > 0 else "Down"
+    return states, {"mid": mid, "sd": sd, "bw": bw, "ma60": ma60}
+
+
+def market_state_now(bars, S=None):
+    """当前市场状态（三选一）。纯信息展示，不参与任何信号/推送决策。"""
+    S = S or make_S(bars)
+    n = len(bars)
+    states, aux = _market_series(bars, S)
+    i = n - 1
+    st = states[i]
+    cl = [b["c"] for b in bars]
+    slope = None
+    q = None
+    cross = None
+    if i >= 130 and aux["bw"][i] is not None and aux["ma60"][i] is not None \
+            and aux["ma60"][i - 10] is not None:
+        win = [aux["bw"][j] for j in range(i - 119, i + 1) if aux["bw"][j] is not None]
+        q = sum(1 for x in win if x <= aux["bw"][i]) / len(win)
+        slope = (aux["ma60"][i] - aux["ma60"][i - 10]) / (10 * (S["atr"][i] or 1e-9))
+        cross = sum(1 for j in range(i - 19, i + 1)
+                    if j >= 20 and aux["mid"][j] is not None
+                    and aux["mid"][j - 1] is not None
+                    and (cl[j] - aux["mid"][j]) * (cl[j - 1] - aux["mid"][j - 1]) < 0)
+    label = {"Range": "震荡（Range）", "Up": "上涨趋势（Up Trend）",
+             "Down": "下跌趋势（Down Trend）"}[st]
+    return {"state": st, "label": label, "date": bars[i]["d"],
+            "bwQ": round(q, 3) if q is not None else None,
+            "ma60Slope": round(slope, 4) if slope is not None else None,
+            "midCross": cross, "close": cl[i],
+            "cfg": {"flat": MKT_FLAT, "strongSlope": MKT_STRONG_SLOPE,
+                    "bwLowQ": MKT_BW_LOW_Q, "bwExpand": MKT_BW_EXPAND,
+                    "midCross": MKT_MID_CROSS, "ma": 60, "boll": 20},
+            "advisoryOnly": True}

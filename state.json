@@ -93,7 +93,18 @@
    "ret": 2.59,
    "yuan": 888,
    "held": 20,
-   "R": 1.15
+   "R": 1.15,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.004,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -188,7 +199,18 @@
    "ret": 18.69,
    "yuan": 5056,
    "held": 54,
-   "R": 6.22
+   "R": 6.22,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.002,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -202,7 +224,18 @@
    "predDate": "2017-02-28",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.996,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -216,7 +249,18 @@
    "predDate": "2017-02-28",
    "lead": 3,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.943,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -268,7 +312,18 @@
    "segStart": "2017-03-03",
    "segAge": 20,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.976,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -320,7 +375,18 @@
    "segStart": "2017-01-18",
    "segAge": 51,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.041,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -372,7 +438,18 @@
    "segStart": "2017-04-10",
    "segAge": 15,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.981,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -424,7 +501,18 @@
    "segStart": "2017-05-15",
    "segAge": 15,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.886,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -476,7 +564,18 @@
    "segStart": "2017-05-18",
    "segAge": 13,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.991,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -528,7 +627,18 @@
    "segStart": "2017-05-12",
    "segAge": 24,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.974,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SR",
@@ -580,7 +690,18 @@
    "segStart": "2017-06-12",
    "segAge": 30,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.012,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -632,7 +753,18 @@
    "segStart": "2017-07-03",
    "segAge": 18,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.128,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -725,7 +857,18 @@
    "ret": -9.17,
    "yuan": -3246,
    "held": 4,
-   "R": -3.47
+   "R": -3.47,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.043,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -739,7 +882,18 @@
    "predDate": "2017-08-14",
    "lead": 16,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.067,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -791,7 +945,18 @@
    "segStart": "2017-08-11",
    "segAge": 26,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.913,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -884,7 +1049,18 @@
    "ret": 1.13,
    "yuan": 286,
    "held": 16,
-   "R": 0.4
+   "R": 0.4,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.081,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -898,7 +1074,18 @@
    "predDate": "2017-09-19",
    "lead": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.139,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -993,7 +1180,18 @@
    "ret": -2.98,
    "yuan": -764,
    "held": 1,
-   "R": -0.94
+   "R": -0.94,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.039,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -1045,7 +1243,18 @@
    "segStart": "2017-10-09",
    "segAge": 19,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.855,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -1059,7 +1268,18 @@
    "predDate": "2017-10-25",
    "lead": 6,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.942,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -1111,7 +1331,18 @@
    "segStart": "2017-11-02",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.945,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -1163,7 +1394,18 @@
    "segStart": "2017-09-21",
    "segAge": 33,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.888,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SR",
@@ -1215,7 +1457,18 @@
    "segStart": "2017-10-23",
    "segAge": 24,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.008,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -1308,7 +1561,18 @@
    "ret": -0.23,
    "yuan": -42,
    "held": 11,
-   "R": -0.25
+   "R": -0.25,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.937,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -1322,7 +1586,18 @@
    "predDate": "2018-01-18",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.927,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -1374,7 +1649,18 @@
    "segStart": "2017-12-14",
    "segAge": 31,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.978,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SR",
@@ -1426,7 +1712,18 @@
    "segStart": "2017-12-13",
    "segAge": 47,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.993,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -1478,7 +1775,18 @@
    "segStart": "2018-02-07",
    "segAge": 24,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.249,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -1530,7 +1838,18 @@
    "segStart": "2018-03-09",
    "segAge": 21,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.908,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -1582,7 +1901,18 @@
    "segStart": "2018-03-20",
    "segAge": 24,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.864,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SR",
@@ -1675,7 +2005,18 @@
    "ret": -0.8,
    "yuan": -446,
    "held": 7,
-   "R": -0.9
+   "R": -0.9,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.937,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SR",
@@ -1689,7 +2030,18 @@
    "predDate": "2018-05-16",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.934,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -1741,7 +2093,18 @@
    "segStart": "2018-05-08",
    "segAge": 20,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.895,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -1793,7 +2156,18 @@
    "segStart": "2018-06-19",
    "segAge": 3,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.928,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -1886,7 +2260,18 @@
    "ret": -2.01,
    "yuan": -816,
    "held": 3,
-   "R": -1.07
+   "R": -1.07,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.926,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -1900,7 +2285,18 @@
    "predDate": "2018-07-06",
    "lead": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.897,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -1952,7 +2348,18 @@
    "segStart": "2018-06-26",
    "segAge": 15,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.983,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -2004,7 +2411,18 @@
    "segStart": "2018-07-20",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.884,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -2056,7 +2474,18 @@
    "segStart": "2018-06-28",
    "segAge": 48,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.119,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -2108,7 +2537,18 @@
    "segStart": "2018-09-21",
    "segAge": 15,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.997,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -2203,7 +2643,18 @@
    "ret": 18.74,
    "yuan": 6117,
    "held": 45,
-   "R": 11.03
+   "R": 11.03,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.961,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -2217,7 +2668,18 @@
    "predDate": "2018-10-30",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.922,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -2269,7 +2731,18 @@
    "segStart": "2018-10-12",
    "segAge": 20,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.96,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -2364,7 +2837,18 @@
    "ret": -0.81,
    "yuan": -292,
    "held": 2,
-   "R": -0.6
+   "R": -0.6,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.108,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -2378,7 +2862,18 @@
    "predDate": "2018-11-27",
    "lead": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.035,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -2430,7 +2925,18 @@
    "segStart": "2018-12-10",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.064,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -2482,7 +2988,18 @@
    "segStart": "2018-10-25",
    "segAge": 37,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.01,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SP",
@@ -2534,7 +3051,18 @@
    "segStart": "2019-01-15",
    "segAge": 33,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.94,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SR",
@@ -2627,7 +3155,18 @@
    "ret": -1.15,
    "yuan": -586,
    "held": 3,
-   "R": -0.78
+   "R": -0.78,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.956,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SR",
@@ -2641,7 +3180,18 @@
    "predDate": "2019-03-08",
    "lead": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.944,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -2693,7 +3243,18 @@
    "segStart": "2019-02-14",
    "segAge": 20,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.933,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -2788,7 +3349,18 @@
    "ret": -0.71,
    "yuan": -286,
    "held": 8,
-   "R": -0.52
+   "R": -0.52,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.925,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -2802,7 +3374,18 @@
    "predDate": "2019-03-25",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.938,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -2854,7 +3437,18 @@
    "segStart": "2019-02-28",
    "segAge": 24,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.838,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -2949,7 +3543,18 @@
    "ret": 2.72,
    "yuan": 1024,
    "held": 32,
-   "R": 1.88
+   "R": 1.88,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.049,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -2963,7 +3568,18 @@
    "predDate": "2019-05-22",
    "lead": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.049,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -3056,7 +3672,18 @@
    "ret": -1.45,
    "yuan": -532,
    "held": 1,
-   "R": -1.27
+   "R": -1.27,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.081,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -3151,7 +3778,18 @@
    "ret": 1.63,
    "yuan": 308,
    "held": 32,
-   "R": 1.55
+   "R": 1.55,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.01,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -3165,7 +3803,18 @@
    "predDate": "2019-06-12",
    "lead": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.977,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -3217,7 +3866,18 @@
    "segStart": "2019-05-30",
    "segAge": 15,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.006,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -3312,7 +3972,18 @@
    "ret": 0.28,
    "yuan": 77,
    "held": 9,
-   "R": 0.13
+   "R": 0.13,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.083,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SP",
@@ -3407,7 +4078,18 @@
    "ret": -3.33,
    "yuan": -1785,
    "held": 5,
-   "R": -2.02
+   "R": -2.02,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.037,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -3421,7 +4103,18 @@
    "predDate": "2019-07-01",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.073,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SP",
@@ -3435,7 +4128,18 @@
    "predDate": "2019-07-01",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.035,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -3449,7 +4153,18 @@
    "predDate": "2019-06-04",
    "lead": 37,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.959,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -3501,7 +4216,18 @@
    "segStart": "2019-06-25",
    "segAge": 33,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.981,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -3594,7 +4320,18 @@
    "ret": -1.52,
    "yuan": -572,
    "held": 8,
-   "R": -1.41
+   "R": -1.41,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.888,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -3608,7 +4345,18 @@
    "predDate": "2019-09-10",
    "lead": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.013,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -3703,7 +4451,18 @@
    "ret": 12.38,
    "yuan": 2566,
    "held": 36,
-   "R": 4.48
+   "R": 4.48,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.053,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -3717,7 +4476,18 @@
    "predDate": "2019-10-15",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.085,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -3812,7 +4582,18 @@
    "ret": -1.28,
    "yuan": -232,
    "held": 2,
-   "R": -1.52
+   "R": -1.52,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.959,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -3826,7 +4607,18 @@
    "predDate": "2019-10-18",
    "lead": 7,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.032,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -3878,7 +4670,18 @@
    "segStart": "2019-10-08",
    "segAge": 20,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.946,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -3930,7 +4733,18 @@
    "segStart": "2019-09-26",
    "segAge": 29,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.879,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SR",
@@ -4023,7 +4837,18 @@
    "ret": 1.54,
    "yuan": 854,
    "held": 28,
-   "R": 1.16
+   "R": 1.16,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.002,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SR",
@@ -4037,7 +4862,18 @@
    "predDate": "2019-11-18",
    "lead": 3,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.019,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -4089,7 +4925,18 @@
    "segStart": "2019-08-26",
    "segAge": 59,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.113,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -4182,7 +5029,18 @@
    "ret": 11.66,
    "yuan": 2126,
    "held": 23,
-   "R": 4.71
+   "R": 4.71,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.969,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -4196,7 +5054,18 @@
    "predDate": "2019-12-05",
    "lead": 5,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.977,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -4291,7 +5160,18 @@
    "ret": -2.18,
    "yuan": -716,
    "held": 9,
-   "R": -1.47
+   "R": -1.47,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.97,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -4305,7 +5185,18 @@
    "predDate": "2020-01-06",
    "lead": 5,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.946,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SR",
@@ -4357,7 +5248,18 @@
    "segStart": "2020-02-04",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.446,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -4409,7 +5311,18 @@
    "segStart": "2019-12-03",
    "segAge": 45,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.108,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -4461,7 +5374,18 @@
    "segStart": "2019-11-06",
    "segAge": 67,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.024,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -4513,7 +5437,18 @@
    "segStart": "2020-03-02",
    "segAge": 28,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.037,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -4606,7 +5541,18 @@
    "ret": -2.16,
    "yuan": -334,
    "held": 3,
-   "R": -0.49
+   "R": -0.49,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.039,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -4658,7 +5604,18 @@
    "segStart": "2020-01-23",
    "segAge": 61,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.079,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -4672,7 +5629,18 @@
    "predDate": "2020-04-20",
    "lead": 8,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.016,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SP",
@@ -4724,7 +5692,18 @@
    "segStart": "2020-04-21",
    "segAge": 30,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.886,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SR",
@@ -4776,7 +5755,18 @@
    "segStart": "2020-07-02",
    "segAge": 15,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.955,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -4828,7 +5818,18 @@
    "segStart": "2020-05-06",
    "segAge": 76,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.235,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SP",
@@ -4880,7 +5881,18 @@
    "segStart": "2020-08-07",
    "segAge": 28,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.335,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -4932,7 +5944,18 @@
    "segStart": "2020-08-03",
    "segAge": 33,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.02,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -4984,7 +6007,18 @@
    "segStart": "2020-09-10",
    "segAge": 21,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.956,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SP",
@@ -5036,7 +6070,18 @@
    "segStart": "2020-10-19",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.876,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -5088,7 +6133,18 @@
    "segStart": "2020-08-25",
    "segAge": 44,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.946,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -5140,7 +6196,18 @@
    "segStart": "2020-11-03",
    "segAge": 3,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.023,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -5235,7 +6302,18 @@
    "ret": -2.51,
    "yuan": -622,
    "held": 4,
-   "R": -1.67
+   "R": -1.67,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.936,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -5249,7 +6327,18 @@
    "predDate": "2020-11-09",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.921,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -5301,7 +6390,18 @@
    "segStart": "2020-11-11",
    "segAge": 3,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.904,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -5353,7 +6453,18 @@
    "segStart": "2020-10-26",
    "segAge": 44,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.196,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -5449,7 +6560,18 @@
    "ret": -0.88,
    "yuan": -327,
    "held": 2,
-   "R": -0.31
+   "R": -0.31,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.031,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -5463,7 +6585,18 @@
    "predDate": "2021-01-12",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.014,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -5558,7 +6691,18 @@
    "ret": -2.96,
    "yuan": -1003,
    "held": 1,
-   "R": -1.08
+   "R": -1.08,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.247,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -5653,7 +6797,18 @@
    "ret": -2.32,
    "yuan": -856,
    "held": 10,
-   "R": -0.72
+   "R": -0.72,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.1,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -5705,7 +6860,18 @@
    "segStart": "2020-12-16",
    "segAge": 29,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.172,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -5757,7 +6923,18 @@
    "segStart": "2020-12-28",
    "segAge": 23,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.913,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -5771,7 +6948,18 @@
    "predDate": "2021-01-26",
    "lead": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.014,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -5785,7 +6973,18 @@
    "predDate": "2021-01-25",
    "lead": 6,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.099,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -5837,7 +7036,18 @@
    "segStart": "2021-02-18",
    "segAge": 21,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.023,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SP",
@@ -5889,7 +7099,18 @@
    "segStart": "2020-11-10",
    "segAge": 88,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.037,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -5941,7 +7162,18 @@
    "segStart": "2021-02-26",
    "segAge": 21,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.872,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SA",
@@ -5993,7 +7225,18 @@
    "segStart": "2021-01-14",
    "segAge": 50,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.956,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -6045,7 +7288,18 @@
    "segStart": "2021-03-09",
    "segAge": 28,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.969,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -6097,7 +7351,18 @@
    "segStart": "2021-04-01",
    "segAge": 31,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.044,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -6149,7 +7414,18 @@
    "segStart": "2021-04-19",
    "segAge": 23,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.061,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -6201,7 +7477,18 @@
    "segStart": "2021-02-04",
    "segAge": 71,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.359,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -6253,7 +7540,18 @@
    "segStart": "2021-04-16",
    "segAge": 26,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.145,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SR",
@@ -6305,7 +7603,18 @@
    "segStart": "2021-04-16",
    "segAge": 26,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.115,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -6357,7 +7666,18 @@
    "segStart": "2021-04-26",
    "segAge": 21,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.262,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -6409,7 +7729,18 @@
    "segStart": "2021-04-19",
    "segAge": 39,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.85,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -6461,7 +7792,18 @@
    "segStart": "2021-06-22",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.859,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SR",
@@ -6513,7 +7855,18 @@
    "segStart": "2021-06-04",
    "segAge": 16,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.96,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SP",
@@ -6565,7 +7918,18 @@
    "segStart": "2021-05-14",
    "segAge": 33,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.891,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -6617,7 +7981,18 @@
    "segStart": "2021-06-30",
    "segAge": 25,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.052,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SR",
@@ -6669,7 +8044,18 @@
    "segStart": "2021-08-04",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.962,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -6721,7 +8107,18 @@
    "segStart": "2021-07-14",
    "segAge": 23,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.96,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SP",
@@ -6773,7 +8170,18 @@
    "segStart": "2021-08-20",
    "segAge": 15,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.889,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -6866,7 +8274,18 @@
    "ret": 15.19,
    "yuan": 10253,
    "held": 28,
-   "R": 2.87
+   "R": 2.87,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.365,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -6918,7 +8337,18 @@
    "segStart": "2021-08-11",
    "segAge": 45,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.494,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -6932,7 +8362,18 @@
    "predDate": "2021-10-21",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.306,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -7028,7 +8469,18 @@
    "ret": 20.68,
    "yuan": 11104,
    "held": 40,
-   "R": 2.51
+   "R": 2.51,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.453,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -7042,7 +8494,18 @@
    "predDate": "2021-10-22",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.387,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -7135,7 +8598,18 @@
    "ret": -3.8,
    "yuan": -1203,
    "held": 10,
-   "R": -2.17
+   "R": -2.17,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.995,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SP",
@@ -7187,7 +8661,18 @@
    "segStart": "2021-09-24",
    "segAge": 37,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.855,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -7201,7 +8686,18 @@
    "predDate": "2021-11-19",
    "lead": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.984,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -7253,7 +8749,18 @@
    "segStart": "2021-10-11",
    "segAge": 32,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.987,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -7305,7 +8812,18 @@
    "segStart": "2021-08-02",
    "segAge": 76,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.855,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SP",
@@ -7398,7 +8916,18 @@
    "ret": -6.26,
    "yuan": -3785,
    "held": 3,
-   "R": -2.15
+   "R": -2.15,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.16,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SP",
@@ -7412,7 +8941,18 @@
    "predDate": "2021-12-17",
    "lead": 28,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.05,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -7505,7 +9045,18 @@
    "ret": 3.27,
    "yuan": 1608,
    "held": 23,
-   "R": 0.84
+   "R": 0.84,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.23,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -7557,7 +9108,18 @@
    "segStart": "2022-02-18",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.0,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -7571,7 +9133,18 @@
    "predDate": "2022-02-18",
    "lead": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.164,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -7623,7 +9196,18 @@
    "segStart": "2022-01-10",
    "segAge": 29,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.145,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SR",
@@ -7675,7 +9259,18 @@
    "segStart": "2022-03-02",
    "segAge": 14,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.053,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -7727,7 +9322,18 @@
    "segStart": "2022-02-28",
    "segAge": 19,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.918,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SP",
@@ -7823,7 +9429,18 @@
    "ret": -3.66,
    "yuan": -2705,
    "held": 5,
-   "R": -1.25
+   "R": -1.25,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.171,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SP",
@@ -7837,7 +9454,18 @@
    "predDate": "2022-03-25",
    "lead": 4,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.13,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SA",
@@ -7930,7 +9558,18 @@
    "ret": -2.74,
    "yuan": -1747,
    "held": 11,
-   "R": -0.74
+   "R": -0.74,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.978,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -7944,7 +9583,18 @@
    "predDate": "2022-05-09",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.048,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -7996,7 +9646,18 @@
    "segStart": "2022-03-31",
    "segAge": 33,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.946,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -8048,7 +9709,18 @@
    "segStart": "2022-04-25",
    "segAge": 20,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.89,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -8141,7 +9813,18 @@
    "ret": -6.78,
    "yuan": -3072,
    "held": 3,
-   "R": -3.0
+   "R": -3.0,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.843,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SR",
@@ -8193,7 +9876,18 @@
    "segStart": "2022-05-16",
    "segAge": 22,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.005,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -8245,7 +9939,18 @@
    "segStart": "2022-05-13",
    "segAge": 24,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.953,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SA",
@@ -8297,7 +10002,18 @@
    "segStart": "2022-06-14",
    "segAge": 33,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.986,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -8349,7 +10065,18 @@
    "segStart": "2022-06-13",
    "segAge": 36,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.04,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -8401,7 +10128,18 @@
    "segStart": "2022-05-24",
    "segAge": 51,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.013,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -8415,7 +10153,18 @@
    "predDate": "2022-06-08",
    "lead": 42,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.979,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SP",
@@ -8467,7 +10216,18 @@
    "segStart": "2022-07-22",
    "segAge": 16,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.942,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -8519,7 +10279,18 @@
    "segStart": "2022-08-15",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.998,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SP",
@@ -8571,7 +10342,18 @@
    "segStart": "2022-08-17",
    "segAge": 13,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.883,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -8623,7 +10405,18 @@
    "segStart": "2022-09-22",
    "segAge": 17,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.854,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -8718,7 +10511,18 @@
    "ret": -5.04,
    "yuan": -2023,
    "held": 6,
-   "R": -2.6
+   "R": -2.6,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.985,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -8770,7 +10574,18 @@
    "segStart": "2022-10-18",
    "segAge": 21,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.012,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -8784,7 +10599,18 @@
    "predDate": "2022-10-28",
    "lead": 15,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.93,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -8836,7 +10662,18 @@
    "segStart": "2022-10-21",
    "segAge": 25,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.04,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -8929,7 +10766,18 @@
    "ret": -7.92,
    "yuan": -4447,
    "held": 5,
-   "R": -3.46
+   "R": -3.46,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.139,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -8981,7 +10829,18 @@
    "segStart": "2022-12-26",
    "segAge": 3,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.068,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -9033,7 +10892,18 @@
    "segStart": "2022-12-05",
    "segAge": 20,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.984,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SR",
@@ -9085,7 +10955,18 @@
    "segStart": "2022-12-09",
    "segAge": 20,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.026,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -9137,7 +11018,18 @@
    "segStart": "2022-12-28",
    "segAge": 26,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.979,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -9151,7 +11043,18 @@
    "predDate": "2022-12-07",
    "lead": 52,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.934,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -9203,7 +11106,18 @@
    "segStart": "2023-02-28",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.923,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -9255,7 +11169,18 @@
    "segStart": "2023-01-31",
    "segAge": 25,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.814,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SR",
@@ -9307,7 +11232,18 @@
    "segStart": "2023-01-20",
    "segAge": 41,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.112,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -9359,7 +11295,18 @@
    "segStart": "2023-02-23",
    "segAge": 33,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.075,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SP",
@@ -9411,7 +11358,18 @@
    "segStart": "2023-02-23",
    "segAge": 55,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.92,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -9504,7 +11462,18 @@
    "ret": -2.13,
    "yuan": -552,
    "held": 8,
-   "R": -1.59
+   "R": -1.59,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.031,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -9518,7 +11487,18 @@
    "predDate": "2023-05-30",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.001,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -9570,7 +11550,18 @@
    "segStart": "2023-05-09",
    "segAge": 24,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.982,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -9622,7 +11613,18 @@
    "segStart": "2023-03-06",
    "segAge": 78,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.887,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -9674,7 +11676,18 @@
    "segStart": "2023-02-24",
    "segAge": 84,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.931,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -9726,7 +11739,18 @@
    "segStart": "2023-06-13",
    "segAge": 25,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.998,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SP",
@@ -9778,7 +11802,18 @@
    "segStart": "2023-07-18",
    "segAge": 4,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.956,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -9830,7 +11865,18 @@
    "segStart": "2023-08-14",
    "segAge": 14,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.981,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -9882,7 +11928,18 @@
    "segStart": "2023-08-30",
    "segAge": 22,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.169,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SP",
@@ -9934,7 +11991,18 @@
    "segStart": "2023-08-15",
    "segAge": 44,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.003,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SR",
@@ -9986,7 +12054,18 @@
    "segStart": "2023-10-09",
    "segAge": 16,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.974,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -10038,7 +12117,18 @@
    "segStart": "2023-10-09",
    "segAge": 20,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.886,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -10133,7 +12223,18 @@
    "ret": -1.83,
    "yuan": -462,
    "held": 3,
-   "R": -1.8
+   "R": -1.8,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.883,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -10147,7 +12248,18 @@
    "predDate": "2023-11-06",
    "lead": 8,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.913,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -10199,7 +12311,18 @@
    "segStart": "2023-11-01",
    "segAge": 14,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.024,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -10251,7 +12374,18 @@
    "segStart": "2023-11-23",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.952,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SA",
@@ -10346,7 +12480,18 @@
    "ret": 4.64,
    "yuan": 2293,
    "held": 25,
-   "R": 0.84
+   "R": 0.84,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.271,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -10439,7 +12584,18 @@
    "ret": -1.5,
    "yuan": -672,
    "held": 1,
-   "R": -0.5
+   "R": -0.5,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.117,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SP",
@@ -10491,7 +12647,18 @@
    "segStart": "2023-11-09",
    "segAge": 28,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.074,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SA",
@@ -10505,7 +12672,18 @@
    "predDate": "2023-12-14",
    "lead": 3,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.11,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -10557,7 +12735,18 @@
    "segStart": "2023-11-17",
    "segAge": 24,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.955,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SR",
@@ -10609,7 +12798,18 @@
    "segStart": "2023-11-27",
    "segAge": 27,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.893,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -10623,7 +12823,18 @@
    "predDate": "2023-12-18",
    "lead": 16,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.073,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -10675,7 +12886,18 @@
    "segStart": "2024-01-26",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.934,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SA",
@@ -10727,7 +12949,18 @@
    "segStart": "2024-03-11",
    "segAge": 3,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.919,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -10779,7 +13012,18 @@
    "segStart": "2024-02-01",
    "segAge": 25,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.902,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -10831,7 +13075,18 @@
    "segStart": "2024-02-01",
    "segAge": 50,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.964,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SR",
@@ -10883,7 +13138,18 @@
    "segStart": "2024-04-12",
    "segAge": 18,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.933,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SA",
@@ -10935,7 +13201,18 @@
    "segStart": "2024-04-08",
    "segAge": 25,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.074,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -10987,7 +13264,18 @@
    "segStart": "2024-03-01",
    "segAge": 60,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.012,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -11080,7 +13368,18 @@
    "ret": -2.44,
    "yuan": -582,
    "held": 5,
-   "R": -2.97
+   "R": -2.97,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.944,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -11094,7 +13393,18 @@
    "predDate": "2024-05-30",
    "lead": 3,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.911,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -11146,7 +13456,18 @@
    "segStart": "2024-06-05",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.881,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -11198,7 +13519,18 @@
    "segStart": "2024-04-11",
    "segAge": 40,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.127,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -11293,7 +13625,18 @@
    "ret": 21.39,
    "yuan": 8828,
    "held": 73,
-   "R": 9.08
+   "R": 9.08,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.053,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -11307,7 +13650,18 @@
    "predDate": "2024-06-13",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.021,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -11359,7 +13713,18 @@
    "segStart": "2024-07-08",
    "segAge": 36,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.033,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -11452,7 +13817,18 @@
    "ret": -0.6,
    "yuan": -183,
    "held": 19,
-   "R": -0.34
+   "R": -0.34,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.926,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -11466,7 +13842,18 @@
    "predDate": "2024-08-30",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.918,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SR",
@@ -11518,7 +13905,18 @@
    "segStart": "2024-08-05",
    "segAge": 31,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.964,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -11613,7 +14011,18 @@
    "ret": -2.74,
    "yuan": -1007,
    "held": 2,
-   "R": -0.79
+   "R": -0.79,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.072,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -11665,7 +14074,18 @@
    "segStart": "2024-09-02",
    "segAge": 17,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.138,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -11679,7 +14099,18 @@
    "predDate": "2024-09-26",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.092,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -11731,7 +14162,18 @@
    "segStart": "2024-09-02",
    "segAge": 24,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.056,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SR",
@@ -11783,7 +14225,18 @@
    "segStart": "2024-09-19",
    "segAge": 20,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.961,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -11835,7 +14288,18 @@
    "segStart": "2024-10-24",
    "segAge": 5,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.943,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -11887,7 +14351,18 @@
    "segStart": "2024-10-11",
    "segAge": 25,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.939,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -11939,7 +14414,18 @@
    "segStart": "2024-11-15",
    "segAge": 33,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.899,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SR",
@@ -11991,7 +14477,18 @@
    "segStart": "2025-02-11",
    "segAge": 17,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.892,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SA",
@@ -12086,7 +14583,18 @@
    "ret": -1.45,
    "yuan": -487,
    "held": 3,
-   "R": -0.66
+   "R": -0.66,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.042,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -12181,7 +14689,18 @@
    "ret": 0.65,
    "yuan": 187,
    "held": 17,
-   "R": 0.36
+   "R": 0.36,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.896,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -12195,7 +14714,18 @@
    "predDate": "2025-04-28",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.872,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SP",
@@ -12247,7 +14777,18 @@
    "segStart": "2025-02-19",
    "segAge": 59,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.98,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -12299,7 +14840,18 @@
    "segStart": "2025-04-21",
    "segAge": 18,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.999,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -12351,7 +14903,18 @@
    "segStart": "2025-02-21",
    "segAge": 59,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.026,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -12403,7 +14966,18 @@
    "segStart": "2025-04-03",
    "segAge": 52,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.907,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -12455,7 +15029,18 @@
    "segStart": "2025-05-23",
    "segAge": 20,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.953,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -12507,7 +15092,18 @@
    "segStart": "2025-06-04",
    "segAge": 21,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.065,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -12600,7 +15196,18 @@
    "ret": 4.25,
    "yuan": 978,
    "held": 32,
-   "R": 5.24
+   "R": 5.24,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.989,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -12614,7 +15221,18 @@
    "predDate": "2025-07-02",
    "lead": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.952,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -12628,7 +15246,18 @@
    "predDate": "2025-04-24",
    "lead": 50,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.948,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SP",
@@ -12680,7 +15309,18 @@
    "segStart": "2025-06-03",
    "segAge": 28,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.894,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -12732,7 +15372,18 @@
    "segStart": "2025-07-02",
    "segAge": 28,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.199,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SR",
@@ -12825,7 +15476,18 @@
    "ret": -0.8,
    "yuan": -466,
    "held": 2,
-   "R": -1.1
+   "R": -1.1,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.912,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -12920,7 +15582,18 @@
    "ret": -0.99,
    "yuan": -222,
    "held": 11,
-   "R": -0.9
+   "R": -0.9,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.039,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -12934,7 +15607,18 @@
    "predDate": "2025-08-28",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.011,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -12986,7 +15670,18 @@
    "segStart": "2025-09-18",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.829,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -13082,7 +15777,18 @@
    "ret": 1.38,
    "yuan": 397,
    "held": 20,
-   "R": 1.02
+   "R": 1.02,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.997,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SR",
@@ -13096,7 +15802,18 @@
    "predDate": "2025-08-21",
    "lead": 42,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.065,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -13110,7 +15827,18 @@
    "predDate": "2025-10-28",
    "lead": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.981,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -13162,7 +15890,18 @@
    "segStart": "2025-08-13",
    "segAge": 72,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.003,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -13255,7 +15994,18 @@
    "ret": -1.98,
    "yuan": -442,
    "held": 8,
-   "R": -1.96
+   "R": -1.96,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.044,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -13269,7 +16019,18 @@
    "predDate": "2025-12-16",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.02,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -13321,7 +16082,18 @@
    "segStart": "2025-10-13",
    "segAge": 56,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.033,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SP",
@@ -13373,7 +16145,18 @@
    "segStart": "2025-12-02",
    "segAge": 28,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.026,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -13425,7 +16208,18 @@
    "segStart": "2025-12-18",
    "segAge": 21,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.103,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SP",
@@ -13477,7 +16271,18 @@
    "segStart": "2026-01-14",
    "segAge": 32,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.964,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -13572,7 +16377,18 @@
    "ret": -3.59,
    "yuan": -1073,
    "held": 14,
-   "R": -1.94
+   "R": -1.94,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.031,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -13586,7 +16402,18 @@
    "predDate": "2026-03-31",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.111,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -13638,7 +16465,18 @@
    "segStart": "2026-02-26",
    "segAge": 29,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.165,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -13690,7 +16528,18 @@
    "segStart": "2026-04-10",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.944,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -13742,7 +16591,18 @@
    "segStart": "2026-03-02",
    "segAge": 36,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.999,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SA",
@@ -13794,7 +16654,18 @@
    "segStart": "2026-03-30",
    "segAge": 17,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.924,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -13846,7 +16717,18 @@
    "segStart": "2026-03-24",
    "segAge": 26,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.962,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -13898,7 +16780,18 @@
    "segStart": "2026-05-08",
    "segAge": 17,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.908,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -13950,7 +16843,18 @@
    "segStart": "2026-04-09",
    "segAge": 35,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.0,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -14002,7 +16906,18 @@
    "segStart": "2026-06-02",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.901,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -14054,7 +16969,18 @@
    "segStart": "2026-05-06",
    "segAge": 27,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.966,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "M",
@@ -14106,7 +17032,18 @@
    "segStart": "2026-05-22",
    "segAge": 23,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.866,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SM",
@@ -14158,7 +17095,18 @@
    "segStart": "2026-07-10",
    "segAge": 2,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.894,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -14253,7 +17201,18 @@
    "ret": -5.14,
    "yuan": -1334,
    "held": 15,
-   "R": -1.38
+   "R": -1.38,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.987,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "MA",
@@ -14267,7 +17226,18 @@
    "predDate": "2026-07-14",
    "lead": 4,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.007,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SP",
@@ -14360,7 +17330,18 @@
    "ret": -1.03,
    "yuan": -505,
    "held": 1,
-   "R": -0.65
+   "R": -0.65,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.103,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SP",
@@ -14374,7 +17355,18 @@
    "predDate": "2026-09-01",
    "lead": 5,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.067,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "SM",
@@ -14426,7 +17418,18 @@
    "segStart": "2026-08-14",
    "segAge": 20,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.299,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -14522,7 +17525,18 @@
    "ret": -11.03,
    "yuan": -3184,
    "held": 5,
-   "R": -2.7
+   "R": -2.7,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.073,
+    "lowVol": false,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "MA",
@@ -14536,7 +17550,18 @@
    "predDate": "2026-09-22",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.06,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -14657,7 +17682,18 @@
    "floatPts": 251.0,
    "float": 7.44,
    "held": 19,
-   "R": 4.92
+   "R": 4.92,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.976,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "M",
@@ -14671,7 +17707,18 @@
    "predDate": "2026-10-08",
    "lead": 3,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.966,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "C",
@@ -14792,7 +17839,18 @@
    "floatPts": 18.0,
    "float": 0.81,
    "held": 9,
-   "R": 0.8
+   "R": 0.8,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.041,
+    "lowVol": false,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "C",
@@ -14806,7 +17864,18 @@
    "predDate": "2026-10-22",
    "lead": 3,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.986,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "SA",
@@ -14858,7 +17927,18 @@
    "segStart": "2026-09-14",
    "segAge": 28,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.974,
+    "lowVol": true,
+    "confirm2": "noFollow"
+   }
   },
   {
    "sym": "FG",
@@ -14979,7 +18059,18 @@
    "floatPts": 9.0,
    "float": 1.02,
    "held": 1,
-   "R": 0.45
+   "R": 0.45,
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.998,
+    "lowVol": true,
+    "confirm2": "followed"
+   }
   },
   {
    "sym": "FG",
@@ -14993,7 +18084,18 @@
    "predDate": "2026-11-03",
    "lead": 1,
    "status": "watch",
-   "foundAt": "2026-11-06 13:57"
+   "foundAt": "2026-11-06 13:57",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.01,
+    "lowVol": false,
+    "confirm2": "pending"
+   }
   }
  ],
  "seen": [
@@ -15280,7 +18382,7 @@
   "C|pred|2026-10-22",
   "C|confirm|2026-10-27"
  ],
- "runs": 1,
+ "runs": 2,
  "xsigSeen": [],
  "tf": {
   "FG": {
@@ -15325,7 +18427,7 @@
   }
  },
  "scanDate": "2026-11-06",
- "updated": "2026-11-06 13:57",
+ "updated": "2026-11-06 17:28",
  "stats": {
   "pred": 60,
   "open": 3,
@@ -15407,6 +18509,14 @@
    "ma": 26,
    "chK": 3.0,
    "warnPull": 1.2
+  },
+  "filter": {
+   "mode": "downgrade",
+   "weeklyMA": 45,
+   "keepStrongOnOpp": true,
+   "confirm2Bars": 2,
+   "volRatioTag": 1.0,
+   "marketStateAdvisoryOnly": true
   }
  },
  "xsigToday": [
@@ -15484,7 +18594,18 @@
    "extPx": 898.0,
    "age": 2,
    "segSide": 1,
-   "sym": "FG"
+   "sym": "FG",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.009,
+    "lowVol": false,
+    "confirm2": "pending"
+   }
   },
   {
    "side": "long",
@@ -15560,7 +18681,18 @@
    "extPx": 997.0,
    "age": 2,
    "segSide": 1,
-   "sym": "SA"
+   "sym": "SA",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.008,
+    "lowVol": false,
+    "confirm2": "pending"
+   }
   },
   {
    "side": "short",
@@ -15636,7 +18768,18 @@
    "extPx": 3092.0,
    "age": 16,
    "segSide": -1,
-   "sym": "M"
+   "sym": "M",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.99,
+    "lowVol": true,
+    "confirm2": "pending"
+   }
   },
   {
    "side": "short",
@@ -15712,7 +18855,18 @@
    "extPx": 4470.0,
    "age": 19,
    "segSide": -1,
-   "sym": "SP"
+   "sym": "SP",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.014,
+    "lowVol": false,
+    "confirm2": "pending"
+   }
   },
   {
    "side": "long",
@@ -15788,7 +18942,18 @@
    "extPx": 5872.0,
    "age": 1,
    "segSide": 1,
-   "sym": "SM"
+   "sym": "SM",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.939,
+    "lowVol": true,
+    "confirm2": "pending"
+   }
   },
   {
    "side": "short",
@@ -15864,7 +19029,18 @@
    "extPx": 3132.0,
    "age": 1,
    "segSide": -1,
-   "sym": "MA"
+   "sym": "MA",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.17,
+    "lowVol": false,
+    "confirm2": "pending"
+   }
   },
   {
    "side": "short",
@@ -15940,7 +19116,18 @@
    "extPx": 5200.0,
    "age": 14,
    "segSide": -1,
-   "sym": "SR"
+   "sym": "SR",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.885,
+    "lowVol": true,
+    "confirm2": "pending"
+   }
   },
   {
    "side": "long",
@@ -16016,7 +19203,18 @@
    "extPx": 2238.0,
    "age": 8,
    "segSide": 1,
-   "sym": "C"
+   "sym": "C",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.899,
+    "lowVol": true,
+    "confirm2": "pending"
+   }
   }
  ]
 }

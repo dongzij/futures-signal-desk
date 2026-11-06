@@ -176,6 +176,22 @@ def main():
                 newest = s["date"]
 
     state["signals"] = sorted(state["signals"] + found, key=lambda x: x["date"])
+    # ---------- v11 甲方案：周线 MA45 降级档位 + 复盘标签 ----------
+    # 只决定「要不要推微信」，不删除、不延迟任何信号；后台盈亏计算完全不变。
+    # 依据 10 年 A/B（reports/终极融合_AB对比表.txt）：仅周线降级是双达标模块。
+    for c in codes:
+        bars = engine_bars(c)
+        S = engine_S(c)
+        wpos = engine.weekly_pos_series(bars)
+        for s in state["signals"]:
+            if s.get("sym") != c:
+                continue
+            i = s.get("idx")
+            if i is None or i >= len(bars):
+                continue
+            exp = 1 if s.get("side") == "long" else -1
+            tier = "strong" if s.get("strong") else "normal"
+            s["meta"] = engine.signal_meta(bars, S, i, exp, tier, wpos)
     # 全量重算：出场口径变更后，历史成交也按新规则统一（MA26 + 吊灯 3ATR）
     update_open_positions(state, all_pred=True)
 
@@ -221,6 +237,12 @@ def main():
         "univ": engine.CODES,
         "ma": engine.MA,
         "exit": {"ma": engine.EXIT_MA, "chK": engine.CH_K, "warnPull": engine.WARN_PULL},
+        # v11 甲方案：只影响推送，不干预信号
+        "filter": {"mode": engine.WEEKLY_FILTER, "weeklyMA": engine.WEEKLY_MA,
+                   "keepStrongOnOpp": engine.KEEP_STRONG_ON_OPP,
+                   "confirm2Bars": engine.CONFIRM2_BARS,
+                   "volRatioTag": engine.VOL_RATIO_TAG,
+                   "marketStateAdvisoryOnly": True},
     }
     # ---------- 独立出场信号（见顶/见底，与是否持仓完全无关） ----------
     xs_today, xs_fresh = [], []
@@ -234,8 +256,15 @@ def main():
         if not r:
             continue
         r["sym"] = c
+        bars = engine_bars(c)
+        S = engine_S(c)
+        dirn = r.get("dir")
+        exp = (-1 if dirn == "顶部" else 1) if dirn else (-1 if r.get("side") == "long" else 1)
+        tier = "strong" if r.get("level") == "strong" else "normal"
+        r["meta"] = engine.signal_meta(bars, S, len(bars) - 1, exp, tier)
         xs_today.append(r)
-        if r["level"] in ("suggest", "strong"):
+        # 顺势全推；逆势只推强档。观察档页面照常显示，只是不推微信（不删信号）
+        if r["level"] in ("suggest", "strong") and r["meta"]["push"]:
             key = "%s|%s|%s" % (c, r["date"], r["level"])
             if key not in seen_x:
                 seen_x.append(key)
@@ -262,7 +291,8 @@ def main():
     fresh = [] if first else [s for s in found
                               if s["date"] >= near
                               and s["kind"] == "pred"
-                              and (s.get("prob", {}).get("5") or 0) >= min_prob]
+                              and (s.get("prob", {}).get("5") or 0) >= min_prob
+                              and s.get("meta", {}).get("push", True)]
     if fresh and cfg.get("pushplus"):
         site = cfg.get("siteUrl", "")
         cards = []

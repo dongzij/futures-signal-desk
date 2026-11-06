@@ -19,6 +19,7 @@ import engine
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dist", "data")
 EXIT_ALL = []      # 跨品种出场成交汇总（算全局胜率/净 R）
 XSIG_ALL = []      # 跨品种独立出场信号当前状态
+MKT_ALL = []       # 跨品种市场状态（纯信息展示，不干预信号）
 
 # 品种交易参数（模拟盘用）：乘数 / 手续费 / 保证金率
 # fee: ("lot", 元/手) 或 ("rate", 万分之几)
@@ -122,7 +123,9 @@ def build_product(sym):
              "pts": s.get("pts"), "yuan": s.get("yuan"),
              "held": s.get("held"), "lots": s.get("lots"),
              "segStart": s.get("segStart"), "segAge": s.get("segAge"),
-             "lead": s.get("lead")}
+             "lead": s.get("lead"),
+             # v11 甲方案：周线 MA45 降级档位 + 复盘标签（confirm 后台数据保留，前端不展示）
+             "meta": s.get("meta")}
         if s["kind"] in ("pred", "confirm"):
             o.update({"en": s.get("entry"), "atr": s.get("atr"),
                       "adx": s.get("adx"), "gate": s.get("gate"),
@@ -156,10 +159,13 @@ def build_product(sym):
             print("   unit %s scan failed: %s" % (u, e))
             unit_sigs[u] = []
 
-    # 实时反转雷达状态
+    # 实时反转雷达状态（附周线 MA45 方向，用于卡片展示；不干预任何计算）
     radar = None
     try:
         radar = engine.live_status(sym, bars=main)
+        if radar:
+            radar["weekPos"] = engine.weekly_pos_series(main)[-1]
+            radar["weekMA"] = engine.WEEKLY_MA
     except Exception as e:                                  # noqa: BLE001
         print("   live_status failed: %s" % e)
 
@@ -223,17 +229,42 @@ def build_product(sym):
                                "date": s.get("date"), "status": s.get("status")}
             break
 
+    # ---- 3a) v11 甲方案：周线 MA45 位置序列 + 市场状态 ----
+    # 降级只决定微信推送；市场状态【纯信息展示】，绝不拦截/隐藏/降级任何信号。
+    S_main = engine.make_S(main)
+    wpos = engine.weekly_pos_series(main)
+    market = engine.market_state_now(main, S_main)
+    MKT_ALL.append(dict(market, sym=sym, name=cfg["name"]))
+    idx_by_date = {b["d"]: i for i, b in enumerate(main)}
+
+    def xs_meta(h, i=None):
+        if i is None:
+            i = idx_by_date.get(h.get("d"))
+        if i is None or i >= len(main):
+            return None
+        dirn = h.get("dir")
+        exp = (-1 if dirn == "顶部" else 1) if dirn else (-1 if h.get("side") == "long" else 1)
+        tier = "strong" if h.get("level") == "strong" else "normal"
+        return engine.signal_meta(main, S_main, i, exp, tier, wpos)
+
     # ---- 3b) 独立出场雷达（见顶/见底，与持仓无关）----
     xsig = None
     try:
         now = engine.exit_radar(bars=main, code=sym)
+        hist = engine.exit_history(sym, bars=main, maxn=16)
+        for h in hist:
+            h["meta"] = xs_meta(h)
+        if now:
+            now["meta"] = xs_meta(now, len(main) - 1)
         xsig = {"cfg": {"ext": engine.XS_EXT, "pull": engine.XS_PULL,
                         "amp": engine.XS_AMP, "age": engine.XS_AGE,
                         "shadow": engine.XS_SHADOW, "adx": engine.XS_ADX_DROP,
                         "tier": list(engine.XS_TIER)},
                 "now": now,
-                "hist": engine.exit_history(sym, bars=main, maxn=16),
-                "stat": engine.xs_stat(sym)}
+                "hist": hist,
+                "stat": engine.xs_stat(sym),
+                "weekly": {"ma": engine.WEEKLY_MA, "mode": engine.WEEKLY_FILTER,
+                           "keepStrongOnOpp": engine.KEEP_STRONG_ON_OPP}}
         XSIG_ALL.append(dict(now or {}, sym=sym))
     except Exception as e:                                  # noqa: BLE001
         print("   xsig failed: %s" % e)
@@ -262,6 +293,11 @@ def build_product(sym):
         "tf": tf,
         "exit": exit_doc,
         "xsig": xsig,
+        "market": market,                    # v11：纯信息展示，不干预任何信号/推送
+        "weekly": {"ma": engine.WEEKLY_MA, "mode": engine.WEEKLY_FILTER,
+                   "keepStrongOnOpp": engine.KEEP_STRONG_ON_OPP,
+                   "confirm2Bars": engine.CONFIRM2_BARS,
+                   "volRatioTag": engine.VOL_RATIO_TAG},
     }
     json.dump(doc, open(os.path.join(OUT, "%s.json" % sym), "w",
                         encoding="utf-8"), ensure_ascii=False,
@@ -323,6 +359,12 @@ def main():
         "uniformCfg": {"ma": engine.MA, "exitMa": engine.EXIT_MA,
                        "chK": engine.CH_K, "ext": engine.XS_EXT,
                        "pull": engine.XS_PULL},
+        "weeklyCfg": {"mode": engine.WEEKLY_FILTER, "ma": engine.WEEKLY_MA,
+                      "keepStrongOnOpp": engine.KEEP_STRONG_ON_OPP,
+                      "confirm2Bars": engine.CONFIRM2_BARS,
+                      "volRatioTag": engine.VOL_RATIO_TAG},
+        "marketAdvisoryOnly": True,        # 状态栏仅信息参考，不拦截/隐藏/降级信号
+        "marketBySym": MKT_ALL,
         "model": {
             "version": engine.MODEL.get("version", 4),
             "ma": engine.MA,

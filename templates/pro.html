@@ -14,6 +14,32 @@ body{background:var(--bg);color:var(--tx);font:14px/1.45 -apple-system,"PingFang
 .hd .t{color:var(--dim);font-size:11px}
 .hd .rf{border:1px solid var(--line);background:var(--card);color:var(--blue);
 border-radius:14px;padding:3px 12px;font-size:12px}
+
+/* ===== 顶部市场状态（v11：纯信息展示，不干预信号） ===== */
+.mkt{padding:0 12px;margin:2px 0 6px}
+.mk{background:var(--card);border:1px solid var(--line);border-left:4px solid #4c8dff;
+border-radius:10px;padding:10px 12px}
+.mk.up{border-left-color:#e5484d;background:linear-gradient(90deg,#e5484d18,var(--card) 62%)}
+.mk.dn{border-left-color:#0ecb81;background:linear-gradient(90deg,#0ecb8118,var(--card) 62%)}
+.mkh{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--dim)}
+.mktag{border:1px solid var(--line);border-radius:10px;padding:1px 8px;font-size:10px}
+.mkv{font-size:25px;font-weight:800;letter-spacing:.5px;margin:3px 0 5px;line-height:1.25}
+.mk.up .mkv{color:#e5484d} .mk.dn .mkv{color:#0ecb81} .mk.rg .mkv{color:#7fb3ff}
+.mks{font-size:10.5px;color:var(--dim);line-height:1.65}
+.wkrow{font-size:10.5px;color:var(--dim);margin-top:8px;padding-top:7px;
+border-top:1px solid var(--line);line-height:1.6}
+
+/* ===== v11 降级档位与复盘标签 ===== */
+.tgs{display:inline-flex;gap:5px;flex-wrap:wrap;margin:4px 0 0}
+.tg{font-size:10px;border-radius:4px;padding:1px 6px;white-space:nowrap;line-height:1.5}
+.tg.obs{background:#242c3a;color:#9fb0c9;border:1px solid #3a4760}
+.tg.str{background:#FFC40022;color:#FFC400}
+.tg.warn{background:#f5a52422;color:#f5a524}
+.tg.vol{background:#22D3EE1c;color:#22D3EE}
+.tg.dim{background:#1a2029;color:#6b7688}
+.tagrow{display:flex;gap:7px;align-items:center;flex-wrap:wrap;
+font-size:11px;color:var(--dim);margin:2px 0 8px}
+.tagrow .wk{color:var(--blue)}
 .chips{display:flex;gap:7px;overflow-x:auto;padding:6px 12px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--dim);
@@ -159,6 +185,7 @@ background:#10151d;color:var(--tx);font-size:18px}
     <b>期货信号台 <span style="font-size:11px;color:var(--dim)">· 个人参考</span></b>
     <button class="rf" onclick="refresh()">↻ 刷新数据</button>
   </div>
+  <div class="mkt" id="mktBar"></div>
   <div class="chips" id="symChips"></div>
   <div class="chips" id="ctChips"></div>
   <div class="quote" id="quote"></div>
@@ -222,7 +249,17 @@ background:#10151d;color:var(--tx);font-size:18px}
   <b>信号按主力连续计算，各合约价格略有差异。</b><br>
   <b>8 品种统一参数（v10.3）</b>：逐品种单独调参经 10 组样本外方案检验，样本内看似提升、
   样本外准确率与盈利率均无显著差异（差异多小于 3 个百分点、置信区间全部跨 0），
-  故全部品种使用同一套参数，不按品种分别配置。</div>
+  故全部品种使用同一套参数，不按品种分别配置。<br>
+  <b>v11 甲方案（本次上线）</b>：10 年 × 8 品种 A/B 对比（304 条信号）证明，
+  「周线 MA45 智能降级」是唯一净收益与假信号双改善的模块 ——
+  净收益 +21.4 → <b>+24.5</b>、假信号 133 → <b>74（−44.4%）</b>、胜率 56.2% → <b>60.4%</b>。
+  顺势信号全部正常推送；逆势时<b>强档照常推送</b>，普通档降级为【观察】——
+  <b>信号从未被删除或延迟</b>，页面照常显示，只是不推微信。
+  两个复盘标签：<b>⚠️ 2日未跟进</b>（信号后 2 根内未顺向破极值，需事后判定，只用于复盘）、
+  <b>💤 低波动待观察</b>（ATR/ATR20 &lt; 1.0，当日可知）。
+  顶部【市场状态】为<b>纯信息展示</b>（20 日布林带宽 120 日分位 + MA60 斜率），
+  <b>不拦截、不隐藏、不降级任何信号</b>，也不影响推送；
+  趋势穿越确认状态后台仍参与持仓周期与盈亏计算，前端已彻底不再展示。</div>
 </div>
 
 <div class="page" id="pgAcct">
@@ -282,6 +319,43 @@ function f2(x){ return x==null?'—':(+x).toFixed(2); }
 function fmtN(x){ return x==null?'—':(+x>=1e4? ((+x)/1e4).toFixed(1)+'万' : (+x).toFixed(0)); }
 function cls(x){ return x>0?'pos':(x<0?'neg':'mut'); }
 function sgn(x){ return x>0?'+':''; }
+
+/* ================= v11：周线降级档位 / 复盘标签 / 市场状态 ================= */
+function weekTxt(m){
+  if(!m) return '';
+  var p = m.weekPos===1 ? '偏多' : (m.weekPos===-1 ? '偏空' : '数据不足');
+  return '周线 MA'+(m.weekMA||45)+' '+p+' · '+(m.weekAlign?'顺势':'逆势');
+}
+function tagHtml(m){
+  if(!m) return '';
+  var a=[];
+  if(m.observe) a.push('<span class="tg obs">观察 · 页面保留不推微信</span>');
+  else if(m.weekAlign===false) a.push('<span class="tg str">逆势强档 · 正常推送</span>');
+  if(m.confirm2==='noFollow') a.push('<span class="tg warn">⚠️ 2日未跟进</span>');
+  else if(m.confirm2==='pending') a.push('<span class="tg dim">2日跟进待复盘</span>');
+  if(m.lowVol) a.push('<span class="tg vol">💤 低波动待观察</span>');
+  return a.length ? '<span class="tgs">'+a.join('')+'</span>' : '';
+}
+function renderMarket(){
+  var box = $('mktBar'); if(!box) return;
+  var M = DOC.market;
+  if(!M && MAN.marketBySym){
+    var hit = MAN.marketBySym.filter(function(x){ return x.sym===cur.sym; });
+    if(hit.length) M = hit[0];
+  }
+  if(!M){ box.innerHTML='<div class="mk"><div class="mkh"><span>市场状态</span></div>'
+    + '<div class="mkv" style="font-size:16px;color:var(--dim)">加载中…</div></div>'; return; }
+  var cl = M.state==='Up'?'up':(M.state==='Down'?'dn':'rg');
+  var sub = '布林带宽分位 ' + (M.bwQ!=null ? Math.round(M.bwQ*100)+'%' : '—')
+    + ' · MA60 斜率 ' + (M.ma60Slope!=null ? (M.ma60Slope>0?'+':'')+M.ma60Slope : '—')
+    + ' · 20日内穿越中轨 ' + (M.midCross!=null ? M.midCross+' 次' : '—');
+  box.innerHTML = '<div class="mk '+cl+'">'
+    + '<div class="mkh"><span>市场状态 · '+(DOC.name||'')+' · '+M.date+'</span>'
+    + '<span class="mktag">仅信息参考</span></div>'
+    + '<div class="mkv">'+M.label+'</div>'
+    + '<div class="mks">'+sub+'<br>本状态<b style="color:var(--tx)">不拦截、不隐藏、不降级</b>任何信号，'
+    + '也不影响微信推送</div></div>';
+}
 
 /* ================= 品种 / 合约 ================= */
 function renderSymChips(){
@@ -409,7 +483,7 @@ function renderChart(){
   if(['D','W','M'].indexOf(cur.pt)>=0){
     var src = cur.pt==='D'? DOC.signals : cur.pt==='W'? (DOC.sigW||[]) : (DOC.sigM||[]);
     src.forEach(function(s){
-      if(s.kind==='confirm') return;          // 兑现点与建仓点几乎重合，不重复画
+      if(s.kind==='confirm') return;          // v11：确认状态后台保留算盈亏，前端彻底不画
       var idx = dateIdx(dates, s.date);
       if(idx==null) return;
       var b = bars[idx];
@@ -524,6 +598,12 @@ function renderXs(){
     + '<span class="sub">' + (N.dir || '') + '方向 · ' + (N.date || '') + ' 收盘 '
     + (N.close != null ? f2(N.close) : '—') + '<br>'
     + '门 ' + (N.gate || 0) + '/2 · 辅助 ' + (N.aux || 0) + '/6</span></div>';
+
+  // v11：周线 MA45 方向与降级/复盘标签
+  if(N.meta){
+    html += '<div class="tagrow"><span class="wk">'+weekTxt(N.meta)+'</span>'
+      + (lvl!=='none' ? tagHtml(N.meta) : '') + '</div>';
+  }
 
   if(N.dir){
     html += '<div style="display:flex;gap:8px;font-size:11.5px;margin-bottom:8px">'
@@ -783,6 +863,7 @@ function renderTF(){
 
 function renderDec(){
   var R = DOC.radar;
+  var recent = (DOC.signals||[]).filter(function(s){ return s.kind==='pred' && s.meta; }).slice(-1)[0];
   var html = '';
   if(!R){
     $('decGrid').innerHTML = '<div class="dv" style="grid-column:1/-1"><div class="l">反转预测雷达</div>'
@@ -831,6 +912,12 @@ function renderDec(){
     + '<div class="hit"><span>特征匹配 <b style="color:'+(k>=3?'var(--gold)':'var(--tx)')+'">'+k+'/4</b>'
     +   ' · 4 条 + ADX≥'+(R.adxMin||20)+' = 建仓 · <span style="color:var(--gold)">+持仓降+深回撤 = 强确认</span></span><span>历史提前量中位 '
     +   (((MAN.model||{}).lead||{}).median!=null? MAN.model.lead.median : '1')+' 根</span></div>'
+    + '<div class="wkrow">周线 MA'+(R.weekMA||45)+'：'
+    +   (R.weekPos===1?'偏多':(R.weekPos===-1?'偏空':'数据不足'))
+    +   ' · 逆势普通档降级【观察】（页面照常显示，仅不推微信），强档与顺势正常推送'
+    +   (recent ? '<div style="margin-top:5px"><span class="tg dim">最近建仓 '+recent.date+'</span>'
+        + tagHtml(recent.meta) + '</div>' : '')
+    + '</div>'
     + '<div class="chk">'
     + (R.checks||[]).map(function(c){
         var mk = c.ok? '<span class="ok1">✓</span>' : '<span style="color:#3a4356">✗</span>';
@@ -888,15 +975,16 @@ function findSig(k){
 function kindBadge(s){
   if(s.kind==='pred') return ['建仓','b-T1'];
   if(s.kind==='warn') return ['预警','b-T3'];
-  return ['兑现','b-T2'];
+  return ['信号','b-T2'];
 }
 var SIGF = 'all';
 function setSigF(f){ SIGF = f; renderSigs(); }
 
 function renderSigs(){
   var rows = [];
-  // —— 进场侧 ——
+  // —— 进场侧（v11：confirm 兑现状态后台仍参与盈亏计算，前端彻底不展示）——
   (DOC.signals || []).forEach(function(s){
+    if(s.kind === 'confirm') return;
     rows.push({d: s.date, kind: 'in', s: s});
   });
   // —— 出场侧（本品种历史独立信号）——
@@ -934,7 +1022,7 @@ function renderSigs(){
   $('sigList').innerHTML = rows.map(function(r){
     if(r.kind === 'in'){
       var s = r.s;
-      var nm = s.kind === 'pred' ? '建仓' : (s.kind === 'warn' ? '预警' : '兑现');
+      var nm = s.kind === 'pred' ? '建仓' : (s.kind === 'warn' ? '预警' : '信号');
       var sd = s.side === 'short' ? '空' : '多';
       var cls = s.kind === 'pred' ? 'in' : 'in';
       var desc;
@@ -946,12 +1034,13 @@ function renderSigs(){
           + ' · 概率 ' + Math.round((((s.prob || {})['5']) || 0) * 100) + '%'
           + ' · 入 ' + (s.en != null ? s.en : '—');
       } else {
-        desc = '反转兑现 · 现价 ' + s.price;
+        desc = '信号确认 · 现价 ' + s.price;
       }
       return '<div class="sgr" onclick="openSig(\'' + sigKey(s) + '\')">'
         + '<span class="dt">' + s.date + '</span>'
         + '<span class="bd in">' + (s.side === 'short' ? '▲ 进场空' : '▼ 进场多') + '</span>'
-        + '<span class="tx2">' + nm + ' · ' + sd + '<em>' + desc + '</em></span></div>';
+        + '<span class="tx2">' + nm + ' · ' + sd + '<em>' + desc + '</em>'
+        + tagHtml(s.meta) + '</span></div>';
     }
     var h = r.h;
     var isS = h.level === 'strong';
@@ -961,16 +1050,17 @@ function renderSigs(){
       + (isS ? '◆ 强烈离场' : '◆ 建议离场') + '</span>'
       + '<span class="tx2">' + sym + h.dir + ' · 满足 ' + h.k + ' 条'
       + '<em>回撤 ' + f2(h.pull) + ' ATR · 段龄 ' + h.age + ' 根 · 收 ' + f2(h.px)
-      + (h.cross ? '（其他品种，仅供参考）' : '') + '</em></span></div>';
+      + (h.cross ? '（其他品种，仅供参考）' : '') + '</em>'
+      + tagHtml(h.meta) + '</span></div>';
   }).join('');
 }
 
 /* ================= 信号弹窗 ================= */
 function openSig(key){
   var s = findSig(key);
-  if(!s) return;
+  if(!s || s.kind==='confirm') return;   // v11：兑现状态不在前端展示
   var isPred = s.kind==='pred', isWarn = s.kind==='warn';
-  var title = isWarn? '反转预警' : isPred? '准备反转 · 可建仓' : '反转兑现';
+  var title = isWarn? '反转预警' : isPred? '准备反转 · 可建仓' : '信号明细';
   var html = '<h3>'+title+' · '+(s.side==='short'?'顶部 · 做空方向':'底部 · 做多方向')
     + ' · ' + DOC.name + '<span onclick="closeSheet()">关闭 ✕</span></h3>';
   html += '<div class="frow"><span>信号日</span><b>'+s.date+'</b></div>';
@@ -1000,9 +1090,19 @@ function openSig(key){
       + '命中 3 条只到预警区，历史对应 5 日内反转概率约 58%。等第 4 条出现且 ADX 回到 20 以上，'
       + '系统才给建仓提示。</div>';
   }
-  if(s.kind==='confirm'){
-    html += '<div class="frow"><span>预测日 → 兑现日</span><b>'
-      + (s.predDate||'—')+' → '+s.date+(s.lead!=null?'（'+s.lead+' 根）':'')+'</b></div>';
+  // v11 甲方案：周线 MA45 降级档位 + 复盘标签
+  if(s.meta){
+    html += '<h3 style="margin-top:12px">周线降级与标签 <span>v11 甲方案</span></h3>';
+    html += '<div class="frow"><span>周线方向</span><b>'+weekTxt(s.meta)+'</b></div>';
+    html += '<div class="frow"><span>推送档位</span><b>'
+      + (s.meta.observe? '<span style="color:#9fb0c9">观察 · 页面保留，不推微信</span>'
+                       : '<span style="color:var(--gold)">正常推送</span>') + '</b></div>';
+    html += '<div class="frow"><span>ATR / ATR20</span><b>'+f2(s.meta.volRatio)+'</b></div>';
+    html += '<div style="margin:6px 0 2px">'+ (tagHtml(s.meta) || '<span class="tg dim">无标签</span>')
+      + '</div>';
+    html += '<div style="font-size:11px;color:var(--dim);line-height:1.7;margin:6px 0 2px">'
+      + '⚠️ 2日未跟进需信号后 2 根收盘才能判定，只做事后复盘标签，'
+      + '不用于当日推送决策；观察档信号从未被删除或延迟。</div>';
   }
   html += '<h3 style="margin-top:12px">反转特征核对 <span>✓ 命中 · ✗ 未命中</span></h3>';
   var chs = (s.checks || s.conds || []).concat(isPred? (s.checksS||[]) : []);
@@ -1285,7 +1385,7 @@ function showPage(pg){
   if(pg==='Main' && CH) CH.resize();
 }
 function renderAll(){
-  renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderSigs();
+  renderMarket(); renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderSigs();
 }
 
 /* ================= 启动 ================= */
