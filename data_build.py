@@ -319,6 +319,10 @@ def main():
         "products": [{"sym": s, **PRODUCTS[s]} for s in ORDER],
         "strategyOpen": strat_open,
         "method": state.get("method"),
+        "configMode": engine.CONFIG_MODE,
+        "uniformCfg": {"ma": engine.MA, "exitMa": engine.EXIT_MA,
+                       "chK": engine.CH_K, "ext": engine.XS_EXT,
+                       "pull": engine.XS_PULL},
         "model": {
             "version": engine.MODEL.get("version", 4),
             "ma": engine.MA,

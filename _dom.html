@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="zh"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>期货信号台</title>
+<style>
+:root{--bg:#0b0e13;--card:#141922;--line:#232b38;--tx:#e6ebf2;--dim:#8b95a7;
+--up:#e5484d;--dn:#0ecb81;--gold:#f5a524;--blue:#4c8dff}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--tx);font:14px/1.45 -apple-system,"PingFang SC","Microsoft Yahei",sans-serif;padding-bottom:70px}
+.hd{display:flex;align-items:center;justify-content:space-between;padding:10px 12px 6px}
+.hd b{font-size:15px}
+.hd .t{color:var(--dim);font-size:11px}
+.hd .rf{border:1px solid var(--line);background:var(--card);color:var(--blue);
+border-radius:14px;padding:3px 12px;font-size:12px}
+.chips{display:flex;gap:7px;overflow-x:auto;padding:6px 12px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--dim);
+border-radius:9px;padding:5px 12px;font-size:13px;white-space:nowrap}
+.chip.on{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+.chip small{opacity:.7;font-size:10px;margin-left:3px}
+.quote{display:flex;align-items:baseline;gap:10px;padding:10px 14px 2px}
+.quote b{font-size:26px;font-weight:700}
+.quote .chg{font-size:14px;font-weight:600}
+.quote .meta{color:var(--dim);font-size:11px;margin-left:auto;text-align:right;line-height:1.5}
+.ptabs{display:flex;gap:4px;padding:8px 12px}
+.ptabs .chip{padding:4px 0;flex:1;text-align:center}
+.ctn{padding:0 12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;
+padding:12px;margin-bottom:10px}
+.card h3{font-size:13px;color:var(--dim);font-weight:500;margin-bottom:8px;display:flex;
+justify-content:space-between;align-items:center}
+.card h3 .r{font-size:11px}
+.cleg{display:flex;gap:13px;flex-wrap:wrap;font-size:10.5px;padding:7px 8px 1px}
+#chart{width:100%;height:560px}
+@media(max-width:520px){#chart{height:460px}}
+
+/* ===== 独立出场雷达（v10）===== */
+.xlv{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.xlv .bg{font-size:13px;font-weight:800;padding:5px 12px;border-radius:7px;letter-spacing:.3px}
+.xlv.none .bg{background:#1c2430;color:var(--dim)}
+.xlv.watch .bg{background:rgba(34,211,238,.14);color:#22D3EE;border:1px solid #22D3EE66}
+.xlv.suggest .bg{background:#FFC400;color:#1A1300;box-shadow:0 0 0 2px #FFC40040}
+.xlv.strong .bg{background:#FFE94A;color:#171200;box-shadow:0 0 0 3px #FFE94A55}
+.xlv .sub{font-size:11px;color:var(--dim);line-height:1.5}
+.xgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.xc{display:flex;gap:6px;background:#0f141c;border:1px solid var(--line);
+border-radius:7px;padding:6px 8px;align-items:flex-start}
+.xc.ok{border-color:#FFC40066;background:rgba(255,196,0,.09)}
+.xc.gate{border-left:3px solid #3b4a63}
+.xc.gate.ok{border-left-color:#FFC400}
+.xc .ic{font-size:11px;flex:0 0 12px;color:#48566b;line-height:1.5}
+.xc.ok .ic{color:#FFC400}
+.xc .tt{font-size:11.5px;line-height:1.35;font-weight:600}
+.xc .tt em{font-style:normal;color:var(--dim);font-weight:400;font-size:10.5px;display:block}
+.fchips{display:flex;gap:6px;margin-bottom:9px}
+.fchips .fc{border:1px solid var(--line);background:#0f141c;color:var(--dim);
+border-radius:14px;padding:3px 12px;font-size:11.5px}
+.fchips .fc.on{background:#1d2838;color:var(--tx);border-color:#33507a;font-weight:600}
+.sgr{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #1a2029}
+.sgr:last-child{border-bottom:none}
+.sgr .dt{color:var(--dim);font-size:11px;flex:0 0 68px}
+.sgr .bd{font-size:10.5px;font-weight:800;border-radius:4px;padding:2px 6px;flex:0 0 auto}
+.bd.in{background:#12325c;color:#7fb3ff}
+.bd.out-s{background:#FFC400;color:#1A1300}
+.bd.out-x{background:#FFE94A;color:#171200}
+.sgr .tx2{flex:1;font-size:12px;line-height:1.45}
+.sgr .tx2 em{font-style:normal;color:var(--dim);font-size:10.5px;display:block}
+
+.dec{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dv{background:#10151d;border:1px solid var(--line);border-radius:9px;padding:8px 10px}
+.dv .l{font-size:11px;color:var(--dim)}
+.dv .v{font-size:14px;font-weight:600;margin-top:3px}
+.dv .v.up{color:var(--up)} .dv .v.dn{color:var(--dn)} .dv .v.nt{color:var(--dim)}
+/* 反转预测雷达 */
+.rdr{grid-column:1/-1;background:linear-gradient(135deg,#141b26,#0e131b);border:1px solid var(--line);
+border-radius:10px;padding:11px 12px 10px;position:relative;overflow:hidden}
+.rdr.rdS{border-color:#e5484d;background:linear-gradient(135deg,#2b1215,#150f12);box-shadow:0 0 0 1px #e5484d33}
+.rdr.rdL{border-color:#0ecb81;background:linear-gradient(135deg,#0c2419,#0d1714);box-shadow:0 0 0 1px #0ecb8133}
+.rdr .top{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.rdr .stg{font-size:12px;font-weight:700;padding:2px 8px;border-radius:5px;background:#1c2430;color:var(--dim)}
+.rdr.rdS .stg{background:#e5484d;color:#fff}
+.rdr.rdL .stg{background:#0ecb81;color:#04250f}
+.rdr .seg{font-size:11px;color:var(--dim)}
+.rdr .big{font-size:30px;font-weight:800;line-height:1;letter-spacing:-1.2px}
+.rdr .biglab{font-size:10px;color:var(--dim);line-height:1.5;padding-bottom:3px}
+.pbar{height:5px;border-radius:3px;background:#1a2130;overflow:hidden;margin:8px 0 0}
+.pbar i{display:block;height:100%;border-radius:3px}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}
+.pcell{background:#0c1118;border:1px solid var(--line);border-radius:7px;padding:5px 8px}
+.pcell .l{font-size:10px;color:var(--dim)}
+.pcell .v{font-size:14px;font-weight:700;margin-top:1px}
+.rdr .hit{font-size:11px;color:var(--dim);margin-top:9px;display:flex;justify-content:space-between}
+.rdr .chk{margin-top:6px}
+.rdr .chk .cond{border-top:1px dashed #1b232f;padding:4px 0;font-size:11px}
+.rdr .cta{margin-top:9px;padding:8px 10px;border-radius:8px;font-size:12px;line-height:1.6;font-weight:600}
+.rdr.rdS .cta{background:#3a1114;color:#ffb4b6;border:1px solid #e5484d55}
+.rdr.rdL .cta{background:#0b2e1e;color:#7dffd2;border:1px solid #0ecb8155}
+.rdr .cta span{display:block;font-weight:400;font-size:11px;opacity:.85;margin-top:2px}
+.sig{border-top:1px solid var(--line);padding:10px 2px;display:flex;gap:10px;align-items:center}
+.sig:first-of-type{border-top:none}
+.badge{flex:0 0 auto;font-size:10px;font-weight:700;border-radius:5px;padding:2px 6px}
+.b-T1{background:#3a2020;color:#ff7a7a;border:1px solid #6b3030}
+.b-T2{background:#1a2740;color:#7ab0ff;border:1px solid #2c4570}
+.b-T3{background:#1c2420;color:#9db8a6;border:1px solid #2c3a30}
+.side-s{color:var(--up);font-weight:700} .side-l{color:var(--dn);font-weight:700}
+.sig .fx{flex:1;min-width:0}
+.sig .r1{font-size:13px;font-weight:600}
+.sig .r2{font-size:11px;color:var(--dim);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sig .st{font-size:11px;flex:0 0 auto;text-align:right;line-height:1.5}
+.st .p{font-weight:700}
+.pos{color:var(--up)} .neg{color:var(--dn)} .mut{color:var(--dim)}
+.note{font-size:11px;color:var(--dim);padding:2px 14px 8px;line-height:1.6}
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);
+border-top:1px solid var(--line);z-index:50}
+.nav div{flex:1;text-align:center;padding:11px 0;color:var(--dim);font-size:13px}
+.nav div.on{color:var(--blue);font-weight:600;box-shadow:inset 0 2px 0 var(--blue)}
+.page{display:none} .page.on{display:block}
+.acct-top{display:flex;align-items:flex-end;justify-content:space-between;padding:14px}
+.acct-top .eq{font-size:30px;font-weight:700}
+.acct-top .l{font-size:11px;color:var(--dim)}
+.acct-top button{background:var(--card);border:1px solid var(--line);color:var(--dim);
+border-radius:8px;padding:5px 10px;font-size:11px}
+.kv{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:0 14px 6px}
+.kv .dv{padding:7px 8px}.kv .dv .v{font-size:13px}
+.posrow{display:flex;gap:10px;align-items:center;padding:10px 2px;border-top:1px solid var(--line)}
+.posrow:first-of-type{border-top:none}
+.posrow .fx{flex:1;min-width:0}
+.posrow .r1{font-size:13px;font-weight:600}
+.posrow .r2{font-size:11px;color:var(--dim);margin-top:2px}
+.btn{border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600}
+.btn.red{background:var(--up);color:#fff}.btn.green{background:var(--dn);color:#04250f}
+.btn.gray{background:var(--line);color:var(--tx)}
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:90;display:none;
+align-items:flex-end;justify-content:center}
+.mask.on{display:flex}
+.sheet{background:var(--card);width:100%;max-width:500px;border-radius:16px 16px 0 0;
+padding:16px 16px 26px;max-height:82vh;overflow-y:auto}
+.sheet h3{font-size:15px;margin-bottom:10px;display:flex;justify-content:space-between}
+.sheet h3 span{color:var(--dim);font-weight:400;font-size:12px;cursor:pointer}
+.cond{display:flex;gap:8px;padding:6px 0;border-top:1px solid var(--line);font-size:12px;align-items:flex-start}
+.cond .mk{flex:0 0 18px;text-align:center;font-weight:700}
+.cond .v{margin-left:auto;color:var(--dim);flex:0 0 auto}
+.ok1{color:var(--dn)} .ok0{color:#ff7a7a} .okn{color:var(--dim)}
+.frow{display:flex;justify-content:space-between;padding:5px 0;font-size:13px}
+.frow b{font-weight:600}
+.lots{display:flex;align-items:center;gap:14px;margin:10px 0}
+.lots button{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);
+background:#10151d;color:var(--tx);font-size:18px}
+.lots b{font-size:20px;min-width:44px;text-align:center}
+.empty{color:var(--dim);text-align:center;padding:22px 0;font-size:12px}
+</style>
+<script src="echarts.min.js"></script></head>
+<body>
+
+<div class="page on" id="pgMain">
+  <div class="hd">
+    <b>期货信号台 <span style="font-size:11px;color:var(--dim)">· 个人参考</span></b>
+    <button class="rf" onclick="refresh()">↻ 刷新数据</button>
+  </div>
+  <div class="chips" id="symChips"><div class="chip on" onclick="selectSym('FG')">玻璃</div><div class="chip" onclick="selectSym('SA')">纯碱</div><div class="chip" onclick="selectSym('M')">豆粕</div><div class="chip" onclick="selectSym('SP')">纸浆</div><div class="chip" onclick="selectSym('SM')">锰硅</div><div class="chip" onclick="selectSym('MA')">甲醇</div><div class="chip" onclick="selectSym('SR')">白糖</div><div class="chip" onclick="selectSym('C')">玉米</div></div>
+  <div class="chips" id="ctChips"><div class="chip on" onclick="selectCt('0')">主力连续</div><div class="chip" onclick="selectCt('FG2609')">2609<small>3095</small></div><div class="chip" onclick="selectCt('FG2610')">2610<small>1932</small></div><div class="chip" onclick="selectCt('FG2611')">2611<small>2031</small></div><div class="chip" onclick="selectCt('FG2612')">2612<small>5.0万</small></div><div class="chip" onclick="selectCt('FG2701')">2701<small>116.4万</small></div><div class="chip" onclick="selectCt('FG2702')">2702<small>13.3万</small></div><div class="chip" onclick="selectCt('FG2703')">2703<small>32.2万</small></div><div class="chip" onclick="selectCt('FG2704')">2704<small>10.9万</small></div><div class="chip" onclick="selectCt('FG2705')">2705<small>16.8万</small></div><div class="chip" onclick="selectCt('FG2706')">2706<small>2465</small></div><div class="chip" onclick="selectCt('FG2707')">2707<small>5.5万</small></div></div>
+  <div class="quote" id="quote"><div><b style="color:var(--dn)">892.00</b></div><div class="chg neg">-0.11%</div><div class="meta">玻璃 主力连续<br>2026-11-05 · 持仓 116.4万</div></div>
+  <div class="ptabs" id="ptabs"><div class="chip" onclick="selectPt('Y')">年</div><div class="chip" onclick="selectPt('M')">月</div><div class="chip" onclick="selectPt('W')">周</div><div class="chip on" onclick="selectPt('D')">日</div><div class="chip" onclick="selectPt('60')">60分</div><div class="chip" onclick="selectPt('15')">15分</div></div>
+  <div class="ctn">
+    <div class="card" style="padding:6px 4px 2px">
+      <div id="chart" _echarts_instance_="ec_1793946538577" style="user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"><div style="position: relative; width: 715px; height: 560px; padding: 0px; margin: 0px; border-width: 0px;"><canvas data-zr-dom-id="zr_0" width="715" height="560" style="position: absolute; left: 0px; top: 0px; width: 715px; height: 560px; user-select: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); padding: 0px; margin: 0px; border-width: 0px;"></canvas></div></div>
+      <div class="cleg"><span style="color:#7fb3ff">▼▲ 进场建仓</span>
+        <span style="color:#22D3EE">◇ 盘整预警</span>
+        <span style="color:#FFC400">◆ 建议离场</span>
+        <span style="color:#FFE94A;font-weight:700">◆ 强烈离场</span>
+        <span style="color:#ff8a3d">┄ MA26 离场线</span>
+        <span style="color:#4c8dff">— MA34 趋势线</span></div>
+    </div>
+    <div class="card">
+      <h3>进场雷达 <span class="r" id="decTime">数据 2026-11-06 14:27</span></h3>
+      <div class="dec" id="decGrid"><div class="rdr "><div class="top"><span class="stg">平静</span><span class="seg">多头段 第 2 根 · 距 MA34 +0.57 ATR</span><span class="seg" style="color:var(--dn)">ADX 20.8 ✓</span></div><div style="display:flex;align-items:flex-end;gap:10px;margin-top:9px"><div class="big" style="color:var(--tx)">12%</div><div class="biglab">未来 5 个交易日<br>出现 MA34 反转的概率</div><div class="biglab" style="margin-left:auto;text-align:right">基准 22.9%<br><span style="color:var(--dim)">lift 0.54×</span></div></div><div class="pbar"><i style="width:12%;background:var(--blue)"></i></div><div class="pgrid"><div class="pcell"><div class="l">3 日内</div><div class="v">7%</div></div><div class="pcell"><div class="l">5 日内</div><div class="v" style="color:var(--tx)">12%</div></div><div class="pcell"><div class="l">10 日内</div><div class="v">28%</div></div></div><div class="hit"><span>特征匹配 <b style="color:var(--tx)">0/4</b> · 4 条 + ADX≥20 = 建仓 · <span style="color:var(--gold)">+持仓降+深回撤 = 强确认</span></span><span>历史提前量中位 1 根</span></div><div class="chk"><div class="cond"><span style="color:#3a4356">✗</span><span style="color:var(--dim)">价格逼近 MA34（≤0.3 ATR）</span><span class="v">0.57 ATR<span style="color:var(--dim)"> 需≤0.30</span></span></div><div class="cond"><span style="color:#3a4356">✗</span><span style="color:var(--dim)">10 日累计逆行 ≥1.5 ATR</span><span class="v">+3.21 ATR<span style="color:var(--dim)"> 需≤-1.50</span></span></div><div class="cond"><span style="color:#3a4356">✗</span><span style="color:var(--dim)">MA10 斜率转平或转向</span><span class="v">+0.86 ATR<span style="color:var(--dim)"> 需≤0.00</span></span></div><div class="cond"><span style="color:#3a4356">✗</span><span style="color:var(--dim)">MACD 柱翻向</span><span class="v">+0.85 ATR<span style="color:var(--dim)"> 需≤0.00</span></span></div><div class="cond" style="color:var(--gold)"><span class="ok1">★</span><span style="">持仓 5 日下降（趋势资金离场）（强确认）</span><span class="v">-20.7%<span style="color:var(--dim)"> 需≤0</span></span></div><div class="cond" style="color:var(--gold)"><span style="color:#3a4356">☆</span><span style="opacity:.75">自极值回撤 ≥2 ATR（强确认）</span><span class="v">0.30 ATR<span style="color:var(--dim)"> 需≥2.00</span></span></div></div></div><div class="dv" style="grid-column:1/-1"><div class="l">策略参考持仓（雷达口径）</div><div class="v dn" style="font-size:13px">多 883 · 吊灯 — / MA26 — · 浮动 +1.02% · 已持 1 天</div></div></div>
+    </div>
+    <div class="card">
+      <h3>出场雷达 · 独立<span class="r" id="xsTime">数据 2026-11-06 14:27</span></h3>
+      <div id="xsBox"><div style="font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:9px">独立机制：<b style="color:#FFC400">不依赖进场信号、也不需要你有持仓</b>，只在价格走到趋势极端（伸展 + 回头）时提示。走不走由你决定。</div><div class="xlv none"><span class="bg">无出场信号</span><span class="sub">顶部方向 · 2026-11-05 收盘 892.00<br>门 0/2 · 辅助 2/6</span></div><div style="display:flex;gap:8px;font-size:11.5px;margin-bottom:8px"><div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px"><div style="color:var(--dim);font-size:11px">距 MA34</div><div style="font-weight:700;margin-top:2px;color:#7fb3ff">+0.57 ATR</div><div style="color:var(--dim);font-size:10.5px;margin-top:1px">门槛 ≥2.6 ATR</div></div><div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px"><div style="color:var(--dim);font-size:11px">自极值回撤</div><div style="font-weight:700;margin-top:2px;color:#FFC400">-0.30 ATR</div><div style="color:var(--dim);font-size:10.5px;margin-top:1px">门槛 ≥1.1 ATR</div></div><div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px"><div style="color:var(--dim);font-size:11px">段龄</div><div style="font-weight:700;margin-top:2px;color:#9b6ef3">2 根</div><div style="color:var(--dim);font-size:10.5px;margin-top:1px">辅助 ≥30 根</div></div></div><div class="xgrid"><div class="xc gate"><span class="ic">○</span><span class="tt">趋势伸展 <b style="color:#7fb3ff">门</b><em>收盘距 MA34 ≥2.6ATR</em></span></div><div class="xc gate"><span class="ic">○</span><span class="tt">极值回撤 <b style="color:#7fb3ff">门</b><em>自段内高/低点回撤 ≥1.1ATR</em></span></div><div class="xc "><span class="ic">○</span><span class="tt">段幅足够<em>本段振幅 ≥12ATR</em></span></div><div class="xc "><span class="ic">○</span><span class="tt">冲高回落<em>当根反向影线 ≥0.6ATR</em></span></div><div class="xc "><span class="ic">○</span><span class="tt">趋势老化<em>本段已走 ≥30 根</em></span></div><div class="xc ok "><span class="ic">●</span><span class="tt">动能衰减<em>ADX 自 20 日高点回落 ≥3</em></span></div><div class="xc "><span class="ic">○</span><span class="tt">短均失守<em>收盘反向穿越 MA18</em></span></div><div class="xc ok "><span class="ic">●</span><span class="tt">资金撤退<em>持仓 5 日净减</em></span></div></div></div>
+    </div>
+    <div class="card">
+      <h3>信号栏 · 进场 / 出场 <span class="r" id="sigCnt">进场 41 · 出场 16（强烈 4）</span></h3>
+      <div class="fchips" id="sigFilter"><span class="fc on" onclick="setSigF('all')">全部</span><span class="fc" onclick="setSigF('in')">只看进场</span><span class="fc" onclick="setSigF('out')">只看出场</span></div>
+      <div id="sigList"><div class="sgr" onclick="openSig('confirm|2026-11-04')"><span class="dt">2026-11-04</span><span class="bd in">▼ 进场多</span><span class="tx2">兑现 · 多<em>反转兑现 · 现价 893</em></span></div><div class="sgr" onclick="openSig('pred|2026-11-03')"><span class="dt">2026-11-03</span><span class="bd in">▼ 进场多</span><span class="tx2">建仓 · 多<em>4/4 命中 · <b style="color:#f5a524">强确认</b> · 概率 89% · 入 883</em></span></div><div class="sgr"><span class="dt">2026-10-27</span><span class="bd out-s">◆ 建议离场</span><span class="tx2">底部 · 满足 3 条<em>回撤 -1.10 ATR · 段龄 26 根 · 收 844.00</em></span></div><div class="sgr"><span class="dt">2026-07-22</span><span class="bd out-s">◆ 建议离场</span><span class="tx2">底部 · 满足 3 条<em>回撤 -1.26 ATR · 段龄 36 根 · 收 974.00</em></span></div><div class="sgr" onclick="openSig('warn|2026-06-03')"><span class="dt">2026-06-03</span><span class="bd in">▼ 进场多</span><span class="tx2">预警 · 多<em>命中 3/4 · 5日反转概率 58%</em></span></div><div class="sgr" onclick="openSig('warn|2026-04-29')"><span class="dt">2026-04-29</span><span class="bd in">▼ 进场多</span><span class="tx2">预警 · 多<em>命中 3/4 · 5日反转概率 58%</em></span></div><div class="sgr" onclick="openSig('warn|2025-12-29')"><span class="dt">2025-12-29</span><span class="bd in">▼ 进场多</span><span class="tx2">预警 · 多<em>命中 3/4 · 5日反转概率 58%</em></span></div><div class="sgr"><span class="dt">2025-11-24</span><span class="bd out-s">◆ 建议离场</span><span class="tx2">底部 · 满足 3 条<em>回撤 -1.59 ATR · 段龄 31 根 · 收 1264.00</em></span></div><div class="sgr"><span class="dt">2025-07-23</span><span class="bd out-s">◆ 建议离场</span><span class="tx2">顶部 · 满足 3 条<em>回撤 -1.13 ATR · 段龄 16 根 · 收 1629.00</em></span></div><div class="sgr" onclick="openSig('warn|2025-06-20')"><span class="dt">2025-06-20</span><span class="bd in">▼ 进场多</span><span class="tx2">预警 · 多<em>命中 3/4 · 5日反转概率 58%</em></span></div><div class="sgr" onclick="openSig('warn|2024-11-14')"><span class="dt">2024-11-14</span><span class="bd in">▲ 进场空</span><span class="tx2">预警 · 空<em>命中 3/4 · 5日反转概率 58%</em></span></div><div class="sgr"><span class="dt">2024-09-19</span><span class="bd out-x">◆ 强烈离场</span><span class="tx2">底部 · 满足 5 条<em>回撤 -1.50 ATR · 段龄 68 根 · 收 1487.00</em></span></div><div class="sgr"><span class="dt">2024-07-31</span><span class="bd out-s">◆ 建议离场</span><span class="tx2">底部 · 满足 3 条<em>回撤 -1.34 ATR · 段龄 34 根 · 收 1793.00</em></span></div><div class="sgr" onclick="openSig('confirm|2024-06-14')"><span class="dt">2024-06-14</span><span class="bd in">▲ 进场空</span><span class="tx2">兑现 · 空<em>反转兑现 · 现价 2059</em></span></div><div class="sgr" onclick="openSig('pred|2024-06-13')"><span class="dt">2024-06-13</span><span class="bd in">▲ 进场空</span><span class="tx2">建仓 · 空<em>4/4 命中 · <b style="color:#f5a524">强确认</b> · 概率 89% · 入 2066</em></span></div><div class="sgr" onclick="openSig('warn|2024-04-22')"><span class="dt">2024-04-22</span><span class="bd in">▼ 进场多</span><span class="tx2">预警 · 多<em>命中 3/4 · 5日反转概率 58%</em></span></div><div class="sgr"><span class="dt">2024-04-01</span><span class="bd out-s">◆ 建议离场</span><span class="tx2">底部 · 满足 3 条<em>回撤 -1.13 ATR · 段龄 37 根 · 收 1905.00</em></span></div><div class="sgr" onclick="openSig('confirm|2024-01-10')"><span class="dt">2024-01-10</span><span class="bd in">▲ 进场空</span><span class="tx2">兑现 · 空<em>反转兑现 · 现价 2185</em></span></div><div class="sgr" onclick="openSig('pred|2023-12-18')"><span class="dt">2023-12-18</span><span class="bd in">▲ 进场空</span><span class="tx2">建仓 · 空<em>4/4 命中 · 概率 69% · 入 2195</em></span></div><div class="sgr"><span class="dt">2023-12-04</span><span class="bd out-x">◆ 强烈离场</span><span class="tx2">顶部 · 满足 4 条<em>回撤 -1.71 ATR · 段龄 22 根 · 收 2305.00</em></span></div><div class="sgr" onclick="openSig('warn|2023-06-09')"><span class="dt">2023-06-09</span><span class="bd in">▼ 进场多</span><span class="tx2">预警 · 多<em>命中 3/4 · 5日反转概率 58%</em></span></div><div class="sgr"><span class="dt">2023-04-21</span><span class="bd out-s">◆ 建议离场</span><span class="tx2">顶部 · 满足 3 条<em>回撤 -2.06 ATR · 段龄 23 根 · 收 2225.00</em></span></div><div class="sgr" onclick="openSig('warn|2023-03-06')"><span class="dt">2023-03-06</span><span class="bd in">▼ 进场多</span><span class="tx2">预警 · 多<em>命中 3/4 · 5日反转概率 58%</em></span></div><div class="sgr"><span class="dt">2023-01-10</span><span class="bd out-s">◆ 建议离场</span><span class="tx2">顶部 · 满足 3 条<em>回撤 -1.12 ATR · 段龄 26 根 · 收 2072.00</em></span></div><div class="sgr"><span class="dt">2022-12-23</span><span class="bd out-s">◆ 建议离场</span><span class="tx2">顶部 · 满足 3 条<em>回撤 -2.09 ATR · 段龄 15 根 · 收 1973.00</em></span></div><div class="sgr"><span class="dt">2022-12-12</span><span class="bd out-x">◆ 强烈离场</span><span class="tx2">顶部 · 满足 4 条<em>回撤 -1.35 ATR · 段龄 6 根 · 收 1955.00</em></span></div><div class="sgr" onclick="openSig('warn|2022-11-15')"><span class="dt">2022-11-15</span><span class="bd in">▼ 进场多</span><span class="tx2">预警 · 多<em>命中 3/4 · 5日反转概率 58%</em></span></div><div class="sgr" onclick="openSig('warn|2022-08-16')"><span class="dt">2022-08-16</span><span class="bd in">▼ 进场多</span><span class="tx2">预警 · 多<em>命中 3/4 · 5日反转概率 58%</em></span></div><div class="sgr" onclick="openSig('confirm|2022-08-05')"><span class="dt">2022-08-05</span><span class="bd in">▼ 进场多</span><span class="tx2">兑现 · 多<em>反转兑现 · 现价 1968</em></span></div><div class="sgr"><span class="dt">2022-07-26</span><span class="bd out-x">◆ 强烈离场</span><span class="tx2">底部 · 满足 4 条<em>回撤 -1.11 ATR · 段龄 63 根 · 收 1866.00</em></span></div><div class="sgr"><span class="dt">2022-07-13</span><span class="bd out-s">◆ 建议离场</span><span class="tx2">底部 · 满足 3 条<em>回撤 -1.13 ATR · 段龄 54 根 · 收 1977.00</em></span></div><div class="sgr" onclick="openSig('pred|2022-06-08')"><span class="dt">2022-06-08</span><span class="bd in">▼ 进场多</span><span class="tx2">建仓 · 多<em>4/4 命中 · 概率 69% · 入 2258</em></span></div><div class="sgr" onclick="openSig('confirm|2022-02-22')"><span class="dt">2022-02-22</span><span class="bd in">▲ 进场空</span><span class="tx2">兑现 · 空<em>反转兑现 · 现价 2423</em></span></div><div class="sgr" onclick="openSig('pred|2022-02-18')"><span class="dt">2022-02-18</span><span class="bd in">▲ 进场空</span><span class="tx2">建仓 · 空<em>4/4 命中 · <b style="color:#f5a524">强确认</b> · 概率 89% · 入 2474</em></span></div><div class="sgr"><span class="dt">2022-01-25</span><span class="bd out-s">◆ 建议离场</span><span class="tx2">顶部 · 满足 3 条<em>回撤 -1.21 ATR · 段龄 14 根 · 收 2537.00</em></span></div><div class="sgr" onclick="openSig('warn|2021-11-24')"><span class="dt">2021-11-24</span><span class="bd in">▼ 进场多</span><span class="tx2">预警 · 多<em>命中 3/4 · 5日反转概率 58%</em></span></div><div class="sgr"><span class="dt">2021-11-11</span><span class="bd out-s">◆ 建议离场</span><span class="tx2">底部 · 满足 3 条<em>回撤 -1.19 ATR · 段龄 67 根 · 收 2128.00</em></span></div><div class="sgr" onclick="openSig('warn|2021-06-23')"><span class="dt">2021-06-23</span><span class="bd in">▲ 进场空</span><span class="tx2">预警 · 空<em>命中 3/4 · 5日反转概率 58%</em></span></div><div class="sgr" onclick="openSig('warn|2021-05-26')"><span class="dt">2021-05-26</span><span class="bd in">▲ 进场空</span><span class="tx2">预警 · 空<em>命中 3/4 · 5日反转概率 58%</em></span></div><div class="sgr" onclick="openSig('warn|2021-01-28')"><span class="dt">2021-01-28</span><span class="bd in">▼ 进场多</span><span class="tx2">预警 · 多<em>命中 3/4 · 5日反转概率 58%</em></span></div></div>
+    </div>
+  </div>
+  <div class="note">方法（参数由玻璃/豆粕/螺纹/甲醇/尿素五个品种 10 年数据回测选出，非人为设定；本次关注池调整为 <b>玻璃 / 纯碱 / 豆粕 / 纸浆 / 锰硅 / 甲醇 / 白糖 / 玉米</b>，规则与参数一并沿用，未针对新品种重新调参）：
+  MA34 定义大趋势段，穿越点＝反转点（20/25/30/34/40/45/50 七个周期逐一测过，34 的收益与回撤同时最优）。
+  反转前 10 根内共出现 4 类有区分度的变化——
+  <b>逼到 MA34 ≤0.3ATR · 10 日累计逆行 ≥1.5ATR · MA10 斜率转向 · MACD 柱翻向</b>，
+  命中条数直接对应历史反转概率（4/4＝78.9%，3/4＝57.9%，2/4＝44.5%，1/4＝34.9%，0＝12.4%，基准 22.9%），
+  训练段与盲测段一致。另加 <b>ADX(14)≥20</b> 趋势门槛：把「趋势还没起来」的震荡信号剔掉，
+  胜率由 33.3% 提到 40.0%、年均由 3,575 元提到 4,181 元/手。<br>
+  放量类与持仓减仓类指标经检验无区分度（lift&lt;1.0 与 1.14），已淘汰。
+  <b>强确认层（失误专项分析得出）</b>：复盘 36 笔首轮触发信号，11 笔失误中 9 笔在信号日
+  <b>持仓量 5 日仍在增加</b>（趋势资金未撤离）；成功组持仓中位 -5%。叠加
+  <b>持仓 5 日下降 + 自极值回撤 ≥2ATR</b> 的「强确认」后：19 笔中 17 笔 5 日内反转（<b>89.5%</b>，
+  内 91.7%/外 85.7%），不设止损收益由 +18.7R 升至 +26.5R、回撤减半。<br>
+  概率口径说明：建仓层大数字为「首轮触发」实测概率（36 笔，5 日内 69.4%）；强确认层为 89.5%；
+  预警档（3/4）沿用事件研究标定。<br>
+  <b>v9 慢进快出（出场重构）</b>：进场端一个字没改，出场改为两条独立规则 ——
+  ① <b>吊灯止损</b>：多头自进场后最高点 −3ATR、空头自最低点 +3ATR，收盘触及无条件离场；
+  ② <b>短均线</b>：价格先站到仓位一侧（新趋势成立），之后收盘反向穿越 <b>MA26</b> 就走。
+  另设<b>盘整预警</b>（离场线未破、但自极值回撤≥1.2ATR 且 ATR 收缩/持仓下降/缩量）——
+  只提示减仓、不平仓。<br>
+  <b>出场是独立机制（v10）</b>：进场雷达与出场雷达互不依赖 —— 出场雷达只看价格结构
+  （趋势伸展 ≥2.6ATR + 自极值回撤 ≥1.1ATR 两道门槛，段幅/段龄/影线/ADX 衰减/短均失守/资金撤退
+  六条辅助证据），<b>不需要你有进场信号，也不需要你持有仓位</b>。辅助证据越多，
+  信号后继续持有的期望损失越大（10 年标定：0 条 +0.35 ATR → 2 条 +0.87 ATR → 3 条 +1.33 ATR，
+  20 根净优势单调上升）。出现「建议/强烈」时页面亮灯、微信推送，走不走由你自己决定。<br>
+  实测（37 笔，进场完全相同，只换出场）：净收益 <b>+19.5R → +32.5R（+67%）</b>，
+  最大回撤 -8.1R → <b>-7.7R</b>，最差单笔 <b>-6.1R → -3.0R</b>，持仓中位 20 → <b>10 根</b>，
+  浮盈回吐 85% → <b>72%</b>；训练段 +24.1R / 盲测段 +8.4R 双正，去掉最大 3 笔仍 +2.8R
+  （旧口径去掉最大 3 笔为 -8.3R，即旧规则全靠少数超级行情）。
+  <b>关于主力换月（v6 实测）</b>：若按"旧主力平仓、新主力重新评估"执行，历史收益由 +18.7R
+  降至 -3.8R——大趋势的利润段多数跨越换月。因此信号有效期内请<b>随主力换月移仓续持</b>，
+  不要因换月而平仓；换月期资金迁移对后续趋势无稳定指示力（113 次换月相关系数 +0.06）。
+  <b>代价：持仓期浮亏中位 0.95ATR、最深 8.7ATR（约 8,900 元/手），必须小仓并预留浮亏空间。</b>
+  <b>信号按主力连续计算，各合约价格略有差异。</b><br>
+  <b>8 品种统一参数（v10.3）</b>：逐品种单独调参经 10 组样本外方案检验，样本内看似提升、
+  样本外准确率与盈利率均无显著差异（差异多小于 3 个百分点、置信区间全部跨 0），
+  故全部品种使用同一套参数，不按品种分别配置。</div>
+</div>
+
+<div class="page" id="pgAcct">
+  <div class="acct-top">
+    <div>
+      <div class="l">模拟账户权益（起始 100,000）</div>
+      <div class="eq" id="eqBig">—</div>
+    </div>
+    <button onclick="resetAcct()">重置账户</button>
+  </div>
+  <div class="kv" id="acctKv"></div>
+  <div class="ctn">
+    <div class="card">
+      <h3>我的模拟持仓</h3>
+      <div id="myPos"></div>
+    </div>
+    <div class="card">
+      <h3>策略参考持仓 <span class="r">方法自动跟踪 · 不可操作</span></h3>
+      <div id="stratPos"></div>
+    </div>
+    <div class="card">
+      <h3>已平仓记录</h3>
+      <div id="closedList"></div>
+    </div>
+  </div>
+  <div class="note">费用按交易所+经纪主流水平估算，开平各收一次（未含平今加收与滑点）。
+  保证金占用按合约面值 × 保证金率计算。</div>
+</div>
+
+<div class="nav">
+  <div class="on" id="navMain" onclick="showPage('Main')">行情</div>
+  <div id="navAcct" onclick="showPage('Acct')">模拟盘</div>
+</div>
+
+<div class="mask" id="mask" onclick="if(event.target===this)closeSheet()">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script>
+/* ================= 基础 ================= */
+var QS = location.search;
+var MAN = null, DOC = null;
+var cur = {sym:'FG', ct:'0', pt:'D'};
+var KC = {};          // 缓存: sym|ct → {d:[],m60:[],m15:[]}
+var CH = null, ECREADY = false;
+var PERIODS = [['Y','年'],['M','月'],['W','周'],['D','日'],['60','60分'],['15','15分']];
+var $ = function(id){return document.getElementById(id)};
+
+function fetchJ(p, cb){
+  var x = new XMLHttpRequest();
+  x.open('GET', 'data/' + p + QS, true);
+  x.onload = function(){ try{ cb(JSON.parse(x.responseText)); }catch(e){ cb(null); } };
+  x.onerror = function(){ cb(null); };
+  x.send();
+}
+function f2(x){ return x==null?'—':(+x).toFixed(2); }
+function fmtN(x){ return x==null?'—':(+x>=1e4? ((+x)/1e4).toFixed(1)+'万' : (+x).toFixed(0)); }
+function cls(x){ return x>0?'pos':(x<0?'neg':'mut'); }
+function sgn(x){ return x>0?'+':''; }
+
+/* ================= 品种 / 合约 ================= */
+function renderSymChips(){
+  $('symChips').innerHTML = MAN.products.map(function(p){
+    return '<div class="chip'+(p.sym===cur.sym?' on':'')+'" onclick="selectSym(\''+p.sym+'\')">'
+      + p.name + '</div>';
+  }).join('');
+}
+function selectSym(sym){
+  cur.sym = sym; cur.ct = '0'; cur.pt = 'D';
+  renderSymChips();
+  $('quote').innerHTML = '<span style="color:var(--dim);font-size:13px">加载中…</span>';
+  fetchJ(sym + '.json', function(doc){
+    if(!doc){ $('quote').innerHTML='品种数据加载失败'; return; }
+    DOC = doc;
+    $('ctChips').innerHTML = ['<div class="chip on" onclick="selectCt(\'0\')">主力连续</div>']
+      .concat(doc.contracts.map(function(c){
+        return '<div class="chip" onclick="selectCt(\''+c.id+'\')">'+c.id.slice(2)+'<small>'
+          + fmtN(c.oi) + '</small></div>';
+      })).join('');
+    loadCt('0', true);
+  });
+}
+function loadCt(cid, force){
+  var key = cur.sym + '|' + cid;
+  function go(){
+    $('ctChips').querySelectorAll('.chip').forEach(function(el,i,arr){
+      el.classList.toggle('on', (cid==='0'&&i===0) || (cid!=='0'&&el.textContent.indexOf(cid.slice(2))===0));
+    });
+    cur.ct = cid; renderAll();
+  }
+  if(KC[key] && !force){ go(); return; }
+  if(cid === '0'){
+    KC[key] = {d: DOC.main, m60: DOC.m60, m15: DOC.m15};
+    go(); return;
+  }
+  fetchJ(cur.sym + '_' + cid + '.json', function(doc2){
+    if(!doc2){ toast('合约数据加载失败'); return; }
+    KC[key] = {d: doc2.d, m60: doc2.m60, m15: doc2.m15};
+    go();
+  });
+}
+function selectCt(cid){ loadCt(cid, false); }
+
+/* ================= 周期 ================= */
+function renderPt(){
+  $('ptabs').innerHTML = PERIODS.map(function(p){
+    return '<div class="chip'+(cur.pt===p[0]?' on':'')+'" onclick="selectPt(\''+p[0]+'\')">'+p[1]+'</div>';
+  }).join('');
+}
+function selectPt(pt){ cur.pt = pt; renderPt(); renderAll(); }
+
+function base(){
+  var k = cur.sym + '|' + cur.ct;
+  return KC[k] || {d: DOC.main};
+}
+function resample(arr, unit){
+  var key = function(d){ return unit==='Y'? d.slice(0,4) : unit==='M'? d.slice(0,7) : wkKey(d); };
+  var out = [], curk = null, o,h,l,c,v,oi,od;
+  function wkKey(d){
+    var t = new Date(d); t.setUTCDate(t.getUTCDate() - ((t.getUTCDay()+6)%7));
+    return t.toISOString().slice(0,10);
+  }
+  for(var i=0;i<arr.length;i++){
+    var b = arr[i], k = key(b[0]);
+    if(k !== curk){
+      if(curk) out.push([od,o,h,l,c,v,oi]);
+      curk=k; od=b[0]; o=b[1]; h=b[2]; l=b[3]; c=b[4]; v=b[5]; oi=b[6];
+    } else {
+      if(b[2]>h)h=b[2]; if(b[3]<l)l=b[3]; c=b[4]; v+=b[5]; oi=b[6];
+    }
+  }
+  if(curk) out.push([od,o,h,l,c,v,oi]);
+  return out;
+}
+function barsFor(pt){
+  var b = base();
+  if(pt==='D') return b.d;
+  if(pt==='W') return resample(b.d,'W');
+  if(pt==='M') return resample(b.d,'M');
+  if(pt==='Y') return resample(b.d,'Y');
+  return pt==='60'? (b.m60||[]) : (b.m15||[]);
+}
+
+/* ================= 行情条 ================= */
+function renderQuote(){
+  var b = base(), d = b.d;
+  if(!d || !d.length){ $('quote').innerHTML=''; return; }
+  var last = d[d.length-1], prev = d.length>1? d[d.length-2][4] : last[4];
+  var chg = (last[4]/prev-1)*100;
+  var ctName = cur.ct==='0' ? '主力连续' : cur.ct;
+  var up = chg>=0;
+  $('quote').innerHTML =
+    '<div><b style="color:'+(up?'var(--up)':'var(--dn)')+'">'+f2(last[4])+'</b></div>'
+    + '<div class="chg '+cls(chg)+'">'+sgn(chg)+f2(chg)+'%</div>'
+    + '<div class="meta">'+DOC.name+' '+ctName+'<br>'+last[0]+' · 持仓 '+fmtN(last[6])+'</div>';
+}
+
+/* ================= 图表 ================= */
+function ma(arr,n){
+  var out=[],s=0;
+  for(var i=0;i<arr.length;i++){ s+=arr[i]; if(i>=n)s-=arr[i-n];
+    out.push(i>=n-1? +(s/n).toFixed(2):null); }
+  return out;
+}
+function renderChart(){
+  if(typeof echarts==='undefined') return;
+  var bars = barsFor(cur.pt);
+  var el = $('chart');
+  if(!CH) CH = echarts.init(el);
+  if(!bars.length){
+    CH.clear();
+    el.innerHTML = '<div style="padding:60px 0;text-align:center;color:var(--dim);font-size:12px">'
+      + (cur.pt==='60'||cur.pt==='15' ? '该合约未收录分钟数据（仅活跃合约收录），切换主力连续查看' : '暂无数据') + '</div>';
+    return;
+  }
+  var dates = bars.map(function(b){return b[0];});
+  var k = bars.map(function(b){return [b[1],b[4],b[3],b[2]];});
+  var vols = bars.map(function(b){return b[5];});
+  var closes = bars.map(function(b){return b[4];});
+  var m10=ma(closes,10), m26=ma(closes,26), m34=ma(closes,34), m89=ma(closes,89);
+
+  // 信号标记（仅日/周/月级别；看哪个周期就用哪个周期的信号）
+  var marks = [];
+  if(['D','W','M'].indexOf(cur.pt)>=0){
+    var src = cur.pt==='D'? DOC.signals : cur.pt==='W'? (DOC.sigW||[]) : (DOC.sigM||[]);
+    src.forEach(function(s){
+      if(s.kind==='confirm') return;          // 兑现点与建仓点几乎重合，不重复画
+      var idx = dateIdx(dates, s.date);
+      if(idx==null) return;
+      var b = bars[idx];
+      var sh = s.side==='short';
+      var isWarn = s.kind==='warn';
+      marks.push({value:[idx, sh? b[2] : b[3]], sig:s,
+        symbol: isWarn? 'diamond' : 'triangle', symbolRotate: isWarn?0:(sh?180:0),
+        symbolSize: isWarn? 8 : 13, symbolOffset:[0, sh?9:-9],
+        itemStyle:{color: isWarn? 'transparent' : (sh? '#e5484d' : '#0ecb81'),
+                   borderColor: isWarn? (sh?'#ff9a9e':'#6ef2c0') : (sh? '#ffd0d1':'#b6ffe6'),
+                   borderWidth:2}});
+    });
+  }
+  // 出场标记（v9 快出）：黄色菱形=盘整预警，红色箭头=实际离场
+  if(cur.pt==='D' && DOC.exit){
+    (DOC.exit.trades||[]).forEach(function(t){
+      if(t.warn){
+        var iw = dateIdx(dates, t.warn);
+        if(iw!=null) marks.push({value:[iw, bars[iw][2]], symbol:'diamond', symbolSize:9,
+          symbolOffset:[0,-10], itemStyle:{color:'rgba(34,211,238,.25)',
+          borderColor:'#22D3EE', borderWidth:1.6}});
+      }
+      var io = dateIdx(dates, t.out);
+      if(io!=null) marks.push({value:[io, t.sd==='long'? bars[io][3] : bars[io][2]],
+        symbol:'arrow', symbolRotate: t.sd==='long'? 180 : 0, symbolSize:11,
+        symbolOffset:[0, t.sd==='long'? 12 : -12],
+        itemStyle:{color:'#F2F6FF', borderColor:'#0b0e13', borderWidth:.5}});
+    });
+  }
+  // 独立出场信号（v10）：顶部/底部到位的提示，橙=建议 红=强烈
+  if(cur.pt==='D' && DOC.xsig){
+    (DOC.xsig.hist||[]).forEach(function(h){
+      var ix = dateIdx(dates, h.d);
+      if(ix==null) return;
+      var strong = h.level==='strong';
+      var top = h.dir==='顶部';
+      marks.push({value:[ix, top? bars[ix][3] : bars[ix][2]],
+        symbol:'diamond', symbolSize: strong? 21 : 14,
+        symbolOffset:[0, top? (strong? -24 : -18) : (strong? 24 : 18)],
+        itemStyle:{color: strong? '#FFE94A':'#FFC400',
+                   borderColor: strong? '#FFFFFF':'#0b0e13',
+                   borderWidth: strong? 2.6 : 1.6,
+                   shadowBlur: strong? 10 : 0, shadowColor:'#FFE94A'}});
+    });
+  }
+  var series = [
+    {name:'K', type:'candlestick', data:k, barMaxWidth:14,
+     itemStyle:{color:'#e5484d', color0:'#0ecb81', borderColor:'#e5484d', borderColor0:'#0ecb81'}},
+    {name:'MA10', type:'line', data:m10, symbol:'none', lineStyle:{width:1,color:'#f5a524'}},
+    {name:'MA26', type:'line', data:m26, symbol:'none',
+     lineStyle:{width:1.2, type:'dashed', color:'#ff8a3d'}},
+    {name:'MA34', type:'line', data:m34, symbol:'none', lineStyle:{width:1,color:'#4c8dff'}},
+    {name:'MA89', type:'line', data:m89, symbol:'none', lineStyle:{width:1,color:'#9b6ef3'}},
+    {name:'量', type:'bar', data:vols, xAxisIndex:1, yAxisIndex:1, barMaxWidth:14,
+     itemStyle:{color:'#26324a'}},
+    {name:'信号', type:'scatter', data:marks, z:10, cursor:'pointer'}
+  ];
+  CH.setOption({
+    animation:false,
+    axisPointer:{link:[{xAxisIndex:'all'}], label:{backgroundColor:'#232b38'}},
+    grid:[{left:8,right:8,top:14,height:'64%'}, {left:8,right:8,top:'79%',height:'14%'}],
+    xAxis:[
+      {type:'category', data:dates, boundaryGap:true, axisLine:{lineStyle:{color:'#232b38'}},
+       axisLabel:{color:'#8b95a7', fontSize:9}, axisTick:{show:false}},
+      {type:'category', gridIndex:1, data:dates, axisLabel:{show:false}, axisLine:{show:false}, axisTick:{show:false}}
+    ],
+    yAxis:[
+      {scale:true, splitLine:{lineStyle:{color:'#161c26'}}, axisLabel:{color:'#8b95a7', fontSize:9}},
+      {gridIndex:1, scale:true, axisLabel:{show:false}, splitLine:{show:false}}
+    ],
+    dataZoom:[
+      {type:'inside', xAxisIndex:[0,1], start: Math.max(0, 100 - 260/Math.max(bars.length,1)*100), end:100},
+      {type:'slider', xAxisIndex:[0,1], bottom:2, height:14, borderColor:'#232b38',
+       backgroundColor:'#0b0e13', fillerColor:'#1a2230', handleStyle:{color:'#4c8dff'},
+       textStyle:{color:'#8b95a7', fontSize:9}}
+    ],
+    series: series
+  }, true);
+  CH.off('click');
+  CH.on('click', function(p){
+    if(p.seriesName==='信号' && p.data && p.data.sig) openSig(p.data.sig);
+  });
+}
+function dateIdx(dates, d){
+  // 精确匹配；没有则找第一个 >= d 的
+  for(var i=0;i<dates.length;i++){
+    if(dates[i]===d) return i;
+    if(dates[i]>d) return i;
+  }
+  return null;
+}
+
+/* ================= 独立出场雷达（v10 见顶/见底） ================= */
+var XLV = {none:['无异动',''], watch:['到顶/底区 · 留意',''], suggest:['建议减仓',''],
+           strong:['强烈建议离场','']};
+function renderXs(){
+  var X = DOC.xsig, box = $('xsBox');
+  if(!X){ box.innerHTML = '<div class="empty">独立出场数据缺失</div>'; return; }
+  var N = X.now || {}, cfg = X.cfg || {}, st = X.stat || {};
+  var lvl = N.level || 'none';
+  var head = {none:['无出场信号','var(--dim)'], watch:['到顶/底区 · 留意','#22D3EE'],
+              suggest:['建议减仓/离场','#FFC400'],
+              strong:['强烈建议离场','#FFE94A']}[lvl];
+  var html = '';
+
+  html += '<div style="font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:9px">'
+    + '独立机制：<b style="color:#FFC400">不依赖进场信号、也不需要你有持仓</b>，'
+    + '只在价格走到趋势极端（伸展 + 回头）时提示。走不走由你决定。</div>';
+
+  html += '<div class="xlv ' + lvl + '">'
+    + '<span class="bg">' + head[0] + '</span>'
+    + '<span class="sub">' + (N.dir || '') + '方向 · ' + (N.date || '') + ' 收盘 '
+    + (N.close != null ? f2(N.close) : '—') + '<br>'
+    + '门 ' + (N.gate || 0) + '/2 · 辅助 ' + (N.aux || 0) + '/6</span></div>';
+
+  if(N.dir){
+    html += '<div style="display:flex;gap:8px;font-size:11.5px;margin-bottom:8px">'
+      + exCard('距 MA34', (N.ext != null ? (N.ext >= 0 ? '+' : '') + f2(N.ext) + ' ATR' : '—'),
+               '门槛 ≥' + (cfg.ext || 2.6) + ' ATR', '#7fb3ff')
+      + exCard('自极值回撤', (N.pull != null ? f2(N.pull) + ' ATR' : '—'),
+               '门槛 ≥' + (cfg.pull || 1.1) + ' ATR', '#FFC400')
+      + exCard('段龄', (N.age || 0) + ' 根', '辅助 ≥' + (cfg.age || 30) + ' 根', '#9b6ef3')
+      + '</div>';
+  }
+
+  html += '<div class="xgrid">';
+  (N.conds || []).forEach(function(c){
+    html += '<div class="xc ' + (c.ok ? 'ok ' : '') + (c.gate ? 'gate' : '') + '">'
+      + '<span class="ic">' + (c.ok ? '●' : '○') + '</span>'
+      + '<span class="tt">' + c.n + (c.gate ? ' <b style="color:#7fb3ff">门</b>' : '')
+      + '<em>' + c.d + '</em></span></div>';
+  });
+  html += '</div>';
+
+  box.innerHTML = html;
+  if($('xsTime')) $('xsTime').textContent = '数据 ' + MAN.built;
+}
+
+/* ================= 出场雷达（v9 慢进快出） ================= */
+function exCard(label, val, sub, color){
+  return '<div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px">'
+    + '<div style="color:var(--dim);font-size:11px">' + label + '</div>'
+    + '<div style="font-weight:700;margin-top:2px;color:' + (color||'var(--txt)') + '">' + val + '</div>'
+    + '<div style="color:var(--dim);font-size:10.5px;margin-top:1px">' + sub + '</div></div>';
+}
+function renderExit(){
+  var box = $('exitBox');
+  if(!box) return;                       // 卡片已按需隐藏，仅保留计算
+  var E = DOC.exit;
+  if(!E){ box.innerHTML = '<div class="empty">出场雷达数据缺失</div>'; return; }
+  var cfg = E.cfg || {}, st = E.stat || {}, P = E.pos;
+  var ma = cfg.ma || 26, chK = cfg.chK || 3;
+  var html = '';
+
+  html += '<div style="font-size:11px;color:var(--dim);line-height:1.75;margin-bottom:10px">'
+    + '离场两条独立规则：<b style="color:#f5a524">吊灯</b> 自进场后极值回撤 ' + chK + ' ATR（触及无条件走）· '
+    + '<b style="color:#4ea1ff">MA' + ma + '</b> 站到仓位一侧后收盘反向穿越<br>'
+    + '盘整预警（回撤≥' + (cfg.warnPull || 1.2) + ' ATR 且 ATR 收缩/持仓降/缩量）只提示，<b>不平仓</b></div>';
+
+  if(P && P.status !== 'closed'){
+    var long = P.side === 'long';
+    var col = long ? 'var(--up)' : 'var(--dn)';
+    var R = P.R || 0;
+    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
+      + '<span style="background:' + (long?'rgba(224,74,74,.13)':'rgba(47,180,110,.13)')
+      + ';color:' + col + ';border:1px solid ' + col + ';border-radius:6px;padding:3px 10px;'
+      + 'font-weight:700;font-size:15px">' + (long?'持多':'持空') + '</span>'
+      + '<span style="font-size:12px;color:var(--dim)">' + P.date + ' 信号 · 入场 '
+      + f2(P.entry) + ' · 已持 ' + ((P.held || 0) + 1) + ' 天</span>'
+      + '<span style="margin-left:auto;font-size:17px;font-weight:700;color:'
+      + (R>=0?'var(--up)':'var(--dn)') + '">' + (R>=0?'+':'') + f2(R) + 'R</span></div>';
+
+    if(P.warn){
+      html += '<div style="background:rgba(34,211,238,.12);border-left:3px solid #22D3EE;'
+        + 'padding:8px 10px;border-radius:5px;font-size:12.5px;line-height:1.8;margin-bottom:10px">'
+        + '<b style="color:#22D3EE">◇ 盘整预警</b>　' + ((P.why||[]).join(' · ') || '—')
+        + '<div style="color:var(--dim);font-size:11.5px;margin-top:3px">'
+        + '趋势可能停滞：不要再加仓，跌破任一离场线立即离场。</div></div>';
+    }
+
+    html += '<div style="display:flex;gap:8px;font-size:12px;margin-bottom:10px">'
+      + exCard('吊灯离场线', f2(P.chLine), '距触发 ' + f2(P.distCh) + ' ATR', '#f5a524')
+      + exCard('MA' + ma + ' 离场线', f2(P.maLine),
+               (P.armed ? '已站上·跌破即走' : '未站上·先等') + ' · ' + f2(P.distMa) + ' ATR', '#4ea1ff')
+      + '</div>';
+  } else {
+    html += '<div style="background:var(--bg2);border-radius:6px;padding:14px;text-align:center;'
+      + 'font-size:12.5px;color:var(--dim);margin-bottom:10px">当前无持仓<br>'
+      + '<span style="font-size:11.5px">出场雷达只在有持仓时工作；吊灯线随每日极值自动移动</span></div>';
+  }
+
+  if(st && st.n){
+    html += '<div style="border-top:1px solid var(--line);padding-top:8px;font-size:11px;'
+      + 'color:var(--dim);line-height:1.8">'
+      + '本品种 10 年 <b style="color:var(--txt)">' + st.n + '</b> 笔 · 胜率 <b style="color:var(--txt)">'
+      + st.win + '%</b> · 累计 <b style="color:' + (st.R>=0?'var(--up)':'var(--dn)') + '">'
+      + (st.R>=0?'+':'') + st.R + 'R</b> · 回撤 ' + st.dd + 'R<br>'
+      + '出场构成：MA' + ma + ' 反向穿越 ' + (st.byMa||0) + ' 笔 / 吊灯 ' + (st.byCh||0) + ' 笔 · '
+      + '均盈 ' + (st.winR||0) + 'R · 均亏 ' + (st.losR||0) + 'R</div>';
+  }
+
+  var ts = (E.trades || []).slice(-5).reverse();
+  if(ts.length){
+    html += '<div style="font-size:11px;color:var(--dim);margin:8px 0 4px">最近 5 笔出场</div>'
+      + '<div style="font-size:12px;line-height:1.85">' + ts.map(function(t){
+        var c = t.R >= 0 ? 'var(--up)' : 'var(--dn)';
+        return '<div style="display:flex;gap:8px">'
+          + '<span style="color:var(--dim);width:76px">' + t.d + '</span>'
+          + '<span style="width:26px;color:' + (t.sd==='long'?'var(--up)':'var(--dn)') + '">'
+          + (t.sd==='long'?'多':'空') + '</span>'
+          + '<span style="width:96px;color:var(--dim)">' + (t.why||'') + '</span>'
+          + '<span style="width:44px;color:var(--dim)">' + t.hold + '根</span>'
+          + '<span style="margin-left:auto;color:' + c + ';font-weight:600">'
+          + (t.R>=0?'+':'') + t.R + 'R</span></div>';
+      }).join('') + '</div>';
+  }
+
+  box.innerHTML = html;
+  if($('exitTime')) $('exitTime').textContent = '数据 ' + MAN.built;
+}
+
+/* ================= 反转预测雷达 ================= */
+var STG = {0:'平静',1:'起变化',2:'关注',3:'预警',4:'准备反转'};
+function prOf(k, h){
+  var cb = (MAN.model && MAN.model.calib) || {};
+  var row = cb[String(h)] || cb[h] || null;
+  if(row && typeof row === 'object'){
+    if(row[String(k)]!=null) return row[String(k)];
+  } else if(cb[String(k)]!=null){
+    return cb[String(k)];
+  }
+  var mx = (MAN.model && MAN.model.matrix) || {};
+  var r = mx[h] && mx[h].rows && mx[h].rows[String(k)];
+  return r ? r.p : 0;
+}
+function renderTF(){
+  var box = $('tfBox');
+  if(!box) return;                       // 卡片已按需隐藏，仅保留计算
+  var T = DOC.tf;
+  if(!T || !T.live){ box.innerHTML = '<div class="empty">趋势跟踪数据缺失</div>'; return; }
+  var L = T.live, st = T.stat || {};
+  var isLong = L.side === 'long';
+  var col = isLong ? 'var(--up)' : 'var(--dn)';
+  var fr = L.floatR || 0;
+  var pct = Math.min(100, Math.round((L.held / (L.hold||40)) * 100));
+  var html = '';
+  html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
+    + '<span style="background:' + (isLong?'rgba(224,74,74,.14)':'rgba(47,180,110,.14)')
+    + ';color:' + col + ';border:1px solid ' + col + ';border-radius:6px;padding:3px 10px;'
+    + 'font-weight:700;font-size:15px">' + (isLong?'持多':'持空') + '</span>'
+    + '<span style="font-size:12px;color:var(--dim)">' + L.since + ' 确认 · 入场 '
+    + f2(L.entry) + '</span>'
+    + '<span style="margin-left:auto;font-size:17px;font-weight:700;color:'
+    + (fr>=0?'var(--up)':'var(--dn)') + '">' + (fr>=0?'+':'') + f2(fr) + 'R</span></div>';
+
+  html += '<div style="display:flex;gap:8px;font-size:12px;margin-bottom:8px">'
+    + '<div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px">'
+    + '<div style="color:var(--dim);font-size:11px">已持有</div>'
+    + '<div style="font-weight:700;margin-top:2px">' + L.held + ' / ' + L.hold + ' 根</div></div>'
+    + '<div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px">'
+    + '<div style="color:var(--dim);font-size:11px">反向确认价</div>'
+    + '<div style="font-weight:700;margin-top:2px;color:' + (isLong?'var(--dn)':'var(--up)') + '">'
+    + f2(L.flip) + '</div></div>'
+    + '<div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px">'
+    + '<div style="color:var(--dim);font-size:11px">' + (isLong?'离场线（自高点回落）':'离场线（自低点回升）')
+    + '</div><div style="font-weight:700;margin-top:2px">' + f2(L.extreme) + ' → ' + f2(L.flip) + '</div></div>'
+    + '</div>';
+
+  html += '<div style="height:4px;background:var(--bg2);border-radius:2px;overflow:hidden;margin-bottom:10px">'
+    + '<div style="width:' + pct + '%;height:100%;background:' + col + '"></div></div>';
+
+  if(L.expired){
+    html += '<div style="background:rgba(245,165,36,.12);border-left:3px solid #f5a524;'
+      + 'padding:7px 9px;border-radius:4px;font-size:12px;margin-bottom:10px">'
+      + '已满 ' + L.hold + ' 根持有上限，按回测口径应离场，等下一次反向确认再进。</div>';
+  }
+
+  var ts = (T.trades||[]).slice(-5).reverse();
+  if(ts.length){
+    html += '<div style="font-size:11px;color:var(--dim);margin-bottom:4px">最近 5 笔</div>';
+    html += '<div style="font-size:12px;line-height:1.9">' + ts.map(function(t){
+      var c = t.R >= 0 ? 'var(--up)' : 'var(--dn)';
+      return '<div style="display:flex;gap:8px">'
+        + '<span style="color:var(--dim);width:78px">' + t.date + '</span>'
+        + '<span style="width:28px;color:' + (t.side==='long'?'var(--up)':'var(--dn)') + '">'
+        + (t.side==='long'?'多':'空') + '</span>'
+        + '<span style="width:66px">' + f2(t.entry) + '→' + f2(t.exit) + '</span>'
+        + '<span style="margin-left:auto;color:' + c + ';font-weight:600">'
+        + (t.R>=0?'+':'') + t.R + 'R</span></div>';
+    }).join('') + '</div>';
+  }
+
+  html += '<div style="border-top:1px solid var(--line);margin-top:10px;padding-top:8px;'
+    + 'font-size:11px;color:var(--dim);line-height:1.7">'
+    + '口径：自极值回撤 ' + L.k + '×ATR 视为趋势转折 → 次日开盘顺新方向入场，'
+    + '反向确认或持满 ' + L.hold + ' 根离场，不设止损。<br>'
+    + '本品种 10 年 ' + (st.n||0) + ' 笔 · 胜率 ' + Math.round((st.win||0)*100) + '% · 累计 '
+    + (st.R>=0?'+':'') + st.R + 'R · 最大回撤 ' + st.dd + 'R</div>';
+
+  box.innerHTML = html;
+  $('tfTime').textContent = '数据 ' + MAN.built;
+}
+
+function renderTF(){
+  var box = $('tfBox');
+  if(!box) return;                       // 卡片已按需隐藏，仅保留计算
+  var T = DOC.tf;
+  if(!T || !T.live){ box.innerHTML = '<div class="empty">趋势跟踪数据缺失</div>'; return; }
+  var L = T.live, st = T.stat || {};
+  var isLong = L.side === 'long';
+  var col = isLong ? 'var(--up)' : 'var(--dn)';
+  var fr = L.floatR || 0;
+  var pct = Math.min(100, Math.round((L.held / (L.hold||40)) * 100));
+  var html = '';
+  html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
+    + '<span style="background:' + (isLong?'rgba(224,74,74,.14)':'rgba(47,180,110,.14)')
+    + ';color:' + col + ';border:1px solid ' + col + ';border-radius:6px;padding:3px 10px;'
+    + 'font-weight:700;font-size:15px">' + (isLong?'持多':'持空') + '</span>'
+    + '<span style="font-size:12px;color:var(--dim)">' + L.since + ' 确认 · 入场 '
+    + f2(L.entry) + '</span>'
+    + '<span style="margin-left:auto;font-size:17px;font-weight:700;color:'
+    + (fr>=0?'var(--up)':'var(--dn)') + '">' + (fr>=0?'+':'') + f2(fr) + 'R</span></div>';
+
+  html += '<div style="display:flex;gap:8px;font-size:12px;margin-bottom:8px">'
+    + '<div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px">'
+    + '<div style="color:var(--dim);font-size:11px">已持有</div>'
+    + '<div style="font-weight:700;margin-top:2px">' + L.held + ' / ' + L.hold + ' 根</div></div>'
+    + '<div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px">'
+    + '<div style="color:var(--dim);font-size:11px">反向确认价</div>'
+    + '<div style="font-weight:700;margin-top:2px;color:' + (isLong?'var(--dn)':'var(--up)') + '">'
+    + f2(L.flip) + '</div></div>'
+    + '<div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px">'
+    + '<div style="color:var(--dim);font-size:11px">' + (isLong?'离场线（自高点回落）':'离场线（自低点回升）')
+    + '</div><div style="font-weight:700;margin-top:2px">' + f2(L.extreme) + ' → ' + f2(L.flip) + '</div></div>'
+    + '</div>';
+
+  html += '<div style="height:4px;background:var(--bg2);border-radius:2px;overflow:hidden;margin-bottom:10px">'
+    + '<div style="width:' + pct + '%;height:100%;background:' + col + '"></div></div>';
+
+  if(L.expired){
+    html += '<div style="background:rgba(245,165,36,.12);border-left:3px solid #f5a524;'
+      + 'padding:7px 9px;border-radius:4px;font-size:12px;margin-bottom:10px">'
+      + '已满 ' + L.hold + ' 根持有上限，按回测口径应离场，等下一次反向确认再进。</div>';
+  }
+
+  var ts = (T.trades||[]).slice(-5).reverse();
+  if(ts.length){
+    html += '<div style="font-size:11px;color:var(--dim);margin-bottom:4px">最近 5 笔</div>';
+    html += '<div style="font-size:12px;line-height:1.9">' + ts.map(function(t){
+      var c = t.R >= 0 ? 'var(--up)' : 'var(--dn)';
+      return '<div style="display:flex;gap:8px">'
+        + '<span style="color:var(--dim);width:78px">' + t.date + '</span>'
+        + '<span style="width:28px;color:' + (t.side==='long'?'var(--up)':'var(--dn)') + '">'
+        + (t.side==='long'?'多':'空') + '</span>'
+        + '<span style="width:66px">' + f2(t.entry) + '→' + f2(t.exit) + '</span>'
+        + '<span style="margin-left:auto;color:' + c + ';font-weight:600">'
+        + (t.R>=0?'+':'') + t.R + 'R</span></div>';
+    }).join('') + '</div>';
+  }
+
+  html += '<div style="border-top:1px solid var(--line);margin-top:10px;padding-top:8px;'
+    + 'font-size:11px;color:var(--dim);line-height:1.7">'
+    + '口径：自极值回撤 ' + L.k + '×ATR 视为趋势转折 → 次日开盘顺新方向入场，'
+    + '反向确认或持满 ' + L.hold + ' 根离场，不设止损。<br>'
+    + '本品种 10 年 ' + (st.n||0) + ' 笔 · 胜率 ' + Math.round((st.win||0)*100) + '% · 累计 '
+    + (st.R>=0?'+':'') + st.R + 'R · 最大回撤 ' + st.dd + 'R</div>';
+
+  box.innerHTML = html;
+  $('tfTime').textContent = '数据 ' + MAN.built;
+}
+
+function renderDec(){
+  var R = DOC.radar;
+  var html = '';
+  if(!R){
+    $('decGrid').innerHTML = '<div class="dv" style="grid-column:1/-1"><div class="l">反转预测雷达</div>'
+      + '<div class="v nt">数据不足</div></div>';
+    $('decTime').textContent = '数据 ' + MAN.built;
+    return;
+  }
+  var longT = R.side==='long';          // 当前趋势方向
+  var k = R.k;
+  var newLong = !longT;                 // 预测的新方向
+  var PA = R.probA || {};
+  var useA = (k>=4 && R.gate!==false);
+  var p3=useA?(PA['3']||prOf(k,'3')):prOf(k,'3'),
+      p5=useA?(PA['5']||prOf(k,'5')):prOf(k,'5'),
+      p10=useA?(PA['10']||prOf(k,'10')):prOf(k,'10');
+  var base5 = ((MAN.model&&MAN.model.base&&MAN.model.base['5'])||0.229);
+  var stage = (k>=4 && R.gate===false) ? '形态到位·等趋势' : (STG[k] || '平静');
+  var hot = k>=4 && R.gate!==false;
+  var cls2 = hot ? (newLong? 'rdL':'rdS') : '';
+  var col = newLong? 'var(--dn)':'var(--up)';
+  var dirTxt = newLong? '预计转多' : '预计转空';
+
+  html += '<div class="rdr '+cls2+'">'
+    + '<div class="top"><span class="stg">'+stage+'</span>'
+    + '<span class="seg">'+(longT?'多头段':'空头段')+' 第 '+R.age+' 根 · 距 MA34 '
+    + (R.dist>=0?'+':'')+f2(R.dist)+' ATR</span>'
+    + '<span class="seg" style="color:'+(R.gate?'var(--dn)':'#f5a524')+'">ADX '
+    + (R.adx!=null? R.adx:'—')+(R.gate?' ✓':' ✗ 未达'+(R.adxMin||20))+'</span>'
+    + (R.strong && hot? '<span class="seg" style="color:var(--gold);font-weight:700">★ 强确认</span>':'')
+    + (hot? '<span class="seg" style="margin-left:auto;color:'+col+';font-weight:700">'+dirTxt+'</span>':'')
+    + '</div>'
+    + '<div style="display:flex;align-items:flex-end;gap:10px;margin-top:9px">'
+    + '<div class="big" style="color:'+(hot?col:'var(--tx)')+'">'+Math.round(p5*100)+'%</div>'
+    + '<div class="biglab">未来 5 个交易日<br>出现 MA34 反转的概率'
+    + (R.strong && hot? '<br><span style="color:var(--gold)">强确认层 · 实测 19 笔 17 中</span>'
+       : (useA? '<br>首轮触发实测 36 笔 25 中':''))+'</div>'
+    + '<div class="biglab" style="margin-left:auto;text-align:right">基准 '+(base5*100).toFixed(1)+'%<br>'
+    + '<span style="color:'+(p5>base5?'var(--gold)':'var(--dim)')+'">lift '+(base5? (p5/base5).toFixed(2):'—')+'×</span></div>'
+    + '</div>'
+    + '<div class="pbar"><i style="width:'+Math.round(p5*100)+'%;background:'+(hot?col:'var(--blue)')+'"></i></div>'
+    + '<div class="pgrid">'
+    +   '<div class="pcell"><div class="l">3 日内</div><div class="v">'+Math.round(p3*100)+'%</div></div>'
+    +   '<div class="pcell"><div class="l">5 日内</div><div class="v" style="color:'+(hot?col:'var(--tx)')+'">'+Math.round(p5*100)+'%</div></div>'
+    +   '<div class="pcell"><div class="l">10 日内</div><div class="v">'+Math.round(p10*100)+'%</div></div>'
+    + '</div>'
+    + '<div class="hit"><span>特征匹配 <b style="color:'+(k>=3?'var(--gold)':'var(--tx)')+'">'+k+'/4</b>'
+    +   ' · 4 条 + ADX≥'+(R.adxMin||20)+' = 建仓 · <span style="color:var(--gold)">+持仓降+深回撤 = 强确认</span></span><span>历史提前量中位 '
+    +   (((MAN.model||{}).lead||{}).median!=null? MAN.model.lead.median : '1')+' 根</span></div>'
+    + '<div class="chk">'
+    + (R.checks||[]).map(function(c){
+        var mk = c.ok? '<span class="ok1">✓</span>' : '<span style="color:#3a4356">✗</span>';
+        return '<div class="cond">'+mk+'<span style="'+(c.ok?'':'color:var(--dim)')+'">'+c.t+'</span>'
+             + '<span class="v">'+c.v+'<span style="color:var(--dim)"> 需'+c.need+'</span></span></div>';
+      }).join('')
+    + (R.checksS||[]).map(function(c){
+        var mk = c.ok? '<span class="ok1">★</span>' : '<span style="color:#3a4356">☆</span>';
+        return '<div class="cond" style="color:var(--gold)">'+mk+'<span style="'+(c.ok?'':'opacity:.75')+'">'+c.t+'（强确认）</span>'
+             + '<span class="v">'+c.v+'<span style="color:var(--dim)"> 需'+c.need+'</span></span></div>';
+      }).join('')
+    + '</div>'
+    + (hot
+        ? '<div class="cta">'+(R.strong?'★ 强确认 · ':'')+(newLong?'▲ 底部成型，可尝试做多':'▼ 顶部成型，可尝试做空')
+          + '<span>次日开盘进 · 出场＝吊灯 3ATR 止损 或 收盘反向穿 MA26（'
+          + (R.ma34!=null? f2(R.ma34):'—') + '）· 每手预留浮亏 '
+          + (R.bufYuan? R.bufYuan.toLocaleString()+' 元':'—') + '</span></div>'
+        : (k>=3
+            ? '<div class="cta" style="background:#241d0d;color:#f5a524;border:1px solid #f5a52444">'
+              + '已进入预警区，还差 '+(4-k)+' 条 → 命中 4 条即发建仓提示</div>'
+            : ''))
+    + '</div>';
+
+  // 策略参考持仓
+  var stratPos = (MAN.strategyOpen||[]).filter(function(s){return s.sym===cur.sym;});
+  html += '<div class="dv" style="grid-column:1/-1"><div class="l">策略参考持仓（雷达口径）</div>'
+    + '<div class="v '+(stratPos.length?(stratPos[0].side==='short'?'up':'dn'):'nt')+'" style="font-size:13px">'
+    + (stratPos.length? stratPos.map(function(p){
+        return (p.side==='short'?'空 ':'多 ')+p.en+' · 吊灯 '+(p.ch!=null?p.ch:'—')
+          +' / MA26 '+(p.ml!=null?p.ml:'—')
+          + (p.float!=null? ' · 浮动 '+sgn(p.float)+f2(p.float)+'%':'')+' · 已持 '+(p.held||0)+' 天';
+      }).join(' / ') : '无（当前无 4/4 命中的品种）')+'</div></div>';
+
+  $('decGrid').innerHTML = html;
+  $('decTime').textContent = '数据 ' + MAN.built;
+}
+
+/* ================= 信号列表 ================= */
+function statusTxt(s){
+  if(s.status==='pending') return ['待开盘','mut'];
+  if(s.status==='open') return ['持仓中','pos'];
+  if(s.status==='watch') return ['已过期','mut'];
+  if(s.kind==='warn') return ['已过期','mut'];
+  var t = s.why || '已平';
+  var r = s.ret;
+  var y = (s.yuan!=null? ' '+(s.yuan>0?'+':'')+Math.round(s.yuan)+'元' : '');
+  return [t+(r!=null? ' '+sgn(r)+f2(r)+'%':'' )+y, cls(r||0)];
+}
+function sigKey(s){ return s.kind+'|'+s.date; }
+function findSig(k){
+  if(k && typeof k==='object') return k;
+  var parts = k.split('|');
+  return DOC.signals.filter(function(x){return x.kind===parts[0] && x.date===parts[1];})[0];
+}
+function kindBadge(s){
+  if(s.kind==='pred') return ['建仓','b-T1'];
+  if(s.kind==='warn') return ['预警','b-T3'];
+  return ['兑现','b-T2'];
+}
+var SIGF = 'all';
+function setSigF(f){ SIGF = f; renderSigs(); }
+
+function renderSigs(){
+  var rows = [];
+  // —— 进场侧 ——
+  (DOC.signals || []).forEach(function(s){
+    rows.push({d: s.date, kind: 'in', s: s});
+  });
+  // —— 出场侧（本品种历史独立信号）——
+  ((DOC.xsig || {}).hist || []).forEach(function(h){
+    rows.push({d: h.d, kind: 'out', h: h});
+  });
+  // —— 出场侧（全品种：今日正在亮灯的，跨品种提示）——
+  var xl = (MAN.xsig || {}).live || [];
+  xl.forEach(function(x){
+    if(x.sym === cur.sym || !x.level || x.level === 'none') return;
+    rows.push({d: x.date, kind: 'out', h: {d: x.date, level: x.level, dir: x.dir,
+      k: x.k, pull: x.pull, age: x.age, px: x.close, cross: x.sym}});
+  });
+
+  var nIn = rows.filter(function(r){ return r.kind === 'in'; }).length;
+  var nOut = rows.filter(function(r){ return r.kind === 'out'; }).length;
+  var nHi = rows.filter(function(r){ return r.kind === 'out' && r.h.level === 'strong'; }).length;
+  $('sigCnt').textContent = '进场 ' + nIn + ' · 出场 ' + nOut + (nHi ? '（强烈 ' + nHi + '）' : '');
+
+  if(SIGF === 'in')  rows = rows.filter(function(r){ return r.kind === 'in'; });
+  if(SIGF === 'out') rows = rows.filter(function(r){ return r.kind === 'out'; });
+
+  var fc = [['all','全部'],['in','只看进场'],['out','只看出场']];
+  $('sigFilter').innerHTML = fc.map(function(f){
+    return '<span class="fc' + (SIGF === f[0] ? ' on' : '') + '" onclick="setSigF(\'' + f[0] + '\')">'
+      + f[1] + '</span>';
+  }).join('');
+
+  rows.sort(function(a,b){ return a.d < b.d ? 1 : -1; });
+  rows = rows.slice(0, 40);
+  if(!rows.length){
+    $('sigList').innerHTML = '<div class="empty">暂无信号</div>';
+    return;
+  }
+  $('sigList').innerHTML = rows.map(function(r){
+    if(r.kind === 'in'){
+      var s = r.s;
+      var nm = s.kind === 'pred' ? '建仓' : (s.kind === 'warn' ? '预警' : '兑现');
+      var sd = s.side === 'short' ? '空' : '多';
+      var cls = s.kind === 'pred' ? 'in' : 'in';
+      var desc;
+      if(s.kind === 'warn'){
+        desc = '命中 ' + (s.k || 0) + '/4 · 5日反转概率 '
+          + Math.round((((s.prob || {})['5']) || 0) * 100) + '%';
+      } else if(s.kind === 'pred'){
+        desc = '4/4 命中' + (s.strong ? ' · <b style="color:#f5a524">强确认</b>' : '')
+          + ' · 概率 ' + Math.round((((s.prob || {})['5']) || 0) * 100) + '%'
+          + ' · 入 ' + (s.en != null ? s.en : '—');
+      } else {
+        desc = '反转兑现 · 现价 ' + s.price;
+      }
+      return '<div class="sgr" onclick="openSig(\'' + sigKey(s) + '\')">'
+        + '<span class="dt">' + s.date + '</span>'
+        + '<span class="bd in">' + (s.side === 'short' ? '▲ 进场空' : '▼ 进场多') + '</span>'
+        + '<span class="tx2">' + nm + ' · ' + sd + '<em>' + desc + '</em></span></div>';
+    }
+    var h = r.h;
+    var isS = h.level === 'strong';
+    var sym = h.cross ? h.cross + ' ' : '';
+    return '<div class="sgr"><span class="dt">' + h.d + '</span>'
+      + '<span class="bd ' + (isS ? 'out-x' : 'out-s') + '">'
+      + (isS ? '◆ 强烈离场' : '◆ 建议离场') + '</span>'
+      + '<span class="tx2">' + sym + h.dir + ' · 满足 ' + h.k + ' 条'
+      + '<em>回撤 ' + f2(h.pull) + ' ATR · 段龄 ' + h.age + ' 根 · 收 ' + f2(h.px)
+      + (h.cross ? '（其他品种，仅供参考）' : '') + '</em></span></div>';
+  }).join('');
+}
+
+/* ================= 信号弹窗 ================= */
+function openSig(key){
+  var s = findSig(key);
+  if(!s) return;
+  var isPred = s.kind==='pred', isWarn = s.kind==='warn';
+  var title = isWarn? '反转预警' : isPred? '准备反转 · 可建仓' : '反转兑现';
+  var html = '<h3>'+title+' · '+(s.side==='short'?'顶部 · 做空方向':'底部 · 做多方向')
+    + ' · ' + DOC.name + '<span onclick="closeSheet()">关闭 ✕</span></h3>';
+  html += '<div class="frow"><span>信号日</span><b>'+s.date+'</b></div>';
+  html += '<div class="frow"><span>信号日收盘</span><b>'+(s.price!=null?s.price:'—')+'</b></div>';
+  if(s.k!=null) html += '<div class="frow"><span>特征命中</span><b>'+s.k+' / 4'
+    + (isPred&&s.strong? ' <b style="color:var(--gold)">★ 强确认</b>':'')+'</b></div>';
+  if(s.prob){
+    html += '<div class="frow"><span>反转概率（3 / 5 / 10 日）</span><b>'
+      + Math.round((s.prob['3']||0)*100)+'% / '+Math.round((s.prob['5']||0)*100)+'% / '
+      + Math.round((s.prob['10']||0)*100)+'%</b></div>';
+  }
+  if(isPred){
+    html += '<div class="frow"><span>参考入场（次日开盘）</span><b>'+(s.en!=null?s.en:'—')+'</b></div>';
+    html += '<div class="frow"><span>离场方式</span><b>吊灯 3ATR 止损 / 收盘反向穿 MA26</b></div>';
+    html += '<div class="frow"><span>吊灯线（触及无条件走）</span><b class="neg">'+(s.ch!=null?s.ch:'—')+'</b></div>';
+    html += '<div class="frow"><span>MA26 离场线</span><b class="neg">'+(s.ml!=null?s.ml:'—')+'</b></div>';
+    if(s.ew) html += '<div class="frow"><span>盘整预警</span><b style="color:#22D3EE">'+(s.eww||[]).join(' · ')+'</b></div>';
+    html += '<div class="frow"><span>每手预留浮亏（2.45 ATR）</span><b>'+(s.buf!=null?s.buf.toLocaleString()+' 元':'—')+'</b></div>';
+    if(s.lots!=null) html += '<div class="frow"><span>建议手数（浮亏预算5%）</span><b>'+s.lots+' 手</b></div>';
+    if(s.last!=null) html += '<div class="frow"><span>最新 / 浮动</span><b class="'+cls(s.float||0)+'">'
+      + s.last + ' · ' + (s.float!=null? sgn(s.float)+f2(s.float)+'%':'—')+'</b></div>';
+    var st0 = statusTxt(s);
+    html += '<div class="frow"><span>状态</span><b class="'+st0[1]+'">'+st0[0]+'</b></div>';
+  }
+  if(isWarn){
+    html += '<div style="font-size:12px;color:var(--dim);line-height:1.7;margin:6px 0">'
+      + '命中 3 条只到预警区，历史对应 5 日内反转概率约 58%。等第 4 条出现且 ADX 回到 20 以上，'
+      + '系统才给建仓提示。</div>';
+  }
+  if(s.kind==='confirm'){
+    html += '<div class="frow"><span>预测日 → 兑现日</span><b>'
+      + (s.predDate||'—')+' → '+s.date+(s.lead!=null?'（'+s.lead+' 根）':'')+'</b></div>';
+  }
+  html += '<h3 style="margin-top:12px">反转特征核对 <span>✓ 命中 · ✗ 未命中</span></h3>';
+  var chs = (s.checks || s.conds || []).concat(isPred? (s.checksS||[]) : []);
+  html += chs.map(function(c){
+    var mk = c.ok===true? '<span class="ok1">✓</span>' : c.ok===false? '<span class="ok0">✗</span>' : '<span class="okn">·</span>';
+    return '<div class="cond">'+mk+'<span>'+c.t+'</span><span class="v">'+c.v+'</span></div>';
+  }).join('') || '<div class="cond" style="color:var(--dim)">无明细</div>';
+  if(isPred && (s.status==='open' || s.status==='pending')){
+    html += '<div style="margin-top:14px;display:flex;gap:10px">'
+      + '<button class="btn '+(s.side==='short'?'green':'red')+'" style="flex:1" '
+      + 'onclick="simFromSig(\''+sigKey(s)+'\')">按此信号模拟开仓 →</button></div>';
+  }
+  $('sheet').innerHTML = html;
+  $('mask').classList.add('on');
+}
+function closeSheet(){ $('mask').classList.remove('on'); }
+
+/* ================= 刷新（JSONP 直连新浪） ================= */
+var JP = 0;
+function jsonp(sym, mtype, cb){
+  var v = '_jp' + (++JP);
+  window[v] = function(r){ cb(r); delete window[v]; };
+  var s = document.createElement('script');
+  var api = mtype? 'getFewMinLine?symbol='+sym+'&type='+mtype : 'getDailyKLine?symbol='+sym;
+  s.src = 'https://stock2.finance.sina.com.cn/futures/api/jsonp.php/var%20'+v+'=/InnerFuturesNewService.'+api;
+  s.onload = function(){ s.remove(); };
+  s.onerror = function(){ s.remove(); cb(null); };
+  document.head.appendChild(s);
+}
+function refresh(){
+  if(!DOC) return;
+  var symApi = cur.ct==='0'? cur.sym+'0' : cur.ct;
+  var key = cur.sym + '|' + cur.ct;
+  var todo = 1 + (cur.pt==='60'||cur.pt==='15'? 1:0);
+  var done = 0;
+  function fin(){ if(++done>=todo){ renderAll(); toast('已更新到最新数据'); } }
+  jsonp(symApi, 0, function(rows){
+    if(rows && rows.length){
+      var b = KC[key] || (KC[key] = {d: DOC.main});
+      merge(b.d, rows.map(function(r){
+        return [r.d.slice(0,10), +r.o, +r.h, +r.l, +r.c, +r.v||0, +r.p||0];
+      }));
+    }
+    fin();
+  });
+  if(cur.pt==='60'||cur.pt==='15'){
+    jsonp(symApi, +cur.pt, function(rows){
+      if(rows && rows.length){
+        var b = KC[key];
+        var t = cur.pt==='60'? (b.m60 = b.m60||[]) : (b.m15 = b.m15||[]);
+        merge(t, rows.map(function(r){
+          return [r.d, +r.o, +r.h, +r.l, +r.c, +r.v||0];
+        }));
+      }
+      fin();
+    });
+  }
+}
+function merge(arr, rows){
+  rows.forEach(function(r){
+    var i = arr.length-1;
+    while(i>=0 && arr[i][0]>r[0]) i--;
+    if(i>=0 && arr[i][0]===r[0]) arr[i] = r;
+    else arr.splice(i+1, 0, r);
+  });
+}
+function toast(msg){
+  var t = document.createElement('div');
+  t.style.cssText = 'position:fixed;top:14px;left:50%;transform:translateX(-50%);'
+    + 'background:#232b38;color:#e6ebf2;padding:8px 16px;border-radius:18px;font-size:12px;z-index:99';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.remove(); }, 2200);
+}
+
+/* ================= 模拟盘 ================= */
+var AKEY = 'fxsim_v1';
+function acct(){
+  try{ return JSON.parse(localStorage.getItem(AKEY)) || newAcct(); }
+  catch(e){ return newAcct(); }
+}
+function saveAcct(a){ try{ localStorage.setItem(AKEY, JSON.stringify(a)); }catch(e){} }
+function newAcct(){ return {start:100000, positions:[], closed:[], feeTotal:0}; }
+function feeOf(p, px){
+  var c = p.fee;
+  var f = c[0]==='lot'? c[1] : px * p.mult * p.lots * c[1] / 10000;
+  return Math.round(f*100)/100;
+}
+function floatOf(p, px){
+  return (px - p.entry) * p.side * p.mult * p.lots;
+}
+function lastPx(sym, ct){
+  var b = KC[sym+'|'+ct];
+  if(!b || !b.d || !b.d.length) return null;
+  return b.d[b.d.length-1][4];
+}
+function suggestLots(entry, stop, mult){
+  var risk = acct().start * 0.01;
+  var dist = Math.abs(entry - stop);
+  if(dist<=0) return 1;
+  return Math.max(1, Math.floor(risk / (dist * mult)));
+}
+function simFromSig(key){
+  var s = findSig(key);
+  if(!s) return;
+  var ct = cur.ct==='0'? DOC.contracts.length? bestCt() : null : cur.ct;
+  if(!ct){ toast('请先选择一个具体合约'); return; }
+  var key = cur.sym+'|'+ct;
+  function go(px){
+    if(px==null){ toast('合约价格未加载'); return; }
+    var pmeta = MAN.products.filter(function(p){return p.sym===cur.sym;})[0];
+    var lots = suggestLots(px, s.ts!=null? s.ts : s.st, pmeta.mult);
+    simSheet({
+      sym:cur.sym, name:DOC.name, ct:ct, side: s.side==='short'? -1:1,
+      entry:px, stop:s.ts!=null? s.ts : s.st, mult:pmeta.mult, fee:pmeta.fee, margin:pmeta.margin,
+      lots:lots, sigId:sigKey(s)
+    });
+  }
+  if(KC[key] && KC[key].d) go(lastPx(cur.sym, ct));
+  else fetchJ(cur.sym+'_'+ct+'.json', function(d2){
+    if(d2){ KC[key]={d:d2.d,m60:d2.m60,m15:d2.m15}; go(lastPx(cur.sym,ct)); }
+  });
+}
+function bestCt(){
+  // 主力合约 = 持仓最大的活跃合约
+  var arr = DOC.contracts.slice().sort(function(a,b){return b.oi-a.oi;});
+  return arr.length? arr[0].id : null;
+}
+function simSheet(o){
+  var a = acct();
+  var marginNeed = o.entry * o.mult * o.lots * o.margin;
+  var feeEst = feeOf(o, o.entry);
+  var dist = Math.abs(o.entry - o.stop);
+  var riskAmt = dist * o.mult * o.lots;
+  var html = '<h3>'+(o.side<0?'模拟做空':'模拟做多')+' · '+o.name+' '+o.ct.slice(2)
+    + '<span onclick="closeSheet()">关闭 ✕</span></h3>';
+  html += '<div class="frow"><span>开仓价（最新收盘）</span><b>'+f2(o.entry)+'</b></div>';
+  html += '<div class="frow"><span>止损价（3×ATR）</span><b class="neg">'+f2(o.stop)+'</b></div>';
+  html += '<div class="lots"><span style="font-size:13px">手数</span>'
+    + '<button onclick="adjLots(-1)">−</button><b id="lotN">'+o.lots+'</b>'
+    + '<button onclick="adjLots(1)">＋</button>'
+    + '<span style="font-size:11px;color:var(--dim)">建议值＝1%风险÷止损距离</span></div>';
+  html += '<div class="frow"><span>每点价值</span><b>'+o.mult+' 元/点</b></div>';
+  html += '<div class="frow"><span>止损风险</span><b class="neg">'+Math.round(riskAmt)+' 元（占权益 '
+    + (riskAmt/a.start*100).toFixed(1) +'%）</b></div>';
+  html += '<div class="frow"><span>保证金占用</span><b>'+Math.round(marginNeed)+' 元</b></div>';
+  html += '<div class="frow"><span>开+平手续费</span><b>约 '+(feeEst*2).toFixed(1)+' 元</b></div>';
+  html += '<div class="frow"><span>账户可用</span><b>'+Math.round(availOf(a))+' 元</b></div>';
+  html += '<div style="margin-top:14px;display:flex;gap:10px">'
+    + '<button class="btn gray" style="flex:1" onclick="closeSheet()">取消</button>'
+    + '<button class="btn '+(o.side<0?'green':'red')+'" style="flex:2" onclick="doOpen()">确认开仓</button></div>';
+  o._marginNeed = marginNeed; o._fee = feeEst; o._risk = riskAmt;
+  window._pendSim = o;
+  $('sheet').innerHTML = html;
+  $('mask').classList.add('on');
+}
+function adjLots(d){
+  var o = window._pendSim;
+  o.lots = Math.max(1, o.lots + d);
+  $('lotN').textContent = o.lots;
+  var a = acct();
+  o._marginNeed = o.entry*o.mult*o.lots*o.margin;
+  o._fee = feeOf(o, o.entry);
+  o._risk = Math.abs(o.entry-o.stop)*o.mult*o.lots;
+  // 更新动态行
+  var frows = $('sheet').querySelectorAll('.frow b');
+  frows[3].textContent = Math.round(o._risk)+' 元（占权益 '+(o._risk/a.start*100).toFixed(1)+'%）';
+  frows[4].textContent = Math.round(o._marginNeed)+' 元';
+  frows[5].textContent = '约 '+(o._fee*2).toFixed(1)+' 元';
+}
+function availOf(a){
+  var used = 0;
+  a.positions.forEach(function(p){ used += p.entry*p.mult*p.lots*p.margin; });
+  var unreal = 0;
+  a.positions.forEach(function(p){
+    var px = lastPx(p.sym, p.ct);
+    if(px!=null) unreal += floatOf(p, px);
+  });
+  return a.start + closedSum(a) + unreal - used;
+}
+function closedSum(a){ return a.closed.reduce(function(t,c){return t+c.pnl;},0); }
+function doOpen(){
+  var o = window._pendSim, a = acct();
+  if(o._marginNeed > availOf(a)){ toast('保证金不足'); return; }
+  a.positions.push({
+    t: Date.now(), sym:o.sym, name:o.name, ct:o.ct, side:o.side,
+    entry:o.entry, stop:o.stop, lots:o.lots, mult:o.mult,
+    fee:o.fee, margin:o.margin, sigId:o.sigId||null, time: tsStr()
+  });
+  saveAcct(a); closeSheet(); renderAcct(); toast('已开仓');
+  showPage('Acct');
+}
+function doClose(t){
+  var a = acct();
+  var i = a.positions.findIndex(function(p){return p.t===t;});
+  if(i<0) return;
+  var p = a.positions[i];
+  var px = lastPx(p.sym, p.ct);
+  if(px==null){ toast('价格未加载，无法平仓'); return; }
+  var pnl = floatOf(p, px) - feeOf(p, p.entry) - feeOf(p, px);
+  p.feeTotal = (feeOf(p,p.entry)+feeOf(p,px));
+  a.feeTotal = Math.round((a.feeTotal + p.feeTotal)*100)/100;
+  a.closed.unshift({sym:p.sym, name:p.name, ct:p.ct, side:p.side, lots:p.lots,
+    entry:p.entry, exit:px, pnl:Math.round(pnl*100)/100, time:tsStr(),
+    sigId:p.sigId});
+  a.positions.splice(i,1);
+  saveAcct(a); renderAcct(); toast('已平仓');
+}
+function tsStr(){
+  var d = new Date();
+  function z(x){return (x<10?'0':'')+x;}
+  return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())+' '+z(d.getHours())+':'+z(d.getMinutes());
+}
+function resetAcct(){
+  if(!confirm('确认清空模拟账户重新开始？')) return;
+  saveAcct(newAcct()); renderAcct(); toast('账户已重置');
+}
+function renderAcct(){
+  var a = acct();
+  var unreal = 0, usedM = 0;
+  a.positions.forEach(function(p){
+    var px = lastPx(p.sym, p.ct);
+    if(px!=null) unreal += floatOf(p, px);
+    usedM += p.entry*p.mult*p.lots*p.margin;
+  });
+  var eq = a.start + closedSum(a) + unreal;
+  $('eqBig').textContent = Math.round(eq).toLocaleString();
+  $('eqBig').style.color = eq>=a.start? 'var(--up)':'var(--dn)';
+  var retPct = (eq/a.start-1)*100;
+  $('acctKv').innerHTML =
+    '<div class="dv"><div class="l">总收益率</div><div class="v '+cls(retPct)+'">'+sgn(retPct)+f2(retPct)+'%</div></div>'
+    +'<div class="dv"><div class="l">浮动盈亏</div><div class="v '+cls(unreal)+'">'+sgn(unreal)+Math.round(unreal)+'</div></div>'
+    +'<div class="dv"><div class="l">保证金占用</div><div class="v nt">'+Math.round(usedM)+'</div></div>'
+    +'<div class="dv"><div class="l">累计手续费</div><div class="v nt">'+f2(a.feeTotal)+'</div></div>';
+
+  $('myPos').innerHTML = a.positions.length? a.positions.map(function(p){
+    var px = lastPx(p.sym, p.ct);
+    var fl = px==null? null : floatOf(p,px);
+    var riskPct = px==null? null : ((p.stop/px-1)*100*p.side).toFixed(1);
+    return '<div class="posrow"><div class="fx">'
+      +'<div class="r1">'+p.name+' '+p.ct.slice(2)+' <span class="'+(p.side<0?'side-s':'side-l')+'">'
+      +(p.side<0?'空':'多')+'</span> '+p.lots+'手 @ '+f2(p.entry)+'</div>'
+      +'<div class="r2">最新 '+(px!=null?f2(px):'—')+' · 止损 '+f2(p.stop)+'（'
+      +(riskPct!=null? riskPct+'%':'—')+'） · '+p.time+'</div></div>'
+      +(fl!=null? '<div class="st"><div class="p '+cls(fl)+'">'+sgn(fl)+Math.round(fl)+'</div></div>':'')
+      +'<button class="btn gray" onclick="doClose('+p.t+')">平仓</button></div>';
+  }).join('') : '<div class="empty">暂无模拟持仓 · 在行情页点信号卡 → 模拟开仓</div>';
+
+  var so = MAN.strategyOpen || [];
+  $('stratPos').innerHTML = so.length? so.map(function(p){
+    return '<div class="posrow"><div class="fx">'
+      +'<div class="r1">'+p.name+' <span class="'+(p.side==='short'?'side-s':'side-l')+'">'
+      +(p.side==='short'?'空':'多')+'</span> <span style="font-size:11px;color:var(--dim)">吊灯止损跟随</span></div>'
+      +'<div class="r2">确认 '+p.cd+' · 入 '+p.en+' · 止损 '+(p.ts!=null? f2(p.ts):f2(p.st))
+      +' · 最新 '+(p.last||'—')+' · 浮动 '+(p.float!=null? sgn(p.float)+f2(p.float)+'%':'—')
+      +' · 已持 '+(p.held!=null? p.held+' 天':'—')+'</div></div></div>';
+  }).join('') : '<div class="empty">当前无策略持仓</div>';
+
+  $('closedList').innerHTML = a.closed.length? a.closed.slice(0,30).map(function(c){
+    return '<div class="posrow"><div class="fx">'
+      +'<div class="r1">'+c.name+' '+c.ct.slice(2)+' <span class="'+(c.side<0?'side-s':'side-l')+'">'
+      +(c.side<0?'空':'多')+'</span> '+c.lots+'手</div>'
+      +'<div class="r2">'+f2(c.entry)+' → '+f2(c.exit)+' · '+c.time+'</div></div>'
+      +'<div class="st"><div class="p '+cls(c.pnl)+'">'+sgn(c.pnl)+Math.round(c.pnl)+'</div></div></div>';
+  }).join('') : '<div class="empty">暂无平仓记录</div>';
+}
+
+/* ================= 页面切换 / 主渲染 ================= */
+function showPage(pg){
+  ['Main','Acct'].forEach(function(k){
+    $('pg'+k).classList.toggle('on', k===pg);
+    $('nav'+k).classList.toggle('on', k===pg);
+  });
+  if(pg==='Acct'){
+    ['FG','SA','C','M','RB','TA','SR','I','SC','CU'].forEach(function(s){
+      if(KC[s+'|0']) return;
+    });
+    renderAcct();
+  }
+  if(pg==='Main' && CH) CH.resize();
+}
+function renderAll(){
+  renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderSigs();
+}
+
+/* ================= 启动 ================= */
+fetchJ('index.json', function(man){
+  if(!man){ document.body.innerHTML = '<div style="padding:40px;color:#8b95a7">清单加载失败，请刷新重试</div>'; return; }
+  MAN = man;
+  $('navAcct').textContent = '模拟盘';
+  renderSymChips();
+  selectSym('FG');
+  window.addEventListener('resize', function(){ if(CH) CH.resize(); });
+});
+(function loadEcharts(){
+  var sc = document.createElement('script');
+  sc.src = 'echarts.min.js' + QS;
+  sc.onload = function(){ ECREADY = true; if(DOC) renderChart(); };
+  document.head.appendChild(sc);
+})();
+</script>
+
+
+</body></html>

@@ -24,3 +24,6 @@ _gate_out.txt
 _build_out.txt
 _stale_*.txt
 state_old5_backup.json
+_tune_grid_out.txt
+_tune_eval_out.txt
+_tune_eval2_out.txt
