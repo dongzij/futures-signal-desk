@@ -182,14 +182,6 @@ background:#10151d;color:var(--tx);font-size:18px}
       <div id="xsBox"></div>
     </div>
     <div class="card">
-      <h3>持仓离场线 <span class="r" id="exitTime"></span></h3>
-      <div id="exitBox"></div>
-    </div>
-    <div class="card">
-      <h3>趋势跟踪 <span class="r" id="tfTime"></span></h3>
-      <div id="tfBox"></div>
-    </div>
-    <div class="card">
       <h3>信号栏 · 进场 / 出场 <span class="r" id="sigCnt"></span></h3>
       <div class="fchips" id="sigFilter"></div>
       <div id="sigList"></div>
@@ -552,27 +544,6 @@ function renderXs(){
   });
   html += '</div>';
 
-  if(st && st.n){
-    html += '<div style="border-top:1px solid var(--line);padding-top:8px;'
-      + 'font-size:11px;color:var(--dim);line-height:1.8">'
-      + '本品种 10 年出现 <b style="color:var(--tx)">' + st.n + '</b> 次建议级以上信号'
-      + '（年均 ' + st.perYear + ' 次，其中强烈 ' + st.strong + ' 次）<br>'
-      + '信号后 10 根方向正确 <b style="color:var(--tx)">' + st.ok10 + '%</b> · '
-      + '20 根正确 <b style="color:var(--tx)">' + st.ok20 + '%</b></div>';
-  }
-
-  var hs = (X.hist || []).slice(-4).reverse();
-  if(hs.length){
-    html += '<div style="font-size:11px;color:var(--dim);margin:8px 0 2px">最近 4 次出场提示</div>';
-    hs.forEach(function(h){
-      var c = h.level === 'strong' ? '#FFE94A' : '#FFC400';
-      html += '<div class="sgr"><span class="dt">' + h.d + '</span>'
-        + '<span class="bd ' + (h.level === 'strong' ? 'out-x' : 'out-s') + '">'
-        + (h.level === 'strong' ? '强烈' : '建议') + '</span>'
-        + '<span class="tx2">' + h.dir + ' · 已满足 ' + h.k + ' 条 · 收 ' + f2(h.px)
-        + '<em>回撤 ' + f2(h.pull) + ' ATR · 段龄 ' + h.age + ' 根</em></span></div>';
-    });
-  }
   box.innerHTML = html;
   if($('xsTime')) $('xsTime').textContent = '数据 ' + MAN.built;
 }
@@ -585,8 +556,9 @@ function exCard(label, val, sub, color){
     + '<div style="color:var(--dim);font-size:10.5px;margin-top:1px">' + sub + '</div></div>';
 }
 function renderExit(){
-  var E = DOC.exit;
   var box = $('exitBox');
+  if(!box) return;                       // 卡片已按需隐藏，仅保留计算
+  var E = DOC.exit;
   if(!E){ box.innerHTML = '<div class="empty">出场雷达数据缺失</div>'; return; }
   var cfg = E.cfg || {}, st = E.stat || {}, P = E.pos;
   var ma = cfg.ma || 26, chK = cfg.chK || 3;
@@ -674,8 +646,9 @@ function prOf(k, h){
   return r ? r.p : 0;
 }
 function renderTF(){
-  var T = DOC.tf;
   var box = $('tfBox');
+  if(!box) return;                       // 卡片已按需隐藏，仅保留计算
+  var T = DOC.tf;
   if(!T || !T.live){ box.innerHTML = '<div class="empty">趋势跟踪数据缺失</div>'; return; }
   var L = T.live, st = T.stat || {};
   var isLong = L.side === 'long';
@@ -741,8 +714,9 @@ function renderTF(){
 }
 
 function renderTF(){
-  var T = DOC.tf;
   var box = $('tfBox');
+  if(!box) return;                       // 卡片已按需隐藏，仅保留计算
+  var T = DOC.tf;
   if(!T || !T.live){ box.innerHTML = '<div class="empty">趋势跟踪数据缺失</div>'; return; }
   var L = T.live, st = T.stat || {};
   var isLong = L.side === 'long';
@@ -1311,7 +1285,7 @@ function showPage(pg){
   if(pg==='Main' && CH) CH.resize();
 }
 function renderAll(){
-  renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderExit(); renderTF(); renderSigs();
+  renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderSigs();
 }
 
 /* ================= 启动 ================= */
