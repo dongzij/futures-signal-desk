@@ -1,36 +1,39 @@
 # -*- coding: utf-8 -*-
-"""微信推送（GitHub Actions 版）：从环境变量读 token，只推本次新信号。"""
+"""独立补推工具：从 state.json 读本次新信号，发一条纯文本微信。
+
+v11.1 起 GitHub Actions 已改由 daily.py 统一推送（覆盖进场 / 出场雷达 / 持仓离场 /
+趋势确认四类，并按 config.pushSymbols 白名单过滤），本文件不再由 workflow 调用，
+避免同一条信号重复发两遍。手动补推时口径与 daily.py 保持一致。
+"""
 import json
 import os
 import sys
 import urllib.parse
 import urllib.request
 
-TOKEN = os.environ.get("PUSHPLUS_TOKEN")
-if not TOKEN:
-    try:
-        TOKEN = (json.load(open("config.json", encoding="utf-8"))
-                 .get("pushplus") or "").strip()
-    except Exception:                                         # noqa: BLE001
-        TOKEN = ""
+from daily import push_scope          # 与 daily.py 共用同一套白名单口径
+
+cfg = {}
+try:
+    cfg = json.load(open("config.json", encoding="utf-8"))
+except Exception:                                             # noqa: BLE001
+    pass
+TOKEN = (os.environ.get("PUSHPLUS_TOKEN") or cfg.get("pushplus") or "").strip()
 if not TOKEN:
     print("no PUSHPLUS_TOKEN, skip push")
     sys.exit(0)
 
 state = json.load(open("state.json", encoding="utf-8"))
 scanned = state.get("scanDate", "")[:10]
-min_prob = 0.70
-try:
-    min_prob = json.load(open("config.json", encoding="utf-8")).get("pushMinProb", 0.70)
-except Exception:                                             # noqa: BLE001
-    pass
-# v11 甲方案：周线 MA45 智能降级 —— 顺势全推，逆势只推强档。
-# 被降级的信号【仍然写进 state.json、页面照常显示】，只是不发微信；绝不删除或延迟。
+min_prob = cfg.get("pushMinProb", 0.70)
+allow_push, _, _ = push_scope(cfg)
+# 白名单品种全量推送（豁免周线 MA45 降级）；白名单外不发微信。
+# 被降级的信号仍写进 state.json、页面照常显示，绝不删除或延迟。
 fresh = [s for s in state.get("signals", [])
          if s.get("foundAt", "")[:10] == scanned
          and s.get("kind") == "pred" and s.get("status") in ("open", "pending")
          and (s.get("prob", {}).get("5") or 0) >= min_prob
-         and s.get("meta", {}).get("push", True)]
+         and allow_push(s.get("sym"), s.get("meta"))]
 
 if not fresh:
     print("no fresh signals, skip push")

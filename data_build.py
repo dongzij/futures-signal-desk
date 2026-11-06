@@ -365,6 +365,10 @@ def main():
                       "volRatioTag": engine.VOL_RATIO_TAG},
         "marketAdvisoryOnly": True,        # 状态栏仅信息参考，不拦截/隐藏/降级信号
         "marketBySym": MKT_ALL,
+        # v11.1：微信推送白名单（页面仍展示全部 8 品种）
+        "pushCfg": {"symbols": (state.get("method", {}).get("push") or {}).get("symbols", []),
+                    "all": (state.get("method", {}).get("push") or {}).get("all", True),
+                    "by": (state.get("method", {}).get("push") or {}).get("by", "daily")},
         "model": {
             "version": engine.MODEL.get("version", 4),
             "ma": engine.MA,

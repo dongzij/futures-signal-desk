@@ -18433,7 +18433,7 @@
   }
  },
  "scanDate": "2026-11-06",
- "updated": "2026-11-06 09:52",
+ "updated": "2026-11-06 18:22",
  "stats": {
   "pred": 60,
   "open": 3,
@@ -18523,6 +18523,16 @@
    "confirm2Bars": 2,
    "volRatioTag": 1.0,
    "marketStateAdvisoryOnly": true
+  },
+  "push": {
+   "symbols": [
+    "SR",
+    "M",
+    "FG"
+   ],
+   "all": true,
+   "by": "daily",
+   "note": "白名单外品种照常显示，仅不发微信"
   }
  },
  "xsigToday": [

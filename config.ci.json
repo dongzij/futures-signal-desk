@@ -16,5 +16,11 @@
  "refreshKey": "OkURaFVEfm_9GFkd",
  "user": "",
  "pass": "",
- "pushMinProb": 0.7
+ "pushMinProb": 0.7,
+ "pushSymbols": [
+  "SR",
+  "M",
+  "FG"
+ ],
+ "pushSymbolsAll": true
 }

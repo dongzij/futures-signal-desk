@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """每日任务 v4：拉数据 → 反转雷达扫描 → 推进持仓 → 按概率阈值推送 → 落盘
 
-由 cron 在交易日 15:10 触发，也可以手动 python3 daily.py 立刻跑一次。
+由 GitHub Actions 在交易日 15:20 / 15:50（北京时间）触发，也可手动跑一次。
+微信推送按 config.pushSymbols 白名单过滤；CI 环境用环境变量 PUSHPLUS_TOKEN。
 
 信号三层（同一段趋势内各自最多一次，方向唯一）：
   warn    预警：命中 3/4 条（或 4 条但 ADX<20）→ 只提示，不建仓
@@ -134,6 +135,28 @@ def update_open_positions(state, all_pred=False):
             s["R"] = round((cur["c"] - s["entry"]) * side / atr, 2)
 
 
+# ---------------------------------------------------------------- 推送白名单
+
+def push_scope(cfg):
+    """返回 (allow_push, symbols, all_flag)：微信推送的品种范围。
+
+    只决定「发不发微信」；信号生成、页面展示、后台盈亏计算完全不受影响。
+      pushSymbols     只推这些品种；留空 = 沿用原规则（全部品种 + MA45 降级）
+      pushSymbolsAll  白名单品种豁免 MA45 降级，进出场信息全量推送
+    """
+    syms = [str(x).upper() for x in (cfg.get("pushSymbols") or [])]
+    all_flag = bool(cfg.get("pushSymbolsAll", True))
+
+    def allow(sym, meta=None):
+        if syms and str(sym).upper() not in syms:
+            return False
+        if syms and all_flag:
+            return True
+        return (meta or {}).get("push", True)
+
+    return allow, syms, all_flag
+
+
 # ---------------------------------------------------------------- 主流程
 
 def main():
@@ -142,6 +165,9 @@ def main():
     equity = cfg.get("equity", 100_000)
     risk = cfg.get("riskPct", 5.0) / 100.0      # 无止损：预留给浮亏的本金比例
     min_prob = cfg.get("pushMinProb", 0.70)
+    # ---- v11.1：微信推送按品种白名单（只管「发不发」，不碰信号/页面/计算）----
+    allow_push, push_syms, push_all = push_scope(cfg)
+    push_token = (cfg.get("pushplus") or os.environ.get("PUSHPLUS_TOKEN") or "").strip()
     state = load_json(STATE, {"signals": [], "seen": [], "runs": 0})
     first = not state.get("seen")
     now = _dt.datetime.now()
@@ -209,7 +235,8 @@ def main():
     today = now.strftime("%Y-%m-%d")
     exit_warns = []
     for s in opens:
-        if s.get("exitWarn") and s.get("warnPushedAt") != today:
+        if (s.get("exitWarn") and s.get("warnPushedAt") != today
+                and allow_push(s["sym"])):
             s["warnPushedAt"] = today
             exit_warns.append(s)
 
@@ -243,6 +270,9 @@ def main():
                    "confirm2Bars": engine.CONFIRM2_BARS,
                    "volRatioTag": engine.VOL_RATIO_TAG,
                    "marketStateAdvisoryOnly": True},
+        # v11.1：微信推送范围（页面仍展示全部 8 品种、全部信号）
+        "push": {"symbols": push_syms, "all": push_all, "by": "daily",
+                 "note": "白名单外品种照常显示，仅不发微信"},
     }
     # ---------- 独立出场信号（见顶/见底，与是否持仓完全无关） ----------
     xs_today, xs_fresh = [], []
@@ -264,7 +294,7 @@ def main():
         r["meta"] = engine.signal_meta(bars, S, len(bars) - 1, exp, tier)
         xs_today.append(r)
         # 顺势全推；逆势只推强档。观察档页面照常显示，只是不推微信（不删信号）
-        if r["level"] in ("suggest", "strong") and r["meta"]["push"]:
+        if r["level"] in ("suggest", "strong") and allow_push(c, r["meta"]):
             key = "%s|%s|%s" % (c, r["date"], r["level"])
             if key not in seen_x:
                 seen_x.append(key)
@@ -281,7 +311,8 @@ def main():
         if not L:
             continue
         tf_now[c] = {"side": L["side"], "since": L["since"], "entry": L["entry"]}
-        if not first and tf_prev.get(c, {}).get("since") != L["since"]:
+        if (not first and tf_prev.get(c, {}).get("since") != L["since"]
+                and allow_push(c)):
             tf_flips.append((c, L))
     state["tf"] = tf_now
     json.dump(state, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
@@ -292,8 +323,8 @@ def main():
                               if s["date"] >= near
                               and s["kind"] == "pred"
                               and (s.get("prob", {}).get("5") or 0) >= min_prob
-                              and s.get("meta", {}).get("push", True)]
-    if fresh and cfg.get("pushplus"):
+                              and allow_push(s["sym"], s.get("meta"))]
+    if fresh and push_token:
         site = cfg.get("siteUrl", "")
         cards = []
         for s in fresh:
@@ -338,11 +369,11 @@ def main():
             len(fresh), "、".join("%s%s(%.0f%%)" % (
                 s["sym"], "空" if s["side"] == "short" else "多",
                 (s.get("prob", {}).get("5") or 0) * 100) for s in fresh))
-        ok = post_push(cfg["pushplus"], title, "".join(cards))
+        ok = post_push(push_token, title, "".join(cards))
         print("push:", ok)
 
     # ---------- 推送：出场预警（顶/底盘整特征点亮） ----------
-    if exit_warns and cfg.get("pushplus"):
+    if exit_warns and push_token:
         site = cfg.get("siteUrl", "")
         cards = []
         for s in exit_warns:
@@ -363,11 +394,11 @@ def main():
         title = "出场预警 %d 条：%s" % (
             len(exit_warns), "、".join("%s%s" % (s["sym"], "多" if s["side"] == "long" else "空")
                                        for s in exit_warns))
-        ok = post_push(cfg["pushplus"], title, "".join(cards))
+        ok = post_push(push_token, title, "".join(cards))
         print("push exit-warn:", ok)
 
     # ---------- 推送：独立出场信号（顶/底） ----------
-    if xs_fresh and cfg.get("pushplus"):
+    if xs_fresh and push_token:
         site = cfg.get("siteUrl", "")
         cards = []
         for r in xs_fresh:
@@ -389,11 +420,11 @@ def main():
         title = "出场信号 %d 条：%s" % (
             len(xs_fresh), "、".join("%s%s" % (r["sym"], "顶" if r["dir"] == "顶部" else "底")
                                      for r in xs_fresh))
-        ok = post_push(cfg["pushplus"], title, "".join(cards))
+        ok = post_push(push_token, title, "".join(cards))
         print("push xsig:", ok)
 
     # ---------- 推送：趋势跟踪方向确认 ----------
-    if tf_flips and cfg.get("pushplus"):
+    if tf_flips and push_token:
         site = cfg.get("siteUrl", "")
         cards = []
         for c, L in tf_flips:
@@ -412,7 +443,7 @@ def main():
         title = "趋势确认 %d 条：%s" % (
             len(tf_flips), "、".join("%s%s" % (c, "多" if L["side"] == "long" else "空")
                                      for c, L in tf_flips))
-        ok = post_push(cfg["pushplus"], title, "".join(cards))
+        ok = post_push(push_token, title, "".join(cards))
         print("push tf:", ok)
 
     print("scan done  found=%d  pushed=%d  pred=%d open=%d closed=%d win=%s%% sumYuan=%s"

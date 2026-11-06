@@ -25,7 +25,7 @@ border-radius:10px;padding:10px 12px}
 .mktag{border:1px solid var(--line);border-radius:10px;padding:1px 8px;font-size:10px}
 .mkv{font-size:25px;font-weight:800;letter-spacing:.5px;margin:3px 0 5px;line-height:1.25}
 .mk.up .mkv{color:#e5484d} .mk.dn .mkv{color:#0ecb81} .mk.rg .mkv{color:#7fb3ff}
-.mks{font-size:10.5px;color:var(--dim);line-height:1.65}
+.mks{font-size:11px;color:var(--dim);line-height:1.8;word-break:break-word}
 .wkrow{font-size:10.5px;color:var(--dim);margin-top:8px;padding-top:7px;
 border-top:1px solid var(--line);line-height:1.6}
 
@@ -46,6 +46,8 @@ font-size:11px;color:var(--dim);margin:2px 0 8px}
 border-radius:9px;padding:5px 12px;font-size:13px;white-space:nowrap}
 .chip.on{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
 .chip small{opacity:.7;font-size:10px;margin-left:3px}
+.pushdot{display:inline-block;margin-left:4px;padding:0 4px;border-radius:6px;
+background:#22D3EE;color:#06212a;font-size:10px;line-height:15px;font-weight:700}
 .quote{display:flex;align-items:baseline;gap:10px;padding:10px 14px 2px}
 .quote b{font-size:26px;font-weight:700}
 .quote .chg{font-size:14px;font-weight:600}
@@ -259,7 +261,10 @@ background:#10151d;color:var(--tx);font-size:18px}
   <b>💤 低波动待观察</b>（ATR/ATR20 &lt; 1.0，当日可知）。
   顶部【市场状态】为<b>纯信息展示</b>（20 日布林带宽 120 日分位 + MA60 斜率），
   <b>不拦截、不隐藏、不降级任何信号</b>，也不影响推送；
-  趋势穿越确认状态后台仍参与持仓周期与盈亏计算，前端已彻底不再展示。</div>
+  趋势穿越确认状态后台仍参与持仓周期与盈亏计算，前端已彻底不再展示。<br>
+  <b>按品种推送（v11.1）</b>：微信只推 <b>白糖 / 豆粕 / 玻璃</b> 三支（品种按钮上的「推」角标），
+  这三支的<b>进场、独立出场雷达、持仓离场预警、趋势确认</b>全部推送，不套用周线降级档位；
+  其余 5 支<b>页面照常显示全部信号</b>，仅不发微信。换持仓品种只需改配置里的 pushSymbols。</div>
 </div>
 
 <div class="page" id="pgAcct">
@@ -353,15 +358,20 @@ function renderMarket(){
     + '<div class="mkh"><span>市场状态 · '+(DOC.name||'')+' · '+M.date+'</span>'
     + '<span class="mktag">仅信息参考</span></div>'
     + '<div class="mkv">'+M.label+'</div>'
-    + '<div class="mks">'+sub+'<br>本状态<b style="color:var(--tx)">不拦截、不隐藏、不降级</b>任何信号，'
-    + '也不影响微信推送</div></div>';
+    + '<div class="mks">'+sub+'</div>'
+    + '<div class="mks" style="margin-top:4px">本状态'
+    + '<span style="color:var(--tx);font-weight:600">不拦截、不隐藏、不降级</span>任何信号；'
+    + '微信推送范围按品种白名单</div></div>';
 }
 
 /* ================= 品种 / 合约 ================= */
 function renderSymChips(){
+  var ps = ((MAN.pushCfg||{}).symbols||[]).map(function(x){return String(x).toUpperCase();});
   $('symChips').innerHTML = MAN.products.map(function(p){
     return '<div class="chip'+(p.sym===cur.sym?' on':'')+'" onclick="selectSym(\''+p.sym+'\')">'
-      + p.name + '</div>';
+      + p.name
+      + (ps.indexOf(p.sym)>=0 ? '<span class="pushdot" title="该品种的进出场信息会推微信">推</span>' : '')
+      + '</div>';
   }).join('');
 }
 function selectSym(sym){

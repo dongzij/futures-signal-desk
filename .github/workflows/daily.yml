@@ -16,6 +16,8 @@ jobs:
   scan:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -52,10 +54,8 @@ jobs:
               print('WARNING: 数据未到当日，可能接口延迟或抓取失败')
           PY
 
-      - name: 推送微信（有新信号时）
-        run: python notify.py || true
-        env:
-          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+      # v11.1：微信推送统一由 daily.py 完成（品种白名单 + 进场/出场/离场/趋势四类），
+      # 不再调用 notify.py，避免同一条信号重复发两遍。
 
       - name: 提交更新
         run: |
