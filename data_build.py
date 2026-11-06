@@ -18,6 +18,7 @@ import engine
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dist", "data")
 EXIT_ALL = []      # 跨品种出场成交汇总（算全局胜率/净 R）
+XSIG_ALL = []      # 跨品种独立出场信号当前状态
 
 # 品种交易参数（模拟盘用）：乘数 / 手续费 / 保证金率
 # fee: ("lot", 元/手) 或 ("rate", 万分之几)
@@ -219,6 +220,21 @@ def build_product(sym):
                                "date": s.get("date"), "status": s.get("status")}
             break
 
+    # ---- 3b) 独立出场雷达（见顶/见底，与持仓无关）----
+    xsig = None
+    try:
+        now = engine.exit_radar(bars=main, code=sym)
+        xsig = {"cfg": {"ext": engine.XS_EXT, "pull": engine.XS_PULL,
+                        "amp": engine.XS_AMP, "age": engine.XS_AGE,
+                        "shadow": engine.XS_SHADOW, "adx": engine.XS_ADX_DROP,
+                        "tier": list(engine.XS_TIER)},
+                "now": now,
+                "hist": engine.exit_history(sym, bars=main, maxn=16),
+                "stat": engine.xs_stat(sym)}
+        XSIG_ALL.append(dict(now or {}, sym=sym))
+    except Exception as e:                                  # noqa: BLE001
+        print("   xsig failed: %s" % e)
+
     # ---- 4) 主力连续的分钟数据（默认视图也要能看小时/分钟）----
     m60 = m15 = None
     try:
@@ -242,6 +258,7 @@ def build_product(sym):
         "radar": radar,
         "tf": tf,
         "exit": exit_doc,
+        "xsig": xsig,
     }
     json.dump(doc, open(os.path.join(OUT, "%s.json" % sym), "w",
                         encoding="utf-8"), ensure_ascii=False,
@@ -315,6 +332,12 @@ def main():
             "hold": engine.TF_HOLD,
             "stat": engine.tf_stat(),
             "live": [dict(engine.tf_live(s), sym=s) for s in ORDER],
+        },
+        "xsig": {
+            "cfg": {"ext": engine.XS_EXT, "pull": engine.XS_PULL, "amp": engine.XS_AMP,
+                    "age": engine.XS_AGE, "shadow": engine.XS_SHADOW,
+                    "adx": engine.XS_ADX_DROP, "tier": list(engine.XS_TIER)},
+            "live": [x for x in XSIG_ALL],
         },
         "exit": {
             "ma": engine.EXIT_MA,

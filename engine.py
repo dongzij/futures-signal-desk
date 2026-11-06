@@ -59,6 +59,15 @@ EXIT_MA = 26       # 出场短均线（进场仍用 MA34 定义大趋势）
 CH_K = 3.0         # 吊灯止损：极值 ∓ 3 ATR
 WARN_PULL = 1.2    # 盘整预警：自极值回撤 ≥1.2 ATR（仅提示，不平仓）
 
+# ---- 独立出场雷达（见顶/见底探测器，与进场、与是否持仓都无关）----
+XS_EXT = 3.0       # 门槛①：收盘距 MA34 ≥3.0 ATR（趋势已伸展到极致）
+XS_PULL = 1.2      # 门槛②：自段内极值回撤 ≥1.2 ATR（已经开始回头）
+XS_AMP = 12.0      # 辅助：段内幅度 ≥12 ATR
+XS_AGE = 30        # 辅助：段龄 ≥30 根
+XS_SHADOW = 0.6    # 辅助：当根反向影线 ≥0.6 ATR（冲高回落）
+XS_ADX_DROP = 3.0  # 辅助：ADX 自 20 日高点回落 ≥3
+XS_TIER = (1, 2)   # 辅助条数 ≥1 建议 / ≥2 强烈
+
 DEFAULT_MODEL = {
     "version": 4, "ma": 34,
     "calib": {
@@ -381,6 +390,161 @@ def exit_track(bars, S, ei, side, atr, entry=None):
                         "R": round((c - entry) * side / atr, 2)})
             break
     return res
+
+
+# ---------------------------------------------------------------- 独立出场雷达
+# 与进场、与是否持仓都无关：只回答「现在是不是一段趋势的顶/底，该考虑走了」
+# 10 年五品种标定：门槛(伸展+回撤) 命中 94 次/50 品种年 ≈ 每品种每年 1.9 次
+#   辅助 0 条 → 之后 20 根净优势 +0.35 ATR
+#   辅助 1 条 → +0.39 ATR   辅助 ≥2 条 → +0.87 ATR（10 根内反向≥1ATR 55.8%）
+
+def _xs_segs(S):
+    if "_xs" not in S:
+        S["_xs"] = segments(S)
+    return S["_xs"]
+
+
+def _xs_seg_at(S, i):
+    for s, e, sd in _xs_segs(S):
+        if s <= i <= e:
+            return s, e, sd
+    return None
+
+
+def xs_facts(bars, S, i, sd):
+    """sd = 当前趋势方向（+1 上涨趋势→找顶；-1 下跌趋势→找底）。
+    返回 8 条证据，每条 True = 支持「趋势到顶/到底」。"""
+    b = bars[i]
+    atr = S["atr"][i] or 1e-9
+    c = b["c"]
+    seg = _xs_seg_at(S, i)
+    s0 = seg[0] if seg else max(0, i - 30)
+    hi = max(x["h"] for x in bars[s0:i + 1])
+    lo = min(x["l"] for x in bars[s0:i + 1])
+    m34 = S["ma34"][i]
+    ext = ((c - m34) * sd / atr) if m34 else 0.0
+    extp = (hi if sd == 1 else lo)
+    pull = ((c - extp) / atr) if sd == 1 else ((extp - c) / atr)
+    up = (b["h"] - max(b["o"], c)) / atr
+    dn = (min(b["o"], c) - b["l"]) / atr
+    ax = S["adx"][i]
+    hi20 = max([x for x in S["adx"][max(0, i - 19):i + 1] if x is not None] or [0])
+    oi = b.get("oi") or 0
+    oi5 = (bars[i - 5].get("oi") or 0) if i >= 5 else 0
+    doi = (oi / oi5 - 1) if oi5 else 0.0
+    m18 = S["ma18"][i]
+    return {
+        "ext": ext >= XS_EXT,
+        "pull": pull <= -XS_PULL,
+        "amp": (hi - lo) / atr >= XS_AMP,
+        "shadow": (up >= XS_SHADOW) if sd == 1 else (dn >= XS_SHADOW),
+        "age": (i - s0 + 1) >= XS_AGE,
+        "adx": (hi20 - ax) >= XS_ADX_DROP if ax is not None else False,
+        "ma18": ((c < m18) if sd == 1 else (c > m18)) if m18 else False,
+        "oi": (doi <= 0) if sd == 1 else (doi >= 0),
+    }
+
+
+XS_GATES = ("ext", "pull")
+XS_AUX = ("amp", "shadow", "age", "adx", "ma18", "oi")
+XS_DESC = {
+    "ext": ("趋势伸展", "收盘距 MA34 ≥3ATR"),
+    "pull": ("极值回撤", "自段内高/低点回撤 ≥1.2ATR"),
+    "amp": ("段幅足够", "本段振幅 ≥12ATR"),
+    "shadow": ("冲高回落", "当根反向影线 ≥0.6ATR"),
+    "age": ("趋势老化", "本段已走 ≥30 根"),
+    "adx": ("动能衰减", "ADX 自 20 日高点回落 ≥3"),
+    "ma18": ("短均失守", "收盘反向穿越 MA18"),
+    "oi": ("资金撤退", "持仓 5 日净减"),
+}
+
+
+def exit_radar(bars=None, S=None, i=None, code=None, years=10):
+    """独立出场雷达：当前这根 K 线的顶/底评估（不需要持仓）"""
+    if bars is None:
+        bars = _bars_of(code, years)
+    if S is None:
+        S = make_S(bars)
+    if i is None:
+        i = len(bars) - 1
+    b = bars[i]
+    seg = _xs_seg_at(S, i)
+    if seg is None:
+        return None
+    sd = seg[2]
+    f = xs_facts(bars, S, i, sd)
+    gates = [k for k in XS_GATES if f[k]]
+    aux = [k for k in XS_AUX if f[k]]
+    level, advice = "none", "趋势未到极端位置"
+    if len(gates) == len(XS_GATES):
+        if len(aux) >= XS_TIER[1]:
+            level, advice = "strong", "强烈建议离场"
+        elif len(aux) >= XS_TIER[0]:
+            level, advice = "suggest", "建议减仓/离场"
+        else:
+            level, advice = "watch", "到顶/底区，留意"
+    atr = S["atr"][i] or 1e-9
+    extp = (max(x["h"] for x in bars[seg[0]:i + 1]) if sd == 1
+            else min(x["l"] for x in bars[seg[0]:i + 1]))
+    return {
+        "side": "long" if sd == 1 else "short",     # 该走的是哪个方向的仓
+        "dir": "顶部" if sd == 1 else "底部",
+        "date": b["d"], "close": round(b["c"], 1),
+        "k": len(gates) + len(aux), "gate": len(gates), "aux": len(aux),
+        "level": level, "advice": advice,
+        "conds": [{"k": k, "n": XS_DESC[k][0], "d": XS_DESC[k][1],
+                   "ok": f[k], "gate": k in XS_GATES} for k in XS_GATES + XS_AUX],
+        "ext": round(((b["c"] - S["ma34"][i]) * sd / atr) if S["ma34"][i] else 0, 2),
+        "pull": round(((b["c"] - extp) / atr) if sd == 1 else ((extp - b["c"]) / atr), 2),
+        "m34": round(S["ma34"][i], 1) if S["ma34"][i] else None,
+        "extPx": round(extp, 1),
+        "age": i - seg[0] + 1,
+        "segSide": sd,
+    }
+
+
+def exit_history(code=None, bars=None, years=10, maxn=20, dedupe=8):
+    """历史独立出场信号（建议及以上），用于列表与图上标记"""
+    if bars is None:
+        bars = _bars_of(code, years)
+    S = make_S(bars)
+    out, last = [], -99
+    for i in range(40, len(bars)):
+        r = exit_radar(bars, S, i)
+        if not r or r["level"] not in ("suggest", "strong"):
+            continue
+        if i - last < dedupe:
+            continue
+        last = i
+        out.append({"d": r["date"], "sd": r["side"], "k": r["k"], "aux": r["aux"],
+                    "level": r["level"], "dir": r["dir"], "px": r["close"],
+                    "pull": r["pull"], "age": r["age"]})
+    return out[-maxn:]
+
+
+def xs_stat(code=None, years=10):
+    """本品种历史独立出场信号统计（供页面显示可信度）"""
+    hs = exit_history(code, years=years, maxn=10 ** 6)
+    if not hs:
+        return None
+    n = len(hs)
+    bars = _bars_of(code, years)
+    S = make_S(bars)
+    idx = {b["d"]: k for k, b in enumerate(bars)}
+    ok20, ok10 = 0, 0
+    for h in hs:
+        i = idx.get(h["d"])
+        if i is None:
+            continue
+        sd = 1 if h["sd"] == "long" else -1
+        if i + 10 < len(bars):
+            ok10 += 1 if (bars[i]["c"] - bars[i + 10]["c"]) * sd > 0 else 0
+        if i + 20 < len(bars):
+            ok20 += 1 if (bars[i]["c"] - bars[i + 20]["c"]) * sd > 0 else 0
+    return {"n": n, "perYear": round(n / years, 2),
+            "ok10": round(ok10 / max(1, n) * 100), "ok20": round(ok20 / max(1, n) * 100),
+            "strong": sum(1 for h in hs if h["level"] == "strong")}
+
 
 def stage_of(k, gate=True):
     if k >= BUILD_K:

@@ -32,7 +32,42 @@ padding:12px;margin-bottom:10px}
 .card h3{font-size:13px;color:var(--dim);font-weight:500;margin-bottom:8px;display:flex;
 justify-content:space-between;align-items:center}
 .card h3 .r{font-size:11px}
-#chart{width:100%;height:340px}
+.cleg{display:flex;gap:13px;flex-wrap:wrap;font-size:10.5px;padding:7px 8px 1px}
+#chart{width:100%;height:560px}
+@media(max-width:520px){#chart{height:460px}}
+
+/* ===== 独立出场雷达（v10）===== */
+.xlv{display:flex;align-items:center;gap:9px;margin-bottom:9px}
+.xlv .bg{font-size:13px;font-weight:800;padding:5px 12px;border-radius:7px;letter-spacing:.3px}
+.xlv.none .bg{background:#1c2430;color:var(--dim)}
+.xlv.watch .bg{background:rgba(245,165,36,.16);color:#f5a524;border:1px solid #f5a52466}
+.xlv.suggest .bg{background:#f5a524;color:#241703}
+.xlv.strong .bg{background:#ff4d4f;color:#fff;box-shadow:0 0 0 2px #ff4d4f33}
+.xlv .sub{font-size:11px;color:var(--dim);line-height:1.5}
+.xgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.xc{display:flex;gap:6px;background:#0f141c;border:1px solid var(--line);
+border-radius:7px;padding:6px 8px;align-items:flex-start}
+.xc.ok{border-color:#f5a52466;background:rgba(245,165,36,.08)}
+.xc.gate{border-left:3px solid #3b4a63}
+.xc.gate.ok{border-left-color:#f5a524}
+.xc .ic{font-size:11px;flex:0 0 12px;color:#48566b;line-height:1.5}
+.xc.ok .ic{color:#f5a524}
+.xc .tt{font-size:11.5px;line-height:1.35;font-weight:600}
+.xc .tt em{font-style:normal;color:var(--dim);font-weight:400;font-size:10.5px;display:block}
+.fchips{display:flex;gap:6px;margin-bottom:9px}
+.fchips .fc{border:1px solid var(--line);background:#0f141c;color:var(--dim);
+border-radius:14px;padding:3px 12px;font-size:11.5px}
+.fchips .fc.on{background:#1d2838;color:var(--tx);border-color:#33507a;font-weight:600}
+.sgr{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #1a2029}
+.sgr:last-child{border-bottom:none}
+.sgr .dt{color:var(--dim);font-size:11px;flex:0 0 68px}
+.sgr .bd{font-size:10.5px;font-weight:800;border-radius:4px;padding:2px 6px;flex:0 0 auto}
+.bd.in{background:#12325c;color:#7fb3ff}
+.bd.out-s{background:#f5a524;color:#241703}
+.bd.out-x{background:#ff4d4f;color:#fff}
+.sgr .tx2{flex:1;font-size:12px;line-height:1.45}
+.sgr .tx2 em{font-style:normal;color:var(--dim);font-size:10.5px;display:block}
+
 .dec{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .dv{background:#10151d;border:1px solid var(--line);border-radius:9px;padding:8px 10px}
 .dv .l{font-size:11px;color:var(--dim)}
@@ -131,13 +166,22 @@ background:#10151d;color:var(--tx);font-size:18px}
   <div class="ctn">
     <div class="card" style="padding:6px 4px 2px">
       <div id="chart"></div>
+      <div class="cleg"><span style="color:#7fb3ff">▼▲ 进场建仓</span>
+        <span style="color:#f5a524">◆ 建议离场</span>
+        <span style="color:#ff4d4f">◆ 强烈离场</span>
+        <span style="color:#ff8a3d">┄ MA26 离场线</span>
+        <span style="color:#4c8dff">— MA34 趋势线</span></div>
     </div>
     <div class="card">
       <h3>进场雷达 <span class="r" id="decTime"></span></h3>
       <div class="dec" id="decGrid"></div>
     </div>
     <div class="card">
-      <h3>出场雷达 <span class="r" id="exitTime"></span></h3>
+      <h3>出场雷达 · 独立<span class="r" id="xsTime"></span></h3>
+      <div id="xsBox"></div>
+    </div>
+    <div class="card">
+      <h3>持仓离场线 <span class="r" id="exitTime"></span></h3>
       <div id="exitBox"></div>
     </div>
     <div class="card">
@@ -145,7 +189,8 @@ background:#10151d;color:var(--tx);font-size:18px}
       <div id="tfBox"></div>
     </div>
     <div class="card">
-      <h3>本品种信号 <span class="r" id="sigCnt"></span></h3>
+      <h3>信号栏 · 进场 / 出场 <span class="r" id="sigCnt"></span></h3>
+      <div class="fchips" id="sigFilter"></div>
       <div id="sigList"></div>
     </div>
   </div>
@@ -168,6 +213,11 @@ background:#10151d;color:var(--tx);font-size:18px}
   ② <b>短均线</b>：价格先站到仓位一侧（新趋势成立），之后收盘反向穿越 <b>MA26</b> 就走。
   另设<b>盘整预警</b>（离场线未破、但自极值回撤≥1.2ATR 且 ATR 收缩/持仓下降/缩量）——
   只提示减仓、不平仓。<br>
+  <b>出场是独立机制（v10）</b>：进场雷达与出场雷达互不依赖 —— 出场雷达只看价格结构
+  （趋势伸展 ≥3ATR + 自极值回撤 ≥1.2ATR 两道门槛，段幅/段龄/影线/ADX 衰减/短均失守/资金撤退
+  六条辅助证据），<b>不需要你有进场信号，也不需要你持有仓位</b>。辅助证据越多，
+  信号后继续持有的期望损失越大（10 年标定：0 条 +0.35 ATR → 2 条 +0.87 ATR → 3 条 +1.33 ATR，
+  20 根净优势单调上升）。出现「建议/强烈」时页面亮灯、微信推送，走不走由你自己决定。<br>
   实测（37 笔，进场完全相同，只换出场）：净收益 <b>+19.5R → +32.5R（+67%）</b>，
   最大回撤 -8.1R → <b>-7.7R</b>，最差单笔 <b>-6.1R → -3.0R</b>，持仓中位 20 → <b>10 根</b>，
   浮盈回吐 85% → <b>72%</b>；训练段 +24.1R / 盲测段 +8.4R 双正，去掉最大 3 笔仍 +2.8R
@@ -394,6 +444,20 @@ function renderChart(){
         symbolOffset:[0, t.sd==='long'? 12 : -12], itemStyle:{color:'#ff5c5c'}});
     });
   }
+  // 独立出场信号（v10）：顶部/底部到位的提示，橙=建议 红=强烈
+  if(cur.pt==='D' && DOC.xsig){
+    (DOC.xsig.hist||[]).forEach(function(h){
+      var ix = dateIdx(dates, h.d);
+      if(ix==null) return;
+      var strong = h.level==='strong';
+      var top = h.dir==='顶部';
+      marks.push({value:[ix, top? bars[ix][3] : bars[ix][2]],
+        symbol:'diamond', symbolSize: strong? 14 : 11,
+        symbolOffset:[0, top? -18 : 18],
+        itemStyle:{color: strong? '#ff4d4f':'#f5a524',
+                   borderColor:'#0b0e13', borderWidth:1.5}});
+    });
+  }
   var series = [
     {name:'K', type:'candlestick', data:k, barMaxWidth:14,
      itemStyle:{color:'#e5484d', color0:'#0ecb81', borderColor:'#e5484d', borderColor0:'#0ecb81'}},
@@ -409,7 +473,7 @@ function renderChart(){
   CH.setOption({
     animation:false,
     axisPointer:{link:[{xAxisIndex:'all'}], label:{backgroundColor:'#232b38'}},
-    grid:[{left:8,right:8,top:12,height:'58%'}, {left:8,right:8,top:'74%',height:'16%'}],
+    grid:[{left:8,right:8,top:14,height:'64%'}, {left:8,right:8,top:'79%',height:'14%'}],
     xAxis:[
       {type:'category', data:dates, boundaryGap:true, axisLine:{lineStyle:{color:'#232b38'}},
        axisLabel:{color:'#8b95a7', fontSize:9}, axisTick:{show:false}},
@@ -439,6 +503,72 @@ function dateIdx(dates, d){
     if(dates[i]>d) return i;
   }
   return null;
+}
+
+/* ================= 独立出场雷达（v10 见顶/见底） ================= */
+var XLV = {none:['无异动',''], watch:['到顶/底区 · 留意',''], suggest:['建议减仓',''],
+           strong:['强烈建议离场','']};
+function renderXs(){
+  var X = DOC.xsig, box = $('xsBox');
+  if(!X){ box.innerHTML = '<div class="empty">独立出场数据缺失</div>'; return; }
+  var N = X.now || {}, cfg = X.cfg || {}, st = X.stat || {};
+  var lvl = N.level || 'none';
+  var head = {none:['无出场信号','var(--dim)'], watch:['到顶/底区 · 留意','#f5a524'],
+              suggest:['建议减仓/离场','#f5a524'], strong:['强烈建议离场','#ff4d4f']}[lvl];
+  var html = '';
+
+  html += '<div style="font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:9px">'
+    + '独立机制：<b style="color:#f5a524">不依赖进场信号、也不需要你有持仓</b>，'
+    + '只在价格走到趋势极端（伸展 + 回头）时提示。走不走由你决定。</div>';
+
+  html += '<div class="xlv ' + lvl + '">'
+    + '<span class="bg">' + head[0] + '</span>'
+    + '<span class="sub">' + (N.dir || '') + '方向 · ' + (N.date || '') + ' 收盘 '
+    + (N.close != null ? f2(N.close) : '—') + '<br>'
+    + '门 ' + (N.gate || 0) + '/2 · 辅助 ' + (N.aux || 0) + '/6</span></div>';
+
+  if(N.dir){
+    html += '<div style="display:flex;gap:8px;font-size:11.5px;margin-bottom:8px">'
+      + exCard('距 MA34', (N.ext != null ? (N.ext >= 0 ? '+' : '') + f2(N.ext) + ' ATR' : '—'),
+               '门槛 ≥' + (cfg.ext || 3) + ' ATR', '#7fb3ff')
+      + exCard('自极值回撤', (N.pull != null ? f2(N.pull) + ' ATR' : '—'),
+               '门槛 ≥' + (cfg.pull || 1.2) + ' ATR', '#f5a524')
+      + exCard('段龄', (N.age || 0) + ' 根', '辅助 ≥' + (cfg.age || 30) + ' 根', '#9b6ef3')
+      + '</div>';
+  }
+
+  html += '<div class="xgrid">';
+  (N.conds || []).forEach(function(c){
+    html += '<div class="xc ' + (c.ok ? 'ok ' : '') + (c.gate ? 'gate' : '') + '">'
+      + '<span class="ic">' + (c.ok ? '●' : '○') + '</span>'
+      + '<span class="tt">' + c.n + (c.gate ? ' <b style="color:#7fb3ff">门</b>' : '')
+      + '<em>' + c.d + '</em></span></div>';
+  });
+  html += '</div>';
+
+  if(st && st.n){
+    html += '<div style="border-top:1px solid var(--line);padding-top:8px;'
+      + 'font-size:11px;color:var(--dim);line-height:1.8">'
+      + '本品种 10 年出现 <b style="color:var(--tx)">' + st.n + '</b> 次建议级以上信号'
+      + '（年均 ' + st.perYear + ' 次，其中强烈 ' + st.strong + ' 次）<br>'
+      + '信号后 10 根方向正确 <b style="color:var(--tx)">' + st.ok10 + '%</b> · '
+      + '20 根正确 <b style="color:var(--tx)">' + st.ok20 + '%</b></div>';
+  }
+
+  var hs = (X.hist || []).slice(-4).reverse();
+  if(hs.length){
+    html += '<div style="font-size:11px;color:var(--dim);margin:8px 0 2px">最近 4 次出场提示</div>';
+    hs.forEach(function(h){
+      var c = h.level === 'strong' ? '#ff4d4f' : '#f5a524';
+      html += '<div class="sgr"><span class="dt">' + h.d + '</span>'
+        + '<span class="bd ' + (h.level === 'strong' ? 'out-x' : 'out-s') + '">'
+        + (h.level === 'strong' ? '强烈' : '建议') + '</span>'
+        + '<span class="tx2">' + h.dir + ' · 已满足 ' + h.k + ' 条 · 收 ' + f2(h.px)
+        + '<em>回撤 ' + f2(h.pull) + ' ATR · 段龄 ' + h.age + ' 根</em></span></div>';
+    });
+  }
+  box.innerHTML = html;
+  if($('xsTime')) $('xsTime').textContent = '数据 ' + MAN.built;
 }
 
 /* ================= 出场雷达（v9 慢进快出） ================= */
@@ -780,35 +910,78 @@ function kindBadge(s){
   if(s.kind==='warn') return ['预警','b-T3'];
   return ['兑现','b-T2'];
 }
+var SIGF = 'all';
+function setSigF(f){ SIGF = f; renderSigs(); }
+
 function renderSigs(){
-  var list = DOC.signals.slice().reverse().slice(0,30);
-  var np = DOC.signals.filter(function(s){return s.kind==='pred';}).length;
-  var nw = DOC.signals.filter(function(s){return s.kind==='warn';}).length;
-  var nc = DOC.signals.filter(function(s){return s.kind==='confirm';}).length;
-  $('sigCnt').textContent = '建仓 ' + np + ' · 预警 ' + nw + ' · 兑现 ' + nc;
-  if(!list.length){ $('sigList').innerHTML = '<div class="empty">暂无信号（本方法每品种每年约 1 次）</div>'; return; }
-  $('sigList').innerHTML = list.map(function(s){
-    var st = statusTxt(s);
-    var bd = kindBadge(s);
-    var t1, r2;
-    if(s.kind==='warn'){
-      t1 = s.side==='short'?'顶部预警':'底部预警';
-      r2 = '命中 '+(s.k||0)+'/4 · 5日内反转概率 '+Math.round(((s.prob||{}).p5||(s.prob||{})['5']||0)*100)+'% · 现价 '+s.price;
-    } else if(s.kind==='pred'){
-      t1 = (s.strong? '★':'') + (s.side==='short'?'预空·可建仓':'预多·可建仓');
-      r2 = '4/4 命中'+(s.strong?' · <b style="color:var(--gold)">强确认</b>':'') + ' · 概率 '
-         + Math.round(((s.prob||{})['5']||0)*100)+'% · 入 '+(s.en!=null?s.en:'—')
-         + ' · 吊灯 '+(s.ch!=null?s.ch:'—')+' / MA26 '+(s.ml!=null?s.ml:'—')+' 离场';
-    } else {
-      t1 = s.side==='short'?'反转兑现·空':'反转兑现·多';
-      r2 = (s.predDate? '预警 '+s.predDate.slice(5)+' → ':'' )+'穿越 MA26 · 现价 '+s.price;
+  var rows = [];
+  // —— 进场侧 ——
+  (DOC.signals || []).forEach(function(s){
+    rows.push({d: s.date, kind: 'in', s: s});
+  });
+  // —— 出场侧（本品种历史独立信号）——
+  ((DOC.xsig || {}).hist || []).forEach(function(h){
+    rows.push({d: h.d, kind: 'out', h: h});
+  });
+  // —— 出场侧（全品种：今日正在亮灯的，跨品种提示）——
+  var xl = (MAN.xsig || {}).live || [];
+  xl.forEach(function(x){
+    if(x.sym === cur.sym || !x.level || x.level === 'none') return;
+    rows.push({d: x.date, kind: 'out', h: {d: x.date, level: x.level, dir: x.dir,
+      k: x.k, pull: x.pull, age: x.age, px: x.close, cross: x.sym}});
+  });
+
+  var nIn = rows.filter(function(r){ return r.kind === 'in'; }).length;
+  var nOut = rows.filter(function(r){ return r.kind === 'out'; }).length;
+  var nHi = rows.filter(function(r){ return r.kind === 'out' && r.h.level === 'strong'; }).length;
+  $('sigCnt').textContent = '进场 ' + nIn + ' · 出场 ' + nOut + (nHi ? '（强烈 ' + nHi + '）' : '');
+
+  if(SIGF === 'in')  rows = rows.filter(function(r){ return r.kind === 'in'; });
+  if(SIGF === 'out') rows = rows.filter(function(r){ return r.kind === 'out'; });
+
+  var fc = [['all','全部'],['in','只看进场'],['out','只看出场']];
+  $('sigFilter').innerHTML = fc.map(function(f){
+    return '<span class="fc' + (SIGF === f[0] ? ' on' : '') + '" onclick="setSigF(\'' + f[0] + '\')">'
+      + f[1] + '</span>';
+  }).join('');
+
+  rows.sort(function(a,b){ return a.d < b.d ? 1 : -1; });
+  rows = rows.slice(0, 40);
+  if(!rows.length){
+    $('sigList').innerHTML = '<div class="empty">暂无信号</div>';
+    return;
+  }
+  $('sigList').innerHTML = rows.map(function(r){
+    if(r.kind === 'in'){
+      var s = r.s;
+      var nm = s.kind === 'pred' ? '建仓' : (s.kind === 'warn' ? '预警' : '兑现');
+      var sd = s.side === 'short' ? '空' : '多';
+      var cls = s.kind === 'pred' ? 'in' : 'in';
+      var desc;
+      if(s.kind === 'warn'){
+        desc = '命中 ' + (s.k || 0) + '/4 · 5日反转概率 '
+          + Math.round((((s.prob || {})['5']) || 0) * 100) + '%';
+      } else if(s.kind === 'pred'){
+        desc = '4/4 命中' + (s.strong ? ' · <b style="color:#f5a524">强确认</b>' : '')
+          + ' · 概率 ' + Math.round((((s.prob || {})['5']) || 0) * 100) + '%'
+          + ' · 入 ' + (s.en != null ? s.en : '—');
+      } else {
+        desc = '反转兑现 · 现价 ' + s.price;
+      }
+      return '<div class="sgr" onclick="openSig(\'' + sigKey(s) + '\')">'
+        + '<span class="dt">' + s.date + '</span>'
+        + '<span class="bd in">' + (s.side === 'short' ? '▲ 进场空' : '▼ 进场多') + '</span>'
+        + '<span class="tx2">' + nm + ' · ' + sd + '<em>' + desc + '</em></span></div>';
     }
-    return '<div class="sig" onclick="openSig(\''+sigKey(s)+'\')">'
-      + '<span class="badge '+bd[1]+'">'+bd[0]+'</span>'
-      + '<div class="fx"><div class="r1"><span class="'+(s.side==='short'?'side-s':'side-l')+'">'
-      + t1+'</span> '+s.date+'</div>'
-      + '<div class="r2">'+r2+'</div></div>'
-      + '<div class="st '+st[1]+'"><div class="p">'+st[0]+'</div></div></div>';
+    var h = r.h;
+    var isS = h.level === 'strong';
+    var sym = h.cross ? h.cross + ' ' : '';
+    return '<div class="sgr"><span class="dt">' + h.d + '</span>'
+      + '<span class="bd ' + (isS ? 'out-x' : 'out-s') + '">'
+      + (isS ? '◆ 强烈离场' : '◆ 建议离场') + '</span>'
+      + '<span class="tx2">' + sym + h.dir + ' · 满足 ' + h.k + ' 条'
+      + '<em>回撤 ' + f2(h.pull) + ' ATR · 段龄 ' + h.age + ' 根 · 收 ' + f2(h.px)
+      + (h.cross ? '（其他品种，仅供参考）' : '') + '</em></span></div>';
   }).join('');
 }
 
@@ -1132,7 +1305,7 @@ function showPage(pg){
   if(pg==='Main' && CH) CH.resize();
 }
 function renderAll(){
-  renderPt(); renderQuote(); renderChart(); renderDec(); renderExit(); renderTF(); renderSigs();
+  renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderExit(); renderTF(); renderSigs();
 }
 
 /* ================= 启动 ================= */

@@ -222,6 +222,27 @@ def main():
         "ma": engine.MA,
         "exit": {"ma": engine.EXIT_MA, "chK": engine.CH_K, "warnPull": engine.WARN_PULL},
     }
+    # ---------- 独立出场信号（见顶/见底，与是否持仓完全无关） ----------
+    xs_today, xs_fresh = [], []
+    seen_x = state.setdefault("xsigSeen", [])
+    for c in codes:
+        try:
+            r = engine.exit_radar(code=c, bars=engine_bars(c))
+        except Exception as e:                  # noqa: BLE001
+            print("xsig %s failed: %s" % (c, e), file=sys.stderr)
+            continue
+        if not r:
+            continue
+        r["sym"] = c
+        xs_today.append(r)
+        if r["level"] in ("suggest", "strong"):
+            key = "%s|%s|%s" % (c, r["date"], r["level"])
+            if key not in seen_x:
+                seen_x.append(key)
+                xs_fresh.append(r)
+    state["xsigSeen"] = seen_x[-400:]
+    state["xsigToday"] = xs_today
+
     # ---------- 趋势跟踪状态（v8）：方向变化时推送 ----------
     tf_prev = state.get("tf", {})
     tf_now = {}
@@ -314,6 +335,32 @@ def main():
                                        for s in exit_warns))
         ok = post_push(cfg["pushplus"], title, "".join(cards))
         print("push exit-warn:", ok)
+
+    # ---------- 推送：独立出场信号（顶/底） ----------
+    if xs_fresh and cfg.get("pushplus"):
+        site = cfg.get("siteUrl", "")
+        cards = []
+        for r in xs_fresh:
+            col = "#dc2626" if r["level"] == "strong" else "#d97706"
+            lvl = "强烈建议离场" if r["level"] == "strong" else "建议减仓"
+            okn = " · ".join(x["n"] for x in r["conds"] if x["ok"]) or "—"
+            cards.append(
+                '<div style="margin-bottom:16px">'
+                '<div style="font-size:16px;font-weight:700;color:%s">'
+                '🔔 %s：%s %s</div>'
+                '<div style="background:#fff7ed;padding:10px;border-radius:6px;'
+                'font-size:13px;line-height:1.9;margin-top:6px">'
+                '%s 收盘 <b>%s</b> · 距 MA34 <b>%+.2f ATR</b> · 自极值回撤 <b>%.2f ATR</b><br>'
+                '已满足 %d 条：%s<br>'
+                '<span style="color:#666;font-size:12px">这是独立于进场信号的出场提示，'
+                '不需要持仓也可参考。是否离场由你自己决定。</span></div></div>'
+                % (col, lvl, r["sym"], engine.NAMES.get(r["sym"], ""),
+                   r["date"], r["close"], r["ext"], r["pull"], len([x for x in r["conds"] if x["ok"]]), okn))
+        title = "出场信号 %d 条：%s" % (
+            len(xs_fresh), "、".join("%s%s" % (r["sym"], "顶" if r["dir"] == "顶部" else "底")
+                                     for r in xs_fresh))
+        ok = post_push(cfg["pushplus"], title, "".join(cards))
+        print("push xsig:", ok)
 
     # ---------- 推送：趋势跟踪方向确认 ----------
     if tf_flips and cfg.get("pushplus"):
