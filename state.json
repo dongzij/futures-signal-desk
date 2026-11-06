@@ -92,7 +92,7 @@
    "pts": 45.0,
    "ret": 2.59,
    "yuan": 888,
-   "held": 20,
+   "held": 19,
    "R": 1.15,
    "meta": {
     "weekMA": 45,
@@ -101,8 +101,8 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 1.004,
-    "lowVol": false,
+    "volRatio": 0.98,
+    "lowVol": true,
     "confirm2": "noFollow"
    }
   },
@@ -198,7 +198,7 @@
    "pts": 506.0,
    "ret": 18.69,
    "yuan": 5056,
-   "held": 54,
+   "held": 53,
    "R": 6.22,
    "meta": {
     "weekMA": 45,
@@ -207,9 +207,9 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 1.002,
-    "lowVol": false,
-    "confirm2": "followed"
+    "volRatio": 0.996,
+    "lowVol": true,
+    "confirm2": "noFollow"
    }
   },
   {
@@ -232,9 +232,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.996,
+    "volRatio": 0.989,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -257,9 +257,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.943,
+    "volRatio": 0.918,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -320,9 +320,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.976,
+    "volRatio": 0.98,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -383,7 +383,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.041,
+    "volRatio": 1.026,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -446,7 +446,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.981,
+    "volRatio": 0.986,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -509,9 +509,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.886,
+    "volRatio": 0.888,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -572,7 +572,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.991,
+    "volRatio": 0.985,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -635,9 +635,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.974,
-    "lowVol": true,
-    "confirm2": "followed"
+    "volRatio": 1.007,
+    "lowVol": false,
+    "confirm2": "noFollow"
    }
   },
   {
@@ -698,7 +698,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.012,
+    "volRatio": 1.017,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -761,7 +761,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.128,
+    "volRatio": 1.142,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -840,24 +840,27 @@
    "bufYuan": 2291,
    "lead": 16,
    "holdTo": "反向穿越 MA34",
-   "exit": 7712.0,
+   "exit": 7548.0,
    "lots": 2,
    "status": "closed",
    "foundAt": "2026-11-06 13:57",
-   "maLine": 7357.8,
-   "chLine": 7625.0,
-   "distMa": 1.89,
-   "distCh": -0.47,
-   "armed": false,
+   "maLine": 7489.0,
+   "chLine": 7809.0,
+   "distMa": 0.32,
+   "distCh": 1.4,
+   "armed": true,
    "exitWarn": false,
-   "exitWarnWhy": [],
-   "exitDate": "2017-08-21",
-   "why": "吊灯止损",
-   "pts": -648.0,
-   "ret": -9.17,
-   "yuan": -3246,
-   "held": 4,
-   "R": -3.47,
+   "exitWarnWhy": [
+    "持仓 -17.7%",
+    "缩量"
+   ],
+   "exitDate": "2017-09-11",
+   "why": "反向穿越 MA26",
+   "pts": -484.0,
+   "ret": -6.85,
+   "yuan": -2426,
+   "held": 18,
+   "R": -2.59,
    "meta": {
     "weekMA": 45,
     "weekPos": 0,
@@ -865,7 +868,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 1.043,
+    "volRatio": 1.081,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -890,7 +893,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.067,
+    "volRatio": 1.045,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -953,7 +956,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.913,
+    "volRatio": 0.934,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -1048,7 +1051,7 @@
    "pts": 29.0,
    "ret": 1.13,
    "yuan": 286,
-   "held": 16,
+   "held": 15,
    "R": 0.4,
    "meta": {
     "weekMA": 45,
@@ -1057,7 +1060,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 1.081,
+    "volRatio": 1.066,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -1082,7 +1085,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.139,
+    "volRatio": 1.102,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -1161,26 +1164,26 @@
    "bufYuan": 1987,
    "lead": 6,
    "holdTo": "反向穿越 MA34",
-   "exit": 2475.0,
+   "exit": 2677.0,
    "lots": 2,
    "status": "closed",
    "foundAt": "2026-11-06 13:57",
-   "maLine": 2508.3,
-   "chLine": 2328.7,
-   "distMa": 0.41,
-   "distCh": 1.8,
+   "maLine": 2748.2,
+   "chLine": 2824.7,
+   "distMa": 0.88,
+   "distCh": -1.82,
    "armed": true,
    "exitWarn": false,
    "exitWarnWhy": [
-    "持仓 -7.1%"
+    "持仓 -3.9%"
    ],
-   "exitDate": "2017-10-27",
-   "why": "反向穿越 MA26",
-   "pts": -76.0,
-   "ret": -2.98,
-   "yuan": -764,
-   "held": 1,
-   "R": -0.94,
+   "exitDate": "2017-12-11",
+   "why": "吊灯止损",
+   "pts": 126.0,
+   "ret": 4.94,
+   "yuan": 1256,
+   "held": 31,
+   "R": 1.55,
    "meta": {
     "weekMA": 45,
     "weekPos": 1,
@@ -1188,8 +1191,8 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.039,
-    "lowVol": false,
+    "volRatio": 0.999,
+    "lowVol": true,
     "confirm2": "noFollow"
    }
   },
@@ -1251,7 +1254,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.855,
+    "volRatio": 0.823,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -1276,7 +1279,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.942,
+    "volRatio": 0.911,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -1334,12 +1337,12 @@
    "foundAt": "2026-11-06 13:57",
    "meta": {
     "weekMA": 45,
-    "weekPos": -1,
-    "weekAlign": true,
+    "weekPos": 1,
+    "weekAlign": false,
     "tier": "normal",
-    "observe": false,
-    "push": true,
-    "volRatio": 0.945,
+    "observe": true,
+    "push": false,
+    "volRatio": 0.939,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -1402,7 +1405,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.888,
+    "volRatio": 0.969,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -1465,8 +1468,8 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.008,
-    "lowVol": false,
+    "volRatio": 0.98,
+    "lowVol": true,
     "confirm2": "noFollow"
    }
   },
@@ -1560,7 +1563,7 @@
    "pts": -4.0,
    "ret": -0.23,
    "yuan": -42,
-   "held": 11,
+   "held": 10,
    "R": -0.25,
    "meta": {
     "weekMA": 45,
@@ -1569,7 +1572,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.937,
+    "volRatio": 0.927,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -1594,7 +1597,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.927,
+    "volRatio": 0.91,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -1652,13 +1655,13 @@
    "foundAt": "2026-11-06 13:57",
    "meta": {
     "weekMA": 45,
-    "weekPos": 1,
-    "weekAlign": true,
+    "weekPos": -1,
+    "weekAlign": false,
     "tier": "normal",
-    "observe": false,
-    "push": true,
-    "volRatio": 0.978,
-    "lowVol": true,
+    "observe": true,
+    "push": false,
+    "volRatio": 1.046,
+    "lowVol": false,
     "confirm2": "followed"
    }
   },
@@ -1720,9 +1723,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.993,
+    "volRatio": 0.969,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -1783,9 +1786,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.249,
+    "volRatio": 1.185,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -1846,9 +1849,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.908,
+    "volRatio": 0.936,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -1909,7 +1912,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.864,
+    "volRatio": 0.869,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -2004,7 +2007,7 @@
    "pts": -44.0,
    "ret": -0.8,
    "yuan": -446,
-   "held": 7,
+   "held": 6,
    "R": -0.9,
    "meta": {
     "weekMA": 45,
@@ -2013,9 +2016,9 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.937,
+    "volRatio": 0.934,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -2038,7 +2041,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.934,
+    "volRatio": 0.954,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -2101,7 +2104,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.895,
+    "volRatio": 0.932,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -2164,7 +2167,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.928,
+    "volRatio": 0.896,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -2259,7 +2262,7 @@
    "pts": -162.0,
    "ret": -2.01,
    "yuan": -816,
-   "held": 3,
+   "held": 2,
    "R": -1.07,
    "meta": {
     "weekMA": 45,
@@ -2268,9 +2271,9 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.926,
+    "volRatio": 0.9,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -2293,9 +2296,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.897,
+    "volRatio": 0.921,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -2356,7 +2359,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.983,
+    "volRatio": 0.966,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -2419,7 +2422,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.884,
+    "volRatio": 0.948,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -2482,7 +2485,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.119,
+    "volRatio": 1.069,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -2545,9 +2548,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.997,
+    "volRatio": 0.999,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -2642,7 +2645,7 @@
    "pts": 612.0,
    "ret": 18.74,
    "yuan": 6117,
-   "held": 45,
+   "held": 44,
    "R": 11.03,
    "meta": {
     "weekMA": 45,
@@ -2651,7 +2654,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.961,
+    "volRatio": 0.922,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -2676,7 +2679,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.922,
+    "volRatio": 0.964,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -2739,7 +2742,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.96,
+    "volRatio": 0.928,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -2836,7 +2839,7 @@
    "pts": -14.0,
    "ret": -0.81,
    "yuan": -292,
-   "held": 2,
+   "held": 1,
    "R": -0.6,
    "meta": {
     "weekMA": 45,
@@ -2845,7 +2848,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.108,
+    "volRatio": 1.091,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -2870,7 +2873,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.035,
+    "volRatio": 1.052,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -2933,7 +2936,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.064,
+    "volRatio": 1.034,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -2996,8 +2999,8 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.01,
-    "lowVol": false,
+    "volRatio": 0.98,
+    "lowVol": true,
     "confirm2": "noFollow"
    }
   },
@@ -3143,9 +3146,9 @@
    "status": "closed",
    "foundAt": "2026-11-06 13:57",
    "maLine": 5109.0,
-   "chLine": 5273.1,
+   "chLine": 5284.1,
    "distMa": 0.08,
-   "distCh": 2.14,
+   "distCh": 2.28,
    "armed": true,
    "exitWarn": false,
    "exitWarnWhy": [],
@@ -3154,16 +3157,16 @@
    "pts": -58.0,
    "ret": -1.15,
    "yuan": -586,
-   "held": 3,
+   "held": 2,
    "R": -0.78,
    "meta": {
     "weekMA": 45,
-    "weekPos": 1,
-    "weekAlign": false,
+    "weekPos": -1,
+    "weekAlign": true,
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.956,
+    "volRatio": 0.947,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -3188,7 +3191,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.944,
+    "volRatio": 0.913,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -3251,9 +3254,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.933,
+    "volRatio": 0.999,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -3348,7 +3351,7 @@
    "pts": -56.0,
    "ret": -0.71,
    "yuan": -286,
-   "held": 8,
+   "held": 7,
    "R": -0.52,
    "meta": {
     "weekMA": 45,
@@ -3357,7 +3360,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.925,
+    "volRatio": 0.938,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -3382,9 +3385,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.938,
+    "volRatio": 0.934,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -3445,9 +3448,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.838,
+    "volRatio": 0.853,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -3542,7 +3545,7 @@
    "pts": 206.0,
    "ret": 2.72,
    "yuan": 1024,
-   "held": 32,
+   "held": 31,
    "R": 1.88,
    "meta": {
     "weekMA": 45,
@@ -3551,7 +3554,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.049,
+    "volRatio": 1.057,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -3576,9 +3579,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.049,
+    "volRatio": 1.039,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -3655,24 +3658,24 @@
    "bufYuan": 1001,
    "lead": 37,
    "holdTo": "反向穿越 MA34",
-   "exit": 1814.0,
+   "exit": 1881.0,
    "lots": 4,
    "status": "closed",
    "foundAt": "2026-11-06 13:57",
-   "maLine": 1796.2,
+   "maLine": 1802.4,
    "chLine": 1845.3,
-   "distMa": 0.87,
-   "distCh": 1.53,
-   "armed": true,
+   "distMa": 3.85,
+   "distCh": -1.75,
+   "armed": false,
    "exitWarn": false,
    "exitWarnWhy": [],
-   "exitDate": "2019-06-06",
-   "why": "反向穿越 MA26",
-   "pts": -26.0,
-   "ret": -1.45,
-   "yuan": -532,
-   "held": 1,
-   "R": -1.27,
+   "exitDate": "2019-06-11",
+   "why": "吊灯止损",
+   "pts": -93.0,
+   "ret": -5.2,
+   "yuan": -1872,
+   "held": 2,
+   "R": -4.55,
    "meta": {
     "weekMA": 45,
     "weekPos": 1,
@@ -3680,7 +3683,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.081,
+    "volRatio": 1.046,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -3777,7 +3780,7 @@
    "pts": 31.0,
    "ret": 1.63,
    "yuan": 308,
-   "held": 32,
+   "held": 31,
    "R": 1.55,
    "meta": {
     "weekMA": 45,
@@ -3786,8 +3789,8 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.01,
-    "lowVol": false,
+    "volRatio": 0.977,
+    "lowVol": true,
     "confirm2": "followed"
    }
   },
@@ -3811,7 +3814,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.977,
+    "volRatio": 0.96,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -3874,7 +3877,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.006,
+    "volRatio": 1.0,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -3971,7 +3974,7 @@
    "pts": 8.0,
    "ret": 0.28,
    "yuan": 77,
-   "held": 9,
+   "held": 8,
    "R": 0.13,
    "meta": {
     "weekMA": 45,
@@ -3980,9 +3983,9 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 1.083,
+    "volRatio": 1.073,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -4111,9 +4114,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.073,
+    "volRatio": 1.028,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -4161,7 +4164,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.959,
+    "volRatio": 0.938,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -4224,7 +4227,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.981,
+    "volRatio": 0.967,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -4319,7 +4322,7 @@
    "pts": -28.0,
    "ret": -1.52,
    "yuan": -572,
-   "held": 8,
+   "held": 7,
    "R": -1.41,
    "meta": {
     "weekMA": 45,
@@ -4328,7 +4331,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.888,
+    "volRatio": 0.878,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -4353,7 +4356,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.013,
+    "volRatio": 1.01,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -4450,7 +4453,7 @@
    "pts": 257.0,
    "ret": 12.38,
    "yuan": 2566,
-   "held": 36,
+   "held": 35,
    "R": 4.48,
    "meta": {
     "weekMA": 45,
@@ -4459,9 +4462,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.053,
+    "volRatio": 1.085,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -4484,9 +4487,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.085,
+    "volRatio": 1.04,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -4568,9 +4571,9 @@
    "status": "closed",
    "foundAt": "2026-11-06 13:57",
    "maLine": 1792.4,
-   "chLine": 1761.7,
+   "chLine": 1754.7,
    "distMa": 0.95,
-   "distCh": 1.08,
+   "distCh": 1.54,
    "armed": true,
    "exitWarn": false,
    "exitWarnWhy": [
@@ -4581,7 +4584,7 @@
    "pts": -23.0,
    "ret": -1.28,
    "yuan": -232,
-   "held": 2,
+   "held": 1,
    "R": -1.52,
    "meta": {
     "weekMA": 45,
@@ -4590,7 +4593,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.959,
+    "volRatio": 0.985,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -4615,7 +4618,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.032,
+    "volRatio": 1.017,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -4678,7 +4681,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.946,
+    "volRatio": 0.929,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -4741,7 +4744,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.879,
+    "volRatio": 0.937,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -4836,7 +4839,7 @@
    "pts": 86.0,
    "ret": 1.54,
    "yuan": 854,
-   "held": 28,
+   "held": 27,
    "R": 1.16,
    "meta": {
     "weekMA": 45,
@@ -4845,8 +4848,8 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 1.002,
-    "lowVol": false,
+    "volRatio": 0.997,
+    "lowVol": true,
     "confirm2": "noFollow"
    }
   },
@@ -4870,8 +4873,8 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.019,
-    "lowVol": false,
+    "volRatio": 0.981,
+    "lowVol": true,
     "confirm2": "noFollow"
    }
   },
@@ -4933,7 +4936,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.113,
+    "volRatio": 1.072,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -5028,7 +5031,7 @@
    "pts": 213.0,
    "ret": 11.66,
    "yuan": 2126,
-   "held": 23,
+   "held": 22,
    "R": 4.71,
    "meta": {
     "weekMA": 45,
@@ -5037,7 +5040,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.969,
+    "volRatio": 0.963,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -5062,7 +5065,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.977,
+    "volRatio": 0.967,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -5159,7 +5162,7 @@
    "pts": -142.0,
    "ret": -2.18,
    "yuan": -716,
-   "held": 9,
+   "held": 8,
    "R": -1.47,
    "meta": {
     "weekMA": 45,
@@ -5168,7 +5171,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.97,
+    "volRatio": 0.964,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -5193,7 +5196,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.946,
+    "volRatio": 0.938,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -5256,7 +5259,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.446,
+    "volRatio": 1.412,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -5319,7 +5322,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.108,
+    "volRatio": 1.054,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -5382,7 +5385,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.024,
+    "volRatio": 1.014,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -5445,8 +5448,8 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.037,
-    "lowVol": false,
+    "volRatio": 0.986,
+    "lowVol": true,
     "confirm2": "followed"
    }
   },
@@ -5529,9 +5532,9 @@
    "status": "closed",
    "foundAt": "2026-11-06 13:57",
    "maLine": 1499.5,
-   "chLine": 1355.9,
+   "chLine": 1341.9,
    "distMa": 0.11,
-   "distCh": 2.0,
+   "distCh": 2.21,
    "armed": true,
    "exitWarn": false,
    "exitWarnWhy": [],
@@ -5540,7 +5543,7 @@
    "pts": -33.0,
    "ret": -2.16,
    "yuan": -334,
-   "held": 3,
+   "held": 2,
    "R": -0.49,
    "meta": {
     "weekMA": 45,
@@ -5549,7 +5552,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.039,
+    "volRatio": 1.062,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -5612,9 +5615,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.079,
+    "volRatio": 1.042,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -5637,7 +5640,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.016,
+    "volRatio": 1.022,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -5763,7 +5766,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.955,
+    "volRatio": 0.94,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -5826,7 +5829,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.235,
+    "volRatio": 1.214,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -6015,7 +6018,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.956,
+    "volRatio": 0.959,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -6141,7 +6144,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.946,
+    "volRatio": 0.913,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -6204,7 +6207,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.023,
+    "volRatio": 1.015,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -6288,9 +6291,9 @@
    "status": "closed",
    "foundAt": "2026-11-06 13:57",
    "maLine": 2511.3,
-   "chLine": 2566.2,
+   "chLine": 2567.2,
    "distMa": 0.61,
-   "distCh": 0.87,
+   "distCh": 0.89,
    "armed": true,
    "exitWarn": false,
    "exitWarnWhy": [
@@ -6301,7 +6304,7 @@
    "pts": -62.0,
    "ret": -2.51,
    "yuan": -622,
-   "held": 4,
+   "held": 3,
    "R": -1.67,
    "meta": {
     "weekMA": 45,
@@ -6310,7 +6313,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.936,
+    "volRatio": 0.921,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -6335,7 +6338,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.921,
+    "volRatio": 0.938,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -6398,7 +6401,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.904,
+    "volRatio": 0.941,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -6461,7 +6464,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.196,
+    "volRatio": 1.153,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -6672,26 +6675,24 @@
    "bufYuan": 2271,
    "lead": 6,
    "holdTo": "反向穿越 MA34",
-   "exit": 3474.0,
+   "exit": 3547.0,
    "lots": 2,
    "status": "closed",
    "foundAt": "2026-11-06 13:57",
-   "maLine": 3456.2,
-   "chLine": 3650.0,
-   "distMa": 0.19,
-   "distCh": 1.9,
+   "maLine": 3492.2,
+   "chLine": 3598.0,
+   "distMa": 0.59,
+   "distCh": 0.55,
    "armed": true,
    "exitWarn": false,
-   "exitWarnWhy": [
-    "持仓 -5.6%"
-   ],
-   "exitDate": "2021-01-27",
+   "exitWarnWhy": [],
+   "exitDate": "2021-02-23",
    "why": "反向穿越 MA26",
-   "pts": -100.0,
-   "ret": -2.96,
-   "yuan": -1003,
-   "held": 1,
-   "R": -1.08,
+   "pts": -173.0,
+   "ret": -5.13,
+   "yuan": -1733,
+   "held": 14,
+   "R": -1.87,
    "meta": {
     "weekMA": 45,
     "weekPos": 1,
@@ -6699,7 +6700,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 1.247,
+    "volRatio": 1.199,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -6796,7 +6797,7 @@
    "pts": -170.0,
    "ret": -2.32,
    "yuan": -856,
-   "held": 10,
+   "held": 9,
    "R": -0.72,
    "meta": {
     "weekMA": 45,
@@ -6805,9 +6806,9 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 1.1,
+    "volRatio": 1.041,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -6868,7 +6869,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.172,
+    "volRatio": 1.144,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -6931,7 +6932,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.913,
+    "volRatio": 0.888,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -6956,7 +6957,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.014,
+    "volRatio": 1.013,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -6981,9 +6982,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.099,
+    "volRatio": 1.055,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -7044,9 +7045,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.023,
+    "volRatio": 1.068,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -7170,7 +7171,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.872,
+    "volRatio": 0.866,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -7296,9 +7297,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.969,
+    "volRatio": 0.971,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -7359,9 +7360,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.044,
+    "volRatio": 1.018,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -7422,7 +7423,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.061,
+    "volRatio": 1.043,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -7485,9 +7486,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.359,
+    "volRatio": 1.314,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -7548,9 +7549,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.145,
+    "volRatio": 1.116,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -7611,9 +7612,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.115,
+    "volRatio": 1.096,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -7674,7 +7675,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.262,
+    "volRatio": 1.223,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -7800,7 +7801,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.859,
+    "volRatio": 0.886,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -7863,7 +7864,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.96,
+    "volRatio": 0.953,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -7989,7 +7990,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.052,
+    "volRatio": 1.019,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -8052,7 +8053,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.962,
+    "volRatio": 0.999,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -8115,9 +8116,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.96,
+    "volRatio": 0.963,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -8345,9 +8346,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.494,
+    "volRatio": 1.483,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -8468,7 +8469,7 @@
    "pts": 2222.0,
    "ret": 20.68,
    "yuan": 11104,
-   "held": 40,
+   "held": 39,
    "R": 2.51,
    "meta": {
     "weekMA": 45,
@@ -8477,7 +8478,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 1.453,
+    "volRatio": 1.387,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -8502,7 +8503,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.387,
+    "volRatio": 1.319,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -8597,7 +8598,7 @@
    "pts": -120.0,
    "ret": -3.8,
    "yuan": -1203,
-   "held": 10,
+   "held": 9,
    "R": -2.17,
    "meta": {
     "weekMA": 45,
@@ -8606,7 +8607,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.995,
+    "volRatio": 0.976,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -8694,7 +8695,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.984,
+    "volRatio": 0.954,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -8757,9 +8758,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.987,
+    "volRatio": 0.971,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -8820,7 +8821,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.855,
+    "volRatio": 0.834,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -9044,7 +9045,7 @@
    "pts": 81.0,
    "ret": 3.27,
    "yuan": 1608,
-   "held": 23,
+   "held": 22,
    "R": 0.84,
    "meta": {
     "weekMA": 45,
@@ -9053,9 +9054,9 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 1.23,
+    "volRatio": 1.196,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -9116,8 +9117,8 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.0,
-    "lowVol": false,
+    "volRatio": 0.996,
+    "lowVol": true,
     "confirm2": "noFollow"
    }
   },
@@ -9141,7 +9142,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.164,
+    "volRatio": 1.099,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -9267,9 +9268,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.053,
+    "volRatio": 1.012,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -9330,7 +9331,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.918,
+    "volRatio": 0.925,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -9654,7 +9655,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.946,
+    "volRatio": 0.955,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -9717,9 +9718,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.89,
+    "volRatio": 0.929,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -9796,24 +9797,26 @@
    "bufYuan": 2495,
    "lead": 42,
    "holdTo": "反向穿越 MA34",
-   "exit": 2105.0,
+   "exit": 2040.0,
    "lots": 2,
    "status": "closed",
    "foundAt": "2026-11-06 13:57",
-   "maLine": 2200.4,
-   "chLine": 2121.2,
-   "distMa": 1.87,
-   "distCh": -0.32,
+   "maLine": 2172.7,
+   "chLine": 2058.2,
+   "distMa": 2.61,
+   "distCh": -0.36,
    "armed": false,
    "exitWarn": false,
-   "exitWarnWhy": [],
-   "exitDate": "2022-06-14",
+   "exitWarnWhy": [
+    "持仓 -9.4%"
+   ],
+   "exitDate": "2022-06-22",
    "why": "吊灯止损",
-   "pts": -153.0,
-   "ret": -6.78,
-   "yuan": -3072,
-   "held": 3,
-   "R": -3.0,
+   "pts": -218.0,
+   "ret": -9.65,
+   "yuan": -4372,
+   "held": 8,
+   "R": -4.28,
    "meta": {
     "weekMA": 45,
     "weekPos": -1,
@@ -9821,7 +9824,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.843,
+    "volRatio": 0.887,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -9884,7 +9887,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.005,
+    "volRatio": 1.016,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -9947,9 +9950,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.953,
+    "volRatio": 0.963,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -10073,7 +10076,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.04,
+    "volRatio": 1.01,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -10136,7 +10139,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.013,
+    "volRatio": 1.015,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -10161,9 +10164,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.979,
+    "volRatio": 0.994,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -10287,8 +10290,8 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.998,
-    "lowVol": true,
+    "volRatio": 1.013,
+    "lowVol": false,
     "confirm2": "noFollow"
    }
   },
@@ -10492,26 +10495,27 @@
    "bufYuan": 1905,
    "lead": 15,
    "holdTo": "反向穿越 MA34",
-   "exit": 4207.0,
+   "exit": 4095.0,
    "lots": 2,
    "status": "closed",
    "foundAt": "2026-11-06 13:57",
-   "maLine": 4055.1,
-   "chLine": 4202.3,
-   "distMa": 1.95,
-   "distCh": -0.06,
-   "armed": false,
+   "maLine": 4088.6,
+   "chLine": 4279.3,
+   "distMa": 0.08,
+   "distCh": 2.37,
+   "armed": true,
    "exitWarn": false,
    "exitWarnWhy": [
-    "持仓 -4.5%"
+    "持仓 -12.4%",
+    "缩量"
    ],
-   "exitDate": "2022-11-08",
-   "why": "吊灯止损",
-   "pts": -202.0,
-   "ret": -5.04,
-   "yuan": -2023,
-   "held": 6,
-   "R": -2.6,
+   "exitDate": "2022-11-21",
+   "why": "反向穿越 MA26",
+   "pts": -90.0,
+   "ret": -2.25,
+   "yuan": -903,
+   "held": 14,
+   "R": -1.16,
    "meta": {
     "weekMA": 45,
     "weekPos": 1,
@@ -10519,8 +10523,8 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.985,
-    "lowVol": true,
+    "volRatio": 1.012,
+    "lowVol": false,
     "confirm2": "noFollow"
    }
   },
@@ -10582,8 +10586,8 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.012,
-    "lowVol": false,
+    "volRatio": 0.981,
+    "lowVol": true,
     "confirm2": "noFollow"
    }
   },
@@ -10607,7 +10611,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.93,
+    "volRatio": 0.91,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -10670,9 +10674,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.04,
+    "volRatio": 1.042,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -10837,7 +10841,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.068,
+    "volRatio": 1.114,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -10900,7 +10904,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.984,
+    "volRatio": 0.971,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -10958,13 +10962,13 @@
    "foundAt": "2026-11-06 13:57",
    "meta": {
     "weekMA": 45,
-    "weekPos": 1,
-    "weekAlign": false,
+    "weekPos": -1,
+    "weekAlign": true,
     "tier": "normal",
-    "observe": true,
-    "push": false,
-    "volRatio": 1.026,
-    "lowVol": false,
+    "observe": false,
+    "push": true,
+    "volRatio": 0.985,
+    "lowVol": true,
     "confirm2": "followed"
    }
   },
@@ -11026,8 +11030,8 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.979,
-    "lowVol": true,
+    "volRatio": 1.005,
+    "lowVol": false,
     "confirm2": "followed"
    }
   },
@@ -11114,7 +11118,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.923,
+    "volRatio": 0.903,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -11177,9 +11181,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.814,
+    "volRatio": 0.809,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -11240,7 +11244,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.112,
+    "volRatio": 1.077,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -11303,9 +11307,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.075,
+    "volRatio": 1.067,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -11461,7 +11465,7 @@
    "pts": -55.0,
    "ret": -2.13,
    "yuan": -552,
-   "held": 8,
+   "held": 7,
    "R": -1.59,
    "meta": {
     "weekMA": 45,
@@ -11470,7 +11474,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 1.031,
+    "volRatio": 1.001,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -11495,8 +11499,8 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.001,
-    "lowVol": false,
+    "volRatio": 0.981,
+    "lowVol": true,
     "confirm2": "followed"
    }
   },
@@ -11558,7 +11562,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.982,
+    "volRatio": 0.959,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -11684,7 +11688,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.931,
+    "volRatio": 0.965,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -11747,7 +11751,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.998,
+    "volRatio": 0.969,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -11873,7 +11877,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.981,
+    "volRatio": 0.958,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -11936,7 +11940,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.169,
+    "volRatio": 1.154,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -12062,7 +12066,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.974,
+    "volRatio": 0.981,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -12125,9 +12129,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.886,
+    "volRatio": 0.946,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -12209,9 +12213,9 @@
    "status": "closed",
    "foundAt": "2026-11-06 13:57",
    "maLine": 2479.4,
-   "chLine": 2435.3,
+   "chLine": 2428.3,
    "distMa": 0.68,
-   "distCh": 1.04,
+   "distCh": 1.32,
    "armed": true,
    "exitWarn": false,
    "exitWarnWhy": [
@@ -12222,7 +12226,7 @@
    "pts": -46.0,
    "ret": -1.83,
    "yuan": -462,
-   "held": 3,
+   "held": 2,
    "R": -1.8,
    "meta": {
     "weekMA": 45,
@@ -12231,7 +12235,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.883,
+    "volRatio": 0.91,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -12319,9 +12323,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.024,
+    "volRatio": 1.007,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -12382,7 +12386,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.952,
+    "volRatio": 0.987,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -12567,24 +12571,26 @@
    "bufYuan": 3259,
    "lead": 16,
    "holdTo": "反向穿越 MA34",
-   "exit": 2228.0,
+   "exit": 2272.0,
    "lots": 1,
    "status": "closed",
    "foundAt": "2026-11-06 13:57",
-   "maLine": 2222.6,
-   "chLine": 2388.5,
-   "distMa": 0.08,
-   "distCh": 2.41,
+   "maLine": 2252.6,
+   "chLine": 2325.5,
+   "distMa": 0.29,
+   "distCh": 0.8,
    "armed": true,
    "exitWarn": false,
-   "exitWarnWhy": [],
-   "exitDate": "2023-12-20",
+   "exitWarnWhy": [
+    "持仓 -6.3%"
+   ],
+   "exitDate": "2024-01-24",
    "why": "反向穿越 MA26",
-   "pts": -33.0,
-   "ret": -1.5,
-   "yuan": -672,
-   "held": 1,
-   "R": -0.5,
+   "pts": -77.0,
+   "ret": -3.51,
+   "yuan": -1552,
+   "held": 24,
+   "R": -1.16,
    "meta": {
     "weekMA": 45,
     "weekPos": 1,
@@ -12592,7 +12598,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.117,
+    "volRatio": 1.062,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -12743,7 +12749,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.955,
+    "volRatio": 0.956,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -12806,7 +12812,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.893,
+    "volRatio": 0.866,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -12831,7 +12837,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.073,
+    "volRatio": 1.051,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -13020,9 +13026,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.902,
+    "volRatio": 0.943,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -13083,7 +13089,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.964,
+    "volRatio": 0.951,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -13146,7 +13152,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.933,
+    "volRatio": 0.93,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -13272,8 +13278,8 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.012,
-    "lowVol": false,
+    "volRatio": 0.977,
+    "lowVol": true,
     "confirm2": "followed"
    }
   },
@@ -13367,7 +13373,7 @@
    "pts": -58.0,
    "ret": -2.44,
    "yuan": -582,
-   "held": 5,
+   "held": 4,
    "R": -2.97,
    "meta": {
     "weekMA": 45,
@@ -13376,7 +13382,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.944,
+    "volRatio": 0.922,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -13401,7 +13407,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.911,
+    "volRatio": 0.903,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -13464,8 +13470,8 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.881,
-    "lowVol": true,
+    "volRatio": 1.029,
+    "lowVol": false,
     "confirm2": "noFollow"
    }
   },
@@ -13527,7 +13533,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.127,
+    "volRatio": 1.061,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -13624,7 +13630,7 @@
    "pts": 442.0,
    "ret": 21.39,
    "yuan": 8828,
-   "held": 73,
+   "held": 72,
    "R": 9.08,
    "meta": {
     "weekMA": 45,
@@ -13633,7 +13639,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 1.053,
+    "volRatio": 1.021,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -13653,12 +13659,12 @@
    "foundAt": "2026-11-06 13:57",
    "meta": {
     "weekMA": 45,
-    "weekPos": 1,
-    "weekAlign": false,
+    "weekPos": -1,
+    "weekAlign": true,
     "tier": "normal",
-    "observe": true,
-    "push": false,
-    "volRatio": 1.021,
+    "observe": false,
+    "push": true,
+    "volRatio": 1.033,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -13721,9 +13727,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.033,
+    "volRatio": 1.008,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -13816,7 +13822,7 @@
    "pts": -18.0,
    "ret": -0.6,
    "yuan": -183,
-   "held": 19,
+   "held": 18,
    "R": -0.34,
    "meta": {
     "weekMA": 45,
@@ -13825,7 +13831,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.926,
+    "volRatio": 0.918,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -13850,9 +13856,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.918,
+    "volRatio": 0.996,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -13913,7 +13919,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.964,
+    "volRatio": 0.988,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -14082,7 +14088,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.138,
+    "volRatio": 1.114,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -14170,8 +14176,8 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.056,
-    "lowVol": false,
+    "volRatio": 0.998,
+    "lowVol": true,
     "confirm2": "noFollow"
    }
   },
@@ -14233,9 +14239,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.961,
+    "volRatio": 0.983,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -14296,7 +14302,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.943,
+    "volRatio": 0.961,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -14359,7 +14365,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.939,
+    "volRatio": 0.928,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -14422,9 +14428,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.899,
+    "volRatio": 0.896,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -14485,7 +14491,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.892,
+    "volRatio": 0.875,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -14688,7 +14694,7 @@
    "pts": 19.0,
    "ret": 0.65,
    "yuan": 187,
-   "held": 17,
+   "held": 16,
    "R": 0.36,
    "meta": {
     "weekMA": 45,
@@ -14697,7 +14703,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.896,
+    "volRatio": 0.872,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -14722,7 +14728,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.872,
+    "volRatio": 0.877,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -14848,9 +14854,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.999,
-    "lowVol": true,
-    "confirm2": "followed"
+    "volRatio": 1.026,
+    "lowVol": false,
+    "confirm2": "noFollow"
    }
   },
   {
@@ -14911,7 +14917,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.026,
+    "volRatio": 1.005,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -14974,9 +14980,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.907,
+    "volRatio": 0.887,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -15037,7 +15043,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.953,
+    "volRatio": 0.942,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -15100,9 +15106,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.065,
+    "volRatio": 1.02,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -15195,7 +15201,7 @@
    "pts": 98.0,
    "ret": 4.25,
    "yuan": 978,
-   "held": 32,
+   "held": 31,
    "R": 5.24,
    "meta": {
     "weekMA": 45,
@@ -15204,7 +15210,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.989,
+    "volRatio": 0.967,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -15229,7 +15235,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.952,
+    "volRatio": 0.989,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -15380,9 +15386,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.199,
+    "volRatio": 1.132,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -15475,7 +15481,7 @@
    "pts": -46.0,
    "ret": -0.8,
    "yuan": -466,
-   "held": 2,
+   "held": 1,
    "R": -1.1,
    "meta": {
     "weekMA": 45,
@@ -15484,9 +15490,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.912,
+    "volRatio": 0.887,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -15581,7 +15587,7 @@
    "pts": -22.0,
    "ret": -0.99,
    "yuan": -222,
-   "held": 11,
+   "held": 10,
    "R": -0.9,
    "meta": {
     "weekMA": 45,
@@ -15590,7 +15596,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.039,
+    "volRatio": 1.011,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -15610,13 +15616,13 @@
    "foundAt": "2026-11-06 13:57",
    "meta": {
     "weekMA": 45,
-    "weekPos": -1,
-    "weekAlign": false,
+    "weekPos": 1,
+    "weekAlign": true,
     "tier": "normal",
-    "observe": true,
-    "push": false,
-    "volRatio": 1.011,
-    "lowVol": false,
+    "observe": false,
+    "push": true,
+    "volRatio": 0.975,
+    "lowVol": true,
     "confirm2": "followed"
    }
   },
@@ -15776,7 +15782,7 @@
    "pts": 40.0,
    "ret": 1.38,
    "yuan": 397,
-   "held": 20,
+   "held": 19,
    "R": 1.02,
    "meta": {
     "weekMA": 45,
@@ -15785,7 +15791,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.997,
+    "volRatio": 0.99,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -15810,9 +15816,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.065,
+    "volRatio": 1.031,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -15835,9 +15841,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.981,
+    "volRatio": 0.999,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -15898,8 +15904,8 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.003,
-    "lowVol": false,
+    "volRatio": 0.998,
+    "lowVol": true,
     "confirm2": "noFollow"
    }
   },
@@ -15993,7 +15999,7 @@
    "pts": -44.0,
    "ret": -1.98,
    "yuan": -442,
-   "held": 8,
+   "held": 7,
    "R": -1.96,
    "meta": {
     "weekMA": 45,
@@ -16002,7 +16008,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.044,
+    "volRatio": 1.02,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -16027,9 +16033,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.02,
+    "volRatio": 1.024,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -16090,9 +16096,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.033,
+    "volRatio": 1.059,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -16216,9 +16222,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.103,
+    "volRatio": 1.096,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -16363,9 +16369,9 @@
    "status": "closed",
    "foundAt": "2026-11-06 13:57",
    "maLine": 3070.2,
-   "chLine": 3094.5,
+   "chLine": 3157.5,
    "distMa": 0.27,
-   "distCh": 0.17,
+   "distCh": 1.31,
    "armed": true,
    "exitWarn": false,
    "exitWarnWhy": [
@@ -16376,7 +16382,7 @@
    "pts": -107.0,
    "ret": -3.59,
    "yuan": -1073,
-   "held": 14,
+   "held": 13,
    "R": -1.94,
    "meta": {
     "weekMA": 45,
@@ -16385,9 +16391,9 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 1.031,
+    "volRatio": 1.111,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -16410,9 +16416,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.111,
+    "volRatio": 1.142,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -16473,9 +16479,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.165,
+    "volRatio": 1.146,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -16536,7 +16542,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.944,
+    "volRatio": 0.977,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -16599,7 +16605,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.999,
+    "volRatio": 0.942,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -16725,7 +16731,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.962,
+    "volRatio": 0.969,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -16851,7 +16857,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.0,
+    "volRatio": 0.993,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -16914,7 +16920,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.901,
+    "volRatio": 0.918,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -16977,9 +16983,9 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.966,
+    "volRatio": 0.946,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -17040,7 +17046,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.866,
+    "volRatio": 0.912,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -17105,7 +17111,7 @@
     "push": false,
     "volRatio": 0.894,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -17200,7 +17206,7 @@
    "pts": -133.0,
    "ret": -5.14,
    "yuan": -1334,
-   "held": 15,
+   "held": 14,
    "R": -1.38,
    "meta": {
     "weekMA": 45,
@@ -17209,7 +17215,7 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.987,
+    "volRatio": 0.963,
     "lowVol": true,
     "confirm2": "noFollow"
    }
@@ -17234,7 +17240,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.007,
+    "volRatio": 1.033,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -17426,7 +17432,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.299,
+    "volRatio": 1.273,
     "lowVol": false,
     "confirm2": "followed"
    }
@@ -17510,9 +17516,9 @@
    "status": "closed",
    "foundAt": "2026-11-06 13:57",
    "maLine": 3044.6,
-   "chLine": 3173.9,
+   "chLine": 3190.9,
    "distMa": 1.32,
-   "distCh": -0.22,
+   "distCh": -0.08,
    "armed": true,
    "exitWarn": false,
    "exitWarnWhy": [
@@ -17524,7 +17530,7 @@
    "pts": -318.0,
    "ret": -11.03,
    "yuan": -3184,
-   "held": 5,
+   "held": 4,
    "R": -2.7,
    "meta": {
     "weekMA": 45,
@@ -17533,9 +17539,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.073,
+    "volRatio": 1.06,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -17558,7 +17564,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.06,
+    "volRatio": 1.054,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -17668,21 +17674,21 @@
    "lots": 4,
    "status": "open",
    "foundAt": "2026-11-06 13:57",
-   "maLine": 3280.4,
-   "chLine": 3245.0,
-   "distMa": -3.13,
-   "distCh": 2.43,
+   "maLine": 3267.9,
+   "chLine": 3230.0,
+   "distMa": -3.7,
+   "distCh": 2.96,
    "armed": true,
    "exitWarn": false,
    "exitWarnWhy": [
-    "持仓 -9.4%"
+    "持仓 -7.3%"
    ],
-   "last": 3121.0,
-   "lastDate": "2026-11-05",
-   "floatPts": 251.0,
-   "float": 7.44,
+   "last": 3079.0,
+   "lastDate": "2026-11-06",
+   "floatPts": 293.0,
+   "float": 8.69,
    "held": 19,
-   "R": 4.92,
+   "R": 5.75,
    "meta": {
     "weekMA": 45,
     "weekPos": 1,
@@ -17690,9 +17696,9 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.976,
+    "volRatio": 0.962,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "followed"
    }
   },
   {
@@ -17715,7 +17721,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.966,
+    "volRatio": 0.947,
     "lowVol": true,
     "confirm2": "followed"
    }
@@ -17825,21 +17831,21 @@
    "lots": 9,
    "status": "open",
    "foundAt": "2026-11-06 13:57",
-   "maLine": 2201.7,
+   "maLine": 2203.3,
    "chLine": 2170.9,
-   "distMa": -1.4,
-   "distCh": 2.78,
+   "distMa": -1.06,
+   "distCh": 2.51,
    "armed": true,
    "exitWarn": false,
    "exitWarnWhy": [
-    "持仓 -2.6%"
+    "持仓 -3.8%"
    ],
-   "last": 2233.0,
-   "lastDate": "2026-11-05",
-   "floatPts": 18.0,
-   "float": 0.81,
+   "last": 2227.0,
+   "lastDate": "2026-11-06",
+   "floatPts": 12.0,
+   "float": 0.54,
    "held": 9,
-   "R": 0.8,
+   "R": 0.54,
    "meta": {
     "weekMA": 45,
     "weekPos": -1,
@@ -17847,7 +17853,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.041,
+    "volRatio": 1.003,
     "lowVol": false,
     "confirm2": "noFollow"
    }
@@ -17872,9 +17878,9 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.986,
+    "volRatio": 0.976,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "noFollow"
    }
   },
   {
@@ -18045,21 +18051,21 @@
    "lots": 5,
    "status": "open",
    "foundAt": "2026-11-06 13:57",
-   "maLine": 867.5,
-   "chLine": 838.4,
-   "distMa": -1.23,
-   "distCh": 2.7,
+   "maLine": 865.8,
+   "chLine": 840.4,
+   "distMa": -0.81,
+   "distCh": 2.09,
    "armed": true,
    "exitWarn": false,
    "exitWarnWhy": [
-    "持仓 -20.7%"
+    "持仓 -15.0%"
    ],
-   "last": 892.0,
-   "lastDate": "2026-11-05",
-   "floatPts": 9.0,
-   "float": 1.02,
+   "last": 882.0,
+   "lastDate": "2026-11-06",
+   "floatPts": -1.0,
+   "float": -0.11,
    "held": 1,
-   "R": 0.45,
+   "R": -0.05,
    "meta": {
     "weekMA": 45,
     "weekPos": -1,
@@ -18067,9 +18073,9 @@
     "tier": "strong",
     "observe": false,
     "push": true,
-    "volRatio": 0.998,
-    "lowVol": true,
-    "confirm2": "followed"
+    "volRatio": 1.01,
+    "lowVol": false,
+    "confirm2": "noFollow"
    }
   },
   {
@@ -18092,7 +18098,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 1.01,
+    "volRatio": 1.009,
     "lowVol": false,
     "confirm2": "pending"
    }
@@ -18382,7 +18388,7 @@
   "C|pred|2026-10-22",
   "C|confirm|2026-10-27"
  ],
- "runs": 2,
+ "runs": 3,
  "xsigSeen": [],
  "tf": {
   "FG": {
@@ -18427,15 +18433,15 @@
   }
  },
  "scanDate": "2026-11-06",
- "updated": "2026-11-06 17:28",
+ "updated": "2026-11-06 09:52",
  "stats": {
   "pred": 60,
   "open": 3,
   "closed": 57,
   "warn": 8,
-  "win": 31.6,
-  "avgRet": 0.54,
-  "sumYuan": 11340
+  "win": 33.3,
+  "avgRet": 0.58,
+  "sumYuan": 11050
  },
  "method": {
   "name": "反转预测雷达 v9（慢进快出）",
@@ -18523,8 +18529,8 @@
   {
    "side": "long",
    "dir": "顶部",
-   "date": "2026-11-05",
-   "close": 892.0,
+   "date": "2026-11-06",
+   "close": 882.0,
    "k": 2,
    "gate": 0,
    "aux": 2,
@@ -18588,11 +18594,11 @@
      "gate": false
     }
    ],
-   "ext": 0.57,
-   "pull": -0.3,
-   "m34": 880.6,
-   "extPx": 898.0,
-   "age": 2,
+   "ext": 0.21,
+   "pull": -0.91,
+   "m34": 877.9,
+   "extPx": 900.0,
+   "age": 3,
    "segSide": 1,
    "sym": "FG",
    "meta": {
@@ -18602,16 +18608,16 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 1.009,
+    "volRatio": 1.011,
     "lowVol": false,
     "confirm2": "pending"
    }
   },
   {
-   "side": "long",
-   "dir": "顶部",
-   "date": "2026-11-05",
-   "close": 989.0,
+   "side": "short",
+   "dir": "底部",
+   "date": "2026-11-06",
+   "close": 961.0,
    "k": 2,
    "gate": 0,
    "aux": 2,
@@ -18675,21 +18681,21 @@
      "gate": false
     }
    ],
-   "ext": 0.16,
-   "pull": -0.3,
-   "m34": 984.8,
-   "extPx": 997.0,
-   "age": 2,
-   "segSide": 1,
+   "ext": 0.77,
+   "pull": -0.11,
+   "m34": 981.7,
+   "extPx": 958.0,
+   "age": 1,
+   "segSide": -1,
    "sym": "SA",
    "meta": {
     "weekMA": 45,
     "weekPos": -1,
-    "weekAlign": true,
+    "weekAlign": false,
     "tier": "normal",
-    "observe": false,
-    "push": true,
-    "volRatio": 1.008,
+    "observe": true,
+    "push": false,
+    "volRatio": 1.022,
     "lowVol": false,
     "confirm2": "pending"
    }
@@ -18697,8 +18703,8 @@
   {
    "side": "short",
    "dir": "底部",
-   "date": "2026-11-05",
-   "close": 3121.0,
+   "date": "2026-11-06",
+   "close": 3079.0,
    "k": 1,
    "gate": 1,
    "aux": 0,
@@ -18762,11 +18768,11 @@
      "gate": false
     }
    ],
-   "ext": 3.91,
-   "pull": -0.59,
-   "m34": 3311.6,
-   "extPx": 3092.0,
-   "age": 16,
+   "ext": 4.5,
+   "pull": -0.04,
+   "m34": 3302.1,
+   "extPx": 3077.0,
+   "age": 17,
    "segSide": -1,
    "sym": "M",
    "meta": {
@@ -18776,192 +18782,18 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.99,
-    "lowVol": true,
-    "confirm2": "pending"
-   }
-  },
-  {
-   "side": "short",
-   "dir": "底部",
-   "date": "2026-11-05",
-   "close": 4690.0,
-   "k": 2,
-   "gate": 1,
-   "aux": 1,
-   "level": "none",
-   "advice": "趋势未到极端位置",
-   "conds": [
-    {
-     "k": "ext",
-     "n": "趋势伸展",
-     "d": "收盘距 MA34 ≥2.6ATR",
-     "ok": false,
-     "gate": true
-    },
-    {
-     "k": "pull",
-     "n": "极值回撤",
-     "d": "自段内高/低点回撤 ≥1.1ATR",
-     "ok": true,
-     "gate": true
-    },
-    {
-     "k": "amp",
-     "n": "段幅足够",
-     "d": "本段振幅 ≥12ATR",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "shadow",
-     "n": "冲高回落",
-     "d": "当根反向影线 ≥0.6ATR",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "age",
-     "n": "趋势老化",
-     "d": "本段已走 ≥30 根",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "adx",
-     "n": "动能衰减",
-     "d": "ADX 自 20 日高点回落 ≥3",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "ma18",
-     "n": "短均失守",
-     "d": "收盘反向穿越 MA18",
-     "ok": true,
-     "gate": false
-    },
-    {
-     "k": "oi",
-     "n": "资金撤退",
-     "d": "持仓 5 日净减",
-     "ok": false,
-     "gate": false
-    }
-   ],
-   "ext": 0.7,
-   "pull": -2.67,
-   "m34": 4747.7,
-   "extPx": 4470.0,
-   "age": 19,
-   "segSide": -1,
-   "sym": "SP",
-   "meta": {
-    "weekMA": 45,
-    "weekPos": -1,
-    "weekAlign": false,
-    "tier": "normal",
-    "observe": true,
-    "push": false,
-    "volRatio": 1.014,
+    "volRatio": 1.007,
     "lowVol": false,
     "confirm2": "pending"
    }
   },
   {
-   "side": "long",
-   "dir": "顶部",
-   "date": "2026-11-05",
-   "close": 5846.0,
-   "k": 2,
-   "gate": 0,
-   "aux": 2,
-   "level": "none",
-   "advice": "趋势未到极端位置",
-   "conds": [
-    {
-     "k": "ext",
-     "n": "趋势伸展",
-     "d": "收盘距 MA34 ≥2.6ATR",
-     "ok": false,
-     "gate": true
-    },
-    {
-     "k": "pull",
-     "n": "极值回撤",
-     "d": "自段内高/低点回撤 ≥1.1ATR",
-     "ok": false,
-     "gate": true
-    },
-    {
-     "k": "amp",
-     "n": "段幅足够",
-     "d": "本段振幅 ≥12ATR",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "shadow",
-     "n": "冲高回落",
-     "d": "当根反向影线 ≥0.6ATR",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "age",
-     "n": "趋势老化",
-     "d": "本段已走 ≥30 根",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "adx",
-     "n": "动能衰减",
-     "d": "ADX 自 20 日高点回落 ≥3",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "ma18",
-     "n": "短均失守",
-     "d": "收盘反向穿越 MA18",
-     "ok": true,
-     "gate": false
-    },
-    {
-     "k": "oi",
-     "n": "资金撤退",
-     "d": "持仓 5 日净减",
-     "ok": true,
-     "gate": false
-    }
-   ],
-   "ext": 0.09,
-   "pull": -0.36,
-   "m34": 5839.8,
-   "extPx": 5872.0,
-   "age": 1,
-   "segSide": 1,
-   "sym": "SM",
-   "meta": {
-    "weekMA": 45,
-    "weekPos": -1,
-    "weekAlign": true,
-    "tier": "normal",
-    "observe": false,
-    "push": true,
-    "volRatio": 0.939,
-    "lowVol": true,
-    "confirm2": "pending"
-   }
-  },
-  {
    "side": "short",
    "dir": "底部",
-   "date": "2026-11-05",
-   "close": 3153.0,
-   "k": 0,
-   "gate": 0,
+   "date": "2026-11-06",
+   "close": 4626.0,
+   "k": 1,
+   "gate": 1,
    "aux": 0,
    "level": "none",
    "advice": "趋势未到极端位置",
@@ -18977,7 +18809,7 @@
      "k": "pull",
      "n": "极值回撤",
      "d": "自段内高/低点回撤 ≥1.1ATR",
-     "ok": false,
+     "ok": true,
      "gate": true
     },
     {
@@ -19023,21 +18855,21 @@
      "gate": false
     }
    ],
-   "ext": 0.13,
-   "pull": -0.14,
-   "m34": 3172.6,
-   "extPx": 3132.0,
-   "age": 1,
+   "ext": 1.38,
+   "pull": -1.84,
+   "m34": 4743.0,
+   "extPx": 4470.0,
+   "age": 20,
    "segSide": -1,
-   "sym": "MA",
+   "sym": "SP",
    "meta": {
     "weekMA": 45,
-    "weekPos": 1,
-    "weekAlign": true,
+    "weekPos": -1,
+    "weekAlign": false,
     "tier": "normal",
-    "observe": false,
-    "push": true,
-    "volRatio": 1.17,
+    "observe": true,
+    "push": false,
+    "volRatio": 1.046,
     "lowVol": false,
     "confirm2": "pending"
    }
@@ -19045,8 +18877,8 @@
   {
    "side": "short",
    "dir": "底部",
-   "date": "2026-11-05",
-   "close": 5246.0,
+   "date": "2026-11-06",
+   "close": 5808.0,
    "k": 1,
    "gate": 0,
    "aux": 1,
@@ -19110,11 +18942,185 @@
      "gate": false
     }
    ],
-   "ext": 2.28,
-   "pull": -0.93,
-   "m34": 5358.8,
+   "ext": 0.43,
+   "pull": -0.11,
+   "m34": 5838.5,
+   "extPx": 5800.0,
+   "age": 1,
+   "segSide": -1,
+   "sym": "SM",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.916,
+    "lowVol": true,
+    "confirm2": "pending"
+   }
+  },
+  {
+   "side": "long",
+   "dir": "顶部",
+   "date": "2026-11-06",
+   "close": 3263.0,
+   "k": 3,
+   "gate": 0,
+   "aux": 3,
+   "level": "none",
+   "advice": "趋势未到极端位置",
+   "conds": [
+    {
+     "k": "ext",
+     "n": "趋势伸展",
+     "d": "收盘距 MA34 ≥2.6ATR",
+     "ok": false,
+     "gate": true
+    },
+    {
+     "k": "pull",
+     "n": "极值回撤",
+     "d": "自段内高/低点回撤 ≥1.1ATR",
+     "ok": false,
+     "gate": true
+    },
+    {
+     "k": "amp",
+     "n": "段幅足够",
+     "d": "本段振幅 ≥12ATR",
+     "ok": false,
+     "gate": false
+    },
+    {
+     "k": "shadow",
+     "n": "冲高回落",
+     "d": "当根反向影线 ≥0.6ATR",
+     "ok": false,
+     "gate": false
+    },
+    {
+     "k": "age",
+     "n": "趋势老化",
+     "d": "本段已走 ≥30 根",
+     "ok": false,
+     "gate": false
+    },
+    {
+     "k": "adx",
+     "n": "动能衰减",
+     "d": "ADX 自 20 日高点回落 ≥3",
+     "ok": true,
+     "gate": false
+    },
+    {
+     "k": "ma18",
+     "n": "短均失守",
+     "d": "收盘反向穿越 MA18",
+     "ok": true,
+     "gate": false
+    },
+    {
+     "k": "oi",
+     "n": "资金撤退",
+     "d": "持仓 5 日净减",
+     "ok": true,
+     "gate": false
+    }
+   ],
+   "ext": 0.58,
+   "pull": -0.08,
+   "m34": 3179.9,
+   "extPx": 3275.0,
+   "age": 1,
+   "segSide": 1,
+   "sym": "MA",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.142,
+    "lowVol": false,
+    "confirm2": "pending"
+   }
+  },
+  {
+   "side": "short",
+   "dir": "底部",
+   "date": "2026-11-06",
+   "close": 5215.0,
+   "k": 2,
+   "gate": 1,
+   "aux": 1,
+   "level": "none",
+   "advice": "趋势未到极端位置",
+   "conds": [
+    {
+     "k": "ext",
+     "n": "趋势伸展",
+     "d": "收盘距 MA34 ≥2.6ATR",
+     "ok": true,
+     "gate": true
+    },
+    {
+     "k": "pull",
+     "n": "极值回撤",
+     "d": "自段内高/低点回撤 ≥1.1ATR",
+     "ok": false,
+     "gate": true
+    },
+    {
+     "k": "amp",
+     "n": "段幅足够",
+     "d": "本段振幅 ≥12ATR",
+     "ok": false,
+     "gate": false
+    },
+    {
+     "k": "shadow",
+     "n": "冲高回落",
+     "d": "当根反向影线 ≥0.6ATR",
+     "ok": false,
+     "gate": false
+    },
+    {
+     "k": "age",
+     "n": "趋势老化",
+     "d": "本段已走 ≥30 根",
+     "ok": false,
+     "gate": false
+    },
+    {
+     "k": "adx",
+     "n": "动能衰减",
+     "d": "ADX 自 20 日高点回落 ≥3",
+     "ok": false,
+     "gate": false
+    },
+    {
+     "k": "ma18",
+     "n": "短均失守",
+     "d": "收盘反向穿越 MA18",
+     "ok": false,
+     "gate": false
+    },
+    {
+     "k": "oi",
+     "n": "资金撤退",
+     "d": "持仓 5 日净减",
+     "ok": true,
+     "gate": false
+    }
+   ],
+   "ext": 2.71,
+   "pull": -0.3,
+   "m34": 5352.1,
    "extPx": 5200.0,
-   "age": 14,
+   "age": 15,
    "segSide": -1,
    "sym": "SR",
    "meta": {
@@ -19124,7 +19130,7 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.885,
+    "volRatio": 0.909,
     "lowVol": true,
     "confirm2": "pending"
    }
@@ -19132,8 +19138,8 @@
   {
    "side": "long",
    "dir": "顶部",
-   "date": "2026-11-05",
-   "close": 2233.0,
+   "date": "2026-11-06",
+   "close": 2227.0,
    "k": 2,
    "gate": 0,
    "aux": 2,
@@ -19197,11 +19203,11 @@
      "gate": false
     }
    ],
-   "ext": 1.6,
-   "pull": -0.26,
-   "m34": 2202.1,
+   "ext": 1.34,
+   "pull": -0.57,
+   "m34": 2201.3,
    "extPx": 2238.0,
-   "age": 8,
+   "age": 9,
    "segSide": 1,
    "sym": "C",
    "meta": {
@@ -19211,7 +19217,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.899,
+    "volRatio": 0.895,
     "lowVol": true,
     "confirm2": "pending"
    }
