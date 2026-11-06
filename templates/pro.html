@@ -14,6 +14,12 @@ body{background:var(--bg);color:var(--tx);font:14px/1.45 -apple-system,"PingFang
 .hd .t{color:var(--dim);font-size:11px}
 .hd .rf{border:1px solid var(--line);background:var(--card);color:var(--blue);
 border-radius:14px;padding:3px 12px;font-size:12px}
+.hdtools{display:flex;align-items:center;gap:7px}
+.mktmini{font-size:11px;border:1px solid var(--line);border-radius:10px;padding:1px 8px;
+color:var(--dim);cursor:pointer;white-space:nowrap}
+.mktmini.up{color:#e5484d;border-color:#e5484d55}
+.mktmini.dn{color:#0ecb81;border-color:#0ecb8155}
+.mktmini.rg{color:#7fb3ff;border-color:#7fb3ff55}
 
 /* ===== v11.2 推送设置面板：纯前端配置生成器，绝不写后台 ===== */
 .ps{padding:0 12px;margin:2px 0 6px}
@@ -50,6 +56,7 @@ border-radius:7px;padding:4px 10px;font-size:11px;white-space:nowrap}
 
 /* ===== 顶部市场状态（v11：纯信息展示，不干预信号） ===== */
 .mkt{padding:0 12px;margin:2px 0 6px}
+.mkt.inline{padding:0;margin:0 0 10px}
 .mk{background:var(--card);border:1px solid var(--line);border-left:4px solid #4c8dff;
 border-radius:10px;padding:10px 12px}
 .mk.up{border-left-color:#e5484d;background:linear-gradient(90deg,#e5484d18,var(--card) 62%)}
@@ -218,33 +225,12 @@ background:#10151d;color:var(--tx);font-size:18px}
 <div class="page on" id="pgMain">
   <div class="hd">
     <b>期货信号台 <span style="font-size:11px;color:var(--dim)">· 个人参考</span></b>
-    <button class="rf" onclick="refresh()">↻ 刷新数据</button>
-  </div>
-  <!-- v11.2 推送设置：只在本机生成配置文本，不写入任何后台文件 -->
-  <div class="ps">
-    <div class="psbox">
-      <div class="psh"><b>⚙ 推送设置</b>
-        <span class="psbadge">仅生成配置 · 不改后台</span>
-        <button class="psfold" id="psFold" onclick="togglePushPanel()">收起 ▲</button>
-      </div>
-      <div class="psbody" id="psBody">
-        <div class="pssw" id="psSw"></div>
-        <div class="psout">
-          <code class="pscode" id="psJson"></code>
-          <button class="pscopy" id="psCopy" onclick="copyPushCfg()">⧉ 一键复制</button>
-        </div>
-        <div class="psacts">
-          <a class="psgh" href="https://github.com/dongzij/futures-signal-desk/edit/main/config.ci.json"
-             target="_blank" rel="noopener">↗ 直接前往 GitHub 修改</a>
-          <span class="pslive" id="psLive"></span>
-        </div>
-        <div class="psnote">复制后，请前往 GitHub 修改 <b>config.ci.json</b> 文件并保存
-          （替换 <b>pushSymbols</b> 那一行）。初始勾选值由该文件同步而来，保存后下一次自动更新生效。</div>
-        <div class="psdiff" id="psDiff"></div>
-      </div>
+    <div class="hdtools">
+      <span class="mktmini" id="mktMini" title="点击查看完整市场状态"
+            onclick="document.getElementById('mktBar').scrollIntoView({behavior:'smooth'})">状态…</span>
+      <button class="rf" onclick="refresh()">↻ 刷新数据</button>
     </div>
   </div>
-  <div class="mkt" id="mktBar"></div>
   <div class="chips" id="symChips"></div>
   <div class="chips" id="ctChips"></div>
   <div class="quote" id="quote"></div>
@@ -259,6 +245,8 @@ background:#10151d;color:var(--tx);font-size:18px}
         <span style="color:#ff8a3d">┄ MA26 离场线</span>
         <span style="color:#4c8dff">— MA34 趋势线</span></div>
     </div>
+    <!-- v11.3：完整市场状态卡移到 K 线下方，首屏只留看盘必需 -->
+    <div class="mkt inline" id="mktBar"></div>
     <div class="card">
       <h3>进场雷达 <span class="r" id="decTime"></span></h3>
       <div class="dec" id="decGrid"></div>
@@ -271,6 +259,31 @@ background:#10151d;color:var(--tx);font-size:18px}
       <h3>信号栏 · 进场 / 出场 <span class="r" id="sigCnt"></span></h3>
       <div class="fchips" id="sigFilter"></div>
       <div id="sigList"></div>
+    </div>
+  </div>
+  <!-- v11.3 推送设置：不常用，移到页面底部且默认收起；只在本机生成配置文本，不写后台 -->
+  <div class="ps">
+    <div class="psbox">
+      <div class="psh"><b>⚙ 推送设置</b>
+        <span class="psbadge">仅生成配置 · 不改后台</span>
+        <span style="font-size:10.5px;color:var(--dim)">换持仓品种时展开</span>
+        <button class="psfold" id="psFold" onclick="togglePushPanel()">展开 ▼</button>
+      </div>
+      <div class="psbody hide" id="psBody">
+        <div class="pssw" id="psSw"></div>
+        <div class="psout">
+          <code class="pscode" id="psJson"></code>
+          <button class="pscopy" id="psCopy" onclick="copyPushCfg()">⧉ 一键复制</button>
+        </div>
+        <div class="psacts">
+          <a class="psgh" href="https://github.com/dongzij/futures-signal-desk/edit/main/config.ci.json"
+             target="_blank" rel="noopener">↗ 直接前往 GitHub 修改</a>
+          <span class="pslive" id="psLive"></span>
+        </div>
+        <div class="psnote">复制后，请前往 GitHub 修改 <b>config.ci.json</b> 文件并保存
+          （替换 <b>pushSymbols</b> 那一行）。初始勾选值由该文件同步而来，保存后下一次自动更新生效。</div>
+        <div class="psdiff" id="psDiff"></div>
+      </div>
     </div>
   </div>
   <div class="note">方法（参数由玻璃/豆粕/螺纹/甲醇/尿素五个品种 10 年数据回测选出，非人为设定；本次关注池调整为 <b>玻璃 / 纯碱 / 豆粕 / 纸浆 / 锰硅 / 甲醇 / 白糖 / 玉米</b>，规则与参数一并沿用，未针对新品种重新调参）：
@@ -316,13 +329,13 @@ background:#10151d;color:var(--tx);font-size:18px}
   <b>信号从未被删除或延迟</b>，页面照常显示，只是不推微信。
   两个复盘标签：<b>⚠️ 2日未跟进</b>（信号后 2 根内未顺向破极值，需事后判定，只用于复盘）、
   <b>💤 低波动待观察</b>（ATR/ATR20 &lt; 1.0，当日可知）。
-  顶部【市场状态】为<b>纯信息展示</b>（20 日布林带宽 120 日分位 + MA60 斜率），
+  【市场状态】为<b>纯信息展示</b>（20 日布林带宽 120 日分位 + MA60 斜率），完整大字卡片位于 K 线下方、顶部只留一枚小状态标签，
   <b>不拦截、不隐藏、不降级任何信号</b>，也不影响推送；
   趋势穿越确认状态后台仍参与持仓周期与盈亏计算，前端已彻底不再展示。<br>
   <b>按品种推送（v11.1）</b>：微信只推 <b>白糖 / 豆粕 / 玻璃</b> 三支（品种按钮上的「推」角标），
   这三支的<b>进场、独立出场雷达、持仓离场预警、趋势确认</b>全部推送，不套用周线降级档位；
   其余 5 支<b>页面照常显示全部信号</b>，仅不发微信。<br>
-  <b>换品种（v11.2）</b>：用页面最顶部的【推送设置】面板点选 → 一键复制 → 前往 GitHub 保存
+  <b>换品种（v11.2 / v11.3）</b>：用页面底部【推送设置】面板（默认收起，点「展开 ▼」）点选 → 一键复制 → 前往 GitHub 保存
   config.ci.json 即可；该面板<b>只在浏览器里生成配置文本，不写入任何后台文件</b>，
   保存后下一次自动更新生效。</div>
 </div>
@@ -411,6 +424,11 @@ function renderMarket(){
   if(!M){ box.innerHTML='<div class="mk"><div class="mkh"><span>市场状态</span></div>'
     + '<div class="mkv" style="font-size:16px;color:var(--dim)">加载中…</div></div>'; return; }
   var cl = M.state==='Up'?'up':(M.state==='Down'?'dn':'rg');
+  var mini = $('mktMini');
+  if(mini){
+    mini.textContent = String(M.label||'市场状态').replace(/（.*?）/g,'').trim();
+    mini.className = 'mktmini ' + cl;
+  }
   var sub = '布林带宽分位 ' + (M.bwQ!=null ? Math.round(M.bwQ*100)+'%' : '—')
     + ' · MA60 斜率 ' + (M.ma60Slope!=null ? (M.ma60Slope>0?'+':'')+M.ma60Slope : '—')
     + ' · 20日内穿越中轨 ' + (M.midCross!=null ? M.midCross+' 次' : '—');
@@ -432,11 +450,11 @@ var PS_LIVE = [], PS_DRAFT = [];
 function psInit(){
   PS_LIVE = ((MAN.pushCfg||{}).symbols||[]).map(function(x){return String(x).toUpperCase();});
   PS_DRAFT = PS_LIVE.slice();
-  try{
-    if(localStorage.getItem('pushPanelCollapsed')==='1'){
-      $('psBody').classList.add('hide'); $('psFold').textContent = '展开 ▼';
-    }
-  }catch(e){}
+  /* v11.3：面板移到页面底部且不常用 → 默认收起；只记住用户的展开偏好 */
+  var hidden = true;
+  try{ if(localStorage.getItem('pushPanelCollapsed')==='0') hidden = false; }catch(e){}
+  $('psBody').classList.toggle('hide', hidden);
+  $('psFold').textContent = hidden ? '展开 ▼' : '收起 ▲';
   renderPushPanel();
 }
 function togglePushPanel(){
