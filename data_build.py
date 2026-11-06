@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """构建分合约数据包：data/{SYM}.json（品种主档+信号）与 data/{SYM}_{合约}.json（K线）。
 
-主页面与反转预测雷达（v4，与回测同源，仅 FG/M/RB/MA/UR）：
+主页面与反转预测雷达（v4，与回测同源，8 品种 FG/SA/M/SP/SM/MA/SR/C）：
 MA34 定义趋势段 · 4 条入选特征计分 + ADX≥20 门槛 · 命中 k 条 → 标定的反转概率
 （k=4 时 5 日内 78.9%，且不设止损、持有到反向穿越）。
 信号来自 state.json（engine.scan_symbol 产出）；周/月信号用同一方法
@@ -23,13 +23,16 @@ XSIG_ALL = []      # 跨品种独立出场信号当前状态
 # 品种交易参数（模拟盘用）：乘数 / 手续费 / 保证金率
 # fee: ("lot", 元/手) 或 ("rate", 万分之几)
 PRODUCTS = {
-    "FG": {"name": "玻璃",   "mult": 20,   "fee": ("lot", 6),    "margin": 0.09},
-    "M":  {"name": "豆粕",   "mult": 10,   "fee": ("lot", 1.5),  "margin": 0.08},
-    "RB": {"name": "螺纹钢", "mult": 10,   "fee": ("rate", 1),   "margin": 0.08},
-    "MA": {"name": "甲醇",   "mult": 10,   "fee": ("lot", 2),    "margin": 0.08},
-    "UR": {"name": "尿素",   "mult": 20,   "fee": ("lot", 6),    "margin": 0.09},
+    "FG": {"name": "玻璃", "mult": 20, "fee": ("lot", 6),     "margin": 0.09},
+    "SA": {"name": "纯碱", "mult": 20, "fee": ("lot", 3.5),   "margin": 0.09},
+    "M":  {"name": "豆粕", "mult": 10, "fee": ("lot", 1.5),   "margin": 0.08},
+    "SP": {"name": "纸浆", "mult": 10, "fee": ("rate", 0.5),  "margin": 0.08},
+    "SM": {"name": "锰硅", "mult": 5,  "fee": ("lot", 3),     "margin": 0.09},
+    "MA": {"name": "甲醇", "mult": 10, "fee": ("lot", 2),     "margin": 0.08},
+    "SR": {"name": "白糖", "mult": 10, "fee": ("lot", 3),     "margin": 0.08},
+    "C":  {"name": "玉米", "mult": 10, "fee": ("lot", 1.2),   "margin": 0.08},
 }
-ORDER = ["FG", "M", "RB", "MA", "UR"]
+ORDER = ["FG", "SA", "M", "SP", "SM", "MA", "SR", "C"]
 DAILY_YEARS = 10         # 主力连续日线回看年数（支撑年/月/周视图）
 MAX_CONTRACTS = 8        # 每品种最多打包的合约数
 KEEP_MIN = 40            # 合约至少要有多少根日线才收录

@@ -19,3 +19,8 @@ nohup.out
 *.log
 _chk/
 _shot/
+_validate_out.txt
+_gate_out.txt
+_build_out.txt
+_stale_*.txt
+state_old5_backup.json

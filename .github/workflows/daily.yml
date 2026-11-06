@@ -46,7 +46,7 @@ jobs:
           python - <<'PY'
           import json, sys
           d = json.load(open('dist/data/index.json', encoding='utf-8'))
-          last = max(b["main"][-1][0] for b in [json.load(open('dist/data/%s.json' % c, encoding='utf-8')) for c in ('FG','M','RB','MA','UR')])
+          last = max(b["main"][-1][0] for b in [json.load(open('dist/data/%s.json' % c, encoding='utf-8')) for c in ('FG','SA','M','SP','SM','MA','SR','C')])
           print('latest bar:', last)
           if last < __import__('datetime').date.today().isoformat():
               print('WARNING: 数据未到当日，可能接口延迟或抓取失败')

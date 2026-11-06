@@ -1,10 +1,13 @@
 {
  "codes": [
   "FG",
+  "SA",
   "M",
-  "RB",
+  "SP",
+  "SM",
   "MA",
-  "UR"
+  "SR",
+  "C"
  ],
  "equity": 100000,
  "riskPct": 5.0,
