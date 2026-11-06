@@ -60,8 +60,12 @@ CH_K = 3.0         # 吊灯止损：极值 ∓ 3 ATR
 WARN_PULL = 1.2    # 盘整预警：自极值回撤 ≥1.2 ATR（仅提示，不平仓）
 
 # ---- 独立出场雷达（见顶/见底探测器，与进场、与是否持仓都无关）----
-XS_EXT = 3.0       # 门槛①：收盘距 MA34 ≥3.0 ATR（趋势已伸展到极致）
-XS_PULL = 1.2      # 门槛②：自段内极值回撤 ≥1.2 ATR（已经开始回头）
+# 参数由 10 年 5 品种网格寻优得出（mine_xs.py，EXT 2.0~3.0 × PULL 0.8~1.5，0.1 步长 88 组）
+# 约束「每品种每年 ≥3 次」下取 20 根反转胜率最高：EXT 2.6 / PULL 1.1
+#   158 次 / 10 年 = 3.35 次/品种/年；20 根方向胜率 59.6%（基准 51.4%）；
+#   20 根内反向 ≥1ATR 占 67.9%；辅助≥2 的强档 63.6%；盲测段(2024+) 55.0%
+XS_EXT = 2.6       # 门槛①：收盘距 MA34 ≥2.6 ATR（趋势伸展）
+XS_PULL = 1.1      # 门槛②：自段内极值回撤 ≥1.1 ATR（已经开始回头）
 XS_AMP = 12.0      # 辅助：段内幅度 ≥12 ATR
 XS_AGE = 30        # 辅助：段龄 ≥30 根
 XS_SHADOW = 0.6    # 辅助：当根反向影线 ≥0.6 ATR（冲高回落）
@@ -394,7 +398,7 @@ def exit_track(bars, S, ei, side, atr, entry=None):
 
 # ---------------------------------------------------------------- 独立出场雷达
 # 与进场、与是否持仓都无关：只回答「现在是不是一段趋势的顶/底，该考虑走了」
-# 10 年五品种标定：门槛(伸展+回撤) 命中 94 次/50 品种年 ≈ 每品种每年 1.9 次
+# 10 年五品种标定（2026-11 寻优后）：158 次 / 50 品种年 ≈ 每品种每年 3.35 次
 #   辅助 0 条 → 之后 20 根净优势 +0.35 ATR
 #   辅助 1 条 → +0.39 ATR   辅助 ≥2 条 → +0.87 ATR（10 根内反向≥1ATR 55.8%）
 
@@ -448,8 +452,8 @@ def xs_facts(bars, S, i, sd):
 XS_GATES = ("ext", "pull")
 XS_AUX = ("amp", "shadow", "age", "adx", "ma18", "oi")
 XS_DESC = {
-    "ext": ("趋势伸展", "收盘距 MA34 ≥3ATR"),
-    "pull": ("极值回撤", "自段内高/低点回撤 ≥1.2ATR"),
+    "ext": ("趋势伸展", "收盘距 MA34 ≥2.6ATR"),
+    "pull": ("极值回撤", "自段内高/低点回撤 ≥1.1ATR"),
     "amp": ("段幅足够", "本段振幅 ≥12ATR"),
     "shadow": ("冲高回落", "当根反向影线 ≥0.6ATR"),
     "age": ("趋势老化", "本段已走 ≥30 根"),
@@ -529,6 +533,7 @@ def xs_stat(code=None, years=10):
         return None
     n = len(hs)
     bars = _bars_of(code, years)
+    span = max(1.0, len(bars) / 244.0)      # 实际样本年数（尿素上市不足 10 年）
     S = make_S(bars)
     idx = {b["d"]: k for k, b in enumerate(bars)}
     ok20, ok10 = 0, 0
@@ -541,7 +546,7 @@ def xs_stat(code=None, years=10):
             ok10 += 1 if (bars[i]["c"] - bars[i + 10]["c"]) * sd > 0 else 0
         if i + 20 < len(bars):
             ok20 += 1 if (bars[i]["c"] - bars[i + 20]["c"]) * sd > 0 else 0
-    return {"n": n, "perYear": round(n / years, 2),
+    return {"n": n, "perYear": round(n / span, 2),
             "ok10": round(ok10 / max(1, n) * 100), "ok20": round(ok20 / max(1, n) * 100),
             "strong": sum(1 for h in hs if h["level"] == "strong")}
 

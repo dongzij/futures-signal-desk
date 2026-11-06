@@ -285,9 +285,10 @@ def build_product(sym):
 
 def main():
     os.makedirs(OUT, exist_ok=True)
-    # 清掉旧的品种数据文件（保留目录）
-    for f in os.listdir(OUT):
-        os.remove(os.path.join(OUT, f))
+    # 清掉旧的品种数据文件（保留目录）；KEEP_DATA=1 时保留（本地快速重算用）
+    if not os.environ.get("KEEP_DATA"):
+        for f in os.listdir(OUT):
+            os.remove(os.path.join(OUT, f))
 
     ok = []
     for sym in ORDER:

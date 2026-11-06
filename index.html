@@ -40,18 +40,18 @@ justify-content:space-between;align-items:center}
 .xlv{display:flex;align-items:center;gap:9px;margin-bottom:9px}
 .xlv .bg{font-size:13px;font-weight:800;padding:5px 12px;border-radius:7px;letter-spacing:.3px}
 .xlv.none .bg{background:#1c2430;color:var(--dim)}
-.xlv.watch .bg{background:rgba(245,165,36,.16);color:#f5a524;border:1px solid #f5a52466}
-.xlv.suggest .bg{background:#f5a524;color:#241703}
-.xlv.strong .bg{background:#ff4d4f;color:#fff;box-shadow:0 0 0 2px #ff4d4f33}
+.xlv.watch .bg{background:rgba(34,211,238,.14);color:#22D3EE;border:1px solid #22D3EE66}
+.xlv.suggest .bg{background:#FFC400;color:#1A1300;box-shadow:0 0 0 2px #FFC40040}
+.xlv.strong .bg{background:#FFE94A;color:#171200;box-shadow:0 0 0 3px #FFE94A55}
 .xlv .sub{font-size:11px;color:var(--dim);line-height:1.5}
 .xgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
 .xc{display:flex;gap:6px;background:#0f141c;border:1px solid var(--line);
 border-radius:7px;padding:6px 8px;align-items:flex-start}
-.xc.ok{border-color:#f5a52466;background:rgba(245,165,36,.08)}
+.xc.ok{border-color:#FFC40066;background:rgba(255,196,0,.09)}
 .xc.gate{border-left:3px solid #3b4a63}
-.xc.gate.ok{border-left-color:#f5a524}
+.xc.gate.ok{border-left-color:#FFC400}
 .xc .ic{font-size:11px;flex:0 0 12px;color:#48566b;line-height:1.5}
-.xc.ok .ic{color:#f5a524}
+.xc.ok .ic{color:#FFC400}
 .xc .tt{font-size:11.5px;line-height:1.35;font-weight:600}
 .xc .tt em{font-style:normal;color:var(--dim);font-weight:400;font-size:10.5px;display:block}
 .fchips{display:flex;gap:6px;margin-bottom:9px}
@@ -63,8 +63,8 @@ border-radius:14px;padding:3px 12px;font-size:11.5px}
 .sgr .dt{color:var(--dim);font-size:11px;flex:0 0 68px}
 .sgr .bd{font-size:10.5px;font-weight:800;border-radius:4px;padding:2px 6px;flex:0 0 auto}
 .bd.in{background:#12325c;color:#7fb3ff}
-.bd.out-s{background:#f5a524;color:#241703}
-.bd.out-x{background:#ff4d4f;color:#fff}
+.bd.out-s{background:#FFC400;color:#1A1300}
+.bd.out-x{background:#FFE94A;color:#171200}
 .sgr .tx2{flex:1;font-size:12px;line-height:1.45}
 .sgr .tx2 em{font-style:normal;color:var(--dim);font-size:10.5px;display:block}
 
@@ -167,8 +167,9 @@ background:#10151d;color:var(--tx);font-size:18px}
     <div class="card" style="padding:6px 4px 2px">
       <div id="chart"></div>
       <div class="cleg"><span style="color:#7fb3ff">▼▲ 进场建仓</span>
-        <span style="color:#f5a524">◆ 建议离场</span>
-        <span style="color:#ff4d4f">◆ 强烈离场</span>
+        <span style="color:#22D3EE">◇ 盘整预警</span>
+        <span style="color:#FFC400">◆ 建议离场</span>
+        <span style="color:#FFE94A;font-weight:700">◆ 强烈离场</span>
         <span style="color:#ff8a3d">┄ MA26 离场线</span>
         <span style="color:#4c8dff">— MA34 趋势线</span></div>
     </div>
@@ -435,13 +436,15 @@ function renderChart(){
     (DOC.exit.trades||[]).forEach(function(t){
       if(t.warn){
         var iw = dateIdx(dates, t.warn);
-        if(iw!=null) marks.push({value:[iw, bars[iw][2]], symbol:'diamond', symbolSize:8,
-          symbolOffset:[0,-10], itemStyle:{color:'#f5a524', borderColor:'#fff3d0', borderWidth:1}});
+        if(iw!=null) marks.push({value:[iw, bars[iw][2]], symbol:'diamond', symbolSize:9,
+          symbolOffset:[0,-10], itemStyle:{color:'rgba(34,211,238,.25)',
+          borderColor:'#22D3EE', borderWidth:1.6}});
       }
       var io = dateIdx(dates, t.out);
       if(io!=null) marks.push({value:[io, t.sd==='long'? bars[io][3] : bars[io][2]],
         symbol:'arrow', symbolRotate: t.sd==='long'? 180 : 0, symbolSize:11,
-        symbolOffset:[0, t.sd==='long'? 12 : -12], itemStyle:{color:'#ff5c5c'}});
+        symbolOffset:[0, t.sd==='long'? 12 : -12],
+        itemStyle:{color:'#F2F6FF', borderColor:'#0b0e13', borderWidth:.5}});
     });
   }
   // 独立出场信号（v10）：顶部/底部到位的提示，橙=建议 红=强烈
@@ -452,10 +455,12 @@ function renderChart(){
       var strong = h.level==='strong';
       var top = h.dir==='顶部';
       marks.push({value:[ix, top? bars[ix][3] : bars[ix][2]],
-        symbol:'diamond', symbolSize: strong? 14 : 11,
-        symbolOffset:[0, top? -18 : 18],
-        itemStyle:{color: strong? '#ff4d4f':'#f5a524',
-                   borderColor:'#0b0e13', borderWidth:1.5}});
+        symbol:'diamond', symbolSize: strong? 21 : 14,
+        symbolOffset:[0, top? (strong? -24 : -18) : (strong? 24 : 18)],
+        itemStyle:{color: strong? '#FFE94A':'#FFC400',
+                   borderColor: strong? '#FFFFFF':'#0b0e13',
+                   borderWidth: strong? 2.6 : 1.6,
+                   shadowBlur: strong? 10 : 0, shadowColor:'#FFE94A'}});
     });
   }
   var series = [
@@ -513,12 +518,13 @@ function renderXs(){
   if(!X){ box.innerHTML = '<div class="empty">独立出场数据缺失</div>'; return; }
   var N = X.now || {}, cfg = X.cfg || {}, st = X.stat || {};
   var lvl = N.level || 'none';
-  var head = {none:['无出场信号','var(--dim)'], watch:['到顶/底区 · 留意','#f5a524'],
-              suggest:['建议减仓/离场','#f5a524'], strong:['强烈建议离场','#ff4d4f']}[lvl];
+  var head = {none:['无出场信号','var(--dim)'], watch:['到顶/底区 · 留意','#22D3EE'],
+              suggest:['建议减仓/离场','#FFC400'],
+              strong:['强烈建议离场','#FFE94A']}[lvl];
   var html = '';
 
   html += '<div style="font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:9px">'
-    + '独立机制：<b style="color:#f5a524">不依赖进场信号、也不需要你有持仓</b>，'
+    + '独立机制：<b style="color:#FFC400">不依赖进场信号、也不需要你有持仓</b>，'
     + '只在价格走到趋势极端（伸展 + 回头）时提示。走不走由你决定。</div>';
 
   html += '<div class="xlv ' + lvl + '">'
@@ -530,9 +536,9 @@ function renderXs(){
   if(N.dir){
     html += '<div style="display:flex;gap:8px;font-size:11.5px;margin-bottom:8px">'
       + exCard('距 MA34', (N.ext != null ? (N.ext >= 0 ? '+' : '') + f2(N.ext) + ' ATR' : '—'),
-               '门槛 ≥' + (cfg.ext || 3) + ' ATR', '#7fb3ff')
+               '门槛 ≥' + (cfg.ext || 2.6) + ' ATR', '#7fb3ff')
       + exCard('自极值回撤', (N.pull != null ? f2(N.pull) + ' ATR' : '—'),
-               '门槛 ≥' + (cfg.pull || 1.2) + ' ATR', '#f5a524')
+               '门槛 ≥' + (cfg.pull || 1.1) + ' ATR', '#FFC400')
       + exCard('段龄', (N.age || 0) + ' 根', '辅助 ≥' + (cfg.age || 30) + ' 根', '#9b6ef3')
       + '</div>';
   }
@@ -559,7 +565,7 @@ function renderXs(){
   if(hs.length){
     html += '<div style="font-size:11px;color:var(--dim);margin:8px 0 2px">最近 4 次出场提示</div>';
     hs.forEach(function(h){
-      var c = h.level === 'strong' ? '#ff4d4f' : '#f5a524';
+      var c = h.level === 'strong' ? '#FFE94A' : '#FFC400';
       html += '<div class="sgr"><span class="dt">' + h.d + '</span>'
         + '<span class="bd ' + (h.level === 'strong' ? 'out-x' : 'out-s') + '">'
         + (h.level === 'strong' ? '强烈' : '建议') + '</span>'
@@ -605,9 +611,9 @@ function renderExit(){
       + (R>=0?'var(--up)':'var(--dn)') + '">' + (R>=0?'+':'') + f2(R) + 'R</span></div>';
 
     if(P.warn){
-      html += '<div style="background:rgba(245,165,36,.14);border-left:3px solid #f5a524;'
+      html += '<div style="background:rgba(34,211,238,.12);border-left:3px solid #22D3EE;'
         + 'padding:8px 10px;border-radius:5px;font-size:12.5px;line-height:1.8;margin-bottom:10px">'
-        + '<b style="color:#f5a524">⚠ 盘整预警</b>　' + ((P.why||[]).join(' · ') || '—')
+        + '<b style="color:#22D3EE">◇ 盘整预警</b>　' + ((P.why||[]).join(' · ') || '—')
         + '<div style="color:var(--dim);font-size:11.5px;margin-top:3px">'
         + '趋势可能停滞：不要再加仓，跌破任一离场线立即离场。</div></div>';
     }
@@ -1007,7 +1013,7 @@ function openSig(key){
     html += '<div class="frow"><span>离场方式</span><b>吊灯 3ATR 止损 / 收盘反向穿 MA26</b></div>';
     html += '<div class="frow"><span>吊灯线（触及无条件走）</span><b class="neg">'+(s.ch!=null?s.ch:'—')+'</b></div>';
     html += '<div class="frow"><span>MA26 离场线</span><b class="neg">'+(s.ml!=null?s.ml:'—')+'</b></div>';
-    if(s.ew) html += '<div class="frow"><span>盘整预警</span><b style="color:#f5a524">'+(s.eww||[]).join(' · ')+'</b></div>';
+    if(s.ew) html += '<div class="frow"><span>盘整预警</span><b style="color:#22D3EE">'+(s.eww||[]).join(' · ')+'</b></div>';
     html += '<div class="frow"><span>每手预留浮亏（2.45 ATR）</span><b>'+(s.buf!=null?s.buf.toLocaleString()+' 元':'—')+'</b></div>';
     if(s.lots!=null) html += '<div class="frow"><span>建议手数（浮亏预算5%）</span><b>'+s.lots+' 手</b></div>';
     if(s.last!=null) html += '<div class="frow"><span>最新 / 浮动</span><b class="'+cls(s.float||0)+'">'

@@ -17,3 +17,5 @@ config.json
 state.bak.json
 nohup.out
 *.log
+_chk/
+_shot/
