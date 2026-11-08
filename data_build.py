@@ -175,8 +175,8 @@ def build_product(sym):
                                        sigs, radar_all)
     DEF_ALL.extend(defend)
 
-    # ---- 3c) v16 模块三：二段 M/W 结构（DIF 背离 + 量仓强）----
-    # 与 reports/MW第二峰_特征叠加数据表.md 同源；只做图上 ★ 标记与独立微信推送。
+    # ---- 3c) v18 模块三：结构双顶/底（纯价格结构重写，替代 v16 信号配对）----
+    # 与 mw_events.full_report() 同源；只做图上 ★ 三角形标记与列表提示，不推微信。
     try:
         mw = mw_events.build_mw(sym, cfg["name"], main, S_main)
         MW_ALL.extend(mw)
@@ -352,7 +352,7 @@ def build_product(sym):
         "signals": sigs,
         "defend": defend,                    # v13：独立防守事件（失效当天即新信号）
         "defendSrc": defend_src,             # v17.1：失效对应的源预警（与白圈成对）
-        "mw": mw,                            # v16：★ 二段 M/W 结构（DIF背离 + 量仓强）
+        "mw": mw,                            # v18：★ 结构双顶/底（纯价格结构，按 mkDate 定位第二峰）
         "sigW": unit_sigs.get("W", []),
         "sigM": unit_sigs.get("M", []),
         "radar": radar,
@@ -419,6 +419,11 @@ def main():
             "atr": s.get("atr"),
         })
 
+    # v18：结构双顶/底统计（供 mwCfg 记录；纯结构全集 + 推荐高置信子集）
+    _mw_stat = mw_events.summarize(MW_ALL)
+    _mw_doi = mw_events.summarize(
+        [e for e in MW_ALL if e.get("filterDif") and e.get("filterOi")])
+
     manifest = {
         "built": datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M"),
         "products": [{"sym": s, **PRODUCTS[s]} for s in ORDER],
@@ -480,14 +485,22 @@ def main():
             },
             "stat": defend_rules.summarize(DEF_ALL),
         },
-        # v16 模块三：二段 M/W 结构（全期 17 笔，64.7% / +1.79R；盲测 66.7%）
+        # v18 模块三：结构双顶/底（纯价格结构重写，替代 v16 信号配对）
+        # 与 reports/ 同源；只做图上 ★ 三角形标记与列表提示，绝不改动进场/出场。
         "mwCfg": {
-            "version": "v16",
-            "label": "★ 二段M/W结构",
-            "rule": "第二峰 + DIF线背离 + 量仓强（持仓降≥10% 或 当日量≤0.8×20日均量）",
-            "backtest": {"n": 17, "win": 64.7, "avgR": 1.79,
-                         "trainWin": 64.3, "blindWin": 66.7,
-                         "baselineWin": 51.1, "netYuan": 33460},
+            "version": "v18",
+            "label": "★ 结构双顶/底",
+            "rule": "纯价格结构：两峰差≤2%或≤1.5ATR · 颈线回撤≥1.5ATR · 两峰间隔10~60根 · 颈线破位收盘确认",
+            "engine": "v18 重写（解除冻结）：按真实局部极值识别双顶/底，不再用信号配对替代结构",
+            "backtest": {  # 纯结构全集（图上所绘全部结构）
+                "n": _mw_stat.get("backtestN"), "win": _mw_stat.get("winRate"),
+                "avgR": _mw_stat.get("avgR"),
+            },
+            "filterBest": {  # 推荐高置信子集（DIF背离 + 持仓降≥10%）
+                "name": "DIF背离 + 持仓降≥10%",
+                "n": _mw_doi.get("backtestN"), "win": _mw_doi.get("winRate"),
+                "avgR": _mw_doi.get("avgR"),
+            },
             "advisoryOnly": True,
             "baseExitUnchanged": True,
             "stat": mw_events.summarize(MW_ALL),

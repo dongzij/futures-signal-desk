@@ -289,7 +289,8 @@ background:#10151d;color:var(--tx);font-size:18px}
         <span style="color:#C77DFF">▲ 进场空</span>
         <span style="color:#E8EEFA;font-weight:700">○ 失效（顶/底/多/空 · 与 ◆ 预警成对）</span>
         <span style="color:#8b95a7">◌ 弱叉（仅记录）</span>
-        <span style="color:#FFD400;font-weight:700">★ 二段M/W结构</span>
+        <span style="color:#FFD400;font-weight:700">▲ 结构双顶</span>
+        <span style="color:#C77DFF;font-weight:700">▼ 结构双底</span>
         <span style="color:#FFD400">• 动能真空</span>
         <span style="color:#22D3EE">◇ 盘整预警</span>
         <span style="color:#FFC400">◆ 建议离场</span>
@@ -961,19 +962,22 @@ function renderChart(){
                textBorderColor:'#0B0E13', textBorderWidth:2.5}});
     });
   }
-  // v16 模块三：★ 二段 M/W 结构（DIF背离 + 量仓强）。挂在更高一层，避开白圈。
+  // v18 模块三：★ 结构双顶/底（纯价格结构重写）。第二峰当天定位，顶部金色▲ / 底部紫色▼
   if(cur.pt==='D' && DOC.mw){
     (DOC.mw||[]).forEach(function(w){
-      var ix = dateIdx(dates, w.date);
+      var ix = dateIdx(dates, w.mkDate);   // 第二峰当天：结构完成的视觉锚点
       if(ix==null) return;
       var b = bars[ix], a = A(ix);
-      // 统一挂在柱体上方：既醒目，又不把 Y 轴下限拉低、压缩 K 线
-      marks.push({value:[ix, b[4] + 3.05*a], mwDate:w.date,
-        symbol:'circle', symbolSize:1,
-        label:{show:true, formatter:'★ 二段M/W', color:'#FFD400', fontSize:13,
-               fontWeight:800, position:'inside', textBorderColor:'#0B0E13',
-               textBorderWidth:2.8, backgroundColor:'rgba(255,212,0,.15)',
-               padding:[2,5], borderRadius:4}});
+      var isTop = (w.side==='short');      // 双顶(M)做空：▲ 置于最高价上方；双底(W)做多：▼ 置于最低价下方
+      var y = isTop ? (b[2] + 1.4*a) : (b[3] - 1.4*a);
+      var strong = (w.filterDif && w.filterOi);   // 高置信：DIF背离 + 持仓降
+      marks.push({value:[ix, y], mwDate:w.date, mwSym:w.sym, mwDir:w.dir,
+        symbol:'triangle', symbolSize: strong ? 13 : 9,
+        symbolRotate: isTop ? 0 : 180,
+        itemStyle:{color: isTop ? '#FFD400' : '#C77DFF',
+                   borderColor: isTop ? '#FFF1A8' : '#E3C2FF', borderWidth:1.4,
+                   shadowBlur: strong ? 10 : 0,
+                   shadowColor: isTop ? 'rgba(255,212,0,.85)' : 'rgba(199,125,255,.85)'}});
     });
   }
   // 出场标记（v9 快出）：空心青菱形=盘整预警，白色箭头=实际离场
@@ -1059,7 +1063,7 @@ function renderChart(){
             + nWeak + ' 条 · 仅记录 / 不推微信</span>' : '')
         + ' <span class="dnb" style="margin-left:6px" onclick="showAllDef()">🗓 10 年全量（近窗 ' + nWin + ' 天）</span>'
         + (mw2.length
-            ? ' <span class="dnb mw" style="margin-left:6px" onclick="jumpMw()">★ 二段M/W '
+            ? ' <span class="dnb mw" style="margin-left:6px" onclick="jumpMw()">★ 结构双顶/底 '
               + mw2.length + ' 次 · 最近 ' + mw2[mw2.length-1].date + '（点此定位）</span>' : '');
     } else {
       dn.innerHTML = '';
@@ -1107,7 +1111,7 @@ function renderChart(){
     if(p.seriesName==='信号' && p.data){
       if(p.data.sig) openSig(p.data.sig);
       else if(p.data.defDate) openDef(p.data.defDate);   // 点白圈 → 当天全部失效明细
-      else if(p.data.mwDate) openMw(p.data.mwDate);      // 点 ★ → 二段 M/W 明细
+      else if(p.data.mwDate) openMw(p.data.mwDate);      // 点 ★ → 结构双顶/底明细
     }
   });
   // ?focus= 只执行一次，避免切换品种/周期时被反复拉回
@@ -1152,8 +1156,8 @@ function jumpDef(){
 }
 function jumpMw(){
   if(!DOC.mw || !DOC.mw.length) return;
-  var dl = DOC.mw.slice().sort(function(a,b){ return a.date < b.date ? -1 : 1; });
-  zoomToDate(dl[dl.length - 1].date);
+  var dl = DOC.mw.slice().sort(function(a,b){ return a.mkDate < b.mkDate ? -1 : 1; });
+  zoomToDate(dl[dl.length - 1].mkDate);
 }
 /* 一键铺满 10 年，把全部失效标记放在一起看 */
 function showAllDef(){
@@ -1165,28 +1169,42 @@ function showAllDef(){
     ]});
   }catch(e){}
 }
-/* v16 模块三：点 ★ 看二段 M/W 结构明细 */
+/* v18 模块三：点 ★ 看结构双顶/底明细 */
 function openMw(date){
   var w = (DOC.mw||[]).filter(function(x){ return x.date===date; })[0];
   if(!w) return;
   var qty = [];
   if(w.oiDrop10) qty.push('持仓较首峰降 ' + Math.abs(w.oiChg) + '%');
   if(w.volDry) qty.push('当日量 ' + w.volRatio + '×20 日均量');
-  var html = '<h3>★ 二段 M/W 结构 · ' + date + ' · ' + DOC.name
+  // 本品种动态统计（颈线破位回测，与 mw_events 同源）
+  var all = DOC.mw || [], bt = all.filter(function(e){ return e.R != null; });
+  var win = bt.filter(function(e){ return e.win; });
+  var nTop = all.filter(function(e){ return e.dir === '顶部'; }).length;
+  var nBot = all.filter(function(e){ return e.dir === '底部'; }).length;
+  var wr  = bt.length ? (win.length / bt.length * 100).toFixed(1) : '—';
+  var ar  = bt.length ? (bt.reduce(function(s,e){ return s + e.R; }, 0) / bt.length).toFixed(2) : '—';
+  var doi = all.filter(function(e){ return e.filterDif && e.filterOi && e.R != null; });
+  var dw  = doi.length ? (doi.filter(function(e){ return e.win; }).length / doi.length * 100).toFixed(1) : '—';
+  var da  = doi.length ? (doi.reduce(function(s,e){ return s + e.R; }, 0) / doi.length).toFixed(2) : '—';
+  var rTxt = (w.R == null) ? '—' : ((w.win ? '是' : '否') + ' · R ' + w.R + '（' + (w.exitReason || '') + '）');
+  var html = '<h3>★ 结构双顶/底 · ' + date + ' · ' + DOC.name
     + '<span onclick="closeSheet()">关闭 ✕</span></h3>';
   html += '<div class="frow"><span>形态</span><b>' + w.dir + ' · 第二峰（'
     + (w.side==='short'?'做空方向':'做多方向') + '）</b></div>'
-    + '<div class="frow"><span>首个峰 / 间隔</span><b>' + w.firstDate + ' / ' + w.gap + ' 根</b></div>'
-    + '<div class="frow"><span>确认日收盘 / ATR</span><b>' + w.price + ' / ' + w.atr + '</b></div>'
-    + '<div class="frow"><span>两峰间回撤 / 极值差</span><b>' + w.pullBetween + ' ATR / '
-    + w.extDelta + ' ATR</b></div>'
-    + '<div class="frow"><span>DIF 线背离</span><b style="color:#FFD400">✓ 价格更极端、动能反而走弱</b></div>'
-    + '<div class="frow"><span>量仓强特征</span><b>' + (qty.join('；') || '—') + '</b></div>'
+    + '<div class="frow"><span>首峰 / 第二峰</span><b>' + w.peak1Date + ' / ' + w.peak2Date
+    + '（间隔 ' + w.gap + ' 根）</b></div>'
+    + '<div class="frow"><span>两峰价 / 颈线</span><b>' + w.peak1Px + ' / ' + w.peak2Px + ' / ' + w.neckPx + '</b></div>'
+    + '<div class="frow"><span>颈线回撤 / ATR</span><b>' + w.depth + ' ATR / ' + w.atr + '</b></div>'
+    + '<div class="frow"><span>破位确认收盘</span><b>' + w.entry + '</b></div>'
+    + '<div class="frow"><span>DIF 线背离</span><b style="color:#FFD400">'
+    + (w.divDif ? '✓ 价格更极端、动能反而走弱' : '— 未触发') + '</b></div>'
+    + '<div class="frow"><span>持仓 / 量能</span><b>' + (qty.join('；') || '—') + '</b></div>'
+    + '<div class="frow"><span>本笔回测</span><b>' + rTxt + '</b></div>'
     + '<div style="font-size:11.5px;color:var(--dim);line-height:1.8;margin:10px 0 4px">'
-    + '历史标定（10 年 8 品种）：该组合 17 笔，胜率 <b style="color:#FFD400">64.7%</b>、'
-    + '均 R <b style="color:#FFD400">+1.79</b>、净收益 +33,460 元；'
-    + '基线 51.1% / +0.14R，训练 64.3% / 盲测 66.7%。<br>'
-    + '只做结构提示与微信独立推送，<b>MA34 进场、MA26 + 吊灯 3ATR 出场一字未改</b>。</div>';
+    + '本品种结构 <b>' + all.length + '</b> 笔（顶 ' + nTop + ' / 底 ' + nBot + '）· '
+    + '颈线破位回测 <b style="color:#FFD400">胜率 ' + wr + '%</b> · 均 R <b style="color:#FFD400">+' + ar + '</b>。<br>'
+    + '其中高置信（DIF背离 + 持仓降）' + doi.length + ' 笔 · 胜率 ' + dw + '% · 均 R +' + da + '。<br>'
+    + '<b>MA34 进场、MA26 + 吊灯 3ATR 出场一字未改</b>；结构仅作提示，不构成新信号。</div>';
   $('sheet').innerHTML = html;
   $('mask').classList.add('on');
 }
@@ -1742,7 +1760,7 @@ function renderSigs(){
   (DOC.defend || []).forEach(function(e){
     rows.push({d: e.date, kind: 'def', e: e});
   });
-  // —— v16 模块三：★ 二段 M/W 结构 ——
+  // —— v18 模块三：★ 结构双顶/底 ——
   (DOC.mw || []).forEach(function(w){
     rows.push({d: w.date, kind: 'mw', w: w});
   });
@@ -1813,13 +1831,15 @@ function renderSigs(){
     }
     if(r.kind === 'mw'){
       var w = r.w;
+      var hi2 = (w.filterDif && w.filterOi);   // 高置信：DIF背离 + 持仓降
       return '<div class="sgr mwrow" onclick="openMw(\'' + w.date + '\')">'
         + '<span class="dt">' + w.date + '</span>'
-        + '<span class="bd mw">★ 二段M/W</span>'
+        + '<span class="bd mw">★ 结构双顶/底</span>'
         + '<span class="tx2">★ ' + (w.name || w.sym) + '（' + w.sym + '）'
-        + w.dir + '第二峰确认 · ' + (w.side === 'short' ? '做空方向' : '做多方向')
-        + '<em>首峰 ' + w.firstDate + ' · 间隔 ' + w.gap + ' 根 · DIF背离 + 量仓强'
-        + ' · 历史 64.7% / +1.79R · 点此看明细</em></span></div>';
+        + w.dir + ' · ' + (w.side === 'short' ? '做空方向' : '做多方向')
+        + (hi2 ? ' <b style="color:#FFD400">高置信</b>' : '')
+        + '<em>首峰 ' + w.peak1Date + ' · 第二峰 ' + w.peak2Date + ' · 间隔 ' + w.gap + ' 根 · 颈线 '
+        + w.neckPx + ' · 破位收 ' + w.entry + ' · 点此看明细</em></span></div>';
     }
     if(r.kind === 'in'){
       var s = r.s;

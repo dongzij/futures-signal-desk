@@ -415,61 +415,8 @@ def main():
     state["defendSeen"] = seen_def[-600:]
     json.dump(state, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 
-    # ---------- v16 模块三：二段 M/W 结构（DIF背离 + 量仓强）独立推送 ----------
-    # 与页面 ★ 标记同源：第二峰当天可得，无前视；只提示，不改任何进场/出场。
-    mw_fresh = []
-    seen_mw = state.setdefault("mwSeen", [])
-    if not first:
-        for code in codes:
-            if not allow_push(code):
-                continue
-            try:
-                evs = mw_events.build_mw(code, engine.NAMES.get(code, code),
-                                         engine_bars(code), engine_S(code))
-            except Exception as e:                      # noqa: BLE001
-                print("mw scan failed %s: %s" % (code, e), file=sys.stderr)
-                continue
-            for w in evs:
-                if w["date"] != today:
-                    continue
-                dd = "%s|%s" % (code, w["date"])
-                if dd in seen_mw:
-                    continue
-                mw_fresh.append((w, dd))
-
-    if mw_fresh and push_token:
-        cards = []
-        for w, _dd in mw_fresh[:8]:
-            sd = "做空" if w["side"] == "short" else "做多"
-            qty = []
-            if w["oiDrop10"]:
-                qty.append("持仓较首峰降 %.1f%%" % abs(w["oiChg"]))
-            if w["volDry"]:
-                qty.append("当日量 %.2f×20日均量" % w["volRatio"])
-            cards.append(
-                '<div style="margin-bottom:16px">'
-                '<div style="font-size:16px;font-weight:700;color:#a87900">'
-                '★ 二段 M/W 结构：%s（%s）%s方向 · %s</div>'
-                '<div style="font-size:13px;line-height:1.85;margin-top:6px">'
-                '确认日 <b>%s</b> · 首个峰 %s · 间隔 %d 根 · 收盘 <b>%s</b><br>'
-                '<span style="color:#555">DIF 线背离（价格更极端、动能反而走弱）＋ %s；'
-                '两峰间回撤 %.2f ATR。</span></div>'
-                '<div style="margin-top:8px;padding:6px 8px;background:#fffbe8;'
-                'border-left:3px solid #FFD400;font-size:12px;color:#6b5200;line-height:1.7">'
-                '历史标定：该组合 17 笔，胜率 64.7%%、均R +1.79（基线 51.1%% / +0.14R），'
-                '训练 64.3%% / 盲测 66.7%%。仅为结构提示，<b>MA34 进场与 MA26 + 吊灯 3ATR 出场不变</b>。'
-                '</div></div>'
-                % (w["name"], w["sym"], w["dir"], sd, today, w["firstDate"],
-                   w["gap"], w["price"], "、".join(qty) or "量仓强特征",
-                   w["pullBetween"]))
-        title = "★ 二段 M/W 结构 %d 条：%s" % (
-            len(mw_fresh),
-            "、".join("%s%s" % (w["name"], w["dir"]) for w, _d in mw_fresh[:8]))
-        ok = post_push(push_token, title, "".join(cards))
-        print("push mw:", ok)
-        if ok:
-            seen_mw.extend(dd for _w, dd in mw_fresh)
-    state["mwSeen"] = seen_mw[-300:]
+    # ---------- v18 模块三：结构双顶/底（仅页面 ★ 三角形标记 + 列表提示，不再单独推微信） ----------
+    # 用户 2026-11-08：避免打扰，M/W 结构不单独发微信；daily 不再扫描/推送（数据由 data_build 写入各品种 JSON）。
     json.dump(state, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 
     # ---------- 推送：概率达阈值的新信号（首次回填不推） ----------
