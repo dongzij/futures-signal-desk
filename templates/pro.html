@@ -135,7 +135,11 @@ border-radius:14px;padding:3px 12px;font-size:11.5px}
 .sgr .dt{color:var(--dim);font-size:11px;flex:0 0 68px}
 .sgr .bd{font-size:10.5px;font-weight:800;border-radius:4px;padding:2px 6px;flex:0 0 auto}
 .bd.in{background:#12325c;color:#7fb3ff}
-.bd.def{background:#FF2D95;color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.35) inset}
+.bd.def{background:#E11D2E;color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.35) inset}
+.defnav{margin:5px 6px 2px;font-size:11px;line-height:1.6}
+.defnav .dnb{display:inline-block;padding:3px 9px;border-radius:20px;cursor:pointer;
+  background:rgba(225,29,46,.13);border:1px solid rgba(225,29,46,.55);color:#FF7A7A}
+.defnav .dnb:active{background:rgba(225,29,46,.28)}
 .sgr.defrow{background:linear-gradient(90deg,rgba(255,45,149,.14),rgba(255,45,149,0) 72%);
 border-left:2px solid #FF2D95;padding-left:6px}
 .bd.out-s{background:#FFC400;color:#1A1300}
@@ -247,13 +251,14 @@ background:#10151d;color:var(--tx);font-size:18px}
       <div id="chart"></div>
       <div class="cleg"><span style="color:#4CC9F0">▼ 进场多</span>
         <span style="color:#C77DFF">▲ 进场空</span>
-        <span style="color:#FF2D95;font-weight:700">✕ 失效打叉</span>
+        <span style="color:#FF1F1F;font-weight:700">✕ 失效打叉</span>
         <span style="color:#FFD400">• 动能真空</span>
         <span style="color:#22D3EE">◇ 盘整预警</span>
         <span style="color:#FFC400">◆ 建议离场</span>
         <span style="color:#FFE94A;font-weight:700">◆ 强烈离场</span>
         <span style="color:#ff8a3d">┄ MA26 离场线</span>
         <span style="color:#4c8dff">— MA34 趋势线</span></div>
+      <div id="defNav" class="defnav"></div>
     </div>
     <!-- v11.3：完整市场状态卡移到 K 线下方，首屏只留看盘必需 -->
     <div class="mkt inline" id="mktBar"></div>
@@ -407,8 +412,9 @@ try{
 }catch(e){}
 /* v12：?sig=pred|2026-10-22 直接打开某条信号详情（深链接，便于分享/复盘）；
    等品种数据加载完再打开，所以先挂起 */
-var _SIG_PEND = null;
+var _SIG_PEND = null, _DEF_PEND = false;
 try{ _SIG_PEND = new URLSearchParams(location.search).get('sig'); }catch(e){}
+try{ _DEF_PEND = new URLSearchParams(location.search).get('def') === '1'; }catch(e){}
 var KC = {};          // 缓存: sym|ct → {d:[],m60:[],m15:[]}
 var CH = null, ECREADY = false;
 var PERIODS = [['Y','年'],['M','月'],['W','周'],['D','日'],['60','60分'],['15','15分']];
@@ -437,8 +443,8 @@ function weekTxt(m){
 function warnTagHtml(m){
   if(!m) return '';
   var a=[];
-  if(m.observe) a.push('<span class="tg obs">观察 · 页面保留不推微信</span>');
-  else if(m.weekAlign===false) a.push('<span class="tg str">逆势强档 · 正常推送</span>');
+  if(m.observe) a.push('<span class="tg obs" title="逆势普通档：页面照常显示，仅不单独推微信">⏸ 观察</span>');
+  else if(m.weekAlign===false) a.push('<span class="tg str" title="强档：逆势也照常推送">◆ 逆势强档</span>');
   var v = (m.risk || {}).vac;
   if(v && v.tag){
     var hs = (v.hits||[]).map(function(k){return k;}).join('、');
@@ -592,6 +598,17 @@ function loadCt(cid, force){
       var _k = _SIG_PEND; _SIG_PEND = null;
       if(findSig(_k)) openSig(_k);
     }
+    if(_DEF_PEND){
+      _DEF_PEND = false;
+      /* echarts 可能晚于此刻才初始化完成，轮询等图表实例就绪 */
+      var _jt = 0;
+      var _jtTick = function(){
+        if(CH){ try{ jumpDef(); }catch(e){} return; }
+        if(++_jt > 20) return;
+        setTimeout(_jtTick, 250);
+      };
+      setTimeout(_jtTick, 300);
+    }
   }
   if(KC[key] && !force){ go(); return; }
   if(cid === '0'){
@@ -728,19 +745,26 @@ function renderChart(){
       }
     });
   }
-  // v13：失效打叉 —— 独立防守事件，画在判定成立当天，历史阵亡点一眼可见
+  // v14：失效打叉 —— 大红 ❌ 一律画在当日 K 线【正上方】（白色描边保证不与阳线红糊在一起），
+  // 并在该日加一条竖向红色虚线，扫图时先看线再确认叉。
+  var defXs = [];
   if(cur.pt==='D' && DOC.defend){
     (DOC.defend||[]).forEach(function(e){
       var ix = dateIdx(dates, e.date);
       if(ix==null) return;
       var b = bars[ix], a = A(ix);
-      var up = e.side==='short';        // 空单失效→上方；多单失效→下方（不压柱体）
-      marks.push({value:[ix, up? (b[4] + 1.35*a) : (b[3] - 1.35*a)], def:e,
-        symbol:'circle', symbolSize:17,
-        itemStyle:{color:'#FF2D95', borderColor:'#FFFFFF', borderWidth:2,
-                   shadowBlur:9, shadowColor:'rgba(255,45,149,.85)'},
-        label:{show:true, formatter:'✕', color:'#FFFFFF', fontSize:11,
-               fontWeight:'bold', position:'inside'}});
+      defXs.push(dates[ix]);
+      marks.push({value:[ix, b[4] + 1.45*a], def:e,
+        symbol:'circle', symbolSize:1,
+        label:{show:true, formatter:'✕', color:'#FF1F1F', fontSize:23,
+               fontWeight:'bold', position:'inside',
+               textBorderColor:'#FFFFFF', textBorderWidth:3.2,
+               textShadowBlur:8, textShadowColor:'rgba(255,31,31,.55)'}});
+      marks.push({value:[ix, b[4] + 2.45*a], def:e,
+        symbol:'circle', symbolSize:1,
+        label:{show:true, formatter:'失效', color:'#FF5A5A', fontSize:9,
+               fontWeight:'bold', position:'inside', textBorderColor:'#0B0E13',
+               textBorderWidth:2}});
     });
   }
   // 出场标记（v9 快出）：空心青菱形=盘整预警，白色箭头=实际离场
@@ -780,6 +804,20 @@ function renderChart(){
                    shadowBlur: strong? 10 : 0, shadowColor:'#FFE94A'}});
     });
   }
+  // v14：图上给出「历史失效」定位入口（默认窗口只显示最近 260 根，
+  // 多数品种最近一次失效不在窗口内，不给入口就等于看不到）
+  var dn = $('defNav');
+  if(dn){
+    var dl2 = (DOC.defend || []).slice().sort(function(x,y){ return x.date < y.date ? -1 : 1; });
+    if(cur.pt === 'D' && dl2.length){
+      var lastD = dl2[dl2.length - 1];
+      dn.innerHTML = '<span class="dnb" onclick="jumpDef()">🛑 历史失效 ' + dl2.length
+        + ' 次 · 最近 ' + lastD.date + '（点此定位）</span>';
+    } else {
+      dn.innerHTML = '';
+    }
+  }
+
   var series = [
     {name:'K', type:'candlestick', data:k, barMaxWidth:14,     itemStyle:{color:'#e5484d', color0:'#0ecb81', borderColor:'#e5484d', borderColor0:'#0ecb81'}},
     {name:'MA10', type:'line', data:m10, symbol:'none', lineStyle:{width:1,color:'#f5a524'}},
@@ -789,7 +827,11 @@ function renderChart(){
     {name:'MA89', type:'line', data:m89, symbol:'none', lineStyle:{width:1,color:'#9b6ef3'}},
     {name:'量', type:'bar', data:vols, xAxisIndex:1, yAxisIndex:1, barMaxWidth:14,
      itemStyle:{color:'#26324a'}},
-    {name:'信号', type:'scatter', data:marks, z:10, cursor:'pointer'}
+    {name:'信号', type:'scatter', data:marks, z:10, cursor:'pointer',
+     markLine:{silent:true, symbol:'none', animation:false,
+       label:{show:false},
+       lineStyle:{color:'rgba(255,31,31,.38)', type:'dashed', width:1},
+       data: defXs.map(function(d){ return {xAxis:d}; })}}
   ];
   CH.setOption({
     animation:false,
@@ -819,6 +861,21 @@ function renderChart(){
       else if(p.data.def) openSig('pred|' + p.data.def.sigDate);   // 失效打叉 → 回看原信号
     }
   });
+}
+function jumpDef(){
+  if(!DOC.defend || !DOC.defend.length || !CH) return;
+  var dl = DOC.defend.slice().sort(function(a,b){ return a.date < b.date ? -1 : 1; });
+  var last = dl[dl.length - 1];
+  var bs = barsFor(cur.pt), ds = bs.map(function(b){ return b[0]; });
+  var i = dateIdx(ds, last.date);
+  if(i == null) return;
+  var s0 = Math.max(0, i - 70), s1 = Math.min(ds.length - 1, i + 20);
+  try{
+    CH.setOption({dataZoom:[
+      {type:'inside', xAxisIndex:[0,1], startValue:s0, endValue:s1},
+      {type:'slider', xAxisIndex:[0,1], startValue:s0, endValue:s1}
+    ]});
+  }catch(e){}
 }
 function dateIdx(dates, d){
   // 精确匹配；没有则找第一个 >= d 的
@@ -1167,7 +1224,7 @@ function renderDec(){
     +   (((MAN.model||{}).lead||{}).median!=null? MAN.model.lead.median : '1')+' 根</span></div>'
     + '<div class="wkrow">周线 MA'+(R.weekMA||45)+'：'
     +   (R.weekPos===1?'偏多':(R.weekPos===-1?'偏空':'数据不足'))
-    +   ' · 逆势普通档降级【观察】（页面照常显示，仅不推微信），强档与顺势正常推送'
+    +   ' · 逆势普通档 ⏸ 观察，强档与顺势正常推送'
     +   (recent ? '<div style="margin-top:5px"><span class="tg dim">最近建仓 '+recent.date+'</span>'
         + tagHtml(recent.meta) + '</div>' : '')
     + '</div>'
@@ -1266,18 +1323,20 @@ function renderSigs(){
     + (nDef ? ' · 🛑 失效 ' + nDef : '');
 
   if(SIGF === 'in')  rows = rows.filter(function(r){ return r.kind === 'in'; });
-  if(SIGF === 'out') rows = rows.filter(function(r){ return r.kind === 'out' || r.kind === 'def'; });
+  if(SIGF === 'out') rows = rows.filter(function(r){ return r.kind === 'out'; });
+  if(SIGF === 'def') rows = rows.filter(function(r){ return r.kind === 'def'; });
 
-  var fc = [['all','全部'],['in','只看进场'],['out','只看出场']];
+  var fc = [['all','全部'],['in','只看进场'],['out','只看出场'],['def','只看失效']];
   $('sigFilter').innerHTML = fc.map(function(f){
     return '<span class="fc' + (SIGF === f[0] ? ' on' : '') + '" onclick="setSigF(\'' + f[0] + '\')">'
       + f[1] + '</span>';
   }).join('');
 
   rows.sort(function(a,b){
-    if(a.d !== b.d) return a.d < b.d ? 1 : -1;
     var pa = a.kind === 'def' ? 0 : 1, pb = b.kind === 'def' ? 0 : 1;
-    return pa - pb;                         // 同一天：防守事件置顶
+    if(pa !== pb) return pa - pb;           // v14：失效事件整体排最前（新的防守消息置顶）
+    if(a.d !== b.d) return a.d < b.d ? 1 : -1;
+    return 0;
   });
   rows = rows.slice(0, 40);
   if(!rows.length){
@@ -1287,8 +1346,11 @@ function renderSigs(){
   $('sigList').innerHTML = rows.map(function(r){
     if(r.kind === 'def'){
       var e = r.e, sd = e.side === 'short' ? '空' : '多';
+      var whyTxt = (e.reason === 'struct')
+        ? (e.side === 'long' ? '跌破起涨波谷' : '涨破起跌波峰')
+        : (e.side === 'long' ? '跌破信号日低点' : '涨破信号日高点');
       var head = '🛑 预警失效：' + (e.name || e.sym) + '（' + e.sym + '）' + sd + '单'
-        + e.label + '，建议止损';
+        + whyTxt + '，建议止损平仓';
       return '<div class="sgr defrow" onclick="openSig(\'pred|' + e.sigDate + '\')">'
         + '<span class="dt">' + e.date + '</span>'
         + '<span class="bd def">✕ ' + e.label + '</span>'
@@ -1303,10 +1365,12 @@ function renderSigs(){
       var cls = s.kind === 'pred' ? 'in' : 'in';
       var desc;
       if(s.kind === 'warn'){
-        desc = '命中 ' + (s.k || 0) + '/4 · 5日反转概率 '
+        desc = '命中 ' + (s.k || 0) + ' 条 · 5日反转概率 '
           + Math.round((((s.prob || {})['5']) || 0) * 100) + '%';
       } else if(s.kind === 'pred'){
-        desc = '4/4 命中' + (s.strong ? ' · <b style="color:#f5a524">强确认</b>' : '')
+        var _n6 = (s.k || 0) + (s.strong ? (s.checksS || []).filter(function(c){return c.ok;}).length : 0);
+        desc = '命中 ' + _n6 + ' 条'
+          + (s.strong ? '（基础 ' + s.k + ' + 强确认 2）' : '')
           + ' · 概率 ' + Math.round((((s.prob || {})['5']) || 0) * 100) + '%'
           + ' · 入 ' + (s.en != null ? s.en : '—');
       } else {
@@ -1341,8 +1405,15 @@ function openSig(key){
     + ' · ' + DOC.name + '<span onclick="closeSheet()">关闭 ✕</span></h3>';
   html += '<div class="frow"><span>信号日</span><b>'+s.date+'</b></div>';
   html += '<div class="frow"><span>信号日收盘</span><b>'+(s.price!=null?s.price:'—')+'</b></div>';
-  if(s.k!=null) html += '<div class="frow"><span>特征命中</span><b>'+s.k+' / 4'
-    + (isPred&&s.strong? ' <b style="color:var(--gold)">★ 强确认</b>':'')+'</b></div>';
+  if(s.k!=null){
+    var _cs = (isPred? (s.checksS||[]) : []);
+    var _cok = _cs.filter(function(c){return c.ok;}).length;
+    var _tot = s.k + (isPred? _cok : 0);
+    var _txt = '基础 '+s.k+'/4' + (isPred? ' + 强确认 '+_cok+'/2' : '');
+    html += '<div class="frow"><span>特征命中</span><b>命中 '+_tot+' 条'
+      + ' <span style="color:#8b95a7;font-weight:400">（'+_txt+'）</span>'
+      + (isPred&&s.strong? ' <b style="color:var(--gold)">★ 强确认</b>':'')+'</b></div>';
+  }
   if(s.prob){
     html += '<div class="frow"><span>反转概率（3 / 5 / 10 日）</span><b>'
       + Math.round((s.prob['3']||0)*100)+'% / '+Math.round((s.prob['5']||0)*100)+'% / '
@@ -1371,8 +1442,8 @@ function openSig(key){
     html += '<h3 style="margin-top:12px">周线档位与风险标签 <span>v11 + v12</span></h3>';
     html += '<div class="frow"><span>周线方向</span><b>'+weekTxt(s.meta)+'</b></div>';
     html += '<div class="frow"><span>推送档位</span><b>'
-      + (s.meta.observe? '<span style="color:#9fb0c9">观察 · 页面保留，不推微信</span>'
-                       : '<span style="color:var(--gold)">正常推送</span>') + '</b></div>';
+      + (s.meta.observe? '<span style="color:#9fb0c9">⏸ 观察（降级）</span>'
+                       : '<span style="color:var(--gold)">◆ 正常推送</span>') + '</b></div>';
     html += '<div class="frow"><span>ATR / ATR20</span><b>'+f2(s.meta.volRatio)+'</b></div>';
     var vv = (s.meta.risk || {}).vac;
     if(vv){
@@ -1395,12 +1466,24 @@ function openSig(key){
       + '<span style="color:#6b7688">以上全部只是标签：不删信号、不延迟、不改变 MA26 / 吊灯 3ATR 平仓线，'
       + '也不单独发微信。2日未跟进 / 低波动 已降入本层，不再占首屏。</span></div>';
   }
-  html += '<h3 style="margin-top:12px">反转特征核对 <span>✓ 命中 · ✗ 未命中</span></h3>';
-  var chs = (s.checks || s.conds || []).concat(isPred? (s.checksS||[]) : []);
-  html += chs.map(function(c){
-    var mk = c.ok===true? '<span class="ok1">✓</span>' : c.ok===false? '<span class="ok0">✗</span>' : '<span class="okn">·</span>';
-    return '<div class="cond">'+mk+'<span>'+c.t+'</span><span class="v">'+c.v+'</span></div>';
-  }).join('') || '<div class="cond" style="color:var(--dim)">无明细</div>';
+  var _base = (s.checks || s.conds || []);
+  var _sconf = isPred? (s.checksS||[]) : [];
+  function _chk(rows){
+    return rows.map(function(c){
+      var mk = c.ok===true? '<span class="ok1">✓</span>' : c.ok===false? '<span class="ok0">✗</span>' : '<span class="okn">·</span>';
+      return '<div class="cond">'+mk+'<span>'+c.t+'</span><span class="v">'+c.v+'</span></div>';
+    }).join('');
+  }
+  var _bk = _base.filter(function(c){return c.ok;}).length;
+  html += '<h3 style="margin-top:12px">基础特征（'+_bk+'/'+_base.length+'）'
+    + ' <span>✓ 命中 · ✗ 未命中</span></h3>';
+  html += _chk(_base) || '<div class="cond" style="color:var(--dim)">无明细</div>';
+  if(_sconf.length){
+    var _sk = _sconf.filter(function(c){return c.ok;}).length;
+    html += '<h3 style="margin-top:12px">强确认（'+_sk+'/'+_sconf.length+'）'
+      + ' <span>建仓后追加确认，不计入 4 条基础</span></h3>';
+    html += _chk(_sconf);
+  }
   if(isPred && (s.status==='open' || s.status==='pending')){
     html += '<div style="margin-top:14px;display:flex;gap:10px">'
       + '<button class="btn '+(s.side==='short'?'green':'red')+'" style="flex:1" '

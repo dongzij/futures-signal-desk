@@ -385,24 +385,28 @@ def main():
         for s, key, label, ev, _dd in defend_fresh:
             sd = "多" if s["side"] == "long" else "空"
             nm = engine.NAMES.get(s["sym"], s["sym"])
+            long_side = s["side"] == "long"
             if key == "struct":
                 left = float(ev.get("cushion0") or 0) * (1 - float(ev.get("eaten") or 0))
-                detail = ("入场缓冲 %s ATR，已吃掉 %d%%，剩 %.2f ATR"
-                          % (ev.get("cushion0"), round(float(ev.get("eaten") or 0) * 100), left))
+                why = "跌破起涨波谷" if long_side else "涨破起跌波峰"
+                detail = ("%s：入场缓冲 %s ATR，已吃掉 %d%%，剩 %.2f ATR"
+                          % (why, ev.get("cushion0"),
+                             round(float(ev.get("eaten") or 0) * 100), left))
             else:
-                detail = str(ev.get("why") or "破信号日极值")
+                why = "跌破信号日低点" if long_side else "涨破信号日高点"
+                detail = "%s：%s" % (why, ev.get("why") or "破信号日极值")
             cards.append(
                 '<div style="margin-bottom:16px">'
                 '<div style="font-size:16px;font-weight:700;color:#c2185b">'
-                '🛑 预警失效：%s（%s）%s单%s，建议止损</div>'
+                '🛑 预警失效：%s（%s）%s单%s，建议止损平仓</div>'
                 '<div style="font-size:13px;line-height:1.85;margin-top:6px">'
-                '判定日 <b>%s</b> · 原信号 <b>%s</b> · 第 <b>%s</b> 根<br>'
+                '判定日 <b>%s</b> · 原信号 %s <b>%s</b> · 第 <b>%s</b> 根<br>'
                 '<span style="color:#555">%s</span></div>'
                 '<div style="margin-top:8px;padding:6px 8px;background:#fff1f5;'
                 'border-left:3px solid #FF2D95;font-size:12px;color:#7a1f45;line-height:1.7">'
                 '这是独立防守信号：结构走坏先减/平，别等 MA26 与吊灯 3ATR 的底线。'
                 '</div></div>'
-                % (nm, s["sym"], sd, label, today, s["date"], ev.get("day"), detail))
+                % (nm, s["sym"], sd, why, today, sd, s["date"], ev.get("day"), detail))
         title = "🛑 预警失效 %d 条：%s" % (
             len(defend_fresh),
             "、".join("%s%s" % (engine.NAMES.get(s["sym"], s["sym"]),
