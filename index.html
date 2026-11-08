@@ -122,9 +122,9 @@ padding:12px;margin-bottom:10px}
 justify-content:space-between;align-items:center}
 .card h3 .r{font-size:11px}
 .cleg{display:flex;gap:13px;flex-wrap:wrap;font-size:10.5px;padding:7px 8px 1px}
-/* v16 模块七：去掉底部成交量柱，垂直空间全部给 K 线主图 */
-#chart{width:100%;height:700px}
-@media(max-width:520px){#chart{height:560px}}
+/* v17.1：主图整体缩约 1/5（700→560），下方版块顺移上移 */
+#chart{width:100%;height:560px}
+@media(max-width:520px){#chart{height:450px}}
 
 /* ===== 独立出场雷达（v10）===== */
 .xlv{display:flex;align-items:center;gap:9px;margin-bottom:9px}
@@ -287,7 +287,7 @@ background:#10151d;color:var(--tx);font-size:18px}
       <div id="chart"></div>
       <div class="cleg"><span style="color:#4CC9F0">▼ 进场多</span>
         <span style="color:#C77DFF">▲ 进场空</span>
-        <span style="color:#E8EEFA;font-weight:700">○ 失效（顶/底/多/空）</span>
+        <span style="color:#E8EEFA;font-weight:700">○ 失效（顶/底/多/空 · 与 ◆ 预警成对）</span>
         <span style="color:#8b95a7">◌ 弱叉（仅记录）</span>
         <span style="color:#FFD400;font-weight:700">★ 二段M/W结构</span>
         <span style="color:#FFD400">• 动能真空</span>
@@ -467,8 +467,14 @@ var _SIG_PEND = null, _DEF_PEND = false;
 /* v15：?zoom=all 直接铺满 10 年 K 线，一眼看全量红叉 */
 var _ALLZOOM = false;
 try{ _ALLZOOM = new URLSearchParams(location.search).get('zoom') === 'all'; }catch(e){}
+/* v17.1：?focus=YYYY-MM-DD 复盘深链接，把视窗直接定位到指定日期附近 */
+var _FOCUS_PEND = null;
+try{ _FOCUS_PEND = new URLSearchParams(location.search).get('focus'); }catch(e){}
 try{ _SIG_PEND = new URLSearchParams(location.search).get('sig'); }catch(e){}
 try{ _DEF_PEND = new URLSearchParams(location.search).get('def') === '1'; }catch(e){}
+/* v17.1：?defdate=YYYY-MM-DD 直接打开该日失效明细，并把源预警与白圈放进同一视窗 */
+var _DEFDATE_PEND = null;
+try{ _DEFDATE_PEND = new URLSearchParams(location.search).get('defdate'); }catch(e){}
 var KC = {};          // 缓存: sym|ct → {d:[],m60:[],m15:[]}
 var CH = null, ECREADY = false;
 var PERIODS = [['Y','年'],['M','月'],['W','周'],['D','日'],['60','60分'],['15','15分']];
@@ -765,6 +771,19 @@ function loadCt(cid, force){
       };
       setTimeout(_jtTick, 300);
     }
+    if(_DEFDATE_PEND){
+      var _dd = _DEFDATE_PEND; _DEFDATE_PEND = null;
+      var _dt = 0;
+      var _dtTick = function(){
+        if(CH && DOC){
+          try{ zoomToSrc(_dd); openDef(_dd); }catch(e){}
+          return;
+        }
+        if(++_dt > 20) return;
+        setTimeout(_dtTick, 250);
+      };
+      setTimeout(_dtTick, 300);
+    }
   }
   if(KC[key] && !force){ go(); return; }
   if(cid === '0'){
@@ -875,6 +894,8 @@ function renderChart(){
   // 配色纪律：多=天蓝 #4CC9F0 / 空=紫 #C77DFF / 失效=品红 #FF2D95，
   // 全部避开阳线红 #e5484d 与阴线绿 #0ecb81。
   var marks = [];
+  // v17.1：预警头 → 失效尾 的淡连线（只在默认近窗内画，10 年全量视图不叠加）
+  var defLinks = [];
   if(['D','W','M'].indexOf(cur.pt)>=0){
     var src = cur.pt==='D'? DOC.signals : cur.pt==='W'? (DOC.sigW||[]) : (DOC.sigM||[]);
     src.forEach(function(s){
@@ -977,19 +998,47 @@ function renderChart(){
     });
   }
   // 独立出场信号（v10）：顶部/底部到位，黄=建议 亮黄=强烈
-  if(cur.pt==='D' && DOC.xsig){
-    (DOC.xsig.hist||[]).forEach(function(h){
+  // v17.1：把【产生失效】的历史顶底雷达源预警补齐，沿用完全同款的黄色菱形，
+  //        不改任何原有标识、不改判定口径 —— 让每个白圈都有可对标的「头」。
+  if(cur.pt==='D' && (DOC.xsig || DOC.defendSrc)){
+    var srcMap = {};
+    ((DOC.xsig||{}).hist||[]).forEach(function(h){ srcMap[h.d] = h; });
+    (DOC.defendSrc||[]).forEach(function(h){ if(!srcMap[h.d]) srcMap[h.d] = h; });
+    Object.keys(srcMap).sort().forEach(function(d){
+      var h = srcMap[d];
       var ix = dateIdx(dates, h.d);
       if(ix==null) return;
       var strong = h.level==='strong';
       var top = h.dir==='顶部';
       var a = A(ix);
-      marks.push({value:[ix, top? (bars[ix][4] + 1.75*a) : (bars[ix][3] - 1.75*a)],
+      // 新增的历史源标记贴近柱体，避免拉低 Y 轴下限把 K 线压扁；
+      // xsig.hist 原有 16 条仍按原 ±1.75 ATR 画法，一字不改。
+      var off = h.defDate? 0.85 : 1.75;
+      var py = top? (bars[ix][4] + off*a) : (bars[ix][3] - off*a);
+      marks.push({value:[ix, py], srcDate:h.d,
         symbol:'diamond', symbolSize: strong? 15 : 11,
         itemStyle:{color: strong? '#FFE94A':'#FFC400',
                    borderColor: strong? '#FFFFFF':'#0B0E13',
                    borderWidth: strong? 2.2 : 1.4,
                    shadowBlur: strong? 10 : 0, shadowColor:'#FFE94A'}});
+      // 叠加：这条预警后来被证伪 —— 菱形外叠一枚细白虚线圈（原预警图标本身不变）
+      if(h.defDate){
+        var iy = dateIdx(dates, h.defDate);
+        if(iy!=null){
+          marks.push({value:[ix, py], srcDate:h.d,
+            symbol:'circle', symbolSize: strong? 22 : 18, z:9,
+            itemStyle:{color:'transparent', borderColor:'rgba(232,238,250,.72)',
+                       borderWidth:1.2, borderType:'dashed'}});
+          // 头→尾连线：历史复盘段也要有，否则「对标着看」无从谈起
+          if(iy >= ix && iy - ix <= 40){
+            var ay = A(iy);
+            defLinks.push([{coord:[ix, py]},
+                           {coord:[iy, bars[iy][4] + 1.15*ay],
+                            lineStyle:{color:'rgba(255,196,0,.48)', width:1.2,
+                                       type:'dashed'}}]);
+          }
+        }
+      }
     });
   }
   // v15：全量失效导航 —— 总数 / 最近一次 / 默认窗口内可见数 + 一键铺满 10 年
@@ -1030,15 +1079,16 @@ function renderChart(){
      markLine:{silent:true, symbol:'none', animation:false,
        label:{show:false},
        lineStyle:{color:'rgba(232,238,250,.20)', type:'dashed', width:1},
-       data: defXs.map(function(d){ return {xAxis:d}; })}}
+       data: defXs.map(function(d){ return {xAxis:d}; }).concat(defLinks)}}
   ];
   CH.setOption({
     animation:false,
     axisPointer:{link:[{xAxisIndex:'all'}], label:{backgroundColor:'#232b38'}},
-    grid:[{left:8,right:8,top:14,height:'84%'}],
+    // v17.1：改用固定 bottom，消除「日期刻度 ↔ 滑块」之间的大段空白
+    grid:[{left:8,right:8,top:10,bottom:32}],
     xAxis:[
       {type:'category', data:dates, boundaryGap:true, axisLine:{lineStyle:{color:'#232b38'}},
-       axisLabel:{color:'#8b95a7', fontSize:9}, axisTick:{show:false}}
+       axisLabel:{color:'#8b95a7', fontSize:9, margin:6}, axisTick:{show:false}}
     ],
     yAxis:[
       {scale:true, splitLine:{lineStyle:{color:'#161c26'}}, axisLabel:{color:'#8b95a7', fontSize:9}}
@@ -1046,7 +1096,7 @@ function renderChart(){
     dataZoom:[
       {type:'inside', xAxisIndex:[0],
        start: _ALLZOOM? 0 : Math.max(0, 100 - 260/Math.max(bars.length,1)*100), end:100},
-      {type:'slider', xAxisIndex:[0], bottom:2, height:14, borderColor:'#232b38',
+      {type:'slider', xAxisIndex:[0], bottom:1, height:11, borderColor:'#232b38',
        backgroundColor:'#0b0e13', fillerColor:'#1a2230', handleStyle:{color:'#4c8dff'},
        textStyle:{color:'#8b95a7', fontSize:9}}
     ],
@@ -1060,6 +1110,11 @@ function renderChart(){
       else if(p.data.mwDate) openMw(p.data.mwDate);      // 点 ★ → 二段 M/W 明细
     }
   });
+  // ?focus= 只执行一次，避免切换品种/周期时被反复拉回
+  if(_FOCUS_PEND){
+    var _f = _FOCUS_PEND; _FOCUS_PEND = null;
+    try{ zoomToDate(_f); }catch(e){}
+  }
 }
 /* v16：把视窗跳到某个日期附近（单轴版，成交量副图已移除） */
 function zoomToDate(date){
@@ -1068,6 +1123,21 @@ function zoomToDate(date){
   var i = dateIdx(ds, date);
   if(i == null) return;
   var s0 = Math.max(0, i - 70), s1 = Math.min(ds.length - 1, i + 20);
+  try{
+    CH.setOption({dataZoom:[
+      {type:'inside', xAxisIndex:[0], startValue:s0, endValue:s1},
+      {type:'slider', xAxisIndex:[0], startValue:s0, endValue:s1}
+    ]});
+  }catch(e){}
+}
+/* v17.1：把源预警与它后来的失效白圈放进同一视窗，头尾对照看 */
+function zoomToSrc(d){
+  closeSheet();
+  if(!CH || !d) return;
+  var ds = barsFor(cur.pt).map(function(b){ return b[0]; });
+  var i = dateIdx(ds, d);
+  if(i==null) return;
+  var s0 = Math.max(0, i - 45), s1 = Math.min(ds.length - 1, i + 45);
   try{
     CH.setOption({dataZoom:[
       {type:'inside', xAxisIndex:[0], startValue:s0, endValue:s1},
@@ -1131,7 +1201,9 @@ function openDef(date){
     + '③ 5 根内未创新高/低并收破信号日极值　④ 触发 MA26 / 吊灯 3ATR 原版止损。<br>'
     + '<b style="color:#9fb0c9">◌ 弱叉 = 顶底雷达 &amp; 打叉日 ADX≥30：数据保留、图上空心圈、'
     + '列表标「弱」、不单独推微信（10 年 155 条 / 33.3%，误报率 43.9%）。</b><br>'
-    + '<b style="color:#E8EEFA">仅作提示，MA34 进场与 MA26 + 吊灯出场机制完全不变。</b></div>';
+    + '<b style="color:#E8EEFA">仅作提示，MA34 进场与 MA26 + 吊灯出场机制完全不变。</b><br>'
+    + '<b style="color:#FFC400">失效是叠加在原预警标识上的：图上 ◆ 顶底预警是「头」，○ 白圈是「尾」，'
+    + '黄点线把两者连起来；原有预警标识的画法与判定口径均未改动。</b></div>';
   es.forEach(function(e){
     var sd = e.side==='short'? '空':'多';
     var canOpen = (e.sigKind==='pred'||e.sigKind==='warn')
@@ -1150,6 +1222,9 @@ function openDef(date){
         }).join('<br>')
       + '</div>'
       + (canOpen? '<div style="font-size:10.5px;color:var(--dim);margin-top:4px">点此回看原信号 →</div>':'')
+      + '<div style="margin-top:6px">'
+      + '<span class="dnb" onclick="event.stopPropagation();zoomToSrc(\''+e.sigDate+'\')">'
+      + '⌖ 定位源预警 '+e.sigDate+'（头尾同屏）</span></div>'
       + '</div>';
   });
   $('sheet').innerHTML = html;

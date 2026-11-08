@@ -320,6 +320,28 @@ def build_product(sym):
     except Exception:                                       # noqa: BLE001
         pass
 
+    # ---- 4b) v17.1：失效的「头」——把产生失效的顶底雷达源预警补齐 ----
+    # 用户口径：失效必须是对标着原预警一起看的叠加，不能只有尾巴没有头。
+    # 这里只输出【已经产生失效】的 radar 源，字段与 xsig.hist 完全同款，
+    # 前端沿用既有的黄色菱形画法，不改任何原有标识、不改判定口径。
+    radar_map = {h["d"]: h for h in radar_all}
+    defend_src, seen_src = [], set()
+    for e in defend:
+        if e["sigKind"] != "radar":          # pred / warn 前端本来就有标识，保持不动
+            continue
+        key = (e["sigDate"], e["sigKind"])
+        if key in seen_src:
+            continue
+        seen_src.add(key)
+        h = radar_map.get(e["sigDate"], {})
+        defend_src.append({
+            "d": e["sigDate"],
+            "dir": h.get("dir") or ("顶部" if e["side"] == "short" else "底部"),
+            "level": h.get("level"), "k": h.get("k"), "sd": h.get("sd"),
+            "side": e["side"], "defDate": e["date"], "weak": bool(e.get("weak")),
+        })
+    defend_src.sort(key=lambda x: x["d"])
+
     # ---- 5) 写品种主档 ----
     doc = {
         "sym": sym, "name": cfg["name"],
@@ -329,6 +351,7 @@ def build_product(sym):
         "contracts": cmeta,
         "signals": sigs,
         "defend": defend,                    # v13：独立防守事件（失效当天即新信号）
+        "defendSrc": defend_src,             # v17.1：失效对应的源预警（与白圈成对）
         "mw": mw,                            # v16：★ 二段 M/W 结构（DIF背离 + 量仓强）
         "sigW": unit_sigs.get("W", []),
         "sigM": unit_sigs.get("M", []),
