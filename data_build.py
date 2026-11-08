@@ -162,6 +162,38 @@ def build_product(sym):
     sigs = [pack(s) for s in state.get("signals", []) if s["sym"] == sym]
     sigs.sort(key=lambda x: x["date"])
 
+    # ---- 3b) v13：失效 = 独立防守事件 ----
+    # 实战里「走坏了」本身就是一条新消息，不该藏在旧信号详情里。
+    # 每笔建仓只保留【最早】一次失效（首日失效 / 结构已破坏 先到先得），
+    # 事件日期 = 判定成立当天，用于 K 线打叉、信号栏置顶、微信独立推送。
+    defend = []
+    for s in sigs:
+        if s.get("kind") != "pred":
+            continue
+        r = ((s.get("meta") or {}).get("risk") or {})
+        cand = []
+        for key, label in (("day1", "首日失效"), ("struct", "结构已破坏")):
+            ev = r.get(key)
+            if ev and ev.get("date"):
+                cand.append((ev["date"], key, label, ev))
+        if not cand:
+            continue
+        cand.sort(key=lambda x: x[0])
+        dt, key, label, ev = cand[0]
+        if key == "struct":
+            left = float(ev.get("cushion0") or 0) * (1 - float(ev.get("eaten") or 0))
+            detail = "入场缓冲 %s ATR，已吃掉 %d%%，剩 %.2f ATR" % (
+                ev.get("cushion0"), round(float(ev.get("eaten") or 0) * 100), left)
+        else:
+            detail = str(ev.get("why") or "破信号日极值")
+        defend.append({
+            "kind": "def", "date": dt, "sym": sym, "name": cfg["name"],
+            "side": s.get("side"), "reason": key, "label": label,
+            "day": ev.get("day"), "sigDate": s.get("date"),
+            "detail": detail, "entry": s.get("en"),
+        })
+    defend.sort(key=lambda x: x["date"])
+
     # 周/月信号：在主力连续 K 线上按对应周期独立计算（预测层全因果）
     unit_sigs = {}
     for u in ("W", "M"):
@@ -302,6 +334,7 @@ def build_product(sym):
         "m60": m60, "m15": m15,
         "contracts": cmeta,
         "signals": sigs,
+        "defend": defend,                    # v13：独立防守事件（失效当天即新信号）
         "sigW": unit_sigs.get("W", []),
         "sigM": unit_sigs.get("M", []),
         "radar": radar,

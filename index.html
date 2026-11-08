@@ -135,6 +135,9 @@ border-radius:14px;padding:3px 12px;font-size:11.5px}
 .sgr .dt{color:var(--dim);font-size:11px;flex:0 0 68px}
 .sgr .bd{font-size:10.5px;font-weight:800;border-radius:4px;padding:2px 6px;flex:0 0 auto}
 .bd.in{background:#12325c;color:#7fb3ff}
+.bd.def{background:#FF2D95;color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.35) inset}
+.sgr.defrow{background:linear-gradient(90deg,rgba(255,45,149,.14),rgba(255,45,149,0) 72%);
+border-left:2px solid #FF2D95;padding-left:6px}
 .bd.out-s{background:#FFC400;color:#1A1300}
 .bd.out-x{background:#FFE94A;color:#171200}
 .sgr .tx2{flex:1;font-size:12px;line-height:1.45}
@@ -242,7 +245,10 @@ background:#10151d;color:var(--tx);font-size:18px}
   <div class="ctn">
     <div class="card" style="padding:6px 4px 2px">
       <div id="chart"></div>
-      <div class="cleg"><span style="color:#7fb3ff">▼▲ 进场建仓</span>
+      <div class="cleg"><span style="color:#4CC9F0">▼ 进场多</span>
+        <span style="color:#C77DFF">▲ 进场空</span>
+        <span style="color:#FF2D95;font-weight:700">✕ 失效打叉</span>
+        <span style="color:#FFD400">• 动能真空</span>
         <span style="color:#22D3EE">◇ 盘整预警</span>
         <span style="color:#FFC400">◆ 建议离场</span>
         <span style="color:#FFE94A;font-weight:700">◆ 强烈离场</span>
@@ -436,7 +442,7 @@ function warnTagHtml(m){
   var v = (m.risk || {}).vac;
   if(v && v.tag){
     var hs = (v.hits||[]).map(function(k){return k;}).join('、');
-    a.push('<span class="tg vac" title="5 维动能打分 '+v.score+'/5（阈值 '+v.min+'）· 命中：'+hs+'">⚠ 结构未成熟 · 动能真空 '+v.score+'/5</span>');
+    a.push('<span class="tg vac" title="5 维动能打分 '+v.score+'/5（阈值 '+v.min+'）· 命中：'+hs+'">⚠️ 结构未成熟/动能真空（当前得分 '+v.score+'/5）</span>');
   }
   return a.length ? '<span class="tgs">'+a.join('')+'</span>' : '';
 }
@@ -678,7 +684,23 @@ function renderChart(){
   var closes = bars.map(function(b){return b[4];});
   var m10=ma(closes,10), m26=ma(closes,26), m34=ma(closes,34), m89=ma(closes,89);
 
-  // 信号标记（仅日/周/月级别；看哪个周期就用哪个周期的信号）
+  // v13：近似 ATR(14)。所有图标用「数据坐标 + ATR 偏移」悬在柱体外侧，
+  // 彻底避免与红/绿柱体重叠，也避免颜色被柱体吃掉。
+  var atrS = (function(bs){
+    var trs=[], out=[], N=14, i, q, s, h, l, pc;
+    for(i=0;i<bs.length;i++){
+      h=bs[i][4]; l=bs[i][3]; pc=i>0?bs[i-1][2]:bs[i][1];
+      trs.push(Math.max(h-l, Math.abs(h-pc), Math.abs(l-pc)));
+      if(i>=N-1){ s=0; for(q=i-N+1;q<=i;q++) s+=trs[q]; out.push(s/N); }
+      else out.push(trs[i]);
+    }
+    return out;
+  })(bars);
+  function A(i){ return atrS[i] || ((bars[i][4]-bars[i][3])||1); }
+
+  // 信号标记（仅日/周/月级别）
+  // 配色纪律：多=天蓝 #4CC9F0 / 空=紫 #C77DFF / 失效=品红 #FF2D95，
+  // 全部避开阳线红 #e5484d 与阴线绿 #0ecb81。
   var marks = [];
   if(['D','W','M'].indexOf(cur.pt)>=0){
     var src = cur.pt==='D'? DOC.signals : cur.pt==='W'? (DOC.sigW||[]) : (DOC.sigM||[]);
@@ -686,52 +708,80 @@ function renderChart(){
       if(s.kind==='confirm') return;          // v11：确认状态后台保留算盈亏，前端彻底不画
       var idx = dateIdx(dates, s.date);
       if(idx==null) return;
-      var b = bars[idx];
+      var b = bars[idx], a = A(idx);
       var sh = s.side==='short';
       var isWarn = s.kind==='warn';
-      marks.push({value:[idx, sh? b[2] : b[3]], sig:s,
+      var vac = !!(s.meta && s.meta.risk && s.meta.risk.vac && s.meta.risk.vac.tag);
+      // 多单挂在柱体下方、空单挂在柱体上方
+      var y = sh ? (b[4] + 0.75*a) : (b[3] - 0.75*a);
+      marks.push({value:[idx, y], sig:s,
         symbol: isWarn? 'diamond' : 'triangle', symbolRotate: isWarn?0:(sh?180:0),
-        symbolSize: isWarn? 8 : 13, symbolOffset:[0, sh?9:-9],
-        itemStyle:{color: isWarn? 'transparent' : (sh? '#e5484d' : '#0ecb81'),
-                   borderColor: isWarn? (sh?'#ff9a9e':'#6ef2c0') : (sh? '#ffd0d1':'#b6ffe6'),
-                   borderWidth:2}});
+        symbolSize: isWarn? 9 : 13,
+        itemStyle:{color: isWarn? '#9FB3D1' : (sh? '#C77DFF' : '#4CC9F0'),
+                   borderColor:'#0B0E13', borderWidth:1,
+                   opacity: vac? 0.30 : 1}});
+      if(vac){
+        // 动能真空：原图标变暗 + 外侧多一个小黄点
+        marks.push({value:[idx, sh? (b[4]+1.55*a) : (b[3]-1.55*a)],
+          symbol:'circle', symbolSize:4.5,
+          itemStyle:{color:'#FFD400', borderColor:'#0B0E13', borderWidth:1}});
+      }
     });
   }
-  // 出场标记（v9 快出）：黄色菱形=盘整预警，红色箭头=实际离场
+  // v13：失效打叉 —— 独立防守事件，画在判定成立当天，历史阵亡点一眼可见
+  if(cur.pt==='D' && DOC.defend){
+    (DOC.defend||[]).forEach(function(e){
+      var ix = dateIdx(dates, e.date);
+      if(ix==null) return;
+      var b = bars[ix], a = A(ix);
+      var up = e.side==='short';        // 空单失效→上方；多单失效→下方（不压柱体）
+      marks.push({value:[ix, up? (b[4] + 1.35*a) : (b[3] - 1.35*a)], def:e,
+        symbol:'circle', symbolSize:17,
+        itemStyle:{color:'#FF2D95', borderColor:'#FFFFFF', borderWidth:2,
+                   shadowBlur:9, shadowColor:'rgba(255,45,149,.85)'},
+        label:{show:true, formatter:'✕', color:'#FFFFFF', fontSize:11,
+               fontWeight:'bold', position:'inside'}});
+    });
+  }
+  // 出场标记（v9 快出）：空心青菱形=盘整预警，白色箭头=实际离场
   if(cur.pt==='D' && DOC.exit){
     (DOC.exit.trades||[]).forEach(function(t){
       if(t.warn){
         var iw = dateIdx(dates, t.warn);
-        if(iw!=null) marks.push({value:[iw, bars[iw][2]], symbol:'diamond', symbolSize:9,
-          symbolOffset:[0,-10], itemStyle:{color:'rgba(34,211,238,.25)',
-          borderColor:'#22D3EE', borderWidth:1.6}});
+        if(iw!=null){
+          var aw = A(iw);
+          marks.push({value:[iw, t.sd==='long'? (bars[iw][3]-0.9*aw) : (bars[iw][4]+0.9*aw)],
+            symbol:'diamond', symbolSize:9,
+            itemStyle:{color:'transparent', borderColor:'#22D3EE', borderWidth:1.8}});
+        }
       }
       var io = dateIdx(dates, t.out);
-      if(io!=null) marks.push({value:[io, t.sd==='long'? bars[io][3] : bars[io][2]],
-        symbol:'arrow', symbolRotate: t.sd==='long'? 180 : 0, symbolSize:11,
-        symbolOffset:[0, t.sd==='long'? 12 : -12],
-        itemStyle:{color:'#F2F6FF', borderColor:'#0b0e13', borderWidth:.5}});
+      if(io!=null){
+        var ao = A(io);
+        marks.push({value:[io, t.sd==='long'? (bars[io][3]-1.55*ao) : (bars[io][4]+1.55*ao)],
+          symbol:'arrow', symbolRotate: t.sd==='long'? 180 : 0, symbolSize:11,
+          itemStyle:{color:'#F2F6FF', borderColor:'#0B0E13', borderWidth:.6}});
+      }
     });
   }
-  // 独立出场信号（v10）：顶部/底部到位的提示，橙=建议 红=强烈
+  // 独立出场信号（v10）：顶部/底部到位，黄=建议 亮黄=强烈
   if(cur.pt==='D' && DOC.xsig){
     (DOC.xsig.hist||[]).forEach(function(h){
       var ix = dateIdx(dates, h.d);
       if(ix==null) return;
       var strong = h.level==='strong';
       var top = h.dir==='顶部';
-      marks.push({value:[ix, top? bars[ix][3] : bars[ix][2]],
-        symbol:'diamond', symbolSize: strong? 21 : 14,
-        symbolOffset:[0, top? (strong? -24 : -18) : (strong? 24 : 18)],
+      var a = A(ix);
+      marks.push({value:[ix, top? (bars[ix][4] + 1.75*a) : (bars[ix][3] - 1.75*a)],
+        symbol:'diamond', symbolSize: strong? 15 : 11,
         itemStyle:{color: strong? '#FFE94A':'#FFC400',
-                   borderColor: strong? '#FFFFFF':'#0b0e13',
-                   borderWidth: strong? 2.6 : 1.6,
+                   borderColor: strong? '#FFFFFF':'#0B0E13',
+                   borderWidth: strong? 2.2 : 1.4,
                    shadowBlur: strong? 10 : 0, shadowColor:'#FFE94A'}});
     });
   }
   var series = [
-    {name:'K', type:'candlestick', data:k, barMaxWidth:14,
-     itemStyle:{color:'#e5484d', color0:'#0ecb81', borderColor:'#e5484d', borderColor0:'#0ecb81'}},
+    {name:'K', type:'candlestick', data:k, barMaxWidth:14,     itemStyle:{color:'#e5484d', color0:'#0ecb81', borderColor:'#e5484d', borderColor0:'#0ecb81'}},
     {name:'MA10', type:'line', data:m10, symbol:'none', lineStyle:{width:1,color:'#f5a524'}},
     {name:'MA26', type:'line', data:m26, symbol:'none',
      lineStyle:{width:1.2, type:'dashed', color:'#ff8a3d'}},
@@ -764,7 +814,10 @@ function renderChart(){
   }, true);
   CH.off('click');
   CH.on('click', function(p){
-    if(p.seriesName==='信号' && p.data && p.data.sig) openSig(p.data.sig);
+    if(p.seriesName==='信号' && p.data){
+      if(p.data.sig) openSig(p.data.sig);
+      else if(p.data.def) openSig('pred|' + p.data.def.sigDate);   // 失效打叉 → 回看原信号
+    }
   });
 }
 function dateIdx(dates, d){
@@ -1199,13 +1252,21 @@ function renderSigs(){
       k: x.k, pull: x.pull, age: x.age, px: x.close, cross: x.sym}});
   });
 
+  // —— v13 独立防守事件（失效成立当天就是一条新消息，不再藏在旧信号里）——
+  (DOC.defend || []).forEach(function(e){
+    rows.push({d: e.date, kind: 'def', e: e});
+  });
+
   var nIn = rows.filter(function(r){ return r.kind === 'in'; }).length;
   var nOut = rows.filter(function(r){ return r.kind === 'out'; }).length;
+  var nDef = rows.filter(function(r){ return r.kind === 'def'; }).length;
   var nHi = rows.filter(function(r){ return r.kind === 'out' && r.h.level === 'strong'; }).length;
-  $('sigCnt').textContent = '进场 ' + nIn + ' · 出场 ' + nOut + (nHi ? '（强烈 ' + nHi + '）' : '');
+  $('sigCnt').textContent = '进场 ' + nIn + ' · 出场 ' + nOut
+    + (nHi ? '（强烈 ' + nHi + '）' : '')
+    + (nDef ? ' · 🛑 失效 ' + nDef : '');
 
   if(SIGF === 'in')  rows = rows.filter(function(r){ return r.kind === 'in'; });
-  if(SIGF === 'out') rows = rows.filter(function(r){ return r.kind === 'out'; });
+  if(SIGF === 'out') rows = rows.filter(function(r){ return r.kind === 'out' || r.kind === 'def'; });
 
   var fc = [['all','全部'],['in','只看进场'],['out','只看出场']];
   $('sigFilter').innerHTML = fc.map(function(f){
@@ -1213,13 +1274,28 @@ function renderSigs(){
       + f[1] + '</span>';
   }).join('');
 
-  rows.sort(function(a,b){ return a.d < b.d ? 1 : -1; });
+  rows.sort(function(a,b){
+    if(a.d !== b.d) return a.d < b.d ? 1 : -1;
+    var pa = a.kind === 'def' ? 0 : 1, pb = b.kind === 'def' ? 0 : 1;
+    return pa - pb;                         // 同一天：防守事件置顶
+  });
   rows = rows.slice(0, 40);
   if(!rows.length){
     $('sigList').innerHTML = '<div class="empty">暂无信号</div>';
     return;
   }
   $('sigList').innerHTML = rows.map(function(r){
+    if(r.kind === 'def'){
+      var e = r.e, sd = e.side === 'short' ? '空' : '多';
+      var head = '🛑 预警失效：' + (e.name || e.sym) + '（' + e.sym + '）' + sd + '单'
+        + e.label + '，建议止损';
+      return '<div class="sgr defrow" onclick="openSig(\'pred|' + e.sigDate + '\')">'
+        + '<span class="dt">' + e.date + '</span>'
+        + '<span class="bd def">✕ ' + e.label + '</span>'
+        + '<span class="tx2">' + head
+        + '<em>信号 ' + e.sigDate + ' · 第 ' + e.day + ' 根判定 · ' + (e.detail || '')
+        + ' · 点此回看原信号</em></span></div>';
+    }
     if(r.kind === 'in'){
       var s = r.s;
       var nm = s.kind === 'pred' ? '建仓' : (s.kind === 'warn' ? '预警' : '信号');
