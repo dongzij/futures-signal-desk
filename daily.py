@@ -137,6 +137,36 @@ def update_open_positions(state, all_pred=False):
 
 # ---------------------------------------------------------------- 推送白名单
 
+def risk_line(meta, with_review=False):
+    """v12：风险标签一行，只附在【已有】推送卡片里，绝不单独触发推送。
+
+    with_review=True 时附带事后标签（首日失效 / 结构已破坏）；
+    False 只带 T 日「动能真空」。
+    """
+    if not meta:
+        return ""
+    r = meta.get("risk") or {}
+    parts = []
+    v = r.get("vac") or {}
+    if v.get("tag"):
+        parts.append('<b style="color:#a16207">⚠ 结构未成熟 · 动能真空 %d/5</b>'
+                     % int(v.get("score") or 0))
+    if with_review:
+        d1 = r.get("day1")
+        if d1:
+            parts.append('<b style="color:#c2410c">⚠ 首日失效 · %s（第%s根）</b>'
+                         % (d1.get("why") or "", d1.get("day")))
+        st = r.get("struct")
+        if st:
+            parts.append('<b style="color:#b91c1c">⚠ 结构已破坏 · 第%s根</b>'
+                         % st.get("day"))
+    if not parts:
+        return ""
+    return ('<div style="margin-top:8px;padding:6px 8px;background:#fffbeb;'
+            'border-left:3px solid #f59e0b;font-size:12px;line-height:1.8;color:#444">'
+            '风险标签：%s</div>' % " ｜ ".join(parts))
+
+
 def push_scope(cfg):
     """返回 (allow_push, symbols, all_flag)：微信推送的品种范围。
 
@@ -165,6 +195,7 @@ def main():
     equity = cfg.get("equity", 100_000)
     risk = cfg.get("riskPct", 5.0) / 100.0      # 无止损：预留给浮亏的本金比例
     min_prob = cfg.get("pushMinProb", 0.70)
+    risk_on = bool(cfg.get("riskTags", True))   # v12：风险标签总开关（只影响附注文字）
     # ---- v11.1：微信推送按品种白名单（只管「发不发」，不碰信号/页面/计算）----
     allow_push, push_syms, push_all = push_scope(cfg)
     push_token = (cfg.get("pushplus") or os.environ.get("PUSHPLUS_TOKEN") or "").strip()
@@ -217,7 +248,10 @@ def main():
                 continue
             exp = 1 if s.get("side") == "long" else -1
             tier = "strong" if s.get("strong") else "normal"
-            s["meta"] = engine.signal_meta(bars, S, i, exp, tier, wpos)
+            # v12：首日失效/结构已破坏只对实际建仓(pred)有意义
+            scope = "all" if s.get("kind") == "pred" else "none"
+            s["meta"] = engine.signal_meta(bars, S, i, exp, tier, wpos,
+                                           code=c, pool="in", review_scope=scope)
     # 全量重算：出场口径变更后，历史成交也按新规则统一（MA26 + 吊灯 3ATR）
     update_open_positions(state, all_pred=True)
 
@@ -291,7 +325,8 @@ def main():
         dirn = r.get("dir")
         exp = (-1 if dirn == "顶部" else 1) if dirn else (-1 if r.get("side") == "long" else 1)
         tier = "strong" if r.get("level") == "strong" else "normal"
-        r["meta"] = engine.signal_meta(bars, S, len(bars) - 1, exp, tier)
+        r["meta"] = engine.signal_meta(bars, S, len(bars) - 1, exp, tier,
+                                       code=c, pool="radar")
         xs_today.append(r)
         # 顺势全推；逆势只推强档。观察档页面照常显示，只是不推微信（不删信号）
         if r["level"] in ("suggest", "strong") and allow_push(c, r["meta"]):
@@ -358,6 +393,8 @@ def main():
                        (engine.MODEL.get("stat", {}).get("win", 0) or 0) * 100,
                        engine.MODEL.get("stat", {}).get("payoff", 0),
                        engine.MODEL.get("stat", {}).get("n", 0) / 10.0, acts))
+            if risk_on:
+                body += risk_line(s.get("meta"))
             cards.append(
                 '<div style="margin-bottom:18px">'
                 '<div style="font-size:16px;font-weight:700">🔔 准备反转：%s %s</div>'
@@ -387,10 +424,11 @@ def main():
                 '预警信号：%s<br>'
                 '离场线：吊灯 <b>%s</b>（触及无条件走）· MA%d <b>%s</b><br>'
                 '<span style="color:#666;font-size:12px">盘整特征已出现，趋势可能停滞。'
-                '不必立即平仓，但不要再加仓；跌破离场线即走。</span></div></div>'
+                '不必立即平仓，但不要再加仓；跌破离场线即走。</span>%s</div></div>'
                 % (s["sym"], engine.NAMES.get(s["sym"], ""), sd, s.get("last"),
                    s.get("R", 0), s.get("held"), " · ".join(s.get("exitWarnWhy") or []),
-                   s.get("chLine"), engine.EXIT_MA, s.get("maLine")))
+                   s.get("chLine"), engine.EXIT_MA, s.get("maLine"),
+                   (risk_line(s.get("meta"), True) if risk_on else "")))
         title = "出场预警 %d 条：%s" % (
             len(exit_warns), "、".join("%s%s" % (s["sym"], "多" if s["side"] == "long" else "空")
                                        for s in exit_warns))
@@ -414,9 +452,11 @@ def main():
                 '%s 收盘 <b>%s</b> · 距 MA34 <b>%+.2f ATR</b> · 自极值回撤 <b>%.2f ATR</b><br>'
                 '已满足 %d 条：%s<br>'
                 '<span style="color:#666;font-size:12px">这是独立于进场信号的出场提示，'
-                '不需要持仓也可参考。是否离场由你自己决定。</span></div></div>'
+                '不需要持仓也可参考。是否离场由你自己决定。</span>%s</div></div>'
                 % (col, lvl, r["sym"], engine.NAMES.get(r["sym"], ""),
-                   r["date"], r["close"], r["ext"], r["pull"], len([x for x in r["conds"] if x["ok"]]), okn))
+                   r["date"], r["close"], r["ext"], r["pull"],
+                   len([x for x in r["conds"] if x["ok"]]), okn,
+                   (risk_line(r.get("meta")) if risk_on else "")))
         title = "出场信号 %d 条：%s" % (
             len(xs_fresh), "、".join("%s%s" % (r["sym"], "顶" if r["dir"] == "顶部" else "底")
                                      for r in xs_fresh))

@@ -77,6 +77,10 @@ border-top:1px solid var(--line);line-height:1.6}
 .tg.warn{background:#f5a52422;color:#f5a524}
 .tg.vol{background:#22D3EE1c;color:#22D3EE}
 .tg.dim{background:#1a2029;color:#6b7688}
+/* v12 三层标签：vac=预警层（T日） day1/strct=复盘层（事后确认） */
+.tg.vac{background:#FFC4001f;color:#FFC400;border:1px solid #FFC40055;font-weight:600}
+.tg.day1{background:#f9731622;color:#fb923c}
+.tg.strct{background:#ef444422;color:#f87171}
 .tagrow{display:flex;gap:7px;align-items:center;flex-wrap:wrap;
 font-size:11px;color:var(--dim);margin:2px 0 8px}
 .tagrow .wk{color:var(--blue)}
@@ -322,7 +326,15 @@ background:#10151d;color:var(--tx);font-size:18px}
   <b>8 品种统一参数（v10.3）</b>：逐品种单独调参经 10 组样本外方案检验，样本内看似提升、
   样本外准确率与盈利率均无显著差异（差异多小于 3 个百分点、置信区间全部跨 0），
   故全部品种使用同一套参数，不按品种分别配置。<br>
-  <b>v11 甲方案（本次上线）</b>：10 年 × 8 品种 A/B 对比（304 条信号）证明，
+  <b>v12 三层风险标签（本次上线）</b>：
+  <b style="color:#FFC400">预警层 · T 日</b> = <b>⚠ 结构未成熟 · 动能真空</b>（5 维动能打分：距MA60 / 20根涨跌 / ADX / 20日量能 / 全市场ADX，
+  进场类 ≥4 触发；历史命中后失败占比 55%，盲测 56%）——<b>唯一当天就能算的提前提示</b>，只出现在首屏与推送；
+  <b style="color:#fb923c">复盘层 · T+1</b> = <b>⚠ 首日失效</b>（破信号日极值且失守 MA5，历史触发组 94% 最终亏损）；
+  <b style="color:#f87171">复盘层 · T+3~8</b> = <b>⚠ 结构已破坏</b>（入场缓冲 ≥1ATR，之后吃掉 ≥50%；失败组捕获 93%，
+  真赚钱组误杀 0/10）——两者都<b>只在信号详情/持仓卡展示，绝不单独发微信</b>。
+  原 <b>⚠️ 2日未跟进</b> 与 <b>💤 低波动待观察</b> 实测与基准几乎无差（45.3% / 42.4% vs 41.4%），
+  已<b>降入复盘层、不再占首屏</b>，数据全部保留。<br>
+  <b>v11 甲方案（仍生效）</b>：10 年 × 8 品种 A/B 对比（304 条信号）证明，
   「周线 MA45 智能降级」是唯一净收益与假信号双改善的模块 ——
   净收益 +21.4 → <b>+24.5</b>、假信号 133 → <b>74（−44.4%）</b>、胜率 56.2% → <b>60.4%</b>。
   顺势信号全部正常推送；逆势时<b>强档照常推送</b>，普通档降级为【观察】——
@@ -381,6 +393,16 @@ background:#10151d;color:var(--tx);font-size:18px}
 var QS = location.search;
 var MAN = null, DOC = null;
 var cur = {sym:'FG', ct:'0', pt:'D'};
+/* v12：支持 ?sym=XX 深链接（只读参数，方便直接打开某个品种） */
+try{
+  var _qs = new URLSearchParams(location.search);
+  var _s0 = (_qs.get('sym')||'').toUpperCase();
+  if(_s0 && ['FG','SA','M','SP','SM','MA','SR','C'].indexOf(_s0)>=0) cur.sym=_s0;
+}catch(e){}
+/* v12：?sig=pred|2026-10-22 直接打开某条信号详情（深链接，便于分享/复盘）；
+   等品种数据加载完再打开，所以先挂起 */
+var _SIG_PEND = null;
+try{ _SIG_PEND = new URLSearchParams(location.search).get('sig'); }catch(e){}
 var KC = {};          // 缓存: sym|ct → {d:[],m60:[],m15:[]}
 var CH = null, ECREADY = false;
 var PERIODS = [['Y','年'],['M','月'],['W','周'],['D','日'],['60','60分'],['15','15分']];
@@ -404,16 +426,38 @@ function weekTxt(m){
   var p = m.weekPos===1 ? '偏多' : (m.weekPos===-1 ? '偏空' : '数据不足');
   return '周线 MA'+(m.weekMA||45)+' '+p+' · '+(m.weekAlign?'顺势':'逆势');
 }
-function tagHtml(m){
+/* v12：首屏只放【预警层】= 推送档位 + T 日动能真空（真正的提前预警）。
+   2日未跟进 / 低波动 已降入复盘详情层，不再占首屏。 */
+function warnTagHtml(m){
   if(!m) return '';
   var a=[];
   if(m.observe) a.push('<span class="tg obs">观察 · 页面保留不推微信</span>');
   else if(m.weekAlign===false) a.push('<span class="tg str">逆势强档 · 正常推送</span>');
-  if(m.confirm2==='noFollow') a.push('<span class="tg warn">⚠️ 2日未跟进</span>');
-  else if(m.confirm2==='pending') a.push('<span class="tg dim">2日跟进待复盘</span>');
-  if(m.lowVol) a.push('<span class="tg vol">💤 低波动待观察</span>');
+  var v = (m.risk || {}).vac;
+  if(v && v.tag){
+    var hs = (v.hits||[]).map(function(k){return k;}).join('、');
+    a.push('<span class="tg vac" title="5 维动能打分 '+v.score+'/5（阈值 '+v.min+'）· 命中：'+hs+'">⚠ 结构未成熟 · 动能真空 '+v.score+'/5</span>');
+  }
   return a.length ? '<span class="tgs">'+a.join('')+'</span>' : '';
 }
+/* v12：复盘层 = 事后确认标签，只出现在信号详情/持仓卡里 */
+function reviewTagHtml(m){
+  if(!m) return '';
+  var a=[], r = m.risk || {};
+  if(r.day1){
+    a.push('<span class="tg day1" title="A1+B1 / 1 根窗口：历史触发组 94% 最终亏损">⚠ 首日失效 · '+r.day1.why+'（第'+r.day1.day+'根）</span>');
+  }
+  if(r.struct){
+    var left = (r.struct.cushion0 * (1 - r.struct.eaten));
+    a.push('<span class="tg strct" title="入场缓冲 '+r.struct.cushion0+' ATR，已吃掉 '+Math.round(r.struct.eaten*100)+'%">⚠ 结构已破坏 · 第'+r.struct.day+'根 · 缓冲剩 '+left.toFixed(2)+' ATR</span>');
+  }
+  if(m.confirm2==='noFollow') a.push('<span class="tg dim">⚠️ 2日未跟进</span>');
+  else if(m.confirm2==='pending') a.push('<span class="tg dim">2日跟进待复盘</span>');
+  if(m.lowVol) a.push('<span class="tg dim">💤 低波动待观察</span>');
+  return a.length ? '<span class="tgs">'+a.join('')+'</span>' : '';
+}
+/* 兼容旧调用：首屏统一走预警层 */
+function tagHtml(m){ return warnTagHtml(m); }
 function renderMarket(){
   var box = $('mktBar'); if(!box) return;
   var M = DOC.market;
@@ -538,6 +582,10 @@ function loadCt(cid, force){
       el.classList.toggle('on', (cid==='0'&&i===0) || (cid!=='0'&&el.textContent.indexOf(cid.slice(2))===0));
     });
     cur.ct = cid; renderAll();
+    if(_SIG_PEND){
+      var _k = _SIG_PEND; _SIG_PEND = null;
+      if(findSig(_k)) openSig(_k);
+    }
   }
   if(KC[key] && !force){ go(); return; }
   if(cid === '0'){
@@ -1242,19 +1290,34 @@ function openSig(key){
       + '命中 3 条只到预警区，历史对应 5 日内反转概率约 58%。等第 4 条出现且 ADX 回到 20 以上，'
       + '系统才给建仓提示。</div>';
   }
-  // v11 甲方案：周线 MA45 降级档位 + 复盘标签
+  // v11 甲方案 + v12 三层风险标签
   if(s.meta){
-    html += '<h3 style="margin-top:12px">周线降级与标签 <span>v11 甲方案</span></h3>';
+    html += '<h3 style="margin-top:12px">周线档位与风险标签 <span>v11 + v12</span></h3>';
     html += '<div class="frow"><span>周线方向</span><b>'+weekTxt(s.meta)+'</b></div>';
     html += '<div class="frow"><span>推送档位</span><b>'
       + (s.meta.observe? '<span style="color:#9fb0c9">观察 · 页面保留，不推微信</span>'
                        : '<span style="color:var(--gold)">正常推送</span>') + '</b></div>';
     html += '<div class="frow"><span>ATR / ATR20</span><b>'+f2(s.meta.volRatio)+'</b></div>';
-    html += '<div style="margin:6px 0 2px">'+ (tagHtml(s.meta) || '<span class="tg dim">无标签</span>')
-      + '</div>';
+    var vv = (s.meta.risk || {}).vac;
+    if(vv){
+      html += '<div class="frow"><span>动能真空打分</span><b>'+(vv.score!=null?vv.score:0)+'/5'
+        + (vv.tag? ' <span style="color:#FFC400">· 触发预警</span>'
+                 : ' <span style="color:#6b7688">· 未触发</span>') + '</b></div>';
+    }
+    html += '<h3 style="margin-top:12px">风险标签 <span>v12 三层体系</span></h3>';
+    html += '<div style="margin:6px 0 2px">'
+      + (warnTagHtml(s.meta) || '<span class="tg dim">预警层：无</span>') + '</div>';
+    html += '<div style="margin:6px 0 2px">'
+      + (reviewTagHtml(s.meta) || '<span class="tg dim">复盘层：无</span>') + '</div>';
     html += '<div style="font-size:11px;color:var(--dim);line-height:1.7;margin:6px 0 2px">'
-      + '⚠️ 2日未跟进需信号后 2 根收盘才能判定，只做事后复盘标签，'
-      + '不用于当日推送决策；观察档信号从未被删除或延迟。</div>';
+      + '<b style="color:#FFC400">预警层 · T 日当天可算</b>：⚠ 结构未成熟 · 动能真空 —— 5 维动能打分，'
+      + '历史命中后失败占比 55%（盲测 56%）。<br>'
+      + '<b style="color:#fb923c">复盘层 · T+1</b>：⚠ 首日失效 —— 破信号日极值且失守 MA5，'
+      + '历史触发组 94% 最终亏损。<br>'
+      + '<b style="color:#f87171">复盘层 · T+3~8</b>：⚠ 结构已破坏 —— 波谷缓冲被吃掉 ≥50%，'
+      + '失败组捕获 93%，真赚钱组误杀 0/10。<br>'
+      + '<span style="color:#6b7688">以上全部只是标签：不删信号、不延迟、不改变 MA26 / 吊灯 3ATR 平仓线，'
+      + '也不单独发微信。2日未跟进 / 低波动 已降入本层，不再占首屏。</span></div>';
   }
   html += '<h3 style="margin-top:12px">反转特征核对 <span>✓ 命中 · ✗ 未命中</span></h3>';
   var chs = (s.checks || s.conds || []).concat(isPred? (s.checksS||[]) : []);
@@ -1547,7 +1610,7 @@ fetchJ('index.json', function(man){
   $('navAcct').textContent = '模拟盘';
   psInit();
   renderSymChips();
-  selectSym('FG');
+  selectSym(cur.sym);
   window.addEventListener('resize', function(){ if(CH) CH.resize(); });
 });
 (function loadEcharts(){

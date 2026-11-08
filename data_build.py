@@ -112,9 +112,26 @@ def build_product(sym):
     min_ids = {c["id"] for c in active} | {c["id"] for c in near}
 
     # ---- 3) 信号（日线来自 state.json；周/月用同一方法在聚合K线上现算）----
+    S_main = engine.make_S(main)
+    wpos = engine.weekly_pos_series(main)
+    idx_by_date = {b["d"]: i for i, b in enumerate(main)}
     state = json.load(open("state.json", encoding="utf-8"))
 
     def pack(s):
+        # v12：本地/CI 统一重算 meta（不依赖 state.json 里可能是旧格式的 meta）
+        m = s.get("meta")
+        i = idx_by_date.get(s.get("date"))
+        if i is not None and i < len(main):
+            exp = 1 if s.get("side") == "long" else -1
+            tier = "strong" if s.get("strong") else "normal"
+            try:
+                # 首日失效/结构已破坏只对实际建仓(pred)有意义；
+                # 预警/兑现档只保留 T 日动能真空
+                scope = "all" if s.get("kind") == "pred" else "none"
+                m = engine.signal_meta(main, S_main, i, exp, tier, wpos,
+                                       code=sym, pool="in", review_scope=scope)
+            except Exception as e:              # noqa: BLE001
+                print("   meta 重算失败 %s %s: %s" % (sym, s.get("date"), e))
         o = {"kind": s["kind"], "side": s["side"], "dir": s.get("dir"),
              "date": s["date"], "price": s.get("price"), "k": s.get("k"),
              "prob": s.get("prob"), "checks": s.get("checks", []),
@@ -124,8 +141,8 @@ def build_product(sym):
              "held": s.get("held"), "lots": s.get("lots"),
              "segStart": s.get("segStart"), "segAge": s.get("segAge"),
              "lead": s.get("lead"),
-             # v11 甲方案：周线 MA45 降级档位 + 复盘标签（confirm 后台数据保留，前端不展示）
-             "meta": s.get("meta")}
+             # v11 甲方案 + v12 三层风险标签（confirm 后台数据保留，前端不展示）
+             "meta": m}
         if s["kind"] in ("pred", "confirm"):
             o.update({"en": s.get("entry"), "atr": s.get("atr"),
                       "adx": s.get("adx"), "gate": s.get("gate"),
@@ -231,11 +248,8 @@ def build_product(sym):
 
     # ---- 3a) v11 甲方案：周线 MA45 位置序列 + 市场状态 ----
     # 降级只决定微信推送；市场状态【纯信息展示】，绝不拦截/隐藏/降级任何信号。
-    S_main = engine.make_S(main)
-    wpos = engine.weekly_pos_series(main)
     market = engine.market_state_now(main, S_main)
     MKT_ALL.append(dict(market, sym=sym, name=cfg["name"]))
-    idx_by_date = {b["d"]: i for i, b in enumerate(main)}
 
     def xs_meta(h, i=None):
         if i is None:
@@ -245,7 +259,8 @@ def build_product(sym):
         dirn = h.get("dir")
         exp = (-1 if dirn == "顶部" else 1) if dirn else (-1 if h.get("side") == "long" else 1)
         tier = "strong" if h.get("level") == "strong" else "normal"
-        return engine.signal_meta(main, S_main, i, exp, tier, wpos)
+        return engine.signal_meta(main, S_main, i, exp, tier, wpos,
+                                  code=sym, pool="radar", review_scope="struct")
 
     # ---- 3b) 独立出场雷达（见顶/见底，与持仓无关）----
     xsig = None
@@ -365,6 +380,22 @@ def main():
                       "volRatioTag": engine.VOL_RATIO_TAG},
         "marketAdvisoryOnly": True,        # 状态栏仅信息参考，不拦截/隐藏/降级信号
         "marketBySym": MKT_ALL,
+        # v12：三层风险标签（纯展示，不参与任何决策、不新增推送事件）
+        "riskTagCfg": {
+            "enabled": True,
+            "warn": {"layer": "T日", "tag": "结构未成熟 · 动能真空",
+                     "rule": "5维动能打分；进场类>=4、出场雷达类>=5",
+                     "cuts": engine.RISK_CUTS, "min": engine.RISK_VAC_MIN},
+            "review": [
+                {"layer": "T+1", "tag": "首日失效",
+                 "rule": "A1破信号日极值 + B1失守MA5，窗口1根"},
+                {"layer": "T+3~8", "tag": "结构已破坏",
+                 "rule": "入场缓冲>=1ATR 且收盘吃掉>=50%"},
+            ],
+            "demoted": ["2日未跟进", "低波动待观察"],
+            "noExtraPush": True,
+            "baseExit": {"exitMa": engine.EXIT_MA, "chK": engine.CH_K},
+        },
         # v11.1：微信推送白名单（页面仍展示全部 8 品种）
         "pushCfg": {"symbols": (state.get("method", {}).get("push") or {}).get("symbols", []),
                     "all": (state.get("method", {}).get("push") or {}).get("all", True),

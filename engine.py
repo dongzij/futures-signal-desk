@@ -889,7 +889,190 @@ def weekly_pos_series(bars, ma_n=None):
     return out
 
 
-def signal_meta(bars, S, i, exp, tier="normal", wpos=None):
+# ---------------------------------------------------------------- v12：三层风险标签
+# 纪律：以下全部是【只读】函数，只写进 meta 供页面/推送展示，
+# 绝不参与 scan_symbol / exit_track / 入场的任何判断。
+# 口径与三份专项回测逐点对齐（reports/终极融合方案_标签预警体系.md）：
+#   T 日   动能真空  5 维打分，分池阈值 = 训练段(<2024)中位数
+#   T+1    首日失效  A1 破信号日极值 + B1 失守 MA5，窗口=1（专项一）
+#   T+3~8  结构已破坏 波谷缓冲消耗比 ≥50% 且入场缓冲 ≥1ATR（专项三）
+RISK_CUTS = {
+    "in":    {"dist_ma60": -1.289, "ret20": -0.589, "adx": 25.437,
+              "vol_chg20": -3.298, "mkt_adx": 25.524},
+    "radar": {"dist_ma60": -4.508, "ret20": -4.492, "adx": 39.360,
+              "vol_chg20": 38.600, "mkt_adx": 28.034},
+}
+RISK_VAC_MIN = {"in": 4, "radar": 5}
+RISK_SCORE_SIDE = (("dist_ma60", "high"), ("ret20", "high"), ("adx", "low"),
+                   ("vol_chg20", "low"), ("mkt_adx", "low"))
+RISK_DAY1_WINDOW = 1
+RISK_STRUCT_MAX = 18
+RISK_STRUCT_EATEN = 0.5
+RISK_STRUCT_MIN_CUSHION = 1.0
+_RISK_MEMO = {"bars": {}, "S": {}, "mkt": None}
+
+
+def _risk_bars(code, years=10):
+    k = (code, years)
+    if k not in _RISK_MEMO["bars"]:
+        _RISK_MEMO["bars"][k] = _bars_of(code, years)
+    return _RISK_MEMO["bars"][k]
+
+
+def _risk_S(code, years=10):
+    k = (code, years)
+    if k not in _RISK_MEMO["S"]:
+        _RISK_MEMO["S"][k] = make_S(_risk_bars(code, years))
+    return _RISK_MEMO["S"][k]
+
+
+def _ma_n(S, n):
+    """按需补 ma45/ma60（make_S 不预置），算一次后写回 S 复用。"""
+    key = "ma%d" % n
+    if S.get(key) is None:
+        S[key] = cyc.sma([b["c"] for b in S["bars"]], n)
+    return S[key]
+
+
+def _mkt_adx_table():
+    if _RISK_MEMO["mkt"] is None:
+        tbl = {}
+        for c in CODES:
+            bars, S = _risk_bars(c), _risk_S(c)
+            tbl[c] = ([b["d"] for b in bars], S["adx"])
+        _RISK_MEMO["mkt"] = tbl
+    return _RISK_MEMO["mkt"]
+
+
+def mkt_adx_at(code, date):
+    """其余品种 ADX(14) 等权均值，各取 <= date 的最后一根（与回测 ENV.adx 同口径）。"""
+    vals = []
+    for c, (ds, ax) in _mkt_adx_table().items():
+        if c == code:
+            continue
+        k = bisect.bisect_right(ds, date) - 1
+        if 0 <= k < len(ax) and ax[k] is not None:
+            vals.append(ax[k])
+    return (sum(vals) / len(vals)) if vals else 0.0
+
+
+def vac_score(code, bars, S, i, exp, pool="in"):
+    """T 日动能真空打分：5 维，全部信号日及之前可得。返回 0~5 与命中维度。"""
+    cut = RISK_CUTS.get(pool) or RISK_CUTS["in"]
+    b = bars[i]
+    a0 = S["atr"][i] or 1e-9
+    ma60 = _ma_n(S, 60)
+    f = {}
+    if ma60[i] is not None:
+        f["dist_ma60"] = exp * (b["c"] - ma60[i]) / a0
+    if i >= 20:
+        f["ret20"] = exp * (b["c"] - bars[i - 20]["c"]) / a0
+        v0 = bars[i - 20].get("v") or 0
+        if v0:
+            f["vol_chg20"] = (float(b["v"]) - v0) / float(v0) * 100.0
+    f["adx"] = S["adx"][i] or 0.0
+    f["mkt_adx"] = mkt_adx_at(code, b["d"])
+    hit = []
+    for k, side in RISK_SCORE_SIDE:
+        v = f.get(k)
+        if v is None:
+            continue
+        if (side == "high" and v > cut[k]) or (side == "low" and v < cut[k]):
+            hit.append(k)
+    n = len(hit)
+    lo = RISK_VAC_MIN.get(pool, 4)
+    return {"score": n, "hits": hit, "tag": n >= lo, "min": lo,
+            "feats": {k: round(v, 3) for k, v in f.items() if v is not None}}
+
+
+def day1_fail(bars, S, i, exp):
+    """T+1 首日失效：A1 破信号日极值 / B1 失守 MA5（需先站上），窗口=1 根。
+
+    与专项一 stop_probe(window=1) 完全同口径：检查入场日与次一日，共 2 个收盘。
+    """
+    n = len(bars)
+    ei = i + 1
+    if ei >= n:
+        return None
+    sig = bars[i]
+    ma5 = S.get("ma5")
+    armed = False
+    for j in range(ei, min(n, ei + 1 + RISK_DAY1_WINDOW)):
+        b = bars[j]
+        c = b["c"]
+        a5 = ma5[j] if ma5 else None
+        why = []
+        if (exp == 1 and c < sig["l"]) or (exp == -1 and c > sig["h"]):
+            why.append("破信号日极值")
+        if armed and a5 is not None and ((exp == 1 and c < a5) or (exp == -1 and c > a5)):
+            why.append("失守MA5")
+        if why:
+            return {"day": j - i, "date": b["d"], "why": "+".join(why)}
+        if a5 is not None and ((exp == 1 and c > a5) or (exp == -1 and c < a5)):
+            armed = True
+    return None
+
+
+def _pivot(bars, lo, hi, w=3, high=False):
+    for k in range(hi - 1, max(lo + w, w), -1):
+        if high:
+            if all(bars[k]["h"] >= bars[k - j]["h"] for j in range(1, w + 1)) and \
+               all(bars[k]["h"] >= bars[k + j]["h"] for j in range(1, w + 1)):
+                return k
+        else:
+            if all(bars[k]["l"] <= bars[k - j]["l"] for j in range(1, w + 1)) and \
+               all(bars[k]["l"] <= bars[k + j]["l"] for j in range(1, w + 1)):
+                return k
+    return None
+
+
+def _trend_start(S, i, s):
+    bars, ma = S["bars"], S["ma34"]
+    j = i
+    while j > 40 and ma[j] is not None and s * (bars[j]["c"] - ma[j]) > 0:
+        j -= 1
+    return j + 1
+
+
+def swing_ref(bars, S, i, s):
+    """起涨/起跌之前的那个波谷/波峰（专项三同口径）。"""
+    j = _trend_start(S, i, s)
+    lo = max(0, j - 80)
+    if j <= lo:
+        return (bars[i]["l"] if s > 0 else bars[i]["h"]), i, i
+    if s > 0:
+        k = _pivot(bars, lo, j)
+        if k is None:
+            k = min(range(lo, j), key=lambda x: bars[x]["l"])
+        return bars[k]["l"], j, k
+    k = _pivot(bars, lo, j, high=True)
+    if k is None:
+        k = max(range(lo, j), key=lambda x: bars[x]["h"])
+    return bars[k]["h"], j, k
+
+
+def struct_break(bars, S, i, exp):
+    """T+3~8 结构已破坏：入场缓冲 ≥1ATR，之后收盘吃掉该缓冲 ≥50%。纯事后确认。"""
+    n = len(bars)
+    if i + 1 >= n:
+        return None
+    entry = bars[i + 1]["o"]
+    atr0 = S["atr"][i] or 1e-9
+    sw, _, _ = swing_ref(bars, S, i, exp)
+    denom = exp * (entry - sw)
+    cushion0 = denom / atr0
+    if denom <= 1e-9 or cushion0 < RISK_STRUCT_MIN_CUSHION:
+        return None
+    for j in range(i + 1, min(n, i + 1 + RISK_STRUCT_MAX)):
+        eaten = (exp * (entry - bars[j]["c"])) / denom
+        if eaten >= RISK_STRUCT_EATEN:
+            return {"day": j - i, "date": bars[j]["d"], "eaten": round(eaten, 2),
+                    "cushion0": round(cushion0, 2)}
+    return None
+
+
+def signal_meta(bars, S, i, exp, tier="normal", wpos=None, code=None, pool="in",
+                review_scope="all"):
     """给一条信号打「周线降级档位」与「复盘标签」。
 
     exp:  预期方向，+1 涨 / -1 跌
@@ -919,10 +1102,24 @@ def signal_meta(bars, S, i, exp, tier="normal", wpos=None):
                 broke = True
                 break
         c2 = "followed" if broke else "noFollow"
+    # v12：三层风险标签（纯展示；不参与任何决策，平仓口径仍由 exit_track 决定）
+    vac = {"score": 0, "hits": [], "tag": False, "min": RISK_VAC_MIN.get(pool, 4),
+           "feats": {}}
+    if code:
+        try:
+            vac = vac_score(code, bars, S, i, exp, pool)
+        except Exception:
+            pass
+    # review_scope: all=建仓信号（首日失效+结构）/ struct=仅结构（出场雷达）/
+    #               none=只留 T 日动能真空（预警、兑现档位）
+    d1 = day1_fail(bars, S, i, exp) if review_scope == "all" else None
+    st = struct_break(bars, S, i, exp) if review_scope in ("all", "struct") else None
     return {"weekMA": WEEKLY_MA, "weekPos": pos, "weekAlign": bool(align),
             "tier": tier, "observe": bool(observe), "push": not observe,
             "volRatio": round(ratio, 3), "lowVol": bool(ratio < VOL_RATIO_TAG),
-            "confirm2": c2}
+            "confirm2": c2,
+            "risk": {"pool": pool, "vac": vac, "day1": d1, "struct": st,
+                     "warn": bool(vac.get("tag")), "review": bool(d1 or st)}}
 
 
 def _market_series(bars, S, flat=None, strong_slope=None):

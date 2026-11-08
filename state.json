@@ -103,7 +103,32 @@
     "push": true,
     "volRatio": 0.98,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.734,
+       "ret20": -0.132,
+       "vol_chg20": 22.291,
+       "adx": 20.797,
+       "mkt_adx": 21.506
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -209,7 +234,32 @@
     "push": true,
     "volRatio": 0.996,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.384,
+       "ret20": 0.707,
+       "vol_chg20": 73.732,
+       "adx": 23.897,
+       "mkt_adx": 20.886
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -234,7 +284,32 @@
     "push": true,
     "volRatio": 0.989,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.048,
+       "ret20": 0.903,
+       "vol_chg20": 159.976,
+       "adx": 22.763,
+       "mkt_adx": 20.828
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -259,7 +334,31 @@
     "push": true,
     "volRatio": 0.918,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.557,
+       "ret20": -0.906,
+       "vol_chg20": 42.854,
+       "adx": 17.569,
+       "mkt_adx": 21.276
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -322,7 +421,31 @@
     "push": true,
     "volRatio": 0.98,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.555,
+       "ret20": -0.143,
+       "vol_chg20": -9.287,
+       "adx": 28.895,
+       "mkt_adx": 30.972
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -385,7 +508,29 @@
     "push": true,
     "volRatio": 1.026,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.443,
+       "ret20": 0.498,
+       "vol_chg20": 0.955,
+       "adx": 27.741,
+       "mkt_adx": 29.647
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -448,7 +593,31 @@
     "push": true,
     "volRatio": 0.986,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.301,
+       "ret20": -3.415,
+       "vol_chg20": 34.699,
+       "adx": 22.399,
+       "mkt_adx": 25.311
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -511,7 +680,33 @@
     "push": true,
     "volRatio": 0.888,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.047,
+       "ret20": -0.51,
+       "vol_chg20": -72.757,
+       "adx": 14.582,
+       "mkt_adx": 21.803
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -574,7 +769,31 @@
     "push": true,
     "volRatio": 0.985,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.199,
+       "ret20": -2.201,
+       "vol_chg20": 44.464,
+       "adx": 22.666,
+       "mkt_adx": 19.459
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -637,7 +856,30 @@
     "push": true,
     "volRatio": 1.007,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.601,
+       "ret20": -1.54,
+       "vol_chg20": 26.428,
+       "adx": 22.805,
+       "mkt_adx": 18.894
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -700,7 +942,27 @@
     "push": true,
     "volRatio": 1.017,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -4.01,
+       "ret20": -4.447,
+       "vol_chg20": 14.389,
+       "adx": 31.115,
+       "mkt_adx": 28.096
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -763,7 +1025,30 @@
     "push": true,
     "volRatio": 1.142,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.423,
+       "ret20": -3.262,
+       "vol_chg20": -43.018,
+       "adx": 21.288,
+       "mkt_adx": 28.406
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -870,7 +1155,40 @@
     "push": true,
     "volRatio": 1.081,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.21,
+       "ret20": -0.236,
+       "vol_chg20": -46.59,
+       "adx": 28.599,
+       "mkt_adx": 22.487
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2017-08-16",
+      "why": "破信号日极值"
+     },
+     "struct": {
+      "day": 1,
+      "date": "2017-08-16",
+      "eaten": 0.6,
+      "cushion0": 1.21
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -895,7 +1213,31 @@
     "push": false,
     "volRatio": 1.045,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.319,
+       "ret20": 0.146,
+       "vol_chg20": -54.224,
+       "adx": 19.173,
+       "mkt_adx": 25.905
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -958,7 +1300,32 @@
     "push": false,
     "volRatio": 0.934,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.969,
+       "ret20": 0.458,
+       "vol_chg20": 23.057,
+       "adx": 24.916,
+       "mkt_adx": 22.796
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -1062,7 +1429,29 @@
     "push": true,
     "volRatio": 1.066,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.415,
+       "ret20": -0.796,
+       "vol_chg20": -1.265,
+       "adx": 35.447,
+       "mkt_adx": 19.613
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -1087,7 +1476,31 @@
     "push": false,
     "volRatio": 1.102,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.61,
+       "ret20": 0.943,
+       "vol_chg20": 54.201,
+       "adx": 32.202,
+       "mkt_adx": 20.143
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -1193,7 +1606,36 @@
     "push": true,
     "volRatio": 0.999,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.55,
+       "ret20": -0.675,
+       "vol_chg20": -5.225,
+       "adx": 20.887,
+       "mkt_adx": 19.604
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2017-10-27",
+      "why": "破信号日极值"
+     },
+     "struct": null,
+     "warn": true,
+     "review": true
+    }
    }
   },
   {
@@ -1256,7 +1698,31 @@
     "push": true,
     "volRatio": 0.823,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.34,
+       "ret20": -2.532,
+       "vol_chg20": -47.468,
+       "adx": 18.656,
+       "mkt_adx": 18.709
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -1281,7 +1747,33 @@
     "push": true,
     "volRatio": 0.911,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.657,
+       "ret20": 1.872,
+       "vol_chg20": -8.798,
+       "adx": 17.688,
+       "mkt_adx": 18.902
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -1344,7 +1836,31 @@
     "push": false,
     "volRatio": 0.939,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.487,
+       "ret20": -2.232,
+       "vol_chg20": 0.472,
+       "adx": 17.029,
+       "mkt_adx": 18.63
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -1407,7 +1923,31 @@
     "push": false,
     "volRatio": 0.969,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.562,
+       "ret20": 0.158,
+       "vol_chg20": 97.538,
+       "adx": 15.07,
+       "mkt_adx": 20.709
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -1470,7 +2010,32 @@
     "push": true,
     "volRatio": 0.98,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.657,
+       "ret20": -0.145,
+       "vol_chg20": -50.775,
+       "adx": 19.87,
+       "mkt_adx": 22.853
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -1574,7 +2139,35 @@
     "push": true,
     "volRatio": 0.927,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.909,
+       "ret20": 2.255,
+       "vol_chg20": -24.318,
+       "adx": 39.48,
+       "mkt_adx": 25.527
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 13,
+      "date": "2018-02-07",
+      "eaten": 0.55,
+      "cushion0": 2.71
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -1599,7 +2192,30 @@
     "push": false,
     "volRatio": 0.91,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.563,
+       "ret20": 1.711,
+       "vol_chg20": -26.11,
+       "adx": 37.109,
+       "mkt_adx": 25.842
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -1662,7 +2278,32 @@
     "push": false,
     "volRatio": 1.046,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.056,
+       "ret20": 1.659,
+       "vol_chg20": -1.702,
+       "adx": 20.018,
+       "mkt_adx": 25.451
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -1725,7 +2366,31 @@
     "push": false,
     "volRatio": 0.969,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.577,
+       "ret20": 0.809,
+       "vol_chg20": -38.321,
+       "adx": 30.524,
+       "mkt_adx": 21.061
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -1788,7 +2453,29 @@
     "push": false,
     "volRatio": 1.185,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.415,
+       "ret20": -2.955,
+       "vol_chg20": 56.976,
+       "adx": 37.105,
+       "mkt_adx": 23.535
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -1851,7 +2538,30 @@
     "push": true,
     "volRatio": 0.936,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.236,
+       "ret20": -1.789,
+       "vol_chg20": -50.989,
+       "adx": 27.838,
+       "mkt_adx": 29.267
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -1914,7 +2624,31 @@
     "push": false,
     "volRatio": 0.869,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.171,
+       "ret20": -0.194,
+       "vol_chg20": -45.928,
+       "adx": 15.743,
+       "mkt_adx": 28.313
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -2018,7 +2752,35 @@
     "push": true,
     "volRatio": 0.934,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.649,
+       "ret20": 1.653,
+       "vol_chg20": 34.741,
+       "adx": 33.398,
+       "mkt_adx": 20.411
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 7,
+      "date": "2018-05-28",
+      "eaten": 0.52,
+      "cushion0": 2.95
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -2043,7 +2805,30 @@
     "push": false,
     "volRatio": 0.954,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.786,
+       "ret20": 1.343,
+       "vol_chg20": 32.376,
+       "adx": 31.588,
+       "mkt_adx": 20.949
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -2106,7 +2891,31 @@
     "push": true,
     "volRatio": 0.932,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.771,
+       "ret20": -1.526,
+       "vol_chg20": -42.694,
+       "adx": 19.473,
+       "mkt_adx": 19.549
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -2169,7 +2978,32 @@
     "push": false,
     "volRatio": 0.896,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.964,
+       "ret20": 1.56,
+       "vol_chg20": -78.693,
+       "adx": 17.686,
+       "mkt_adx": 29.629
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -2273,7 +3107,34 @@
     "push": true,
     "volRatio": 0.9,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.311,
+       "ret20": -0.734,
+       "vol_chg20": -71.554,
+       "adx": 37.714,
+       "mkt_adx": 30.074
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 11,
+      "date": "2018-07-24",
+      "eaten": 0.55,
+      "cushion0": 2.43
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -2298,7 +3159,30 @@
     "push": false,
     "volRatio": 0.921,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.488,
+       "ret20": 0.941,
+       "vol_chg20": 19.892,
+       "adx": 33.611,
+       "mkt_adx": 31.943
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -2361,7 +3245,31 @@
     "push": false,
     "volRatio": 0.966,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.82,
+       "ret20": -1.155,
+       "vol_chg20": -68.931,
+       "adx": 14.849,
+       "mkt_adx": 36.436
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -2424,7 +3332,31 @@
     "push": false,
     "volRatio": 0.948,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.658,
+       "ret20": -0.222,
+       "vol_chg20": -48.018,
+       "adx": 22.89,
+       "mkt_adx": 32.834
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -2487,7 +3419,30 @@
     "push": false,
     "volRatio": 1.069,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.365,
+       "ret20": -0.075,
+       "vol_chg20": 35.662,
+       "adx": 44.381,
+       "mkt_adx": 23.29
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -2550,7 +3505,31 @@
     "push": true,
     "volRatio": 0.999,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.843,
+       "ret20": 0.51,
+       "vol_chg20": 58.656,
+       "adx": 18.86,
+       "mkt_adx": 27.509
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -2656,7 +3635,31 @@
     "push": true,
     "volRatio": 0.922,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.004,
+       "ret20": -0.281,
+       "vol_chg20": -37.777,
+       "adx": 25.63,
+       "mkt_adx": 26.275
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -2681,7 +3684,31 @@
     "push": false,
     "volRatio": 0.964,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.093,
+       "ret20": 1.149,
+       "vol_chg20": 76.717,
+       "adx": 25.166,
+       "mkt_adx": 26.431
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -2744,7 +3771,32 @@
     "push": false,
     "volRatio": 0.928,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.154,
+       "ret20": -0.284,
+       "vol_chg20": -21.068,
+       "adx": 12.555,
+       "mkt_adx": 29.709
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -2850,7 +3902,34 @@
     "push": false,
     "volRatio": 1.091,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.23,
+       "ret20": -0.867,
+       "vol_chg20": -11.245,
+       "adx": 48.73,
+       "mkt_adx": 32.414
+      }
+     },
+     "day1": {
+      "day": 2,
+      "date": "2018-11-30",
+      "why": "破信号日极值+失守MA5"
+     },
+     "struct": null,
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -2875,7 +3954,29 @@
     "push": false,
     "volRatio": 1.052,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.828,
+       "ret20": -2.129,
+       "vol_chg20": -39.948,
+       "adx": 48.124,
+       "mkt_adx": 34.189
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -2938,7 +4039,32 @@
     "push": true,
     "volRatio": 1.034,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.652,
+       "ret20": -0.584,
+       "vol_chg20": -38.634,
+       "adx": 15.702,
+       "mkt_adx": 37.816
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -3001,7 +4127,27 @@
     "push": false,
     "volRatio": 0.98,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -4.994,
+       "ret20": -2.607,
+       "vol_chg20": 25.462,
+       "adx": 38.941,
+       "mkt_adx": 34.874
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -3064,7 +4210,31 @@
     "push": true,
     "volRatio": 0.94,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.716,
+       "ret20": -0.465,
+       "vol_chg20": -23.59,
+       "adx": 27.564,
+       "mkt_adx": 23.837
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -3168,7 +4338,34 @@
     "push": true,
     "volRatio": 0.947,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.933,
+       "ret20": 0.786,
+       "vol_chg20": 7.039,
+       "adx": 31.571,
+       "mkt_adx": 22.508
+      }
+     },
+     "day1": {
+      "day": 2,
+      "date": "2019-03-13",
+      "why": "失守MA5"
+     },
+     "struct": null,
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -3193,7 +4390,31 @@
     "push": true,
     "volRatio": 0.913,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.702,
+       "ret20": 0.239,
+       "vol_chg20": -24.483,
+       "adx": 30.088,
+       "mkt_adx": 22.883
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -3256,7 +4477,31 @@
     "push": false,
     "volRatio": 0.999,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.659,
+       "ret20": -1.073,
+       "vol_chg20": 87.133,
+       "adx": 21.843,
+       "mkt_adx": 24.279
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -3362,7 +4607,37 @@
     "push": true,
     "volRatio": 0.938,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.053,
+       "ret20": 0.093,
+       "vol_chg20": 4.071,
+       "adx": 22.139,
+       "mkt_adx": 21.16
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 8,
+      "date": "2019-04-08",
+      "eaten": 0.51,
+      "cushion0": 1.95
+     },
+     "warn": true,
+     "review": true
+    }
    }
   },
   {
@@ -3387,7 +4662,32 @@
     "push": true,
     "volRatio": 0.934,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.746,
+       "ret20": 0.263,
+       "vol_chg20": 21.172,
+       "adx": 21.154,
+       "mkt_adx": 20.936
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -3450,7 +4750,31 @@
     "push": false,
     "volRatio": 0.853,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.521,
+       "ret20": -1.568,
+       "vol_chg20": -13.843,
+       "adx": 18.425,
+       "mkt_adx": 19.938
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -3556,7 +4880,29 @@
     "push": false,
     "volRatio": 1.057,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.992,
+       "ret20": -1.734,
+       "vol_chg20": 294.498,
+       "adx": 22.179,
+       "mkt_adx": 32.647
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -3581,7 +4927,30 @@
     "push": false,
     "volRatio": 1.039,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.812,
+       "ret20": 1.152,
+       "vol_chg20": 15.512,
+       "adx": 20.398,
+       "mkt_adx": 34.379
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -3685,7 +5054,36 @@
     "push": false,
     "volRatio": 1.046,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.988,
+       "ret20": -1.81,
+       "vol_chg20": 47.424,
+       "adx": 36.559,
+       "mkt_adx": 33.615
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2019-06-06",
+      "why": "破信号日极值"
+     },
+     "struct": {
+      "day": 2,
+      "date": "2019-06-10",
+      "eaten": 0.57,
+      "cushion0": 2.66
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -3791,7 +5189,29 @@
     "push": false,
     "volRatio": 0.977,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.402,
+       "ret20": -0.154,
+       "vol_chg20": 940.47,
+       "adx": 34.642,
+       "mkt_adx": 33.644
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -3816,7 +5236,30 @@
     "push": false,
     "volRatio": 0.96,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.718,
+       "ret20": 2.223,
+       "vol_chg20": -7.423,
+       "adx": 30.327,
+       "mkt_adx": 34.309
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -3879,7 +5322,30 @@
     "push": false,
     "volRatio": 1.0,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.805,
+       "ret20": -1.506,
+       "vol_chg20": 5.032,
+       "adx": 15.678,
+       "mkt_adx": 35.723
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -3985,7 +5451,31 @@
     "push": true,
     "volRatio": 1.073,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.033,
+       "ret20": 2.181,
+       "vol_chg20": -38.23,
+       "adx": 29.908,
+       "mkt_adx": 30.702
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -4091,7 +5581,32 @@
     "push": true,
     "volRatio": 1.037,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.124,
+       "ret20": -1.497,
+       "vol_chg20": 228.695,
+       "adx": 49.896,
+       "mkt_adx": 28.365
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 6,
+      "date": "2019-07-09",
+      "eaten": 0.88,
+      "cushion0": 2.29
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -4116,7 +5631,31 @@
     "push": false,
     "volRatio": 1.028,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.954,
+       "ret20": 2.705,
+       "vol_chg20": -68.839,
+       "adx": 28.712,
+       "mkt_adx": 29.608
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -4141,7 +5680,29 @@
     "push": true,
     "volRatio": 1.035,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.759,
+       "ret20": 0.59,
+       "vol_chg20": 41.047,
+       "adx": 46.513,
+       "mkt_adx": 27.935
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -4166,7 +5727,31 @@
     "push": false,
     "volRatio": 0.938,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.674,
+       "ret20": 1.652,
+       "vol_chg20": -7.177,
+       "adx": 31.154,
+       "mkt_adx": 20.6
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -4229,7 +5814,30 @@
     "push": false,
     "volRatio": 0.967,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.79,
+       "ret20": -1.873,
+       "vol_chg20": -40.723,
+       "adx": 29.428,
+       "mkt_adx": 20.315
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -4333,7 +5941,32 @@
     "push": true,
     "volRatio": 0.878,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.627,
+       "ret20": 0.413,
+       "vol_chg20": -13.783,
+       "adx": 23.185,
+       "mkt_adx": 23.423
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -4358,7 +5991,32 @@
     "push": true,
     "volRatio": 1.01,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.467,
+       "ret20": 1.784,
+       "vol_chg20": 15.955,
+       "adx": 24.249,
+       "mkt_adx": 24.361
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -4464,7 +6122,30 @@
     "push": true,
     "volRatio": 1.085,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.021,
+       "ret20": 0.69,
+       "vol_chg20": 87.101,
+       "adx": 30.609,
+       "mkt_adx": 25.913
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -4489,7 +6170,30 @@
     "push": true,
     "volRatio": 1.04,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.168,
+       "ret20": 0.818,
+       "vol_chg20": 40.139,
+       "adx": 29.634,
+       "mkt_adx": 25.722
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -4595,7 +6299,36 @@
     "push": true,
     "volRatio": 0.985,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.573,
+       "ret20": -1.425,
+       "vol_chg20": 27.795,
+       "adx": 28.016,
+       "mkt_adx": 26.526
+      }
+     },
+     "day1": {
+      "day": 2,
+      "date": "2019-10-23",
+      "why": "破信号日极值+失守MA5"
+     },
+     "struct": {
+      "day": 3,
+      "date": "2019-10-24",
+      "eaten": 0.53,
+      "cushion0": 2.46
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -4620,7 +6353,31 @@
     "push": false,
     "volRatio": 1.017,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.616,
+       "ret20": 1.141,
+       "vol_chg20": 94.07,
+       "adx": 22.456,
+       "mkt_adx": 30.944
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -4683,7 +6440,30 @@
     "push": false,
     "volRatio": 0.929,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.88,
+       "ret20": -1.367,
+       "vol_chg20": -6.506,
+       "adx": 25.488,
+       "mkt_adx": 32.198
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -4746,7 +6526,29 @@
     "push": false,
     "volRatio": 0.937,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.518,
+       "ret20": -1.253,
+       "vol_chg20": 61.165,
+       "adx": 20.553,
+       "mkt_adx": 32.427
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -4850,7 +6652,35 @@
     "push": true,
     "volRatio": 0.997,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.178,
+       "ret20": -1.462,
+       "vol_chg20": -40.144,
+       "adx": 21.168,
+       "mkt_adx": 30.355
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2019-11-20",
+      "why": "破信号日极值"
+     },
+     "struct": null,
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -4875,7 +6705,31 @@
     "push": false,
     "volRatio": 0.981,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.568,
+       "ret20": -0.723,
+       "vol_chg20": -16.661,
+       "adx": 17.865,
+       "mkt_adx": 29.929
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -4938,7 +6792,30 @@
     "push": false,
     "volRatio": 1.072,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.869,
+       "ret20": -0.906,
+       "vol_chg20": -22.541,
+       "adx": 45.254,
+       "mkt_adx": 24.64
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -5042,7 +6919,30 @@
     "push": true,
     "volRatio": 0.963,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.163,
+       "ret20": -0.178,
+       "vol_chg20": 1.492,
+       "adx": 29.8,
+       "mkt_adx": 25.035
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -5067,7 +6967,32 @@
     "push": false,
     "volRatio": 0.967,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.434,
+       "ret20": 1.332,
+       "vol_chg20": -64.979,
+       "adx": 21.975,
+       "mkt_adx": 24.477
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -5173,7 +7098,36 @@
     "push": true,
     "volRatio": 0.964,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.361,
+       "ret20": -0.936,
+       "vol_chg20": -45.42,
+       "adx": 22.936,
+       "mkt_adx": 26.543
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 9,
+      "date": "2020-01-20",
+      "eaten": 0.69,
+      "cushion0": 1.81
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -5198,7 +7152,32 @@
     "push": true,
     "volRatio": 0.938,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.115,
+       "ret20": 1.295,
+       "vol_chg20": -14.227,
+       "adx": 19.25,
+       "mkt_adx": 30.755
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -5261,7 +7240,29 @@
     "push": false,
     "volRatio": 1.412,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.724,
+       "ret20": -1.849,
+       "vol_chg20": -11.795,
+       "adx": 29.036,
+       "mkt_adx": 29.474
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -5324,7 +7325,31 @@
     "push": false,
     "volRatio": 1.054,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.942,
+       "ret20": -0.532,
+       "vol_chg20": -44.206,
+       "adx": 16.388,
+       "mkt_adx": 26.712
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -5387,7 +7412,31 @@
     "push": false,
     "volRatio": 1.014,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.254,
+       "ret20": 0.029,
+       "vol_chg20": -45.266,
+       "adx": 25.913,
+       "mkt_adx": 22.04
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -5450,7 +7499,29 @@
     "push": true,
     "volRatio": 0.986,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.951,
+       "ret20": -2.076,
+       "vol_chg20": 27.079,
+       "adx": 16.833,
+       "mkt_adx": 37.04
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -5554,7 +7625,33 @@
     "push": false,
     "volRatio": 1.062,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.107,
+       "ret20": -0.444,
+       "vol_chg20": 91.822,
+       "adx": 31.488,
+       "mkt_adx": 33.447
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2020-04-22",
+      "why": "破信号日极值"
+     },
+     "struct": null,
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -5617,7 +7714,27 @@
     "push": false,
     "volRatio": 1.042,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.88,
+       "ret20": -1.31,
+       "vol_chg20": 85.357,
+       "adx": 41.718,
+       "mkt_adx": 32.145
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -5642,7 +7759,32 @@
     "push": false,
     "volRatio": 1.022,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.057,
+       "ret20": 2.25,
+       "vol_chg20": -23.082,
+       "adx": 22.835,
+       "mkt_adx": 32.846
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -5705,7 +7847,32 @@
     "push": false,
     "volRatio": 0.886,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.022,
+       "ret20": -0.323,
+       "vol_chg20": 93.615,
+       "adx": 22.569,
+       "mkt_adx": 22.767
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -5768,7 +7935,31 @@
     "push": true,
     "volRatio": 0.94,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.601,
+       "ret20": 0.15,
+       "vol_chg20": -2.804,
+       "adx": 14.917,
+       "mkt_adx": 32.633
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -5831,7 +8022,27 @@
     "push": false,
     "volRatio": 1.214,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.896,
+       "ret20": -1.858,
+       "vol_chg20": 115.502,
+       "adx": 53.246,
+       "mkt_adx": 27.742
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -5894,7 +8105,27 @@
     "push": false,
     "volRatio": 1.335,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.097,
+       "ret20": -1.956,
+       "vol_chg20": 386.917,
+       "adx": 40.425,
+       "mkt_adx": 30.67
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -5957,7 +8188,27 @@
     "push": true,
     "volRatio": 1.02,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.925,
+       "ret20": -5.564,
+       "vol_chg20": 324.648,
+       "adx": 40.494,
+       "mkt_adx": 30.469
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -6020,7 +8271,31 @@
     "push": false,
     "volRatio": 0.959,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.642,
+       "ret20": -0.52,
+       "vol_chg20": 19.901,
+       "adx": 18.579,
+       "mkt_adx": 26.583
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -6083,7 +8358,31 @@
     "push": true,
     "volRatio": 0.876,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 1.414,
+       "ret20": -1.497,
+       "vol_chg20": -72.32,
+       "adx": 19.756,
+       "mkt_adx": 26.403
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -6146,7 +8445,30 @@
     "push": false,
     "volRatio": 0.913,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.407,
+       "ret20": -1.729,
+       "vol_chg20": -40.724,
+       "adx": 30.914,
+       "mkt_adx": 21.889
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -6209,7 +8531,30 @@
     "push": false,
     "volRatio": 1.015,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.935,
+       "ret20": -2.024,
+       "vol_chg20": 188.607,
+       "adx": 15.217,
+       "mkt_adx": 23.765
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -6315,7 +8660,40 @@
     "push": true,
     "volRatio": 0.921,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.431,
+       "ret20": 1.188,
+       "vol_chg20": -38.864,
+       "adx": 35.493,
+       "mkt_adx": 20.471
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2020-11-11",
+      "why": "破信号日极值"
+     },
+     "struct": {
+      "day": 1,
+      "date": "2020-11-11",
+      "eaten": 0.71,
+      "cushion0": 1.52
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -6340,7 +8718,31 @@
     "push": false,
     "volRatio": 0.938,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.185,
+       "ret20": 0.355,
+       "vol_chg20": -50.463,
+       "adx": 33.574,
+       "mkt_adx": 20.898
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -6403,7 +8805,31 @@
     "push": false,
     "volRatio": 0.941,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.902,
+       "ret20": -0.084,
+       "vol_chg20": -56.778,
+       "adx": 30.843,
+       "mkt_adx": 22.623
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -6466,7 +8892,27 @@
     "push": false,
     "volRatio": 1.153,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.952,
+       "ret20": -1.355,
+       "vol_chg20": 44.012,
+       "adx": 30.61,
+       "mkt_adx": 34.353
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -6573,7 +9019,35 @@
     "push": true,
     "volRatio": 1.031,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.134,
+       "ret20": -2.717,
+       "vol_chg20": -42.124,
+       "adx": 29.868,
+       "mkt_adx": 38.147
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 13,
+      "date": "2021-01-29",
+      "eaten": 0.58,
+      "cushion0": 2.91
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -6598,7 +9072,30 @@
     "push": false,
     "volRatio": 1.014,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.594,
+       "ret20": -2.283,
+       "vol_chg20": -8.935,
+       "adx": 28.354,
+       "mkt_adx": 38.867
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -6702,7 +9199,31 @@
     "push": true,
     "volRatio": 1.199,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.326,
+       "ret20": -1.384,
+       "vol_chg20": 4.41,
+       "adx": 34.191,
+       "mkt_adx": 32.585
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2021-01-27",
+      "why": "破信号日极值"
+     },
+     "struct": null,
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -6808,7 +9329,34 @@
     "push": true,
     "volRatio": 1.041,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.532,
+       "ret20": -1.003,
+       "vol_chg20": -23.231,
+       "adx": 30.638,
+       "mkt_adx": 31.765
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 11,
+      "date": "2021-02-18",
+      "eaten": 0.76,
+      "cushion0": 2.89
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -6871,7 +9419,27 @@
     "push": false,
     "volRatio": 1.144,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.037,
+       "ret20": -1.52,
+       "vol_chg20": 27.311,
+       "adx": 35.855,
+       "mkt_adx": 31.02
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -6934,7 +9502,30 @@
     "push": true,
     "volRatio": 0.888,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.393,
+       "ret20": -1.807,
+       "vol_chg20": -21.098,
+       "adx": 18.807,
+       "mkt_adx": 31.482
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -6959,7 +9550,30 @@
     "push": false,
     "volRatio": 1.013,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.416,
+       "ret20": -0.116,
+       "vol_chg20": 3.204,
+       "adx": 28.787,
+       "mkt_adx": 30.056
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -6984,7 +9598,32 @@
     "push": false,
     "volRatio": 1.055,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.825,
+       "ret20": 1.417,
+       "vol_chg20": -8.347,
+       "adx": 24.631,
+       "mkt_adx": 28.08
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -7047,7 +9686,31 @@
     "push": false,
     "volRatio": 1.068,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.959,
+       "ret20": 0.867,
+       "vol_chg20": 13.997,
+       "adx": 22.544,
+       "mkt_adx": 27.536
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -7110,7 +9773,29 @@
     "push": false,
     "volRatio": 1.037,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.403,
+       "ret20": -0.392,
+       "vol_chg20": 67.363,
+       "adx": 34.097,
+       "mkt_adx": 25.885
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -7173,7 +9858,31 @@
     "push": true,
     "volRatio": 0.866,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.816,
+       "ret20": -1.559,
+       "vol_chg20": -53.112,
+       "adx": 21.005,
+       "mkt_adx": 22.968
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -7236,7 +9945,32 @@
     "push": false,
     "volRatio": 0.956,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.315,
+       "ret20": 0.488,
+       "vol_chg20": -55.162,
+       "adx": 22.714,
+       "mkt_adx": 22.421
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -7299,7 +10033,32 @@
     "push": true,
     "volRatio": 0.971,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.743,
+       "ret20": 0.149,
+       "vol_chg20": 42.338,
+       "adx": 14.405,
+       "mkt_adx": 19.491
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -7362,7 +10121,30 @@
     "push": false,
     "volRatio": 1.018,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.283,
+       "ret20": -0.332,
+       "vol_chg20": 19.288,
+       "adx": 25.818,
+       "mkt_adx": 27.297
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -7425,7 +10207,31 @@
     "push": false,
     "volRatio": 1.043,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.06,
+       "ret20": 0.535,
+       "vol_chg20": -2.185,
+       "adx": 12.826,
+       "mkt_adx": 26.464
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -7488,7 +10294,29 @@
     "push": false,
     "volRatio": 1.314,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.516,
+       "ret20": -2.563,
+       "vol_chg20": 27.88,
+       "adx": 40.936,
+       "mkt_adx": 21.833
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -7551,7 +10379,32 @@
     "push": false,
     "volRatio": 1.116,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.16,
+       "ret20": 0.554,
+       "vol_chg20": 65.211,
+       "adx": 17.837,
+       "mkt_adx": 25.133
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -7614,7 +10467,31 @@
     "push": false,
     "volRatio": 1.096,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.761,
+       "ret20": -0.317,
+       "vol_chg20": 11.236,
+       "adx": 26.005,
+       "mkt_adx": 23.966
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -7677,7 +10554,31 @@
     "push": false,
     "volRatio": 1.223,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.816,
+       "ret20": -1.163,
+       "vol_chg20": 36.076,
+       "adx": 22.54,
+       "mkt_adx": 23.811
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -7740,7 +10641,32 @@
     "push": false,
     "volRatio": 0.85,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.758,
+       "ret20": 0.793,
+       "vol_chg20": -72.828,
+       "adx": 14.598,
+       "mkt_adx": 21.322
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -7803,7 +10729,31 @@
     "push": false,
     "volRatio": 0.886,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.472,
+       "ret20": -2.315,
+       "vol_chg20": -36.444,
+       "adx": 17.428,
+       "mkt_adx": 21.725
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -7866,7 +10816,32 @@
     "push": true,
     "volRatio": 0.953,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 1.197,
+       "ret20": 0.561,
+       "vol_chg20": 3.71,
+       "adx": 15.398,
+       "mkt_adx": 22.109
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -7929,7 +10904,30 @@
     "push": true,
     "volRatio": 0.891,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.993,
+       "ret20": -0.118,
+       "vol_chg20": 21.911,
+       "adx": 45.679,
+       "mkt_adx": 17.636
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -7992,7 +10990,32 @@
     "push": false,
     "volRatio": 1.019,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.509,
+       "ret20": -1.044,
+       "vol_chg20": -44.492,
+       "adx": 20.046,
+       "mkt_adx": 18.829
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -8055,7 +11078,30 @@
     "push": false,
     "volRatio": 0.999,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.587,
+       "ret20": -2.24,
+       "vol_chg20": 9.912,
+       "adx": 12.334,
+       "mkt_adx": 19.175
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -8118,7 +11164,33 @@
     "push": false,
     "volRatio": 0.963,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.287,
+       "ret20": 1.885,
+       "vol_chg20": -8.778,
+       "adx": 15.332,
+       "mkt_adx": 18.051
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -8181,7 +11253,31 @@
     "push": false,
     "volRatio": 0.889,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.074,
+       "ret20": -1.23,
+       "vol_chg20": -3.298,
+       "adx": 14.415,
+       "mkt_adx": 25.524
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -8285,7 +11381,27 @@
     "push": true,
     "volRatio": 1.365,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.469,
+       "ret20": -1.41,
+       "vol_chg20": 5.872,
+       "adx": 32.097,
+       "mkt_adx": 31.414
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -8348,7 +11464,29 @@
     "push": false,
     "volRatio": 1.483,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "dist_ma60"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.009,
+       "ret20": -0.745,
+       "vol_chg20": 111.257,
+       "adx": 39.611,
+       "mkt_adx": 30.399
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -8373,7 +11511,30 @@
     "push": false,
     "volRatio": 1.306,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.722,
+       "ret20": -0.688,
+       "vol_chg20": -67.326,
+       "adx": 30.854,
+       "mkt_adx": 31.65
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -8480,7 +11641,32 @@
     "push": true,
     "volRatio": 1.387,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.723,
+       "ret20": -0.018,
+       "vol_chg20": -52.585,
+       "adx": 24.694,
+       "mkt_adx": 32.982
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -8505,7 +11691,32 @@
     "push": false,
     "volRatio": 1.319,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.88,
+       "ret20": -0.206,
+       "vol_chg20": -23.798,
+       "adx": 24.324,
+       "mkt_adx": 33.736
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -8609,7 +11820,34 @@
     "push": true,
     "volRatio": 0.976,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.708,
+       "ret20": -1.597,
+       "vol_chg20": -34.923,
+       "adx": 32.145,
+       "mkt_adx": 36.62
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 10,
+      "date": "2021-12-06",
+      "eaten": 0.68,
+      "cushion0": 3.29
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -8672,7 +11910,30 @@
     "push": false,
     "volRatio": 0.855,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.163,
+       "ret20": 0.38,
+       "vol_chg20": -4.648,
+       "adx": 41.635,
+       "mkt_adx": 35.264
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -8697,7 +11958,30 @@
     "push": false,
     "volRatio": 0.954,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.685,
+       "ret20": -0.113,
+       "vol_chg20": -28.612,
+       "adx": 28.652,
+       "mkt_adx": 33.955
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -8760,7 +12044,27 @@
     "push": false,
     "volRatio": 0.971,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.074,
+       "ret20": -0.748,
+       "vol_chg20": 5.323,
+       "adx": 33.069,
+       "mkt_adx": 33.324
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -8823,7 +12127,29 @@
     "push": false,
     "volRatio": 0.834,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.876,
+       "ret20": -0.83,
+       "vol_chg20": -25.226,
+       "adx": 46.133,
+       "mkt_adx": 29.742
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -8927,7 +12253,35 @@
     "push": true,
     "volRatio": 1.16,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.181,
+       "ret20": -1.829,
+       "vol_chg20": 144.07,
+       "adx": 29.582,
+       "mkt_adx": 23.616
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 5,
+      "date": "2021-12-24",
+      "eaten": 0.57,
+      "cushion0": 4.34
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -8952,7 +12306,32 @@
     "push": false,
     "volRatio": 1.05,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.324,
+       "ret20": 0.058,
+       "vol_chg20": -27.663,
+       "adx": 18.806,
+       "mkt_adx": 22.895
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -9056,7 +12435,31 @@
     "push": true,
     "volRatio": 1.196,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.107,
+       "ret20": 0.157,
+       "vol_chg20": 18.385,
+       "adx": 32.795,
+       "mkt_adx": 24.195
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -9119,7 +12522,32 @@
     "push": false,
     "volRatio": 0.996,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.144,
+       "ret20": -0.071,
+       "vol_chg20": -17.13,
+       "adx": 16.988,
+       "mkt_adx": 26.224
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -9144,7 +12572,32 @@
     "push": true,
     "volRatio": 1.099,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.728,
+       "ret20": 1.189,
+       "vol_chg20": -12.253,
+       "adx": 29.359,
+       "mkt_adx": 24.018
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -9207,7 +12660,29 @@
     "push": false,
     "volRatio": 1.145,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.084,
+       "ret20": -1.853,
+       "vol_chg20": 78.436,
+       "adx": 32.345,
+       "mkt_adx": 23.595
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -9270,7 +12745,31 @@
     "push": false,
     "volRatio": 1.012,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.825,
+       "ret20": -1.636,
+       "vol_chg20": -43.931,
+       "adx": 16.747,
+       "mkt_adx": 26.046
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -9333,7 +12832,30 @@
     "push": false,
     "volRatio": 0.925,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.66,
+       "ret20": -3.077,
+       "vol_chg20": -36.259,
+       "adx": 8.769,
+       "mkt_adx": 25.992
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -9440,7 +12962,36 @@
     "push": false,
     "volRatio": 1.171,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.426,
+       "ret20": -0.361,
+       "vol_chg20": -7.254,
+       "adx": 27.31,
+       "mkt_adx": 23.343
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 1,
+      "date": "2022-03-28",
+      "eaten": 0.63,
+      "cushion0": 1.99
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -9465,7 +13016,33 @@
     "push": false,
     "volRatio": 1.13,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.007,
+       "ret20": 0.847,
+       "vol_chg20": -33.84,
+       "adx": 23.387,
+       "mkt_adx": 21.326
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -9569,7 +13146,37 @@
     "push": false,
     "volRatio": 0.978,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.694,
+       "ret20": 0.111,
+       "vol_chg20": 27.409,
+       "adx": 21.144,
+       "mkt_adx": 21.174
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 13,
+      "date": "2022-05-26",
+      "eaten": 0.56,
+      "cushion0": 1.51
+     },
+     "warn": true,
+     "review": true
+    }
    }
   },
   {
@@ -9594,7 +13201,32 @@
     "push": false,
     "volRatio": 1.048,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.523,
+       "ret20": 1.105,
+       "vol_chg20": 18.516,
+       "adx": 21.562,
+       "mkt_adx": 21.473
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -9657,7 +13289,30 @@
     "push": false,
     "volRatio": 0.955,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.125,
+       "ret20": -2.51,
+       "vol_chg20": 66.671,
+       "adx": 14.632,
+       "mkt_adx": 21.262
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -9720,7 +13375,31 @@
     "push": false,
     "volRatio": 0.929,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.105,
+       "ret20": -1.441,
+       "vol_chg20": -40.045,
+       "adx": 18.503,
+       "mkt_adx": 20.254
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -9826,7 +13505,35 @@
     "push": false,
     "volRatio": 0.887,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.318,
+       "ret20": -0.588,
+       "vol_chg20": 85.891,
+       "adx": 24.087,
+       "mkt_adx": 19.406
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2022-06-10",
+      "why": "破信号日极值"
+     },
+     "struct": null,
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -9889,7 +13596,32 @@
     "push": false,
     "volRatio": 1.016,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.09,
+       "ret20": -0.019,
+       "vol_chg20": 28.288,
+       "adx": 24.017,
+       "mkt_adx": 18.751
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -9952,7 +13684,31 @@
     "push": false,
     "volRatio": 0.963,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.16,
+       "ret20": -0.882,
+       "vol_chg20": 6.506,
+       "adx": 18.376,
+       "mkt_adx": 19.602
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -10015,7 +13771,29 @@
     "push": false,
     "volRatio": 0.986,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.809,
+       "ret20": -2.388,
+       "vol_chg20": -3.371,
+       "adx": 29.736,
+       "mkt_adx": 34.481
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -10078,7 +13856,29 @@
     "push": false,
     "volRatio": 1.01,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.807,
+       "ret20": -1.668,
+       "vol_chg20": -4.618,
+       "adx": 36.701,
+       "mkt_adx": 29.102
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -10141,7 +13941,29 @@
     "push": false,
     "volRatio": 1.015,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.789,
+       "ret20": -1.518,
+       "vol_chg20": -53.756,
+       "adx": 34.463,
+       "mkt_adx": 27.384
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -10166,7 +13988,30 @@
     "push": false,
     "volRatio": 0.994,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.516,
+       "ret20": 0.871,
+       "vol_chg20": -19.817,
+       "adx": 30.493,
+       "mkt_adx": 26.611
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -10229,7 +14074,32 @@
     "push": false,
     "volRatio": 0.942,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.176,
+       "ret20": -2.524,
+       "vol_chg20": -42.041,
+       "adx": 17.626,
+       "mkt_adx": 25.049
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -10292,7 +14162,31 @@
     "push": false,
     "volRatio": 1.013,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.749,
+       "ret20": 0.214,
+       "vol_chg20": 0.628,
+       "adx": 23.393,
+       "mkt_adx": 23.127
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -10355,7 +14249,31 @@
     "push": true,
     "volRatio": 0.883,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.053,
+       "ret20": -3.48,
+       "vol_chg20": 47.444,
+       "adx": 17.904,
+       "mkt_adx": 22.671
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -10418,7 +14336,32 @@
     "push": true,
     "volRatio": 0.854,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.603,
+       "ret20": -2.77,
+       "vol_chg20": -17.584,
+       "adx": 24.624,
+       "mkt_adx": 17.573
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -10525,7 +14468,38 @@
     "push": false,
     "volRatio": 1.012,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.093,
+       "ret20": -1.215,
+       "vol_chg20": 48.204,
+       "adx": 25.858,
+       "mkt_adx": 19.711
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2022-11-01",
+      "why": "破信号日极值"
+     },
+     "struct": {
+      "day": 1,
+      "date": "2022-11-01",
+      "eaten": 1.63,
+      "cushion0": 1.04
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -10588,7 +14562,31 @@
     "push": false,
     "volRatio": 0.981,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.257,
+       "ret20": -1.351,
+       "vol_chg20": -3.219,
+       "adx": 22.267,
+       "mkt_adx": 19.864
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -10613,7 +14611,30 @@
     "push": false,
     "volRatio": 0.91,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.509,
+       "ret20": -1.188,
+       "vol_chg20": -28.415,
+       "adx": 29.266,
+       "mkt_adx": 19.673
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -10676,7 +14697,32 @@
     "push": false,
     "volRatio": 1.042,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.03,
+       "ret20": 1.438,
+       "vol_chg20": 18.687,
+       "adx": 17.568,
+       "mkt_adx": 22.428
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -10780,7 +14826,40 @@
     "push": true,
     "volRatio": 1.139,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.826,
+       "ret20": -0.499,
+       "vol_chg20": 32.216,
+       "adx": 36.226,
+       "mkt_adx": 20.46
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2022-12-08",
+      "why": "破信号日极值"
+     },
+     "struct": {
+      "day": 2,
+      "date": "2022-12-09",
+      "eaten": 0.52,
+      "cushion0": 3.43
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -10843,7 +14922,30 @@
     "push": true,
     "volRatio": 1.114,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.154,
+       "ret20": -1.504,
+       "vol_chg20": 146.474,
+       "adx": 19.891,
+       "mkt_adx": 25.277
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -10906,7 +15008,32 @@
     "push": false,
     "volRatio": 0.971,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.133,
+       "ret20": 0.199,
+       "vol_chg20": -14.819,
+       "adx": 16.641,
+       "mkt_adx": 25.533
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -10969,7 +15096,33 @@
     "push": true,
     "volRatio": 0.985,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.378,
+       "ret20": -0.465,
+       "vol_chg20": -61.753,
+       "adx": 18.853,
+       "mkt_adx": 25.133
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -11032,7 +15185,32 @@
     "push": false,
     "volRatio": 1.005,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.072,
+       "ret20": 0.622,
+       "vol_chg20": 19.928,
+       "adx": 17.817,
+       "mkt_adx": 23.083
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -11057,7 +15235,32 @@
     "push": false,
     "volRatio": 0.934,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.455,
+       "ret20": 1.429,
+       "vol_chg20": -11.979,
+       "adx": 19.067,
+       "mkt_adx": 19.684
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -11120,7 +15323,32 @@
     "push": true,
     "volRatio": 0.903,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.04,
+       "ret20": -1.696,
+       "vol_chg20": -14.032,
+       "adx": 15.388,
+       "mkt_adx": 19.284
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -11183,7 +15411,32 @@
     "push": false,
     "volRatio": 0.809,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.211,
+       "ret20": 1.68,
+       "vol_chg20": -22.114,
+       "adx": 26.737,
+       "mkt_adx": 17.134
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -11246,7 +15499,29 @@
     "push": false,
     "volRatio": 1.077,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.523,
+       "ret20": -3.821,
+       "vol_chg20": 37.236,
+       "adx": 37.804,
+       "mkt_adx": 24.966
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -11309,7 +15584,27 @@
     "push": false,
     "volRatio": 1.067,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.33,
+       "ret20": -3.381,
+       "vol_chg20": 1.897,
+       "adx": 26.311,
+       "mkt_adx": 36.491
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -11372,7 +15667,27 @@
     "push": false,
     "volRatio": 0.92,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -4.441,
+       "ret20": -0.839,
+       "vol_chg20": 56.601,
+       "adx": 53.84,
+       "mkt_adx": 37.963
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -11476,7 +15791,35 @@
     "push": true,
     "volRatio": 1.001,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.934,
+       "ret20": -0.325,
+       "vol_chg20": -39.361,
+       "adx": 37.534,
+       "mkt_adx": 39.723
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 8,
+      "date": "2023-06-12",
+      "eaten": 0.56,
+      "cushion0": 2.21
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -11501,7 +15844,30 @@
     "push": false,
     "volRatio": 0.981,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.327,
+       "ret20": 1.495,
+       "vol_chg20": -31.898,
+       "adx": 35.688,
+       "mkt_adx": 39.263
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -11564,7 +15930,30 @@
     "push": true,
     "volRatio": 0.959,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.323,
+       "ret20": -0.906,
+       "vol_chg20": -36.205,
+       "adx": 20.997,
+       "mkt_adx": 33.422
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -11627,7 +16016,31 @@
     "push": false,
     "volRatio": 0.887,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.957,
+       "ret20": 1.339,
+       "vol_chg20": -52.495,
+       "adx": 37.002,
+       "mkt_adx": 24.053
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -11690,7 +16103,30 @@
     "push": false,
     "volRatio": 0.965,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.466,
+       "ret20": 0.448,
+       "vol_chg20": 44.597,
+       "adx": 20.186,
+       "mkt_adx": 26.11
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -11753,7 +16189,30 @@
     "push": true,
     "volRatio": 0.969,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.101,
+       "ret20": -1.377,
+       "vol_chg20": -22.11,
+       "adx": 21.972,
+       "mkt_adx": 25.624
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -11816,7 +16275,30 @@
     "push": true,
     "volRatio": 0.956,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.356,
+       "ret20": -0.807,
+       "vol_chg20": 9.543,
+       "adx": 15.404,
+       "mkt_adx": 26.473
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -11879,7 +16361,30 @@
     "push": true,
     "volRatio": 0.958,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.984,
+       "ret20": -2.643,
+       "vol_chg20": 84.315,
+       "adx": 27.984,
+       "mkt_adx": 22.505
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -11942,7 +16447,33 @@
     "push": true,
     "volRatio": 1.154,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.074,
+       "ret20": 1.062,
+       "vol_chg20": -50.948,
+       "adx": 20.923,
+       "mkt_adx": 19.372
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -12005,7 +16536,29 @@
     "push": false,
     "volRatio": 1.003,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.798,
+       "ret20": -1.952,
+       "vol_chg20": 18.262,
+       "adx": 34.759,
+       "mkt_adx": 20.318
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -12068,7 +16621,32 @@
     "push": true,
     "volRatio": 0.981,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.977,
+       "ret20": -1.352,
+       "vol_chg20": -5.003,
+       "adx": 10.941,
+       "mkt_adx": 20.092
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -12131,7 +16709,30 @@
     "push": false,
     "volRatio": 0.946,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.507,
+       "ret20": -1.433,
+       "vol_chg20": 24.005,
+       "adx": 19.938,
+       "mkt_adx": 17.17
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -12237,7 +16838,34 @@
     "push": true,
     "volRatio": 0.91,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.171,
+       "ret20": -1.841,
+       "vol_chg20": 145.343,
+       "adx": 26.798,
+       "mkt_adx": 16.731
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 14,
+      "date": "2023-11-27",
+      "eaten": 0.6,
+      "cushion0": 1.99
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -12262,7 +16890,31 @@
     "push": false,
     "volRatio": 0.913,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.436,
+       "ret20": 1.523,
+       "vol_chg20": -0.924,
+       "adx": 17.729,
+       "mkt_adx": 20.388
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -12325,7 +16977,32 @@
     "push": false,
     "volRatio": 1.007,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.403,
+       "ret20": -2.45,
+       "vol_chg20": -18.532,
+       "adx": 20.326,
+       "mkt_adx": 20.324
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -12388,7 +17065,31 @@
     "push": false,
     "volRatio": 0.987,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.143,
+       "ret20": -1.108,
+       "vol_chg20": -21.439,
+       "adx": 16.552,
+       "mkt_adx": 22.016
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -12494,7 +17195,29 @@
     "push": false,
     "volRatio": 1.271,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.504,
+       "ret20": -0.945,
+       "vol_chg20": -3.641,
+       "adx": 33.319,
+       "mkt_adx": 27.894
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -12600,7 +17323,40 @@
     "push": false,
     "volRatio": 1.062,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.993,
+       "ret20": -0.56,
+       "vol_chg20": -20.797,
+       "adx": 33.64,
+       "mkt_adx": 28.159
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2023-12-20",
+      "why": "破信号日极值"
+     },
+     "struct": {
+      "day": 3,
+      "date": "2023-12-22",
+      "eaten": 0.51,
+      "cushion0": 3.61
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -12663,7 +17419,29 @@
     "push": false,
     "volRatio": 1.074,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.348,
+       "ret20": -1.504,
+       "vol_chg20": -20.17,
+       "adx": 25.702,
+       "mkt_adx": 29.136
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -12688,7 +17466,31 @@
     "push": false,
     "volRatio": 1.11,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.982,
+       "ret20": 0.653,
+       "vol_chg20": -33.183,
+       "adx": 27.575,
+       "mkt_adx": 29.026
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -12751,7 +17553,30 @@
     "push": false,
     "volRatio": 0.956,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.406,
+       "ret20": -0.091,
+       "vol_chg20": 7.666,
+       "adx": 19.62,
+       "mkt_adx": 30.319
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -12814,7 +17639,31 @@
     "push": false,
     "volRatio": 0.866,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.59,
+       "ret20": -0.372,
+       "vol_chg20": -55.581,
+       "adx": 28.866,
+       "mkt_adx": 24.717
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -12839,7 +17688,32 @@
     "push": false,
     "volRatio": 1.051,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.145,
+       "ret20": 0.657,
+       "vol_chg20": -4.418,
+       "adx": 28.426,
+       "mkt_adx": 24.261
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -12902,7 +17776,32 @@
     "push": true,
     "volRatio": 0.934,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.141,
+       "ret20": -0.311,
+       "vol_chg20": 58.562,
+       "adx": 17.035,
+       "mkt_adx": 24.532
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -12965,7 +17864,30 @@
     "push": true,
     "volRatio": 0.919,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.407,
+       "ret20": -0.955,
+       "vol_chg20": 15.125,
+       "adx": 16.098,
+       "mkt_adx": 22.099
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -13028,7 +17950,30 @@
     "push": true,
     "volRatio": 0.943,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.781,
+       "ret20": -1.621,
+       "vol_chg20": 85.391,
+       "adx": 14.582,
+       "mkt_adx": 24.066
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -13091,7 +18036,32 @@
     "push": false,
     "volRatio": 0.951,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.525,
+       "ret20": -0.357,
+       "vol_chg20": -4.646,
+       "adx": 19.712,
+       "mkt_adx": 24.954
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -13154,7 +18124,30 @@
     "push": false,
     "volRatio": 0.93,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.734,
+       "ret20": -2.354,
+       "vol_chg20": 21.569,
+       "adx": 19.935,
+       "mkt_adx": 31.732
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -13217,7 +18210,27 @@
     "push": false,
     "volRatio": 1.074,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.447,
+       "ret20": -2.818,
+       "vol_chg20": 5.036,
+       "adx": 33.412,
+       "mkt_adx": 29.489
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -13280,7 +18293,29 @@
     "push": true,
     "volRatio": 0.977,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.95,
+       "ret20": -1.636,
+       "vol_chg20": -17.004,
+       "adx": 35.005,
+       "mkt_adx": 30.2
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -13384,7 +18419,36 @@
     "push": true,
     "volRatio": 0.922,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.386,
+       "ret20": -2.425,
+       "vol_chg20": -4.432,
+       "adx": 21.272,
+       "mkt_adx": 32.162
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 5,
+      "date": "2024-06-07",
+      "eaten": 1.13,
+      "cushion0": 2.48
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -13409,7 +18473,32 @@
     "push": true,
     "volRatio": 0.903,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.49,
+       "ret20": 0.604,
+       "vol_chg20": -55.757,
+       "adx": 18.244,
+       "mkt_adx": 28.11
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -13472,7 +18561,29 @@
     "push": true,
     "volRatio": 1.029,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.065,
+       "ret20": -1.768,
+       "vol_chg20": 39.613,
+       "adx": 18.317,
+       "mkt_adx": 25.947
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -13535,7 +18646,31 @@
     "push": false,
     "volRatio": 1.061,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.414,
+       "ret20": -0.378,
+       "vol_chg20": -91.148,
+       "adx": 38.393,
+       "mkt_adx": 21.294
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -13641,7 +18776,31 @@
     "push": true,
     "volRatio": 1.021,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.23,
+       "ret20": -1.053,
+       "vol_chg20": 0.939,
+       "adx": 23.795,
+       "mkt_adx": 22.156
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -13666,7 +18825,33 @@
     "push": true,
     "volRatio": 1.033,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.199,
+       "ret20": 0.911,
+       "vol_chg20": -15.32,
+       "adx": 23.436,
+       "mkt_adx": 21.978
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -13729,7 +18914,29 @@
     "push": false,
     "volRatio": 1.008,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.913,
+       "ret20": 0.23,
+       "vol_chg20": 30.739,
+       "adx": 35.27,
+       "mkt_adx": 36.598
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -13833,7 +19040,29 @@
     "push": false,
     "volRatio": 0.918,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.468,
+       "ret20": -0.461,
+       "vol_chg20": 42.502,
+       "adx": 36.539,
+       "mkt_adx": 32.096
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -13858,7 +19087,29 @@
     "push": false,
     "volRatio": 0.996,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.469,
+       "ret20": 0.835,
+       "vol_chg20": 165.717,
+       "adx": 35.436,
+       "mkt_adx": 32.154
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -13921,7 +19172,29 @@
     "push": false,
     "volRatio": 0.988,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.916,
+       "ret20": 2.487,
+       "vol_chg20": 91.337,
+       "adx": 35.288,
+       "mkt_adx": 36.822
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -14027,7 +19300,27 @@
     "push": true,
     "volRatio": 1.072,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.71,
+       "ret20": -1.567,
+       "vol_chg20": 80.088,
+       "adx": 41.474,
+       "mkt_adx": 32.214
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -14090,7 +19383,29 @@
     "push": false,
     "volRatio": 1.114,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "dist_ma60"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.484,
+       "ret20": -2.056,
+       "vol_chg20": 41.268,
+       "adx": 27.258,
+       "mkt_adx": 33.225
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -14115,7 +19430,29 @@
     "push": false,
     "volRatio": 1.092,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.492,
+       "ret20": 0.17,
+       "vol_chg20": 104.061,
+       "adx": 39.956,
+       "mkt_adx": 31.412
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -14178,7 +19515,29 @@
     "push": false,
     "volRatio": 0.998,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.876,
+       "ret20": -1.488,
+       "vol_chg20": -18.932,
+       "adx": 31.87,
+       "mkt_adx": 26.918
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -14241,7 +19600,32 @@
     "push": true,
     "volRatio": 0.983,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.165,
+       "ret20": -1.793,
+       "vol_chg20": -24.956,
+       "adx": 24.029,
+       "mkt_adx": 20.469
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -14304,7 +19688,31 @@
     "push": true,
     "volRatio": 0.961,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.936,
+       "ret20": -1.731,
+       "vol_chg20": 15.341,
+       "adx": 15.115,
+       "mkt_adx": 19.755
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -14367,7 +19775,33 @@
     "push": true,
     "volRatio": 0.928,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.414,
+       "ret20": -0.456,
+       "vol_chg20": -58.409,
+       "adx": 24.629,
+       "mkt_adx": 14.85
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -14430,7 +19864,31 @@
     "push": false,
     "volRatio": 0.896,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.928,
+       "ret20": 0.243,
+       "vol_chg20": -21.182,
+       "adx": 29.409,
+       "mkt_adx": 18.162
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -14493,7 +19951,31 @@
     "push": true,
     "volRatio": 0.875,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.372,
+       "ret20": -1.039,
+       "vol_chg20": 38.887,
+       "adx": 14.7,
+       "mkt_adx": 22.55
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -14599,7 +20081,32 @@
     "push": false,
     "volRatio": 1.042,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.479,
+       "ret20": -1.296,
+       "vol_chg20": 32.883,
+       "adx": 29.485,
+       "mkt_adx": 31.625
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 5,
+      "date": "2025-05-06",
+      "eaten": 0.7,
+      "cushion0": 1.82
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -14705,7 +20212,30 @@
     "push": false,
     "volRatio": 0.872,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.381,
+       "ret20": 0.484,
+       "vol_chg20": 106.006,
+       "adx": 27.509,
+       "mkt_adx": 31.053
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -14730,7 +20260,30 @@
     "push": false,
     "volRatio": 0.877,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.502,
+       "ret20": 0.6,
+       "vol_chg20": 70.882,
+       "adx": 26.403,
+       "mkt_adx": 31.7
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -14793,7 +20346,27 @@
     "push": false,
     "volRatio": 0.98,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.591,
+       "ret20": -0.607,
+       "vol_chg20": 77.756,
+       "adx": 43.569,
+       "mkt_adx": 27.379
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -14856,7 +20429,30 @@
     "push": false,
     "volRatio": 1.026,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.204,
+       "ret20": -0.427,
+       "vol_chg20": 56.03,
+       "adx": 28.269,
+       "mkt_adx": 28.336
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -14919,7 +20515,27 @@
     "push": false,
     "volRatio": 1.005,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.548,
+       "ret20": -1.035,
+       "vol_chg20": 39.573,
+       "adx": 33.511,
+       "mkt_adx": 26.956
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -14982,7 +20598,31 @@
     "push": false,
     "volRatio": 0.887,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.801,
+       "ret20": 0.274,
+       "vol_chg20": -18.471,
+       "adx": 24.259,
+       "mkt_adx": 27.617
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -15045,7 +20685,30 @@
     "push": false,
     "volRatio": 0.942,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.574,
+       "ret20": -1.006,
+       "vol_chg20": -77.012,
+       "adx": 21.411,
+       "mkt_adx": 28.024
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -15108,7 +20771,31 @@
     "push": true,
     "volRatio": 1.02,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.803,
+       "ret20": -2.811,
+       "vol_chg20": -4.81,
+       "adx": 24.333,
+       "mkt_adx": 20.711
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -15212,7 +20899,31 @@
     "push": true,
     "volRatio": 0.967,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.901,
+       "ret20": -1.53,
+       "vol_chg20": 9.19,
+       "adx": 20.423,
+       "mkt_adx": 21.269
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -15237,7 +20948,32 @@
     "push": false,
     "volRatio": 0.989,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 1.192,
+       "ret20": 1.657,
+       "vol_chg20": 26.297,
+       "adx": 20.213,
+       "mkt_adx": 20.053
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -15262,7 +20998,31 @@
     "push": false,
     "volRatio": 0.948,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.165,
+       "ret20": -0.287,
+       "vol_chg20": 15.791,
+       "adx": 21.797,
+       "mkt_adx": 19.15
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -15325,7 +21085,32 @@
     "push": false,
     "volRatio": 0.894,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.723,
+       "ret20": -0.226,
+       "vol_chg20": 425.508,
+       "adx": 15.314,
+       "mkt_adx": 20.323
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -15388,7 +21173,29 @@
     "push": true,
     "volRatio": 1.132,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.191,
+       "ret20": -2.002,
+       "vol_chg20": 28.533,
+       "adx": 28.124,
+       "mkt_adx": 23.004
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -15492,7 +21299,41 @@
     "push": false,
     "volRatio": 0.887,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.1,
+       "ret20": -3.056,
+       "vol_chg20": -24.049,
+       "adx": 20.662,
+       "mkt_adx": 21.705
+      }
+     },
+     "day1": {
+      "day": 2,
+      "date": "2025-08-26",
+      "why": "破信号日极值+失守MA5"
+     },
+     "struct": {
+      "day": 4,
+      "date": "2025-08-28",
+      "eaten": 0.59,
+      "cushion0": 2.91
+     },
+     "warn": true,
+     "review": true
+    }
    }
   },
   {
@@ -15598,7 +21439,34 @@
     "push": false,
     "volRatio": 1.011,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.457,
+       "ret20": -0.75,
+       "vol_chg20": 12.485,
+       "adx": 29.196,
+       "mkt_adx": 19.166
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 11,
+      "date": "2025-09-15",
+      "eaten": 0.56,
+      "cushion0": 1.88
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -15623,7 +21491,31 @@
     "push": true,
     "volRatio": 0.975,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.361,
+       "ret20": -0.129,
+       "vol_chg20": -7.634,
+       "adx": 27.337,
+       "mkt_adx": 19.623
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -15686,7 +21578,33 @@
     "push": false,
     "volRatio": 0.829,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.441,
+       "ret20": -0.226,
+       "vol_chg20": -28.414,
+       "adx": 9.476,
+       "mkt_adx": 20.889
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -15793,7 +21711,31 @@
     "push": true,
     "volRatio": 0.99,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.346,
+       "ret20": 1.048,
+       "vol_chg20": -57.147,
+       "adx": 28.36,
+       "mkt_adx": 21.554
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -15818,7 +21760,32 @@
     "push": false,
     "volRatio": 1.031,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.365,
+       "ret20": 1.211,
+       "vol_chg20": -18.005,
+       "adx": 24.104,
+       "mkt_adx": 22.162
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -15843,7 +21810,32 @@
     "push": false,
     "volRatio": 0.999,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.005,
+       "ret20": 1.378,
+       "vol_chg20": 12.178,
+       "adx": 25.336,
+       "mkt_adx": 21.416
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -15906,7 +21898,31 @@
     "push": false,
     "volRatio": 0.998,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.634,
+       "ret20": -0.171,
+       "vol_chg20": -13.448,
+       "adx": 41.788,
+       "mkt_adx": 22.357
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -16010,7 +22026,36 @@
     "push": false,
     "volRatio": 1.02,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.646,
+       "ret20": -0.678,
+       "vol_chg20": -5.599,
+       "adx": 27.576,
+       "mkt_adx": 23.185
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 16,
+      "date": "2026-01-12",
+      "eaten": 0.69,
+      "cushion0": 5.33
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -16035,7 +22080,31 @@
     "push": false,
     "volRatio": 1.024,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.086,
+       "ret20": -0.268,
+       "vol_chg20": 23.609,
+       "adx": 27.286,
+       "mkt_adx": 22.676
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -16098,7 +22167,30 @@
     "push": false,
     "volRatio": 1.059,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.418,
+       "ret20": -1.133,
+       "vol_chg20": 53.859,
+       "adx": 19.959,
+       "mkt_adx": 19.521
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -16161,7 +22253,33 @@
     "push": false,
     "volRatio": 1.026,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.483,
+       "ret20": 0.94,
+       "vol_chg20": -65.973,
+       "adx": 19.93,
+       "mkt_adx": 18.655
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -16224,7 +22342,33 @@
     "push": true,
     "volRatio": 1.096,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.141,
+       "ret20": 0.127,
+       "vol_chg20": -14.488,
+       "adx": 19.504,
+       "mkt_adx": 16.572
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -16287,7 +22431,30 @@
     "push": false,
     "volRatio": 0.964,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.227,
+       "ret20": -0.857,
+       "vol_chg20": 31.428,
+       "adx": 27.698,
+       "mkt_adx": 23.936
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -16393,7 +22560,34 @@
     "push": true,
     "volRatio": 1.111,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.881,
+       "ret20": 0.676,
+       "vol_chg20": 6.207,
+       "adx": 37.875,
+       "mkt_adx": 28.071
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2026-04-02",
+      "why": "破信号日极值"
+     },
+     "struct": null,
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -16418,7 +22612,31 @@
     "push": false,
     "volRatio": 1.142,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.529,
+       "ret20": -0.532,
+       "vol_chg20": -20.283,
+       "adx": 35.718,
+       "mkt_adx": 27.342
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -16481,7 +22699,31 @@
     "push": false,
     "volRatio": 1.146,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.448,
+       "ret20": -0.041,
+       "vol_chg20": 59.906,
+       "adx": 35.828,
+       "mkt_adx": 24.091
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -16544,7 +22786,30 @@
     "push": false,
     "volRatio": 0.977,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.075,
+       "ret20": -0.904,
+       "vol_chg20": -59.533,
+       "adx": 26.981,
+       "mkt_adx": 24.291
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -16607,7 +22872,32 @@
     "push": false,
     "volRatio": 0.942,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.193,
+       "ret20": -0.103,
+       "vol_chg20": -62.743,
+       "adx": 21.613,
+       "mkt_adx": 20.453
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -16670,7 +22960,32 @@
     "push": false,
     "volRatio": 0.924,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.042,
+       "ret20": -1.368,
+       "vol_chg20": -18.904,
+       "adx": 15.65,
+       "mkt_adx": 21.305
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -16733,7 +23048,30 @@
     "push": false,
     "volRatio": 0.969,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.603,
+       "ret20": -1.445,
+       "vol_chg20": 59.191,
+       "adx": 14.853,
+       "mkt_adx": 18.904
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -16796,7 +23134,31 @@
     "push": false,
     "volRatio": 0.908,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.16,
+       "ret20": -0.72,
+       "vol_chg20": 83.226,
+       "adx": 15.291,
+       "mkt_adx": 17.652
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -16859,7 +23221,32 @@
     "push": false,
     "volRatio": 0.993,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.426,
+       "ret20": -0.334,
+       "vol_chg20": -25.759,
+       "adx": 18.529,
+       "mkt_adx": 17.018
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -16922,7 +23309,31 @@
     "push": false,
     "volRatio": 0.918,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.391,
+       "ret20": -1.915,
+       "vol_chg20": -7.012,
+       "adx": 10.34,
+       "mkt_adx": 18.089
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -16985,7 +23396,33 @@
     "push": true,
     "volRatio": 0.946,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.277,
+       "ret20": -0.206,
+       "vol_chg20": -23.449,
+       "adx": 23.007,
+       "mkt_adx": 17.716
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -17048,7 +23485,32 @@
     "push": true,
     "volRatio": 0.912,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.621,
+       "ret20": -0.427,
+       "vol_chg20": 90.469,
+       "adx": 11.601,
+       "mkt_adx": 22.498
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -17111,7 +23573,32 @@
     "push": false,
     "volRatio": 0.894,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.104,
+       "ret20": -0.972,
+       "vol_chg20": -32.747,
+       "adx": 15.58,
+       "mkt_adx": 25.458
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -17217,7 +23704,32 @@
     "push": true,
     "volRatio": 0.963,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.229,
+       "ret20": -0.385,
+       "vol_chg20": -7.834,
+       "adx": 26.875,
+       "mkt_adx": 23.723
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -17242,7 +23754,30 @@
     "push": true,
     "volRatio": 1.033,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.465,
+       "ret20": 2.227,
+       "vol_chg20": 35.9,
+       "adx": 27.592,
+       "mkt_adx": 26.839
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -17346,7 +23881,35 @@
     "push": true,
     "volRatio": 1.103,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.894,
+       "ret20": -0.206,
+       "vol_chg20": 115.55,
+       "adx": 27.583,
+       "mkt_adx": 25.891
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 7,
+      "date": "2026-09-10",
+      "eaten": 0.53,
+      "cushion0": 1.81
+     },
+     "warn": false,
+     "review": true
+    }
    }
   },
   {
@@ -17371,7 +23934,31 @@
     "push": false,
     "volRatio": 1.067,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.429,
+       "ret20": 1.147,
+       "vol_chg20": 31.13,
+       "adx": 21.829,
+       "mkt_adx": 27.538
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -17434,7 +24021,30 @@
     "push": false,
     "volRatio": 1.273,
     "lowVol": false,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.246,
+       "ret20": -0.257,
+       "vol_chg20": 8.276,
+       "adx": 26.117,
+       "mkt_adx": 25.937
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -17541,7 +24151,42 @@
     "push": false,
     "volRatio": 1.06,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.707,
+       "ret20": -0.542,
+       "vol_chg20": -63.784,
+       "adx": 23.984,
+       "mkt_adx": 21.075
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2026-09-24",
+      "why": "破信号日极值"
+     },
+     "struct": {
+      "day": 6,
+      "date": "2026-10-09",
+      "eaten": 0.67,
+      "cushion0": 6.15
+     },
+     "warn": true,
+     "review": true
+    }
    }
   },
   {
@@ -17566,7 +24211,31 @@
     "push": false,
     "volRatio": 1.054,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.675,
+       "ret20": -1.531,
+       "vol_chg20": -49.38,
+       "adx": 22.537,
+       "mkt_adx": 20.52
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -17698,7 +24367,32 @@
     "push": true,
     "volRatio": 0.962,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.637,
+       "ret20": -0.397,
+       "vol_chg20": -51.061,
+       "adx": 25.072,
+       "mkt_adx": 18.467
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -17723,7 +24417,32 @@
     "push": false,
     "volRatio": 0.947,
     "lowVol": true,
-    "confirm2": "followed"
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.833,
+       "ret20": 0.85,
+       "vol_chg20": -23.073,
+       "adx": 21.096,
+       "mkt_adx": 19.44
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -17855,7 +24574,33 @@
     "push": false,
     "volRatio": 1.003,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.005,
+       "ret20": 0.924,
+       "vol_chg20": -18.036,
+       "adx": 22.935,
+       "mkt_adx": 20.273
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -17880,7 +24625,32 @@
     "push": false,
     "volRatio": 0.976,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.364,
+       "ret20": 2.094,
+       "vol_chg20": 1.637,
+       "adx": 18.905,
+       "mkt_adx": 22.672
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -17943,7 +24713,30 @@
     "push": false,
     "volRatio": 0.974,
     "lowVol": true,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.311,
+       "ret20": -1.29,
+       "vol_chg20": 47.571,
+       "adx": 21.752,
+       "mkt_adx": 22.879
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -18075,7 +24868,36 @@
     "push": true,
     "volRatio": 1.01,
     "lowVol": false,
-    "confirm2": "noFollow"
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.661,
+       "ret20": -0.15,
+       "vol_chg20": 52.041,
+       "adx": 21.491,
+       "mkt_adx": 23.417
+      }
+     },
+     "day1": {
+      "day": 2,
+      "date": "2026-11-06",
+      "why": "失守MA5"
+     },
+     "struct": null,
+     "warn": true,
+     "review": true
+    }
    }
   },
   {
@@ -18100,7 +24922,33 @@
     "push": false,
     "volRatio": 1.009,
     "lowVol": false,
-    "confirm2": "pending"
+    "confirm2": "pending",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.668,
+       "ret20": 1.203,
+       "vol_chg20": -10.78,
+       "adx": 20.761,
+       "mkt_adx": 23.124
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   }
  ],
@@ -18388,7 +25236,7 @@
   "C|pred|2026-10-22",
   "C|confirm|2026-10-27"
  ],
- "runs": 6,
+ "runs": 5,
  "xsigSeen": [],
  "tf": {
   "FG": {
@@ -18432,8 +25280,8 @@
    "entry": 2234.0
   }
  },
- "scanDate": "2026-11-06",
- "updated": "2026-11-06 15:24",
+ "scanDate": "2026-11-08",
+ "updated": "2026-11-08 17:05",
  "stats": {
   "pred": 60,
   "open": 3,
@@ -18620,7 +25468,33 @@
     "push": true,
     "volRatio": 1.011,
     "lowVol": false,
-    "confirm2": "pending"
+    "confirm2": "pending",
+    "risk": {
+     "pool": "radar",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 5,
+      "feats": {
+       "dist_ma60": 1.115,
+       "ret20": -0.503,
+       "vol_chg20": 31.966,
+       "adx": 20.329,
+       "mkt_adx": 22.891
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -18707,7 +25581,33 @@
     "push": false,
     "volRatio": 1.022,
     "lowVol": false,
-    "confirm2": "pending"
+    "confirm2": "pending",
+    "risk": {
+     "pool": "radar",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 5,
+      "feats": {
+       "dist_ma60": -1.807,
+       "ret20": -1.821,
+       "vol_chg20": 26.379,
+       "adx": 16.558,
+       "mkt_adx": 23.43
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -18794,7 +25694,32 @@
     "push": true,
     "volRatio": 1.007,
     "lowVol": false,
-    "confirm2": "pending"
+    "confirm2": "pending",
+    "risk": {
+     "pool": "radar",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 5,
+      "feats": {
+       "dist_ma60": -4.376,
+       "ret20": -6.522,
+       "vol_chg20": 3.942,
+       "adx": 37.708,
+       "mkt_adx": 20.409
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -18881,7 +25806,32 @@
     "push": false,
     "volRatio": 1.046,
     "lowVol": false,
-    "confirm2": "pending"
+    "confirm2": "pending",
+    "risk": {
+     "pool": "radar",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 5,
+      "feats": {
+       "dist_ma60": -1.704,
+       "ret20": -2.741,
+       "vol_chg20": 237.561,
+       "adx": 29.457,
+       "mkt_adx": 21.587
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -18968,7 +25918,33 @@
     "push": false,
     "volRatio": 0.916,
     "lowVol": true,
-    "confirm2": "pending"
+    "confirm2": "pending",
+    "risk": {
+     "pool": "radar",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 5,
+      "feats": {
+       "dist_ma60": -1.031,
+       "ret20": -0.565,
+       "vol_chg20": -14.001,
+       "adx": 17.716,
+       "mkt_adx": 23.265
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   },
   {
@@ -19055,7 +26031,32 @@
     "push": false,
     "volRatio": 1.142,
     "lowVol": false,
-    "confirm2": "pending"
+    "confirm2": "pending",
+    "risk": {
+     "pool": "radar",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 5,
+      "feats": {
+       "dist_ma60": -1.379,
+       "ret20": 0.52,
+       "vol_chg20": 98.91,
+       "adx": 21.558,
+       "mkt_adx": 22.716
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -19142,7 +26143,32 @@
     "push": false,
     "volRatio": 0.909,
     "lowVol": true,
-    "confirm2": "pending"
+    "confirm2": "pending",
+    "risk": {
+     "pool": "radar",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 5,
+      "feats": {
+       "dist_ma60": -2.922,
+       "ret20": -5.457,
+       "vol_chg20": -15.448,
+       "adx": 22.8,
+       "mkt_adx": 22.538
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
    }
   },
   {
@@ -19229,7 +26255,33 @@
     "push": true,
     "volRatio": 0.895,
     "lowVol": true,
-    "confirm2": "pending"
+    "confirm2": "pending",
+    "risk": {
+     "pool": "radar",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 5,
+      "feats": {
+       "dist_ma60": 0.128,
+       "ret20": -3.388,
+       "vol_chg20": 0.692,
+       "adx": 14.442,
+       "mkt_adx": 23.732
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
    }
   }
  ]

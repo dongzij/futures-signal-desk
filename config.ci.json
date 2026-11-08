@@ -22,5 +22,6 @@
   "M",
   "FG"
  ],
- "pushSymbolsAll": true
+ "pushSymbolsAll": true,
+ "riskTags": true
 }
