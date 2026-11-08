@@ -23,5 +23,7 @@
   "FG"
  ],
  "pushSymbolsAll": true,
- "riskTags": true
+ "riskTags": true,
+ "observeMode": "silent",
+ "dailyLog": true
 }

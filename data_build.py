@@ -429,7 +429,7 @@ def main():
         },
         # v15：失效打叉全量覆盖（四条任一即算；纯展示，不改进场/出场）
         "defendCfg": {
-            "version": "v15",
+            "version": "v17",
             "scope": ["4/4 建仓", "3/4 预警", "顶底雷达"],
             "rules": [
                 {"key": "rev", "label": "反向幅度", "rule": "收盘逆行 >1.5 ATR（20 根内）"},
@@ -444,6 +444,17 @@ def main():
             "baseExitUnchanged": True,
             "profitTip": {"atr": 1.5, "text": "利润已达 1.5 ATR，可手动将止损上移至开仓价保本",
                           "advisoryOnly": True},
+            # v17：弱叉降级（数据全留，只改展示与推送）
+            "weakCfg": {
+                "rule": defend_rules.WEAK_RULE,
+                "adx": defend_rules.WEAK_ADX,
+                "effect": "空心圈 / 列表标「弱」/ 不单独推微信；事件一条不删",
+                "backtest": {"n": 155, "pct": 33.3,
+                             "dropFalseAlarm": 43.9, "keepFalseAlarm": 32.9,
+                             "dropTrueFail": 41.9, "keepTrueFail": 51.3,
+                             "trainPP": 3.5, "blindPP": 31.7},
+                "advisoryOnly": True, "reversible": True,
+            },
             "stat": defend_rules.summarize(DEF_ALL),
         },
         # v16 模块三：二段 M/W 结构（全期 17 笔，64.7% / +1.79R；盲测 66.7%）
@@ -457,6 +468,17 @@ def main():
             "advisoryOnly": True,
             "baseExitUnchanged": True,
             "stat": mw_events.summarize(MW_ALL),
+        },
+        # v17：静默观察期（用户 2026-11-08 拍板）——只做记录，不加任何新指标/规则
+        "observeCfg": {
+            "mode": "静默观察期", "since": "2026-11-09",
+            "mwFreezeMonths": [3, 6], "mwNoBoost": True,
+            "noNewIndicators": True, "noNewFilters": True,
+            "sampleGate": {"now": 60, "target": [120, 150]},
+            "goal": "实盘验证回撤是否下降，不再优化逻辑",
+            "dailyLog": {"path": "logs/YYYY-MM-DD.md", "cumulative": "LIVE_LOG.md",
+                         "source": "dist/data/*.json + state.json", "advisoryOnly": True},
+            "baseEntryUnchanged": True, "baseExitUnchanged": True,
         },
         # v11.1：微信推送白名单（页面仍展示全部 8 品种）
         "pushCfg": {"symbols": (state.get("method", {}).get("push") or {}).get("symbols", []),

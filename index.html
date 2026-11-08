@@ -81,6 +81,23 @@ border-top:1px solid var(--line);line-height:1.6}
 .tg.vac{background:#FFC4001f;color:#FFC400;border:1px solid #FFC40055;font-weight:600}
 .tg.day1{background:#f9731622;color:#fb923c}
 .tg.strct{background:#ef444422;color:#f87171}
+.tg.aln{background:#12325c;color:#7fb3ff;border:1px solid #33507a}
+/* ===== v17：弱叉降级 / A' 对照记录 ===== */
+.bd.def.weak{background:transparent;color:#8b95a7;
+  box-shadow:0 0 0 1px rgba(232,238,250,.28) inset}
+.sgr.defrow.weak{background:linear-gradient(90deg,rgba(232,238,250,.025),rgba(232,238,250,0) 72%);
+  border-left:2px solid rgba(232,238,250,.20);opacity:.68}
+.bd.wk{background:#1b2430;color:#9fb0c9;box-shadow:0 0 0 1px rgba(159,176,201,.35) inset}
+.apbox{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:6px;font-size:11px}
+.apbox .apb{border:1px solid var(--line);background:#131a24;color:#9fb0c9;
+  border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer}
+.apbox .apb.on{background:rgba(255,212,0,.16);border-color:#FFD400;
+  color:#FFD400;font-weight:700}
+.apbox .apn{color:var(--dim);font-size:10.5px}
+.aprow{display:flex;gap:8px;align-items:center;padding:6px 0;
+  border-bottom:1px solid #1a2029;font-size:11.5px}
+.aprow .k{flex:1}
+.aprow .v{color:#FFD400;font-weight:700}
 .tagrow{display:flex;gap:7px;align-items:center;flex-wrap:wrap;
 font-size:11px;color:var(--dim);margin:2px 0 8px}
 .tagrow .wk{color:var(--blue)}
@@ -271,6 +288,7 @@ background:#10151d;color:var(--tx);font-size:18px}
       <div class="cleg"><span style="color:#4CC9F0">▼ 进场多</span>
         <span style="color:#C77DFF">▲ 进场空</span>
         <span style="color:#E8EEFA;font-weight:700">○ 失效（顶/底/多/空）</span>
+        <span style="color:#8b95a7">◌ 弱叉（仅记录）</span>
         <span style="color:#FFD400;font-weight:700">★ 二段M/W结构</span>
         <span style="color:#FFD400">• 动能真空</span>
         <span style="color:#22D3EE">◇ 盘整预警</span>
@@ -411,6 +429,10 @@ background:#10151d;color:var(--tx);font-size:18px}
       <div id="stratPos"></div>
     </div>
     <div class="card">
+      <h3>A' 保本对照 <span class="r">仅本机记录 · 不改后台</span></h3>
+      <div id="apPanel"></div>
+    </div>
+    <div class="card">
       <h3>已平仓记录</h3>
       <div id="closedList"></div>
     </div>
@@ -475,8 +497,11 @@ function weekTxt(m){
 function warnTagHtml(m){
   if(!m) return '';
   var a=[];
-  if(m.observe) a.push('<span class="tg obs" title="逆势普通档：页面照常显示，仅不单独推微信">⏸ 观察</span>');
-  else if(m.weekAlign===false) a.push('<span class="tg str" title="强档：逆势也照常推送">◆ 逆势强档</span>');
+  /* v17：周线 MA45 降级三档在页面显式分级（顺势 / 逆势强档 / 观察）。
+     与微信推送共用同一套结论，不新增任何统计口径或过滤规则。 */
+  if(m.observe) a.push('<span class="tg obs" title="③ 观察档（逆势普通）：页面照常显示，仅不单独推微信">⏸ 观察档</span>');
+  else if(m.weekAlign===false) a.push('<span class="tg str" title="② 逆势强档：强确认信号，逆势也照常推送">◆ 逆势强档</span>');
+  else if(m.weekAlign===true) a.push('<span class="tg aln" title="① 顺势档：周线同向，正常推送">● 顺势档</span>');
   var v = (m.risk || {}).vac;
   if(v && v.tag){
     var hs = (v.hits||[]).map(function(k){return k;}).join('、');
@@ -502,6 +527,105 @@ function reviewTagHtml(m){
 }
 /* 兼容旧调用：首屏统一走预警层 */
 function tagHtml(m){ return warnTagHtml(m); }
+
+/* ================= v17：A' 保本「用了 / 没用」对照记录 =================
+   纯本机 localStorage 记录，不上传、不改后台吊灯 3ATR / MA26 离场线。
+   浮盈达 1.5 ATR 时由你手动点「已保本 / 未保本」，攒够 20~30 笔再谈要不要动后台。
+   导出 CSV 时对已平仓样本补上「实际 R」与「保本后 R=max(R,0)」的差值。 */
+function apNorm(o){
+  return {sym:o.sym||cur.sym, name:o.name||(DOC&&DOC.name)||cur.sym,
+          cd:o.cd||o.date||'', en:o.en||o.entry||'',
+          mfe:+(o.mfe||0), R:+(o.R||0)};
+}
+function apKey(p){ p=apNorm(p); return p.sym+'|'+p.cd+'|'+p.en; }
+function apLog(){ try{ return JSON.parse(localStorage.getItem('apLog')||'{}')||{}; }catch(e){ return {}; } }
+function apSave(L){ try{ localStorage.setItem('apLog', JSON.stringify(L)); }catch(e){} }
+function apEnsure(p){
+  p = apNorm(p);
+  var L = apLog(), k = apKey(p), r = L[k];
+  var peak = Math.max(p.mfe, p.R);
+  if(!r){
+    r = {sym:p.sym, name:p.name, date:p.cd, entry:p.en, peak:peak,
+         decision:null, at:null};
+    L[k] = r; apSave(L);
+  } else if(peak > (r.peak||0)){ r.peak = peak; L[k] = r; apSave(L); }
+  return {k:k, r:r};
+}
+function apBtns(k, dec){
+  return '<span class="apn">A\' 对照：</span>'
+    + '<button class="apb'+(dec==='yes'?' on':'')+'" onclick="apSet(\''+k+'\',\'yes\',event)">已保本</button>'
+    + '<button class="apb'+(dec==='no'?' on':'')+'" onclick="apSet(\''+k+'\',\'no\',event)">未保本</button>'
+    + (dec ? '<button class="apb" onclick="apSet(\''+k+'\',null,event)">清除</button>' : '')
+    + '<span class="apn">仅本机记录 · 不改后台</span>';
+}
+function apCtrl(p){
+  var z = apEnsure(p);
+  return '<div class="apbox" data-apkey="'+z.k+'">'+apBtns(z.k, z.r.decision)+'</div>';
+}
+function apSet(k, dec, evt){
+  if(evt && evt.stopPropagation) evt.stopPropagation();
+  var L = apLog(), r = L[k];
+  if(!r) return;
+  r.decision = dec || null;
+  r.at = dec ? new Date().toISOString().slice(0,10) : null;
+  L[k] = r; apSave(L);
+  var els = document.querySelectorAll('[data-apkey]');
+  for(var i=0;i<els.length;i++){
+    if(els[i].getAttribute('data-apkey') === k) els[i].innerHTML = apBtns(k, dec);
+  }
+  renderApPanel();
+}
+function renderApPanel(){
+  var box = $('apPanel'); if(!box) return;
+  var L = apLog(), ks = Object.keys(L);
+  if(!ks.length){ box.innerHTML = '<div class="empty">暂无 1.5 ATR 触发记录</div>'; return; }
+  var yes = ks.filter(function(k){return L[k].decision==='yes';}).length;
+  var no = ks.filter(function(k){return L[k].decision==='no';}).length;
+  var html = '<div style="font-size:11.5px;color:var(--dim);line-height:1.7;margin-bottom:8px">'
+    + '仅记录是否手动把止损上移到开仓价；<b style="color:var(--tx)">不干预吊灯 3ATR / MA26</b>。'
+    + '攒够 20~30 笔后导出 CSV，用「保本后 R = max(实际 R, 0)」对照回撤改善。</div>'
+    + '<div class="aprow"><span class="k">累计触发 '+ks.length+' 笔 · 已保本 '+yes
+    + ' · 未保本 '+no+' · 待记录 '+(ks.length-yes-no)+'</span>'
+    + '<button class="btn gray" onclick="apExport()">导出 CSV</button></div>';
+  ks.sort().reverse().slice(0,12).forEach(function(k){
+    var r = L[k];
+    html += '<div class="aprow"><span class="k">'+r.name+'（'+r.sym+'）· '+r.date
+      + ' · 峰值 +'+f2(r.peak)+' ATR</span><span class="v">'
+      + (r.decision==='yes'?'已保本':r.decision==='no'?'未保本':'待记录')+'</span></div>';
+  });
+  box.innerHTML = html;
+}
+function apExport(){
+  var L = apLog(), ks = Object.keys(L), syms = {};
+  ks.forEach(function(k){ syms[L[k].sym] = 1; });
+  var need = Object.keys(syms), got = 0;
+  function finish(){
+    var rows = [['品种','名称','确认日','开仓价','峰值ATR','是否保本','记录日','实际R','保本后R','改善R']];
+    ks.forEach(function(k){
+      var r = L[k];
+      var hit = syms[r.sym], doc = hit && hit.doc;
+      var actual = null;
+      if(doc && doc.exit && doc.exit.trades){
+        var t = doc.exit.trades.filter(function(x){ return x.d === r.date; })[0];
+        if(t) actual = +t.R;
+      }
+      var after = (actual==null) ? null : (r.decision==='yes' ? Math.max(0, actual) : actual);
+      rows.push([r.sym, r.name, r.date, r.entry, f2(r.peak),
+        r.decision==='yes'?'已保本':r.decision==='no'?'未保本':'待记录', r.at||'',
+        actual==null?'':f2(actual), after==null?'':f2(after),
+        (after==null?'':f2(after-actual))]);
+    });
+    var csv = '\ufeff' + rows.map(function(x){ return x.join(','); }).join('\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+    a.download = 'ApProtect_对照记录_' + new Date().toISOString().slice(0,10) + '.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  }
+  need.forEach(function(s){
+    fetchJ(s+'.json', function(d){ syms[s] = {doc:d}; if(++got >= need.length) finish(); });
+  });
+  if(!need.length) finish();
+}
 function renderMarket(){
   var box = $('mktBar'); if(!box) return;
   var M = DOC.market;
@@ -778,34 +902,42 @@ function renderChart(){
     });
   }
   // v16 模块一：失效改「白色小圆圈」+ 分类文字（顶失效/底失效/多失效/空失效）。
-  // 同一天多条合并成一枚白圈（角标写条数），红色竖虚线也改成中性细虚线，
-  // 视觉不再刺眼，一眼就知道是哪一类信号被证伪。
-  var defXs = [], defGroups = {};
+  // v17：弱叉（顶底雷达 & ADX≥30）降级为【空心圈】—— 更细更淡、无发光、字号更小；
+  // 同一天只要有强叉就按强叉画，纯弱叉的日子才画空心圈。事件一条不删。
+  var defXs = [], defGroups = {}, weakGroups = {};
   if(cur.pt==='D' && DOC.defend){
     (DOC.defend||[]).forEach(function(e){
       (defGroups[e.date] || (defGroups[e.date] = [])).push(e);
+      if(e.weak) weakGroups[e.date] = (weakGroups[e.date]||0) + 1;
     });
     Object.keys(defGroups).forEach(function(d){
       var ix = dateIdx(dates, d);
       if(ix==null) return;
       var b = bars[ix], a = A(ix), es = defGroups[d], n = es.length;
+      var nw = es.filter(function(e){ return e.weak; }).length;
+      var weakOnly = nw === n;                  // 当天全是弱叉 → 空心圈
       var ts = [];
       es.forEach(function(e){
         var t = defTypeName(e);
         if(ts.indexOf(t) < 0) ts.push(t);
       });
-      var txt = ts.slice(0, 2).join('·') + (ts.length > 2 ? '等' : '')
+      var txt = (weakOnly ? '◌ 弱 · ' : '')
+              + ts.slice(0, 2).join('·') + (ts.length > 2 ? '等' : '')
               + (n > 1 ? ' ×' + n : '');
       defXs.push(dates[ix]);
       marks.push({value:[ix, b[4] + 1.15*a], defDate:d,
-        symbol:'circle', symbolSize:10,
-        itemStyle:{color:'rgba(255,255,255,.08)', borderColor:'#FFFFFF', borderWidth:2,
-                   shadowBlur:6, shadowColor:'rgba(255,255,255,.35)'}});
+        symbol:'circle', symbolSize:weakOnly? 9 : 10,
+        itemStyle: weakOnly
+          ? {color:'rgba(0,0,0,0)', borderColor:'rgba(232,238,250,.62)',
+             borderWidth:1.6, borderType:'dashed'}
+          : {color:'rgba(255,255,255,.14)', borderColor:'#FFFFFF', borderWidth:2.2,
+             shadowBlur:6, shadowColor:'rgba(255,255,255,.35)'}});
       marks.push({value:[ix, b[4] + 2.00*a], defDate:d,
         symbol:'circle', symbolSize:1,
-        label:{show:true, formatter:txt, color:'#E8EEFA', fontSize:9.5,
-               fontWeight:600, position:'inside', textBorderColor:'#0B0E13',
-               textBorderWidth:2.5}});
+        label:{show:true, formatter:txt,
+               color:weakOnly? '#A8B4C6' : '#E8EEFA', fontSize:weakOnly? 9.2 : 9.5,
+               fontWeight:weakOnly? 500 : 600, position:'inside',
+               textBorderColor:'#0B0E13', textBorderWidth:2.5}});
     });
   }
   // v16 模块三：★ 二段 M/W 结构（DIF背离 + 量仓强）。挂在更高一层，避开白圈。
@@ -871,8 +1003,11 @@ function renderChart(){
         var q = dateIdx(dates, d); return q!=null && q >= dates.length - 260;
       }).length;
       var mw2 = (DOC.mw || []).slice().sort(function(x,y){ return x.date < y.date ? -1 : 1; });
-      dn.innerHTML = '<span class="dnb" onclick="jumpDef()">○ 全量失效 ' + dl2.length
+      var nWeak = dl2.filter(function(e){ return e.weak; }).length;
+      dn.innerHTML = '<span class="dnb" onclick="jumpDef()">○ 失效 ' + dl2.length
         + ' 条 / ' + dkeys.length + ' 天 · 最近 ' + lastD.date + '（点此定位）</span>'
+        + (nWeak ? ' <span class="dnb" style="margin-left:6px;opacity:.7">◌ 弱叉 '
+            + nWeak + ' 条 · 仅记录 / 不推微信</span>' : '')
         + ' <span class="dnb" style="margin-left:6px" onclick="showAllDef()">🗓 10 年全量（近窗 ' + nWin + ' 天）</span>'
         + (mw2.length
             ? ' <span class="dnb mw" style="margin-left:6px" onclick="jumpMw()">★ 二段M/W '
@@ -994,6 +1129,8 @@ function openDef(date){
   html += '<div style="font-size:11.5px;color:var(--dim);line-height:1.7;margin:4px 0 10px">'
     + '四条标准任一成立即标记：① 反向 &gt;1.5 ATR　② 收盘破 MA26/MA34　'
     + '③ 5 根内未创新高/低并收破信号日极值　④ 触发 MA26 / 吊灯 3ATR 原版止损。<br>'
+    + '<b style="color:#9fb0c9">◌ 弱叉 = 顶底雷达 &amp; 打叉日 ADX≥30：数据保留、图上空心圈、'
+    + '列表标「弱」、不单独推微信（10 年 155 条 / 33.3%，误报率 43.9%）。</b><br>'
     + '<b style="color:#E8EEFA">仅作提示，MA34 进场与 MA26 + 吊灯出场机制完全不变。</b></div>';
   es.forEach(function(e){
     var sd = e.side==='short'? '空':'多';
@@ -1002,9 +1139,11 @@ function openDef(date){
     var onclick = canOpen? ' onclick="openSig(\''+e.sigKind+'|'+e.sigDate+'\')"' : '';
     html += '<div class="dv" style="margin:8px 0;cursor:'+(canOpen?'pointer':'default')
       + ';border-left:3px solid rgba(232,238,250,.55)"'+onclick+'>'
-      + '<div style="font-size:13px;font-weight:700;color:#E8EEFA">○ '
+      + '<div style="font-size:13px;font-weight:700;color:'+(e.weak?'#9fb0c9':'#E8EEFA')+'">'
+      + (e.weak? '◌ 弱 · ' : '○ ')
       + defTypeName(e) + ' · ' + e.sigLabel+' · '+sd+'向 · 原信号 '+e.sigDate
-      + ' <span style="font-weight:400;color:var(--dim);font-size:11px">第 '+e.day+' 根判定</span></div>'
+      + ' <span style="font-weight:400;color:var(--dim);font-size:11px">第 '+e.day+' 根判定'
+      + (e.weak? ' · ADX '+e.adx+' · 仅记录不推微信' : '')+'</span></div>'
       + '<div style="font-size:12px;line-height:1.75;margin-top:5px;color:var(--tx)">'
       + (e.reasons||[{label:e.label,detail:e.detail}]).map(function(r){
           return '· <b>'+r.label+'</b>：'+r.detail;
@@ -1085,6 +1224,7 @@ function renderXs(){
            + '💡 利润已达 1.5 ATR，可手动将止损上移至开仓价保本。'
            + '<span style="color:#d8c27a;font-size:10.5px;font-weight:400">'
            + '（仅提示，后台吊灯 3ATR / MA26 不变）</span></div>'
+           + apCtrl(_sp)
          : '')
       + '</div>';
   }
@@ -1169,7 +1309,10 @@ function renderExit(){
         + '<div style="color:#d8c27a;font-size:11.5px;margin-top:3px;font-weight:400">'
         + '峰值浮盈 +' + f2(_peak) + ' ATR · 当前 ' + sgn(R) + f2(R) + ' ATR'
         + ' · 开仓价 ' + f2(P.entry)
-        + '　｜　仅视觉提示，吊灯 3ATR 与 MA26 离场线不变</div></div>';
+        + '　｜　仅视觉提示，吊灯 3ATR 与 MA26 离场线不变</div>'
+        + apCtrl({sym:cur.sym, name:DOC.name, cd:P.date, en:P.entry,
+                  mfe:P.mfe, R:R})
+        + '</div>';
     }
 
     if(P.warn){
@@ -1534,10 +1677,20 @@ function renderSigs(){
   var nDef = rows.filter(function(r){ return r.kind === 'def'; }).length;
   var nMw = rows.filter(function(r){ return r.kind === 'mw'; }).length;
   var nHi = rows.filter(function(r){ return r.kind === 'out' && r.h.level === 'strong'; }).length;
+  var nWeak = rows.filter(function(r){ return r.kind === 'def' && r.e.weak; }).length;
+  // v17：周线 MA45 降级结论落到页面三档（顺势 / 逆势强档 / 观察），与微信档位同源
+  var tA = 0, tS = 0, tO = 0;
+  (DOC.signals || []).concat(((DOC.xsig||{}).hist||[])).forEach(function(x){
+    var m = x.meta; if(!m) return;
+    if(m.weekAlign !== false) tA++;
+    else if(m.observe) tO++;
+    else tS++;
+  });
   $('sigCnt').textContent = '进场 ' + nIn + ' · 出场 ' + nOut
     + (nHi ? '（强烈 ' + nHi + '）' : '')
-    + (nDef ? ' · ○ 失效 ' + nDef + ' 条' : '')
-    + (nMw ? ' · ★ M/W ' + nMw + ' 条' : '');
+    + (nDef ? ' · ○ 失效 ' + nDef + ' 条' + (nWeak ? '（弱 '+nWeak+'）' : '') : '')
+    + (nMw ? ' · ★ M/W ' + nMw + ' 条' : '')
+    + ' · 档位 顺势 ' + tA + ' / 强档 ' + tS + ' / 观察 ' + tO;
 
   if(SIGF !== 'all') rows = rows.filter(function(r){ return r.kind === SIGF; });
 
@@ -1568,14 +1721,20 @@ function renderSigs(){
   $('sigList').innerHTML = rows.map(function(r){
     if(r.kind === 'def'){
       var e = r.e, sd = e.side === 'short' ? '空' : '多';
-      var head = '○ ' + defTypeName(e) + '：' + (e.name || e.sym)
-        + '（' + e.sym + '）' + sd + '方向被走势证伪，建议止损平仓';
-      return '<div class="sgr defrow" onclick="openDef(\'' + e.date + '\')">'
+      /* v17 弱叉：降级为空心圈 + 标「弱」，只记录、不推微信；数据一条不删 */
+      var head = (e.weak ? '◌ 弱叉 · ' : '○ ')
+        + defTypeName(e) + '：' + (e.name || e.sym)
+        + '（' + e.sym + '）' + sd + '方向被走势证伪'
+        + (e.weak ? '（弱信号，仅记录）' : '，建议止损平仓');
+      return '<div class="sgr defrow' + (e.weak ? ' weak' : '')
+        + '" onclick="openDef(\'' + e.date + '\')">'
         + '<span class="dt">' + e.date + '</span>'
-        + '<span class="bd def">○ ' + e.label + '</span>'
+        + '<span class="bd def' + (e.weak ? ' weak' : '') + '">'
+        + (e.weak ? '◌ 弱' : '○ ' + e.label) + '</span>'
         + '<span class="tx2">' + head
-        + '<em>原信号 ' + e.sigDate + ' · 第 ' + e.day + ' 根判定 · '
-        + (e.detail || '') + ' · 点此看失效明细</em></span></div>';
+        + '<em>原信号 ' + e.sigDate + ' · 第 ' + e.day + ' 根判定'
+        + (e.weak ? ' · ADX ' + e.adx + ' ≥30 · 不单独推微信' : '')
+        + ' · ' + (e.detail || '') + ' · 点此看失效明细</em></span></div>';
     }
     if(r.kind === 'mw'){
       var w = r.w;
@@ -1969,6 +2128,7 @@ function renderAcct(){
       +(Math.max(+(p.mfe||0), +(p.R||0)) >= 1.5
         ? '<div style="color:#FFD400;font-size:11.5px;line-height:1.6;margin-top:3px">'
           +'💡 利润已达 1.5 ATR，可手动将止损上移至开仓价保本（仅提示，不改吊灯 / MA26）</div>'
+          + apCtrl(p)
         : '')
       +'</div></div>';
   }).join('') : '<div class="empty">当前无策略持仓</div>';
@@ -1993,6 +2153,7 @@ function showPage(pg){
       if(KC[s+'|0']) return;
     });
     renderAcct();
+    renderApPanel();
   }
   if(pg==='Main' && CH) CH.resize();
 }
@@ -2014,6 +2175,10 @@ fetchJ('index.json', function(man){
   psInit();
   renderSymChips();
   selectSym(cur.sym);
+  // v17：?pg=Acct 深链接，方便直接查看 A' 保本对照与模拟盘
+  try{
+    if(new URLSearchParams(location.search).get('pg') === 'Acct') showPage('Acct');
+  }catch(e){}
   window.addEventListener('resize', function(){ if(CH) CH.resize(); });
 });
 (function loadEcharts(){

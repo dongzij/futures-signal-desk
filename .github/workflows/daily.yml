@@ -43,6 +43,10 @@ jobs:
           cp dist/echarts.min.js echarts.min.js
           touch .nojekyll
 
+      # v17：静默观察期 —— 扫描后生成当天极简日志（只记录，不改任何交易逻辑）
+      - name: 生成每日极简日志
+        run: python daily_log.py
+
       - name: 校验数据新鲜度
         run: |
           python - <<'PY'
@@ -61,6 +65,6 @@ jobs:
         run: |
           git config user.name "bot"
           git config user.email "bot@users.noreply.github.com"
-          git add -A state.json index.html dist/ data/ echarts.min.js .nojekyll
+          git add -A state.json index.html dist/ data/ echarts.min.js .nojekyll logs/ LIVE_LOG.md daily_log.py
           git diff --cached --quiet || git commit -m "scan $(date -u +%F-%H:%M) [skip ci]"
           git push

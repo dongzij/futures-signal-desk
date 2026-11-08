@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """v15 失效打叉 · 全量判定规则（用户 2026-11-08 拍板）
+v17：按模块二对比表把「顶底雷达 & 打叉日 ADX≥30」降级为【弱叉】。
 
 只做展示与提示，绝不改进场（MA34）与出场（MA26 + 吊灯 3ATR）机制。
+弱叉不删数据、不改判定，只打 weak 标记：图上空心圈、列表标「弱」、不单独推微信。
 
 满足其一即算失效：
   R1 反向幅度：信号后收盘相对信号日收盘逆行 > 1.5 ATR
@@ -19,6 +21,12 @@ REV_ATR = 1.5
 LOOKBACK = 20
 DECAY_DAYS = 5
 MA_KEYS = ("ma%d" % engine.EXIT_MA, "ma%d" % engine.MA)   # ma26 / ma34
+
+# v17 弱叉降级：与 reports/失效误报_特征对比表.md 完全同口径。
+# 只用【打叉当天及之前】可得的数据（来源 + ADX），不含任何未来信息。
+# 该组 155 条 / 33.3%，误报率 43.9%（保留组 32.9%），盲测段同向。
+WEAK_ADX = 30
+WEAK_RULE = "顶底雷达 & 打叉当日 ADX(14) ≥ 30"
 
 REASON_TXT = {
     "rev": "反向 >1.5 ATR",
@@ -115,7 +123,13 @@ def build_defend(code, name, bars, S, signals, radar_hist):
                           atr=S["atr"][idx_i], entry=entry)
         if not f:
             return
+        # v17：弱叉只做标记，事件本身一条不少（随时可切回全量）
+        di = idx.get(f["date"])
+        adx_arr = S.get("adx") or []
+        adx = float(adx_arr[di] or 0) if (di is not None and di < len(adx_arr)) else 0.0
+        weak = bool(sig_kind == "radar" and adx >= WEAK_ADX)
         out.append({
+            "weak": weak, "adx": round(adx, 1),
             "kind": "def", "date": f["date"], "sym": code, "name": name,
             "side": "long" if exp == 1 else "short",
             "sigDate": sig_date, "sigKind": sig_kind,
@@ -146,10 +160,15 @@ def build_defend(code, name, bars, S, signals, radar_hist):
 
 def summarize(events):
     by_reason, by_kind = {}, {}
+    weak = 0
     for e in events:
         by_reason[e["reason"]] = by_reason.get(e["reason"], 0) + 1
         by_kind[e["sigKind"]] = by_kind.get(e["sigKind"], 0) + 1
+        if e.get("weak"):
+            weak += 1
     return {"n": len(events),
             "dates": len({e["date"] for e in events}),
             "last": max((e["date"] for e in events), default=None),
-            "byReason": by_reason, "byKind": by_kind}
+            "byReason": by_reason, "byKind": by_kind,
+            "weak": weak, "strong": len(events) - weak,
+            "weakPct": round(weak / len(events) * 100, 1) if events else 0.0}

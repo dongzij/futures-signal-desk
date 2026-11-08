@@ -354,8 +354,9 @@ def main():
     state["tf"] = tf_now
     json.dump(state, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 
-    # ---------- v15：独立防守事件（全量失效打叉，白名单独立推送）----------
-    # 与页面 K 线红叉同源：4/4 建仓 / 3/4 预警 / 顶底雷达，四条标准任一成立即失效。
+    # ---------- v15/v17：独立防守事件（全量失效打叉，白名单独立推送）----------
+    # 与页面 K 线白圈同源：4/4 建仓 / 3/4 预警 / 顶底雷达，四条标准任一成立即失效。
+    # v17：weak=True（顶底雷达 & ADX≥30）只在图上画空心圈、列表标「弱」，不进独立推送。
     # 只加提示，不改 MA34 进场与 MA26 + 吊灯 3ATR 出场。
     defend_fresh = []
     seen_def = state.setdefault("defendSeen", [])
@@ -373,6 +374,10 @@ def main():
                 code, engine.NAMES.get(code, code), bars, S, sigs, radar)
             for e in events:
                 if e["date"] != today:
+                    continue
+                # v17 弱叉降级：顶底雷达 & ADX≥30 只记录、只上图、不单独推微信。
+                # 事件本身一条不删，判定口径不变，随时可切回全量。
+                if e.get("weak"):
                     continue
                 dedup = "%s|%s|%s|%s" % (code, e["sigDate"], e["sigKind"], e["date"])
                 if dedup in seen_def:
