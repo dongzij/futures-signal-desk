@@ -140,8 +140,8 @@ border-radius:14px;padding:3px 12px;font-size:11.5px}
 .defnav .dnb{display:inline-block;padding:3px 9px;border-radius:20px;cursor:pointer;
   background:rgba(225,29,46,.13);border:1px solid rgba(225,29,46,.55);color:#FF7A7A}
 .defnav .dnb:active{background:rgba(225,29,46,.28)}
-.sgr.defrow{background:linear-gradient(90deg,rgba(255,45,149,.14),rgba(255,45,149,0) 72%);
-border-left:2px solid #FF2D95;padding-left:6px}
+.sgr.defrow{background:linear-gradient(90deg,rgba(255,31,31,.18),rgba(255,31,31,0) 74%);
+border-left:2px solid #FF1F1F;padding-left:6px}
 .bd.out-s{background:#FFC400;color:#1A1300}
 .bd.out-x{background:#FFE94A;color:#171200}
 .sgr .tx2{flex:1;font-size:12px;line-height:1.45}
@@ -251,7 +251,7 @@ background:#10151d;color:var(--tx);font-size:18px}
       <div id="chart"></div>
       <div class="cleg"><span style="color:#4CC9F0">▼ 进场多</span>
         <span style="color:#C77DFF">▲ 进场空</span>
-        <span style="color:#FF1F1F;font-weight:700">✕ 失效打叉</span>
+        <span style="color:#FF1F1F;font-weight:700">✕ 失效打叉（全量）</span>
         <span style="color:#FFD400">• 动能真空</span>
         <span style="color:#22D3EE">◇ 盘整预警</span>
         <span style="color:#FFC400">◆ 建议离场</span>
@@ -337,7 +337,15 @@ background:#10151d;color:var(--tx);font-size:18px}
   <b>8 品种统一参数（v10.3）</b>：逐品种单独调参经 10 组样本外方案检验，样本内看似提升、
   样本外准确率与盈利率均无显著差异（差异多小于 3 个百分点、置信区间全部跨 0），
   故全部品种使用同一套参数，不按品种分别配置。<br>
-  <b>v12 三层风险标签（本次上线）</b>：
+  <b style="color:#FF1F1F">v15 全量失效打叉（本次上线）</b>：4/4 建仓、3/4 预警、顶底雷达，
+  <b>只要后续被走势证伪，全部在 K 线上打红叉并在信号栏单独列出</b>。四条标准满足其一即算失效：
+  ① 收盘相对信号日逆行 &gt;1.5 ATR；② 收盘跌破 / 涨破 MA26 或 MA34；
+  ③ 5 根内未创新高/新低并收破信号日低点/高点；④ 触发 MA26 或吊灯 3ATR 原版止损。
+  每笔信号取最早一次失效，同一天多条合并成一枚 ✕（角标写条数）；
+  图例区「10 年全量红叉」可一键铺满全历史。<b style="color:#FFD400">A' 利润保护</b>：
+  浮盈峰值达 1.5 ATR 时，持仓卡加一行黄字提示可把止损手动上移到开仓价，
+  <b>不干预后台的吊灯与 MA26</b>。以上全部只是提示，<b>MA34 进场、MA26 + 吊灯 3ATR 出场一字未改</b>。<br>
+  <b>v12 三层风险标签</b>：
   <b style="color:#FFC400">预警层 · T 日</b> = <b>⚠ 结构未成熟 · 动能真空</b>（5 维动能打分：距MA60 / 20根涨跌 / ADX / 20日量能 / 全市场ADX，
   进场类 ≥4 触发；历史命中后失败占比 55%，盲测 56%）——<b>唯一当天就能算的提前提示</b>，只出现在首屏与推送；
   <b style="color:#fb923c">复盘层 · T+1</b> = <b>⚠ 首日失效</b>（破信号日极值且失守 MA5，历史触发组 94% 最终亏损）；
@@ -413,6 +421,9 @@ try{
 /* v12：?sig=pred|2026-10-22 直接打开某条信号详情（深链接，便于分享/复盘）；
    等品种数据加载完再打开，所以先挂起 */
 var _SIG_PEND = null, _DEF_PEND = false;
+/* v15：?zoom=all 直接铺满 10 年 K 线，一眼看全量红叉 */
+var _ALLZOOM = false;
+try{ _ALLZOOM = new URLSearchParams(location.search).get('zoom') === 'all'; }catch(e){}
 try{ _SIG_PEND = new URLSearchParams(location.search).get('sig'); }catch(e){}
 try{ _DEF_PEND = new URLSearchParams(location.search).get('def') === '1'; }catch(e){}
 var KC = {};          // 缓存: sym|ct → {d:[],m60:[],m15:[]}
@@ -745,24 +756,29 @@ function renderChart(){
       }
     });
   }
-  // v14：失效打叉 —— 大红 ❌ 一律画在当日 K 线【正上方】（白色描边保证不与阳线红糊在一起），
-  // 并在该日加一条竖向红色虚线，扫图时先看线再确认叉。
-  var defXs = [];
+  // v15：失效打叉 —— 全量覆盖（4/4建仓 / 3/4预警 / 顶底雷达，四条标准任一成立）。
+  // 同一天多条信号失效合并成一枚大红 ✕（角标写条数），白描边 + 红色竖虚线，
+  // 既不与阳线红糊在一起，也不会叠成一坨看不清。
+  var defXs = [], defGroups = {};
   if(cur.pt==='D' && DOC.defend){
     (DOC.defend||[]).forEach(function(e){
-      var ix = dateIdx(dates, e.date);
+      (defGroups[e.date] || (defGroups[e.date] = [])).push(e);
+    });
+    Object.keys(defGroups).forEach(function(d){
+      var ix = dateIdx(dates, d);
       if(ix==null) return;
-      var b = bars[ix], a = A(ix);
+      var b = bars[ix], a = A(ix), n = defGroups[d].length;
       defXs.push(dates[ix]);
-      marks.push({value:[ix, b[4] + 1.45*a], def:e,
+      marks.push({value:[ix, b[4] + 1.45*a], defDate:d,
         symbol:'circle', symbolSize:1,
-        label:{show:true, formatter:'✕', color:'#FF1F1F', fontSize:23,
+        label:{show:true, formatter: n>1? '✕'+n : '✕', color:'#FF1F1F', fontSize:23,
                fontWeight:'bold', position:'inside',
                textBorderColor:'#FFFFFF', textBorderWidth:3.2,
                textShadowBlur:8, textShadowColor:'rgba(255,31,31,.55)'}});
-      marks.push({value:[ix, b[4] + 2.45*a], def:e,
+      marks.push({value:[ix, b[4] + 2.45*a], defDate:d,
         symbol:'circle', symbolSize:1,
-        label:{show:true, formatter:'失效', color:'#FF5A5A', fontSize:9,
+        label:{show:true, formatter: n>1? '失效×'+n : '失效',
+               color:'#FF5A5A', fontSize:9,
                fontWeight:'bold', position:'inside', textBorderColor:'#0B0E13',
                textBorderWidth:2}});
     });
@@ -804,15 +820,19 @@ function renderChart(){
                    shadowBlur: strong? 10 : 0, shadowColor:'#FFE94A'}});
     });
   }
-  // v14：图上给出「历史失效」定位入口（默认窗口只显示最近 260 根，
-  // 多数品种最近一次失效不在窗口内，不给入口就等于看不到）
+  // v15：全量失效导航 —— 总数 / 最近一次 / 默认窗口内可见数 + 一键铺满 10 年
   var dn = $('defNav');
   if(dn){
     var dl2 = (DOC.defend || []).slice().sort(function(x,y){ return x.date < y.date ? -1 : 1; });
     if(cur.pt === 'D' && dl2.length){
       var lastD = dl2[dl2.length - 1];
-      dn.innerHTML = '<span class="dnb" onclick="jumpDef()">🛑 历史失效 ' + dl2.length
-        + ' 次 · 最近 ' + lastD.date + '（点此定位）</span>';
+      var dkeys = Object.keys(defGroups);
+      var nWin = dkeys.filter(function(d){
+        var q = dateIdx(dates, d); return q!=null && q >= dates.length - 260;
+      }).length;
+      dn.innerHTML = '<span class="dnb" onclick="jumpDef()">🛑 全量失效 ' + dl2.length
+        + ' 条 / ' + dkeys.length + ' 天 · 最近 ' + lastD.date + '（点此定位）</span>'
+        + ' <span class="dnb" style="margin-left:6px" onclick="showAllDef()">🗓 10 年全量红叉（近窗 ' + nWin + ' 天）</span>';
     } else {
       dn.innerHTML = '';
     }
@@ -828,6 +848,7 @@ function renderChart(){
     {name:'量', type:'bar', data:vols, xAxisIndex:1, yAxisIndex:1, barMaxWidth:14,
      itemStyle:{color:'#26324a'}},
     {name:'信号', type:'scatter', data:marks, z:10, cursor:'pointer',
+     labelLayout:{hideOverlap:false},
      markLine:{silent:true, symbol:'none', animation:false,
        label:{show:false},
        lineStyle:{color:'rgba(255,31,31,.38)', type:'dashed', width:1},
@@ -847,7 +868,8 @@ function renderChart(){
       {gridIndex:1, scale:true, axisLabel:{show:false}, splitLine:{show:false}}
     ],
     dataZoom:[
-      {type:'inside', xAxisIndex:[0,1], start: Math.max(0, 100 - 260/Math.max(bars.length,1)*100), end:100},
+      {type:'inside', xAxisIndex:[0,1],
+       start: _ALLZOOM? 0 : Math.max(0, 100 - 260/Math.max(bars.length,1)*100), end:100},
       {type:'slider', xAxisIndex:[0,1], bottom:2, height:14, borderColor:'#232b38',
        backgroundColor:'#0b0e13', fillerColor:'#1a2230', handleStyle:{color:'#4c8dff'},
        textStyle:{color:'#8b95a7', fontSize:9}}
@@ -858,7 +880,7 @@ function renderChart(){
   CH.on('click', function(p){
     if(p.seriesName==='信号' && p.data){
       if(p.data.sig) openSig(p.data.sig);
-      else if(p.data.def) openSig('pred|' + p.data.def.sigDate);   // 失效打叉 → 回看原信号
+      else if(p.data.defDate) openDef(p.data.defDate);   // v15：点红叉 → 当天全部失效明细
     }
   });
 }
@@ -876,6 +898,47 @@ function jumpDef(){
       {type:'slider', xAxisIndex:[0,1], startValue:s0, endValue:s1}
     ]});
   }catch(e){}
+}
+/* v15：一键铺满 10 年，把全部失效红叉放在一起看 */
+function showAllDef(){
+  if(!CH) return;
+  try{
+    CH.setOption({dataZoom:[
+      {type:'inside', xAxisIndex:[0,1], start:0, end:100},
+      {type:'slider', xAxisIndex:[0,1], start:0, end:100}
+    ]});
+  }catch(e){}
+}
+/* v15：点红叉 → 当天全部失效明细（四条判定标准逐条展开） */
+function openDef(date){
+  var es = (DOC.defend||[]).filter(function(e){ return e.date===date; });
+  if(!es.length) return;
+  var html = '<h3>🛑 失效明细 · '+date+' · '+DOC.name
+    + '<span onclick="closeSheet()">关闭 ✕</span></h3>';
+  html += '<div style="font-size:11.5px;color:var(--dim);line-height:1.7;margin:4px 0 10px">'
+    + '四条标准任一成立即打叉：① 反向 &gt;1.5 ATR　② 收盘破 MA26/MA34　'
+    + '③ 5 根内未创新高/低并收破信号日极值　④ 触发 MA26 / 吊灯 3ATR 原版止损。<br>'
+    + '<b style="color:#FF7A7A">仅作提示，MA34 进场与 MA26 + 吊灯出场机制完全不变。</b></div>';
+  es.forEach(function(e){
+    var sd = e.side==='short'? '空':'多';
+    var canOpen = (e.sigKind==='pred'||e.sigKind==='warn')
+      && DOC.signals.some(function(s){return s.kind===e.sigKind && s.date===e.sigDate;});
+    var onclick = canOpen? ' onclick="openSig(\''+e.sigKind+'|'+e.sigDate+'\')"' : '';
+    html += '<div class="dv" style="margin:8px 0;cursor:'+(canOpen?'pointer':'default')
+      + ';border-left:3px solid #FF1F1F"'+onclick+'>'
+      + '<div style="font-size:13px;font-weight:700;color:#FF7A7A">✕ '
+      + e.sigLabel+' · '+sd+'向 · 原信号 '+e.sigDate
+      + ' <span style="font-weight:400;color:var(--dim);font-size:11px">第 '+e.day+' 根判定</span></div>'
+      + '<div style="font-size:12px;line-height:1.75;margin-top:5px;color:var(--tx)">'
+      + (e.reasons||[{label:e.label,detail:e.detail}]).map(function(r){
+          return '· <b>'+r.label+'</b>：'+r.detail;
+        }).join('<br>')
+      + '</div>'
+      + (canOpen? '<div style="font-size:10.5px;color:var(--dim);margin-top:4px">点此回看原信号 →</div>':'')
+      + '</div>';
+  });
+  $('sheet').innerHTML = html;
+  $('mask').classList.add('on');
 }
 function dateIdx(dates, d){
   // 精确匹配；没有则找第一个 >= d 的
@@ -902,6 +965,24 @@ function renderXs(){
   html += '<div style="font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:9px">'
     + '独立机制：<b style="color:#FFC400">不依赖进场信号、也不需要你有持仓</b>，'
     + '只在价格走到趋势极端（伸展 + 回头）时提示。走不走由你决定。</div>';
+
+  // v15 A'：持仓卡（首屏可见）—— 只加黄字视觉提示，不动吊灯 / MA26 离场线
+  var _sp = (MAN.strategyOpen || []).filter(function(s){ return s.sym === cur.sym; })[0];
+  if(_sp){
+    var _pk = Math.max(+(_sp.mfe || 0), +(_sp.R || 0));
+    html += '<div style="background:var(--bg2);border:1px solid var(--line);border-radius:7px;'
+      + 'padding:7px 9px;margin-bottom:9px;font-size:11.5px;line-height:1.7">'
+      + '<b>策略参考持仓 · ' + (_sp.side === 'short' ? '空' : '多') + ' @ '
+      + f2(_sp.en) + '</b> <span style="color:var(--dim)">确认 ' + _sp.cd
+      + ' · 最新 ' + (_sp.last || '—') + ' · 峰值 +' + f2(_pk) + ' ATR</span>'
+      + (_pk >= 1.5
+         ? '<div style="color:#FFD400;font-size:12px;font-weight:700;margin-top:4px">'
+           + '💡 利润已达 1.5 ATR，可手动将止损上移至开仓价保本。'
+           + '<span style="color:#d8c27a;font-size:10.5px;font-weight:400">'
+           + '（仅提示，后台吊灯 3ATR / MA26 不变）</span></div>'
+         : '')
+      + '</div>';
+  }
 
   html += '<div class="xlv ' + lvl + '">'
     + '<span class="bg">' + head[0] + '</span>'
@@ -971,6 +1052,19 @@ function renderExit(){
       + f2(P.entry) + ' · 已持 ' + ((P.held || 0) + 1) + ' 天</span>'
       + '<span style="margin-left:auto;font-size:17px;font-weight:700;color:'
       + (R>=0?'var(--up)':'var(--dn)') + '">' + (R>=0?'+':'') + f2(R) + 'R</span></div>';
+
+    // v15 A'：利润保护提示（黄字，纯视觉；后台吊灯 3ATR / MA26 离场线一字不改）
+    var _peak = Math.max(+(P.mfe || 0), +(R || 0));
+    if(_peak >= 1.5){
+      html += '<div style="background:rgba(255,212,0,.10);border-left:3px solid #FFD400;'
+        + 'padding:8px 10px;border-radius:5px;font-size:12.5px;line-height:1.75;'
+        + 'margin-bottom:10px;color:#FFD400">'
+        + '💡 <b>利润已达 1.5 ATR，可手动将止损上移至开仓价保本。</b>'
+        + '<div style="color:#d8c27a;font-size:11.5px;margin-top:3px;font-weight:400">'
+        + '峰值浮盈 +' + f2(_peak) + ' ATR · 当前 ' + sgn(R) + f2(R) + ' ATR'
+        + ' · 开仓价 ' + f2(P.entry)
+        + '　｜　仅视觉提示，吊灯 3ATR 与 MA26 离场线不变</div></div>';
+    }
 
     if(P.warn){
       html += '<div style="background:rgba(34,211,238,.12);border-left:3px solid #22D3EE;'
@@ -1258,7 +1352,9 @@ function renderDec(){
     + (stratPos.length? stratPos.map(function(p){
         return (p.side==='short'?'空 ':'多 ')+p.en+' · 吊灯 '+(p.ch!=null?p.ch:'—')
           +' / MA26 '+(p.ml!=null?p.ml:'—')
-          + (p.float!=null? ' · 浮动 '+sgn(p.float)+f2(p.float)+'%':'')+' · 已持 '+(p.held||0)+' 天';
+          + (p.float!=null? ' · 浮动 '+sgn(p.float)+f2(p.float)+'%':'')+' · 已持 '+(p.held||0)+' 天'
+          + (Math.max(+(p.mfe||0), +(p.R||0)) >= 1.5
+             ? ' · <span style="color:#FFD400">💡 已达 1.5 ATR，可保本</span>' : '');
       }).join(' / ') : '无（当前无 4/4 命中的品种）')+'</div></div>';
 
   $('decGrid').innerHTML = html;
@@ -1288,6 +1384,10 @@ function kindBadge(s){
   return ['信号','b-T2'];
 }
 var SIGF = 'all';
+try{
+  var _f0 = new URLSearchParams(location.search).get('f');
+  if(_f0 && ['all','in','out','def'].indexOf(_f0)>=0) SIGF = _f0;
+}catch(e){}
 function setSigF(f){ SIGF = f; renderSigs(); }
 
 function renderSigs(){
@@ -1320,7 +1420,7 @@ function renderSigs(){
   var nHi = rows.filter(function(r){ return r.kind === 'out' && r.h.level === 'strong'; }).length;
   $('sigCnt').textContent = '进场 ' + nIn + ' · 出场 ' + nOut
     + (nHi ? '（强烈 ' + nHi + '）' : '')
-    + (nDef ? ' · 🛑 失效 ' + nDef : '');
+    + (nDef ? ' · 🛑 失效 ' + nDef + ' 条' : '');
 
   if(SIGF === 'in')  rows = rows.filter(function(r){ return r.kind === 'in'; });
   if(SIGF === 'out') rows = rows.filter(function(r){ return r.kind === 'out'; });
@@ -1338,7 +1438,10 @@ function renderSigs(){
     if(a.d !== b.d) return a.d < b.d ? 1 : -1;
     return 0;
   });
-  rows = rows.slice(0, 40);
+  // v15：失效是全量清单，单独筛选时不截断到 40 条
+  var _cap = (SIGF === 'def') ? 400 : 40;
+  var _total = rows.length;
+  rows = rows.slice(0, _cap);
   if(!rows.length){
     $('sigList').innerHTML = '<div class="empty">暂无信号</div>';
     return;
@@ -1346,17 +1449,14 @@ function renderSigs(){
   $('sigList').innerHTML = rows.map(function(r){
     if(r.kind === 'def'){
       var e = r.e, sd = e.side === 'short' ? '空' : '多';
-      var whyTxt = (e.reason === 'struct')
-        ? (e.side === 'long' ? '跌破起涨波谷' : '涨破起跌波峰')
-        : (e.side === 'long' ? '跌破信号日低点' : '涨破信号日高点');
-      var head = '🛑 预警失效：' + (e.name || e.sym) + '（' + e.sym + '）' + sd + '单'
-        + whyTxt + '，建议止损平仓';
-      return '<div class="sgr defrow" onclick="openSig(\'pred|' + e.sigDate + '\')">'
+      var head = '🛑 ' + (e.sigLabel || '信号') + '失效：' + (e.name || e.sym)
+        + '（' + e.sym + '）' + sd + '方向被走势证伪，建议止损平仓';
+      return '<div class="sgr defrow" onclick="openDef(\'' + e.date + '\')">'
         + '<span class="dt">' + e.date + '</span>'
         + '<span class="bd def">✕ ' + e.label + '</span>'
         + '<span class="tx2">' + head
-        + '<em>信号 ' + e.sigDate + ' · 第 ' + e.day + ' 根判定 · ' + (e.detail || '')
-        + ' · 点此回看原信号</em></span></div>';
+        + '<em>原信号 ' + e.sigDate + ' · 第 ' + e.day + ' 根判定 · '
+        + (e.detail || '') + ' · 点此看失效明细</em></span></div>';
     }
     if(r.kind === 'in'){
       var s = r.s;
@@ -1392,7 +1492,10 @@ function renderSigs(){
       + '<em>回撤 ' + f2(h.pull) + ' ATR · 段龄 ' + h.age + ' 根 · 收 ' + f2(h.px)
       + (h.cross ? '（其他品种，仅供参考）' : '') + '</em>'
       + tagHtml(h.meta) + '</span></div>';
-  }).join('');
+  }).join('')
+    + (SIGF === 'def' && _total > rows.length
+       ? '<div class="empty">共 ' + _total + ' 条失效 · 已显示最近 '
+         + rows.length + ' 条（10 年全量）</div>' : '');
 }
 
 /* ================= 信号弹窗 ================= */
@@ -1732,7 +1835,12 @@ function renderAcct(){
       +(p.side==='short'?'空':'多')+'</span> <span style="font-size:11px;color:var(--dim)">吊灯止损跟随</span></div>'
       +'<div class="r2">确认 '+p.cd+' · 入 '+p.en+' · 止损 '+(p.ts!=null? f2(p.ts):f2(p.st))
       +' · 最新 '+(p.last||'—')+' · 浮动 '+(p.float!=null? sgn(p.float)+f2(p.float)+'%':'—')
-      +' · 已持 '+(p.held!=null? p.held+' 天':'—')+'</div></div></div>';
+      +' · 已持 '+(p.held!=null? p.held+' 天':'—')+'</div>'
+      +(Math.max(+(p.mfe||0), +(p.R||0)) >= 1.5
+        ? '<div style="color:#FFD400;font-size:11.5px;line-height:1.6;margin-top:3px">'
+          +'💡 利润已达 1.5 ATR，可手动将止损上移至开仓价保本（仅提示，不改吊灯 / MA26）</div>'
+        : '')
+      +'</div></div>';
   }).join('') : '<div class="empty">当前无策略持仓</div>';
 
   $('closedList').innerHTML = a.closed.length? a.closed.slice(0,30).map(function(c){

@@ -14,12 +14,14 @@ import shutil
 from datetime import datetime, timedelta, timezone
 
 import build
+import defend_rules
 import engine
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dist", "data")
 EXIT_ALL = []      # 跨品种出场成交汇总（算全局胜率/净 R）
 XSIG_ALL = []      # 跨品种独立出场信号当前状态
 MKT_ALL = []       # 跨品种市场状态（纯信息展示，不干预信号）
+DEF_ALL = []       # v15：跨品种全量失效事件（manifest 汇总用）
 
 # 品种交易参数（模拟盘用）：乘数 / 手续费 / 保证金率
 # fee: ("lot", 元/手) 或 ("rate", 万分之几)
@@ -162,37 +164,14 @@ def build_product(sym):
     sigs = [pack(s) for s in state.get("signals", []) if s["sym"] == sym]
     sigs.sort(key=lambda x: x["date"])
 
-    # ---- 3b) v13：失效 = 独立防守事件 ----
-    # 实战里「走坏了」本身就是一条新消息，不该藏在旧信号详情里。
-    # 每笔建仓只保留【最早】一次失效（首日失效 / 结构已破坏 先到先得），
-    # 事件日期 = 判定成立当天，用于 K 线打叉、信号栏置顶、微信独立推送。
-    defend = []
-    for s in sigs:
-        if s.get("kind") != "pred":
-            continue
-        r = ((s.get("meta") or {}).get("risk") or {})
-        cand = []
-        for key, label in (("day1", "首日失效"), ("struct", "结构已破坏")):
-            ev = r.get(key)
-            if ev and ev.get("date"):
-                cand.append((ev["date"], key, label, ev))
-        if not cand:
-            continue
-        cand.sort(key=lambda x: x[0])
-        dt, key, label, ev = cand[0]
-        if key == "struct":
-            left = float(ev.get("cushion0") or 0) * (1 - float(ev.get("eaten") or 0))
-            detail = "入场缓冲 %s ATR，已吃掉 %d%%，剩 %.2f ATR" % (
-                ev.get("cushion0"), round(float(ev.get("eaten") or 0) * 100), left)
-        else:
-            detail = str(ev.get("why") or "破信号日极值")
-        defend.append({
-            "kind": "def", "date": dt, "sym": sym, "name": cfg["name"],
-            "side": s.get("side"), "reason": key, "label": label,
-            "day": ev.get("day"), "sigDate": s.get("date"),
-            "detail": detail, "entry": s.get("en"),
-        })
-    defend.sort(key=lambda x: x["date"])
+    # ---- 3b) v15：失效 = 独立防守事件（全量覆盖 + 四条放宽标准）----
+    # 覆盖 4/4 建仓、3/4 预警、顶底雷达；每条信号只取最早一次失效。
+    # radar_all 同时供下面的 xsig.hist 使用，保证「雷达信号」与「失效打叉」同源。
+    radar_all = engine.exit_history(sym, bars=main, years=10,
+                                    maxn=10 ** 6, dedupe=8)
+    defend = defend_rules.build_defend(sym, cfg["name"], main, S_main,
+                                       sigs, radar_all)
+    DEF_ALL.extend(defend)
 
     # 周/月信号：在主力连续 K 线上按对应周期独立计算（预测层全因果）
     unit_sigs = {}
@@ -271,7 +250,11 @@ def build_product(sym):
         if s["sym"] == sym and s["kind"] == "pred" and s.get("status") in ("open", "pending"):
             exit_doc["pos"] = {"side": s["side"], "entry": s.get("entry"),
                                "last": s.get("last"), "held": s.get("held"),
-                               "R": s.get("R"), "chLine": s.get("chLine"),
+                               "R": s.get("R"),
+                               # v15 A' 利润保护：只做视觉提示，绝不动吊灯 / MA26
+                               "mfe": (s.get("exit") or {}).get("mfe"),
+                               "atr": s.get("atr"),
+                               "chLine": s.get("chLine"),
                                "maLine": s.get("maLine"), "armed": s.get("armed"),
                                "warn": s.get("exitWarn"), "why": s.get("exitWarnWhy"),
                                "distCh": s.get("distCh"), "distMa": s.get("distMa"),
@@ -298,7 +281,7 @@ def build_product(sym):
     xsig = None
     try:
         now = engine.exit_radar(bars=main, code=sym)
-        hist = engine.exit_history(sym, bars=main, maxn=16)
+        hist = radar_all[-16:]          # 与全量失效判定共用同一套雷达事件
         for h in hist:
             h["meta"] = xs_meta(h)
         if now:
@@ -396,6 +379,9 @@ def main():
             "float": s.get("float"), "held": s.get("held"),
             "lots": s.get("lots"), "k": s.get("k"),
             "prob": s.get("prob"),
+            # v15 A'：浮盈峰值 / 当前 R / ATR，供持仓卡黄字提示
+            "R": s.get("R"), "mfe": (s.get("exit") or {}).get("mfe"),
+            "atr": s.get("atr"),
         })
 
     manifest = {
@@ -428,6 +414,25 @@ def main():
             "demoted": ["2日未跟进", "低波动待观察"],
             "noExtraPush": True,
             "baseExit": {"exitMa": engine.EXIT_MA, "chK": engine.CH_K},
+        },
+        # v15：失效打叉全量覆盖（四条任一即算；纯展示，不改进场/出场）
+        "defendCfg": {
+            "version": "v15",
+            "scope": ["4/4 建仓", "3/4 预警", "顶底雷达"],
+            "rules": [
+                {"key": "rev", "label": "反向幅度", "rule": "收盘逆行 >1.5 ATR（20 根内）"},
+                {"key": "ma", "label": "均线破位",
+                 "rule": "做多收盘跌破 MA26/MA34，做空反向穿（20 根内）"},
+                {"key": "decay", "label": "时间衰竭",
+                 "rule": "5 根内未创新高/低且收破信号日低点/高点"},
+                {"key": "stop", "label": "原版止损失效",
+                 "rule": "MA26 反向穿越或吊灯 3ATR 触发离场（沿用原机制）"},
+            ],
+            "onePerSignal": True,
+            "baseExitUnchanged": True,
+            "profitTip": {"atr": 1.5, "text": "利润已达 1.5 ATR，可手动将止损上移至开仓价保本",
+                          "advisoryOnly": True},
+            "stat": defend_rules.summarize(DEF_ALL),
         },
         # v11.1：微信推送白名单（页面仍展示全部 8 品种）
         "pushCfg": {"symbols": (state.get("method", {}).get("push") or {}).get("symbols", []),

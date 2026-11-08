@@ -19,6 +19,7 @@ import sys
 import urllib.parse
 import urllib.request
 
+import defend_rules
 import engine
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -352,70 +353,59 @@ def main():
     state["tf"] = tf_now
     json.dump(state, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 
-    # ---------- v13：独立防守事件（失效当天就是一条新信号，白名单必推）----------
-    # 与「2日未跟进」那种事后复盘标签不同：这是保命信号，必须当天独立推出。
-    # 每笔建仓只认最早一次失效（首日失效 / 结构已破坏 先到先得），与页面口径一致。
+    # ---------- v15：独立防守事件（全量失效打叉，白名单独立推送）----------
+    # 与页面 K 线红叉同源：4/4 建仓 / 3/4 预警 / 顶底雷达，四条标准任一成立即失效。
+    # 只加提示，不改 MA34 进场与 MA26 + 吊灯 3ATR 出场。
     defend_fresh = []
     seen_def = state.setdefault("defendSeen", [])
     if not first:
-        for s in state["signals"]:
-            if s.get("kind") != "pred":
+        for code in codes:
+            if not allow_push(code):
                 continue
-            r = ((s.get("meta") or {}).get("risk") or {})
-            cand = []
-            for key, label in (("day1", "首日失效"), ("struct", "结构已破坏")):
-                ev = r.get(key)
-                if ev and ev.get("date"):
-                    cand.append((ev["date"], key, label, ev))
-            if not cand:
-                continue
-            cand.sort(key=lambda x: x[0])
-            dt, key, label, ev = cand[0]
-            if dt != today:
-                continue
-            dedup = "%s|%s|%s" % (s["sym"], s["date"], key)
-            if dedup in seen_def:
-                continue
-            if not allow_push(s["sym"], s.get("meta")):
-                continue
-            defend_fresh.append((s, key, label, ev, dedup))
+            bars = engine_bars(code)
+            S = engine_S(code)
+            sigs = [s for s in state["signals"]
+                    if s["sym"] == code and s.get("kind") in ("pred", "warn")]
+            radar = engine.exit_history(code, bars=bars, years=10,
+                                        maxn=10 ** 6, dedupe=8)
+            events = defend_rules.build_defend(
+                code, engine.NAMES.get(code, code), bars, S, sigs, radar)
+            for e in events:
+                if e["date"] != today:
+                    continue
+                dedup = "%s|%s|%s|%s" % (code, e["sigDate"], e["sigKind"], e["date"])
+                if dedup in seen_def:
+                    continue
+                defend_fresh.append((e, dedup))
 
     if defend_fresh and push_token:
         cards = []
-        for s, key, label, ev, _dd in defend_fresh:
-            sd = "多" if s["side"] == "long" else "空"
-            nm = engine.NAMES.get(s["sym"], s["sym"])
-            long_side = s["side"] == "long"
-            if key == "struct":
-                left = float(ev.get("cushion0") or 0) * (1 - float(ev.get("eaten") or 0))
-                why = "跌破起涨波谷" if long_side else "涨破起跌波峰"
-                detail = ("%s：入场缓冲 %s ATR，已吃掉 %d%%，剩 %.2f ATR"
-                          % (why, ev.get("cushion0"),
-                             round(float(ev.get("eaten") or 0) * 100), left))
-            else:
-                why = "跌破信号日低点" if long_side else "涨破信号日高点"
-                detail = "%s：%s" % (why, ev.get("why") or "破信号日极值")
+        for e, _dd in defend_fresh[:8]:
+            sd = "多" if e["side"] == "long" else "空"
+            why = "跌破信号日低点 / 均线破位" if e["side"] == "long" \
+                else "涨破信号日高点 / 均线破位"
             cards.append(
                 '<div style="margin-bottom:16px">'
                 '<div style="font-size:16px;font-weight:700;color:#c2185b">'
-                '🛑 预警失效：%s（%s）%s单%s，建议止损平仓</div>'
+                '🛑 失效打叉：%s（%s）%s单 · %s</div>'
                 '<div style="font-size:13px;line-height:1.85;margin-top:6px">'
-                '判定日 <b>%s</b> · 原信号 %s <b>%s</b> · 第 <b>%s</b> 根<br>'
+                '判定日 <b>%s</b> · 原信号 <b>%s</b>（%s，%s）· 第 <b>%s</b> 根<br>'
                 '<span style="color:#555">%s</span></div>'
                 '<div style="margin-top:8px;padding:6px 8px;background:#fff1f5;'
                 'border-left:3px solid #FF2D95;font-size:12px;color:#7a1f45;line-height:1.7">'
-                '这是独立防守信号：结构走坏先减/平，别等 MA26 与吊灯 3ATR 的底线。'
+                '这是独立防守提示：走势已经证明原信号错了，可手动止损；'
+                '后台吊灯 3ATR 与 MA26 离场线保持不变。'
                 '</div></div>'
-                % (nm, s["sym"], sd, why, today, sd, s["date"], ev.get("day"), detail))
-        title = "🛑 预警失效 %d 条：%s" % (
+                % (e["name"], e["sym"], sd, why, today, e["sigDate"],
+                   e["sigLabel"], e["label"], e["day"], e["detail"]))
+        title = "🛑 失效打叉 %d 条：%s" % (
             len(defend_fresh),
-            "、".join("%s%s" % (engine.NAMES.get(s["sym"], s["sym"]),
-                               "多" if s["side"] == "long" else "空")
-                     for s, _k, _l, _e, _d in defend_fresh))
+            "、".join("%s%s" % (e["name"], "多" if e["side"] == "long" else "空")
+                     for e, _d in defend_fresh[:8]))
         ok = post_push(push_token, title, "".join(cards))
         print("push defend:", ok)
         if ok:
-            seen_def.extend(dd for _s, _k, _l, _e, dd in defend_fresh)
+            seen_def.extend(dd for _e, dd in defend_fresh)
     state["defendSeen"] = seen_def[-600:]
     json.dump(state, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 
