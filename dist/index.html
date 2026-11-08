@@ -169,8 +169,10 @@ border-left:2px solid rgba(255,212,0,.55);padding-left:6px}
 .bd.out-x{background:#FFE94A;color:#171200}
 .sgr .tx2{flex:1;font-size:12px;line-height:1.45}
 .sgr .tx2 em{font-style:normal;color:var(--dim);font-size:10.5px;display:block}
-/* v16 模块四：信号栏一页连续展示（旧→新），容器内部滚动，不再分页截断 */
-#sigList{max-height:620px;overflow-y:auto;overscroll-behavior:contain;
+/* v16 模块四：信号栏一页连续展示（新→旧，最新置顶），容器内部滚动，不再分页截断。
+   注意：不加 overscroll-behavior:contain —— 列表滚到头后滚动要能穿透回页面，
+   否则鼠标停在列表上就永远滑不回 K 线图（用户 2026-11-09 反馈）。 */
+#sigList{max-height:620px;overflow-y:auto;
   scrollbar-width:thin;scrollbar-color:#3b4a63 transparent;padding-right:4px}
 #sigList::-webkit-scrollbar{width:7px}
 #sigList::-webkit-scrollbar-thumb{background:#3b4a63;border-radius:6px}
@@ -962,21 +964,21 @@ function renderChart(){
                textBorderColor:'#0B0E13', textBorderWidth:2.5}});
     });
   }
-  // v18 模块三：★ 结构双顶/底（纯价格结构重写）。第二峰当天定位，顶部金色▲ / 底部紫色▼
+  // v18.1 模块三：★ 结构双顶/底（4 条硬约束严格重写；只画高置信）。第二峰当天定位，顶部金色▲ / 底部紫色▼
   if(cur.pt==='D' && DOC.mw){
     (DOC.mw||[]).forEach(function(w){
+      if(!w.hiConf) return;               // v18.1：图上只画高置信（DIF背离+持仓降），避免满屏噪音
       var ix = dateIdx(dates, w.mkDate);   // 第二峰当天：结构完成的视觉锚点
       if(ix==null) return;
       var b = bars[ix], a = A(ix);
       var isTop = (w.side==='short');      // 双顶(M)做空：▲ 置于最高价上方；双底(W)做多：▼ 置于最低价下方
       var y = isTop ? (b[2] + 1.4*a) : (b[3] - 1.4*a);
-      var strong = (w.filterDif && w.filterOi);   // 高置信：DIF背离 + 持仓降
       marks.push({value:[ix, y], mwDate:w.date, mwSym:w.sym, mwDir:w.dir,
-        symbol:'triangle', symbolSize: strong ? 13 : 9,
+        symbol:'triangle', symbolSize: 13,
         symbolRotate: isTop ? 0 : 180,
         itemStyle:{color: isTop ? '#FFD400' : '#C77DFF',
                    borderColor: isTop ? '#FFF1A8' : '#E3C2FF', borderWidth:1.4,
-                   shadowBlur: strong ? 10 : 0,
+                   shadowBlur: 10,
                    shadowColor: isTop ? 'rgba(255,212,0,.85)' : 'rgba(199,125,255,.85)'}});
     });
   }
@@ -1055,7 +1057,8 @@ function renderChart(){
       var nWin = dkeys.filter(function(d){
         var q = dateIdx(dates, d); return q!=null && q >= dates.length - 260;
       }).length;
-      var mw2 = (DOC.mw || []).slice().sort(function(x,y){ return x.date < y.date ? -1 : 1; });
+      var mw2 = (DOC.mw || []).filter(function(x){ return x.hiConf; })
+        .slice().sort(function(x,y){ return x.date < y.date ? -1 : 1; });
       var nWeak = dl2.filter(function(e){ return e.weak; }).length;
       dn.innerHTML = '<span class="dnb" onclick="jumpDef()">○ 失效 ' + dl2.length
         + ' 条 / ' + dkeys.length + ' 天 · 最近 ' + lastD.date + '（点此定位）</span>'
@@ -1155,8 +1158,9 @@ function jumpDef(){
   zoomToDate(dl[dl.length - 1].date);
 }
 function jumpMw(){
-  if(!DOC.mw || !DOC.mw.length) return;
-  var dl = DOC.mw.slice().sort(function(a,b){ return a.mkDate < b.mkDate ? -1 : 1; });
+  var dl = ((DOC.mw || []).filter(function(x){ return x.hiConf; })
+    .slice().sort(function(a,b){ return a.mkDate < b.mkDate ? -1 : 1; }));
+  if(!dl.length) return;
   zoomToDate(dl[dl.length - 1].mkDate);
 }
 /* 一键铺满 10 年，把全部失效标记放在一起看 */
@@ -1191,6 +1195,9 @@ function openMw(date){
     + '<span onclick="closeSheet()">关闭 ✕</span></h3>';
   html += '<div class="frow"><span>形态</span><b>' + w.dir + ' · 第二峰（'
     + (w.side==='short'?'做空方向':'做多方向') + '）</b></div>'
+    + '<div class="frow"><span>主峰约束</span><b style="color:#FFD400">✓ '
+    + (w.mainPeak || '—') + ' 为过去 60 根内绝对'
+    + (w.side==='short'?'最高点':'最低点') + '</b></div>'
     + '<div class="frow"><span>首峰 / 第二峰</span><b>' + w.peak1Date + ' / ' + w.peak2Date
     + '（间隔 ' + w.gap + ' 根）</b></div>'
     + '<div class="frow"><span>两峰价 / 颈线</span><b>' + w.peak1Px + ' / ' + w.peak2Px + ' / ' + w.neckPx + '</b></div>'
@@ -1201,9 +1208,12 @@ function openMw(date){
     + '<div class="frow"><span>持仓 / 量能</span><b>' + (qty.join('；') || '—') + '</b></div>'
     + '<div class="frow"><span>本笔回测</span><b>' + rTxt + '</b></div>'
     + '<div style="font-size:11.5px;color:var(--dim);line-height:1.8;margin:10px 0 4px">'
+    + 'v18.1 硬约束：ZigZag 摆动波幅 ≥1.0 ATR（毛刺平滑）· 峰为过去 60 根内绝对主峰 · '
+    + '颈线回撤 ≥1.5 ATR · 双峰差 ≤1.5 ATR · 两峰间无更极端插入极值。<br>'
     + '本品种结构 <b>' + all.length + '</b> 笔（顶 ' + nTop + ' / 底 ' + nBot + '）· '
     + '颈线破位回测 <b style="color:#FFD400">胜率 ' + wr + '%</b> · 均 R <b style="color:#FFD400">+' + ar + '</b>。<br>'
-    + '其中高置信（DIF背离 + 持仓降）' + doi.length + ' 笔 · 胜率 ' + dw + '% · 均 R +' + da + '。<br>'
+    + '其中高置信（DIF背离 + 持仓降）' + doi.length + ' 笔 · 胜率 ' + dw + '% · 均 R +' + da
+    + '；<b>图上与列表只画高置信子集</b>。<br>'
     + '<b>MA34 进场、MA26 + 吊灯 3ATR 出场一字未改</b>；结构仅作提示，不构成新信号。</div>';
   $('sheet').innerHTML = html;
   $('mask').classList.add('on');
@@ -1734,7 +1744,7 @@ try{
   if(new URLSearchParams(location.search).get('sort') === 'def') SIGSORT = 'def';
 }catch(e){}
 function setSigF(f){ SIGF = f; renderSigs(); }
-/* v16 模块四：默认按时间旧→新连续排列；需要时仍可一键切回「失效优先」 */
+/* v18.1：默认按时间新→旧排列（最新置顶）；需要时仍可一键切回「失效优先」 */
 function toggleSigSort(){ SIGSORT = (SIGSORT === 'time' ? 'def' : 'time'); renderSigs(); }
 
 function renderSigs(){
@@ -1760,8 +1770,9 @@ function renderSigs(){
   (DOC.defend || []).forEach(function(e){
     rows.push({d: e.date, kind: 'def', e: e});
   });
-  // —— v18 模块三：★ 结构双顶/底 ——
+  // —— v18.1 模块三：★ 结构双顶/底（只列高置信：DIF背离 + 持仓降）——
   (DOC.mw || []).forEach(function(w){
+    if(!w.hiConf) return;
     rows.push({d: w.date, kind: 'mw', w: w});
   });
 
@@ -1803,8 +1814,8 @@ function renderSigs(){
       if(a.d !== b.d) return a.d < b.d ? 1 : -1;
       return 0;
     }
-    // v16 模块四：一页连续、按时间从旧到新；不分页、不截断
-    if(a.d !== b.d) return a.d < b.d ? -1 : 1;
+    // v18.1：按时间从新到旧，最新消息置顶（用户 2026-11-08 要求）；不分页、不截断
+    if(a.d !== b.d) return a.d < b.d ? 1 : -1;
     return 0;
   });
   if(!rows.length){
@@ -1831,13 +1842,12 @@ function renderSigs(){
     }
     if(r.kind === 'mw'){
       var w = r.w;
-      var hi2 = (w.filterDif && w.filterOi);   // 高置信：DIF背离 + 持仓降
       return '<div class="sgr mwrow" onclick="openMw(\'' + w.date + '\')">'
         + '<span class="dt">' + w.date + '</span>'
         + '<span class="bd mw">★ 结构双顶/底</span>'
         + '<span class="tx2">★ ' + (w.name || w.sym) + '（' + w.sym + '）'
         + w.dir + ' · ' + (w.side === 'short' ? '做空方向' : '做多方向')
-        + (hi2 ? ' <b style="color:#FFD400">高置信</b>' : '')
+        + ' <b style="color:#FFD400">高置信 · 主峰 ' + (w.mainPeak || '—') + '</b>'
         + '<em>首峰 ' + w.peak1Date + ' · 第二峰 ' + w.peak2Date + ' · 间隔 ' + w.gap + ' 根 · 颈线 '
         + w.neckPx + ' · 破位收 ' + w.entry + ' · 点此看明细</em></span></div>';
     }
@@ -1876,10 +1886,9 @@ function renderSigs(){
       + (h.cross ? '（其他品种，仅供参考）' : '') + '</em>'
       + tagHtml(h.meta) + '</span></div>';
   }).join('');
-  // 旧→新连续排列时默认落到最新一根；想看早段直接往上滚即可
+  // 新→旧排列（最新置顶）：默认就停在列表顶部，最新消息打开即见
   var _box = $('sigList');
-  if(SIGSORT === 'time') _box.scrollTop = _box.scrollHeight;
-  else _box.scrollTop = 0;
+  _box.scrollTop = 0;
 }
 
 /* ================= 信号弹窗 ================= */
