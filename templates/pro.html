@@ -105,8 +105,9 @@ padding:12px;margin-bottom:10px}
 justify-content:space-between;align-items:center}
 .card h3 .r{font-size:11px}
 .cleg{display:flex;gap:13px;flex-wrap:wrap;font-size:10.5px;padding:7px 8px 1px}
-#chart{width:100%;height:560px}
-@media(max-width:520px){#chart{height:460px}}
+/* v16 模块七：去掉底部成交量柱，垂直空间全部给 K 线主图 */
+#chart{width:100%;height:700px}
+@media(max-width:520px){#chart{height:560px}}
 
 /* ===== 独立出场雷达（v10）===== */
 .xlv{display:flex;align-items:center;gap:9px;margin-bottom:9px}
@@ -135,17 +136,35 @@ border-radius:14px;padding:3px 12px;font-size:11.5px}
 .sgr .dt{color:var(--dim);font-size:11px;flex:0 0 68px}
 .sgr .bd{font-size:10.5px;font-weight:800;border-radius:4px;padding:2px 6px;flex:0 0 auto}
 .bd.in{background:#12325c;color:#7fb3ff}
-.bd.def{background:#E11D2E;color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.35) inset}
+/* v16 模块一：失效标识改为中性白圈 / 白字，不再刺眼 */
+.bd.def{background:#202a38;color:#E8EEFA;box-shadow:0 0 0 1px rgba(232,238,250,.45) inset}
+.bd.mw{background:#3a310d;color:#FFD400;box-shadow:0 0 0 1px rgba(255,212,0,.5) inset}
 .defnav{margin:5px 6px 2px;font-size:11px;line-height:1.6}
 .defnav .dnb{display:inline-block;padding:3px 9px;border-radius:20px;cursor:pointer;
-  background:rgba(225,29,46,.13);border:1px solid rgba(225,29,46,.55);color:#FF7A7A}
-.defnav .dnb:active{background:rgba(225,29,46,.28)}
-.sgr.defrow{background:linear-gradient(90deg,rgba(255,31,31,.18),rgba(255,31,31,0) 74%);
-border-left:2px solid #FF1F1F;padding-left:6px}
+  background:rgba(232,238,250,.07);border:1px solid rgba(232,238,250,.28);color:#C9D4E6}
+.defnav .dnb:active{background:rgba(232,238,250,.18)}
+.defnav .dnb.mw{background:rgba(255,212,0,.09);border-color:rgba(255,212,0,.45);color:#FFD400}
+.sgr.defrow{background:linear-gradient(90deg,rgba(232,238,250,.07),rgba(232,238,250,0) 72%);
+border-left:2px solid rgba(232,238,250,.5);padding-left:6px}
+.sgr.mwrow{background:linear-gradient(90deg,rgba(255,212,0,.09),rgba(255,212,0,0) 72%);
+border-left:2px solid rgba(255,212,0,.55);padding-left:6px}
 .bd.out-s{background:#FFC400;color:#1A1300}
 .bd.out-x{background:#FFE94A;color:#171200}
 .sgr .tx2{flex:1;font-size:12px;line-height:1.45}
 .sgr .tx2 em{font-style:normal;color:var(--dim);font-size:10.5px;display:block}
+/* v16 模块四：信号栏一页连续展示（旧→新），容器内部滚动，不再分页截断 */
+#sigList{max-height:620px;overflow-y:auto;overscroll-behavior:contain;
+  scrollbar-width:thin;scrollbar-color:#3b4a63 transparent;padding-right:4px}
+#sigList::-webkit-scrollbar{width:7px}
+#sigList::-webkit-scrollbar-thumb{background:#3b4a63;border-radius:6px}
+#sigList::-webkit-scrollbar-track{background:transparent}
+/* v16 模块六：雷达卡下半明细默认折叠 */
+.foldbtn{display:inline-block;border:1px solid var(--line);background:#141c28;color:#aebbd0;
+  border-radius:14px;padding:3px 12px;font-size:11px;cursor:pointer;margin:8px 0 2px}
+.foldbtn:active{background:#1d2838}
+.foldbody.hide{display:none}
+/* v16 模块五：方法说明只在需要时由接口输出，前端默认隐藏 */
+.note.archived{display:none}
 
 .dec{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .dv{background:#10151d;border:1px solid var(--line);border-radius:9px;padding:8px 10px}
@@ -251,7 +270,8 @@ background:#10151d;color:var(--tx);font-size:18px}
       <div id="chart"></div>
       <div class="cleg"><span style="color:#4CC9F0">▼ 进场多</span>
         <span style="color:#C77DFF">▲ 进场空</span>
-        <span style="color:#FF1F1F;font-weight:700">✕ 失效打叉（全量）</span>
+        <span style="color:#E8EEFA;font-weight:700">○ 失效（顶/底/多/空）</span>
+        <span style="color:#FFD400;font-weight:700">★ 二段M/W结构</span>
         <span style="color:#FFD400">• 动能真空</span>
         <span style="color:#22D3EE">◇ 盘整预警</span>
         <span style="color:#FFC400">◆ 建议离场</span>
@@ -301,7 +321,8 @@ background:#10151d;color:var(--tx);font-size:18px}
       </div>
     </div>
   </div>
-  <div class="note">方法（参数由玻璃/豆粕/螺纹/甲醇/尿素五个品种 10 年数据回测选出，非人为设定；本次关注池调整为 <b>玻璃 / 纯碱 / 豆粕 / 纸浆 / 锰硅 / 甲醇 / 白糖 / 玉米</b>，规则与参数一并沿用，未针对新品种重新调参）：
+  <!-- v16 模块五：完整方法说明已另存 reports/系统方法说明_存档.md，前端默认隐藏，需要时再输出 -->
+  <div class="note archived" id="methodNote">方法（参数由玻璃/豆粕/螺纹/甲醇/尿素五个品种 10 年数据回测选出，非人为设定；本次关注池调整为 <b>玻璃 / 纯碱 / 豆粕 / 纸浆 / 锰硅 / 甲醇 / 白糖 / 玉米</b>，规则与参数一并沿用，未针对新品种重新调参）：
   MA34 定义大趋势段，穿越点＝反转点（20/25/30/34/40/45/50 七个周期逐一测过，34 的收益与回撤同时最优）。
   反转前 10 根内共出现 4 类有区分度的变化——
   <b>逼到 MA34 ≤0.3ATR · 10 日累计逆行 ≥1.5ATR · MA10 斜率转向 · MACD 柱翻向</b>，
@@ -756,9 +777,9 @@ function renderChart(){
       }
     });
   }
-  // v15：失效打叉 —— 全量覆盖（4/4建仓 / 3/4预警 / 顶底雷达，四条标准任一成立）。
-  // 同一天多条信号失效合并成一枚大红 ✕（角标写条数），白描边 + 红色竖虚线，
-  // 既不与阳线红糊在一起，也不会叠成一坨看不清。
+  // v16 模块一：失效改「白色小圆圈」+ 分类文字（顶失效/底失效/多失效/空失效）。
+  // 同一天多条合并成一枚白圈（角标写条数），红色竖虚线也改成中性细虚线，
+  // 视觉不再刺眼，一眼就知道是哪一类信号被证伪。
   var defXs = [], defGroups = {};
   if(cur.pt==='D' && DOC.defend){
     (DOC.defend||[]).forEach(function(e){
@@ -767,20 +788,39 @@ function renderChart(){
     Object.keys(defGroups).forEach(function(d){
       var ix = dateIdx(dates, d);
       if(ix==null) return;
-      var b = bars[ix], a = A(ix), n = defGroups[d].length;
+      var b = bars[ix], a = A(ix), es = defGroups[d], n = es.length;
+      var ts = [];
+      es.forEach(function(e){
+        var t = defTypeName(e);
+        if(ts.indexOf(t) < 0) ts.push(t);
+      });
+      var txt = ts.slice(0, 2).join('·') + (ts.length > 2 ? '等' : '')
+              + (n > 1 ? ' ×' + n : '');
       defXs.push(dates[ix]);
-      marks.push({value:[ix, b[4] + 1.45*a], defDate:d,
+      marks.push({value:[ix, b[4] + 1.15*a], defDate:d,
+        symbol:'circle', symbolSize:10,
+        itemStyle:{color:'rgba(255,255,255,.08)', borderColor:'#FFFFFF', borderWidth:2,
+                   shadowBlur:6, shadowColor:'rgba(255,255,255,.35)'}});
+      marks.push({value:[ix, b[4] + 2.00*a], defDate:d,
         symbol:'circle', symbolSize:1,
-        label:{show:true, formatter: n>1? '✕'+n : '✕', color:'#FF1F1F', fontSize:23,
-               fontWeight:'bold', position:'inside',
-               textBorderColor:'#FFFFFF', textBorderWidth:3.2,
-               textShadowBlur:8, textShadowColor:'rgba(255,31,31,.55)'}});
-      marks.push({value:[ix, b[4] + 2.45*a], defDate:d,
+        label:{show:true, formatter:txt, color:'#E8EEFA', fontSize:9.5,
+               fontWeight:600, position:'inside', textBorderColor:'#0B0E13',
+               textBorderWidth:2.5}});
+    });
+  }
+  // v16 模块三：★ 二段 M/W 结构（DIF背离 + 量仓强）。挂在更高一层，避开白圈。
+  if(cur.pt==='D' && DOC.mw){
+    (DOC.mw||[]).forEach(function(w){
+      var ix = dateIdx(dates, w.date);
+      if(ix==null) return;
+      var b = bars[ix], a = A(ix);
+      // 统一挂在柱体上方：既醒目，又不把 Y 轴下限拉低、压缩 K 线
+      marks.push({value:[ix, b[4] + 3.05*a], mwDate:w.date,
         symbol:'circle', symbolSize:1,
-        label:{show:true, formatter: n>1? '失效×'+n : '失效',
-               color:'#FF5A5A', fontSize:9,
-               fontWeight:'bold', position:'inside', textBorderColor:'#0B0E13',
-               textBorderWidth:2}});
+        label:{show:true, formatter:'★ 二段M/W', color:'#FFD400', fontSize:13,
+               fontWeight:800, position:'inside', textBorderColor:'#0B0E13',
+               textBorderWidth:2.8, backgroundColor:'rgba(255,212,0,.15)',
+               padding:[2,5], borderRadius:4}});
     });
   }
   // 出场标记（v9 快出）：空心青菱形=盘整预警，白色箭头=实际离场
@@ -830,9 +870,13 @@ function renderChart(){
       var nWin = dkeys.filter(function(d){
         var q = dateIdx(dates, d); return q!=null && q >= dates.length - 260;
       }).length;
-      dn.innerHTML = '<span class="dnb" onclick="jumpDef()">🛑 全量失效 ' + dl2.length
+      var mw2 = (DOC.mw || []).slice().sort(function(x,y){ return x.date < y.date ? -1 : 1; });
+      dn.innerHTML = '<span class="dnb" onclick="jumpDef()">○ 全量失效 ' + dl2.length
         + ' 条 / ' + dkeys.length + ' 天 · 最近 ' + lastD.date + '（点此定位）</span>'
-        + ' <span class="dnb" style="margin-left:6px" onclick="showAllDef()">🗓 10 年全量红叉（近窗 ' + nWin + ' 天）</span>';
+        + ' <span class="dnb" style="margin-left:6px" onclick="showAllDef()">🗓 10 年全量（近窗 ' + nWin + ' 天）</span>'
+        + (mw2.length
+            ? ' <span class="dnb mw" style="margin-left:6px" onclick="jumpMw()">★ 二段M/W '
+              + mw2.length + ' 次 · 最近 ' + mw2[mw2.length-1].date + '（点此定位）</span>' : '');
     } else {
       dn.innerHTML = '';
     }
@@ -845,32 +889,29 @@ function renderChart(){
      lineStyle:{width:1.2, type:'dashed', color:'#ff8a3d'}},
     {name:'MA34', type:'line', data:m34, symbol:'none', lineStyle:{width:1,color:'#4c8dff'}},
     {name:'MA89', type:'line', data:m89, symbol:'none', lineStyle:{width:1,color:'#9b6ef3'}},
-    {name:'量', type:'bar', data:vols, xAxisIndex:1, yAxisIndex:1, barMaxWidth:14,
-     itemStyle:{color:'#26324a'}},
+    // v16 模块七：底部成交量柱已移除，垂直空间全部给 K 线主图
     {name:'信号', type:'scatter', data:marks, z:10, cursor:'pointer',
      labelLayout:{hideOverlap:false},
      markLine:{silent:true, symbol:'none', animation:false,
        label:{show:false},
-       lineStyle:{color:'rgba(255,31,31,.38)', type:'dashed', width:1},
+       lineStyle:{color:'rgba(232,238,250,.20)', type:'dashed', width:1},
        data: defXs.map(function(d){ return {xAxis:d}; })}}
   ];
   CH.setOption({
     animation:false,
     axisPointer:{link:[{xAxisIndex:'all'}], label:{backgroundColor:'#232b38'}},
-    grid:[{left:8,right:8,top:14,height:'64%'}, {left:8,right:8,top:'79%',height:'14%'}],
+    grid:[{left:8,right:8,top:14,height:'84%'}],
     xAxis:[
       {type:'category', data:dates, boundaryGap:true, axisLine:{lineStyle:{color:'#232b38'}},
-       axisLabel:{color:'#8b95a7', fontSize:9}, axisTick:{show:false}},
-      {type:'category', gridIndex:1, data:dates, axisLabel:{show:false}, axisLine:{show:false}, axisTick:{show:false}}
+       axisLabel:{color:'#8b95a7', fontSize:9}, axisTick:{show:false}}
     ],
     yAxis:[
-      {scale:true, splitLine:{lineStyle:{color:'#161c26'}}, axisLabel:{color:'#8b95a7', fontSize:9}},
-      {gridIndex:1, scale:true, axisLabel:{show:false}, splitLine:{show:false}}
+      {scale:true, splitLine:{lineStyle:{color:'#161c26'}}, axisLabel:{color:'#8b95a7', fontSize:9}}
     ],
     dataZoom:[
-      {type:'inside', xAxisIndex:[0,1],
+      {type:'inside', xAxisIndex:[0],
        start: _ALLZOOM? 0 : Math.max(0, 100 - 260/Math.max(bars.length,1)*100), end:100},
-      {type:'slider', xAxisIndex:[0,1], bottom:2, height:14, borderColor:'#232b38',
+      {type:'slider', xAxisIndex:[0], bottom:2, height:14, borderColor:'#232b38',
        backgroundColor:'#0b0e13', fillerColor:'#1a2230', handleStyle:{color:'#4c8dff'},
        textStyle:{color:'#8b95a7', fontSize:9}}
     ],
@@ -880,54 +921,89 @@ function renderChart(){
   CH.on('click', function(p){
     if(p.seriesName==='信号' && p.data){
       if(p.data.sig) openSig(p.data.sig);
-      else if(p.data.defDate) openDef(p.data.defDate);   // v15：点红叉 → 当天全部失效明细
+      else if(p.data.defDate) openDef(p.data.defDate);   // 点白圈 → 当天全部失效明细
+      else if(p.data.mwDate) openMw(p.data.mwDate);      // 点 ★ → 二段 M/W 明细
     }
   });
 }
-function jumpDef(){
-  if(!DOC.defend || !DOC.defend.length || !CH) return;
-  var dl = DOC.defend.slice().sort(function(a,b){ return a.date < b.date ? -1 : 1; });
-  var last = dl[dl.length - 1];
+/* v16：把视窗跳到某个日期附近（单轴版，成交量副图已移除） */
+function zoomToDate(date){
+  if(!CH || !date) return;
   var bs = barsFor(cur.pt), ds = bs.map(function(b){ return b[0]; });
-  var i = dateIdx(ds, last.date);
+  var i = dateIdx(ds, date);
   if(i == null) return;
   var s0 = Math.max(0, i - 70), s1 = Math.min(ds.length - 1, i + 20);
   try{
     CH.setOption({dataZoom:[
-      {type:'inside', xAxisIndex:[0,1], startValue:s0, endValue:s1},
-      {type:'slider', xAxisIndex:[0,1], startValue:s0, endValue:s1}
+      {type:'inside', xAxisIndex:[0], startValue:s0, endValue:s1},
+      {type:'slider', xAxisIndex:[0], startValue:s0, endValue:s1}
     ]});
   }catch(e){}
 }
-/* v15：一键铺满 10 年，把全部失效红叉放在一起看 */
+function jumpDef(){
+  if(!DOC.defend || !DOC.defend.length) return;
+  var dl = DOC.defend.slice().sort(function(a,b){ return a.date < b.date ? -1 : 1; });
+  zoomToDate(dl[dl.length - 1].date);
+}
+function jumpMw(){
+  if(!DOC.mw || !DOC.mw.length) return;
+  var dl = DOC.mw.slice().sort(function(a,b){ return a.date < b.date ? -1 : 1; });
+  zoomToDate(dl[dl.length - 1].date);
+}
+/* 一键铺满 10 年，把全部失效标记放在一起看 */
 function showAllDef(){
   if(!CH) return;
   try{
     CH.setOption({dataZoom:[
-      {type:'inside', xAxisIndex:[0,1], start:0, end:100},
-      {type:'slider', xAxisIndex:[0,1], start:0, end:100}
+      {type:'inside', xAxisIndex:[0], start:0, end:100},
+      {type:'slider', xAxisIndex:[0], start:0, end:100}
     ]});
   }catch(e){}
 }
-/* v15：点红叉 → 当天全部失效明细（四条判定标准逐条展开） */
+/* v16 模块三：点 ★ 看二段 M/W 结构明细 */
+function openMw(date){
+  var w = (DOC.mw||[]).filter(function(x){ return x.date===date; })[0];
+  if(!w) return;
+  var qty = [];
+  if(w.oiDrop10) qty.push('持仓较首峰降 ' + Math.abs(w.oiChg) + '%');
+  if(w.volDry) qty.push('当日量 ' + w.volRatio + '×20 日均量');
+  var html = '<h3>★ 二段 M/W 结构 · ' + date + ' · ' + DOC.name
+    + '<span onclick="closeSheet()">关闭 ✕</span></h3>';
+  html += '<div class="frow"><span>形态</span><b>' + w.dir + ' · 第二峰（'
+    + (w.side==='short'?'做空方向':'做多方向') + '）</b></div>'
+    + '<div class="frow"><span>首个峰 / 间隔</span><b>' + w.firstDate + ' / ' + w.gap + ' 根</b></div>'
+    + '<div class="frow"><span>确认日收盘 / ATR</span><b>' + w.price + ' / ' + w.atr + '</b></div>'
+    + '<div class="frow"><span>两峰间回撤 / 极值差</span><b>' + w.pullBetween + ' ATR / '
+    + w.extDelta + ' ATR</b></div>'
+    + '<div class="frow"><span>DIF 线背离</span><b style="color:#FFD400">✓ 价格更极端、动能反而走弱</b></div>'
+    + '<div class="frow"><span>量仓强特征</span><b>' + (qty.join('；') || '—') + '</b></div>'
+    + '<div style="font-size:11.5px;color:var(--dim);line-height:1.8;margin:10px 0 4px">'
+    + '历史标定（10 年 8 品种）：该组合 17 笔，胜率 <b style="color:#FFD400">64.7%</b>、'
+    + '均 R <b style="color:#FFD400">+1.79</b>、净收益 +33,460 元；'
+    + '基线 51.1% / +0.14R，训练 64.3% / 盲测 66.7%。<br>'
+    + '只做结构提示与微信独立推送，<b>MA34 进场、MA26 + 吊灯 3ATR 出场一字未改</b>。</div>';
+  $('sheet').innerHTML = html;
+  $('mask').classList.add('on');
+}
+/* 点白圈 → 当天全部失效明细（四条判定标准逐条展开） */
 function openDef(date){
   var es = (DOC.defend||[]).filter(function(e){ return e.date===date; });
   if(!es.length) return;
-  var html = '<h3>🛑 失效明细 · '+date+' · '+DOC.name
+  var html = '<h3>○ 失效明细 · '+date+' · '+DOC.name
     + '<span onclick="closeSheet()">关闭 ✕</span></h3>';
   html += '<div style="font-size:11.5px;color:var(--dim);line-height:1.7;margin:4px 0 10px">'
-    + '四条标准任一成立即打叉：① 反向 &gt;1.5 ATR　② 收盘破 MA26/MA34　'
+    + '四条标准任一成立即标记：① 反向 &gt;1.5 ATR　② 收盘破 MA26/MA34　'
     + '③ 5 根内未创新高/低并收破信号日极值　④ 触发 MA26 / 吊灯 3ATR 原版止损。<br>'
-    + '<b style="color:#FF7A7A">仅作提示，MA34 进场与 MA26 + 吊灯出场机制完全不变。</b></div>';
+    + '<b style="color:#E8EEFA">仅作提示，MA34 进场与 MA26 + 吊灯出场机制完全不变。</b></div>';
   es.forEach(function(e){
     var sd = e.side==='short'? '空':'多';
     var canOpen = (e.sigKind==='pred'||e.sigKind==='warn')
       && DOC.signals.some(function(s){return s.kind===e.sigKind && s.date===e.sigDate;});
     var onclick = canOpen? ' onclick="openSig(\''+e.sigKind+'|'+e.sigDate+'\')"' : '';
     html += '<div class="dv" style="margin:8px 0;cursor:'+(canOpen?'pointer':'default')
-      + ';border-left:3px solid #FF1F1F"'+onclick+'>'
-      + '<div style="font-size:13px;font-weight:700;color:#FF7A7A">✕ '
-      + e.sigLabel+' · '+sd+'向 · 原信号 '+e.sigDate
+      + ';border-left:3px solid rgba(232,238,250,.55)"'+onclick+'>'
+      + '<div style="font-size:13px;font-weight:700;color:#E8EEFA">○ '
+      + defTypeName(e) + ' · ' + e.sigLabel+' · '+sd+'向 · 原信号 '+e.sigDate
       + ' <span style="font-weight:400;color:var(--dim);font-size:11px">第 '+e.day+' 根判定</span></div>'
       + '<div style="font-size:12px;line-height:1.75;margin-top:5px;color:var(--tx)">'
       + (e.reasons||[{label:e.label,detail:e.detail}]).map(function(r){
@@ -940,6 +1016,11 @@ function openDef(date){
   $('sheet').innerHTML = html;
   $('mask').classList.add('on');
 }
+/* v16 模块一：失效类型一目了然 —— 顶/底=顶底雷达，多/空=建仓与预警 */
+function defTypeName(e){
+  if(e.sigKind === 'radar') return e.side === 'short' ? '顶失效' : '底失效';
+  return e.side === 'long' ? '多失效' : '空失效';
+}
 function dateIdx(dates, d){
   // 精确匹配；没有则找第一个 >= d 的
   for(var i=0;i<dates.length;i++){
@@ -947,6 +1028,30 @@ function dateIdx(dates, d){
     if(dates[i]>d) return i;
   }
   return null;
+}
+
+/* ================= v16 模块六：雷达卡下半明细折叠 ================= */
+/* 只包住「具体指标命中明细」，结论 / 概率 / 操作提示永远留在上半部分 */
+function installFold(root, id, sels){
+  if(!root || root.querySelector('#'+id)) return;
+  var nodes = sels.map(function(s){ return root.querySelector(s); }).filter(Boolean);
+  if(!nodes.length) return;
+  var wrap = document.createElement('div');
+  wrap.className = 'foldbody hide'; wrap.id = id;
+  var first = nodes[0], parent = first.parentNode;
+  parent.insertBefore(wrap, first);
+  nodes.forEach(function(n){ wrap.appendChild(n); });
+  var btn = document.createElement('button');
+  btn.className = 'foldbtn'; btn.id = id + 'Btn';
+  btn.textContent = '[展开详情 ▼]';
+  btn.setAttribute('onclick', "toggleFold('" + id + "')");
+  parent.insertBefore(btn, wrap);
+}
+function toggleFold(id){
+  var body = $(id), btn = $(id + 'Btn');
+  if(!body) return;
+  var hidden = body.classList.toggle('hide');
+  if(btn) btn.textContent = hidden ? '[展开详情 ▼]' : '[收起详情 ▲]';
 }
 
 /* ================= 独立出场雷达（v10 见顶/见底） ================= */
@@ -997,7 +1102,7 @@ function renderXs(){
   }
 
   if(N.dir){
-    html += '<div style="display:flex;gap:8px;font-size:11.5px;margin-bottom:8px">'
+    html += '<div class="xdetcards" style="display:flex;gap:8px;font-size:11.5px;margin-bottom:8px">'
       + exCard('距 MA34', (N.ext != null ? (N.ext >= 0 ? '+' : '') + f2(N.ext) + ' ATR' : '—'),
                '门槛 ≥' + (cfg.ext || 2.6) + ' ATR', '#7fb3ff')
       + exCard('自极值回撤', (N.pull != null ? f2(N.pull) + ' ATR' : '—'),
@@ -1016,6 +1121,7 @@ function renderXs(){
   html += '</div>';
 
   box.innerHTML = html;
+  installFold(box, 'xsFold', ['#xsBox .xdetcards', '#xsBox .xgrid']);
   if($('xsTime')) $('xsTime').textContent = '数据 ' + MAN.built;
 }
 
@@ -1358,6 +1464,8 @@ function renderDec(){
       }).join(' / ') : '无（当前无 4/4 命中的品种）')+'</div></div>';
 
   $('decGrid').innerHTML = html;
+  installFold($('decGrid'), 'decFold',
+              ['#decGrid .rdr .hit', '#decGrid .rdr .wkrow', '#decGrid .rdr .chk']);
   $('decTime').textContent = '数据 ' + MAN.built;
 }
 
@@ -1383,12 +1491,15 @@ function kindBadge(s){
   if(s.kind==='warn') return ['预警','b-T3'];
   return ['信号','b-T2'];
 }
-var SIGF = 'all';
+var SIGF = 'all', SIGSORT = 'time';
 try{
   var _f0 = new URLSearchParams(location.search).get('f');
-  if(_f0 && ['all','in','out','def'].indexOf(_f0)>=0) SIGF = _f0;
+  if(_f0 && ['all','in','out','def','mw'].indexOf(_f0)>=0) SIGF = _f0;
+  if(new URLSearchParams(location.search).get('sort') === 'def') SIGSORT = 'def';
 }catch(e){}
 function setSigF(f){ SIGF = f; renderSigs(); }
+/* v16 模块四：默认按时间旧→新连续排列；需要时仍可一键切回「失效优先」 */
+function toggleSigSort(){ SIGSORT = (SIGSORT === 'time' ? 'def' : 'time'); renderSigs(); }
 
 function renderSigs(){
   var rows = [];
@@ -1413,35 +1524,43 @@ function renderSigs(){
   (DOC.defend || []).forEach(function(e){
     rows.push({d: e.date, kind: 'def', e: e});
   });
+  // —— v16 模块三：★ 二段 M/W 结构 ——
+  (DOC.mw || []).forEach(function(w){
+    rows.push({d: w.date, kind: 'mw', w: w});
+  });
 
   var nIn = rows.filter(function(r){ return r.kind === 'in'; }).length;
   var nOut = rows.filter(function(r){ return r.kind === 'out'; }).length;
   var nDef = rows.filter(function(r){ return r.kind === 'def'; }).length;
+  var nMw = rows.filter(function(r){ return r.kind === 'mw'; }).length;
   var nHi = rows.filter(function(r){ return r.kind === 'out' && r.h.level === 'strong'; }).length;
   $('sigCnt').textContent = '进场 ' + nIn + ' · 出场 ' + nOut
     + (nHi ? '（强烈 ' + nHi + '）' : '')
-    + (nDef ? ' · 🛑 失效 ' + nDef + ' 条' : '');
+    + (nDef ? ' · ○ 失效 ' + nDef + ' 条' : '')
+    + (nMw ? ' · ★ M/W ' + nMw + ' 条' : '');
 
-  if(SIGF === 'in')  rows = rows.filter(function(r){ return r.kind === 'in'; });
-  if(SIGF === 'out') rows = rows.filter(function(r){ return r.kind === 'out'; });
-  if(SIGF === 'def') rows = rows.filter(function(r){ return r.kind === 'def'; });
+  if(SIGF !== 'all') rows = rows.filter(function(r){ return r.kind === SIGF; });
 
-  var fc = [['all','全部'],['in','只看进场'],['out','只看出场'],['def','只看失效']];
+  var fc = [['all','全部'],['in','只看进场'],['out','只看出场'],
+            ['def','只看失效'],['mw','★ M/W']];
   $('sigFilter').innerHTML = fc.map(function(f){
     return '<span class="fc' + (SIGF === f[0] ? ' on' : '') + '" onclick="setSigF(\'' + f[0] + '\')">'
       + f[1] + '</span>';
-  }).join('');
+  }).join('')
+    + '<span class="fc" style="margin-left:auto" onclick="toggleSigSort()">'
+    + (SIGSORT === 'time' ? '🛑 失效优先' : '⏱ 时间顺序') + '</span>';
 
   rows.sort(function(a,b){
-    var pa = a.kind === 'def' ? 0 : 1, pb = b.kind === 'def' ? 0 : 1;
-    if(pa !== pb) return pa - pb;           // v14：失效事件整体排最前（新的防守消息置顶）
-    if(a.d !== b.d) return a.d < b.d ? 1 : -1;
+    if(SIGSORT === 'def'){
+      var pa = a.kind === 'def' ? 0 : 1, pb = b.kind === 'def' ? 0 : 1;
+      if(pa !== pb) return pa - pb;
+      if(a.d !== b.d) return a.d < b.d ? 1 : -1;
+      return 0;
+    }
+    // v16 模块四：一页连续、按时间从旧到新；不分页、不截断
+    if(a.d !== b.d) return a.d < b.d ? -1 : 1;
     return 0;
   });
-  // v15：失效是全量清单，单独筛选时不截断到 40 条
-  var _cap = (SIGF === 'def') ? 400 : 40;
-  var _total = rows.length;
-  rows = rows.slice(0, _cap);
   if(!rows.length){
     $('sigList').innerHTML = '<div class="empty">暂无信号</div>';
     return;
@@ -1449,14 +1568,24 @@ function renderSigs(){
   $('sigList').innerHTML = rows.map(function(r){
     if(r.kind === 'def'){
       var e = r.e, sd = e.side === 'short' ? '空' : '多';
-      var head = '🛑 ' + (e.sigLabel || '信号') + '失效：' + (e.name || e.sym)
+      var head = '○ ' + defTypeName(e) + '：' + (e.name || e.sym)
         + '（' + e.sym + '）' + sd + '方向被走势证伪，建议止损平仓';
       return '<div class="sgr defrow" onclick="openDef(\'' + e.date + '\')">'
         + '<span class="dt">' + e.date + '</span>'
-        + '<span class="bd def">✕ ' + e.label + '</span>'
+        + '<span class="bd def">○ ' + e.label + '</span>'
         + '<span class="tx2">' + head
         + '<em>原信号 ' + e.sigDate + ' · 第 ' + e.day + ' 根判定 · '
         + (e.detail || '') + ' · 点此看失效明细</em></span></div>';
+    }
+    if(r.kind === 'mw'){
+      var w = r.w;
+      return '<div class="sgr mwrow" onclick="openMw(\'' + w.date + '\')">'
+        + '<span class="dt">' + w.date + '</span>'
+        + '<span class="bd mw">★ 二段M/W</span>'
+        + '<span class="tx2">★ ' + (w.name || w.sym) + '（' + w.sym + '）'
+        + w.dir + '第二峰确认 · ' + (w.side === 'short' ? '做空方向' : '做多方向')
+        + '<em>首峰 ' + w.firstDate + ' · 间隔 ' + w.gap + ' 根 · DIF背离 + 量仓强'
+        + ' · 历史 64.7% / +1.79R · 点此看明细</em></span></div>';
     }
     if(r.kind === 'in'){
       var s = r.s;
@@ -1492,10 +1621,11 @@ function renderSigs(){
       + '<em>回撤 ' + f2(h.pull) + ' ATR · 段龄 ' + h.age + ' 根 · 收 ' + f2(h.px)
       + (h.cross ? '（其他品种，仅供参考）' : '') + '</em>'
       + tagHtml(h.meta) + '</span></div>';
-  }).join('')
-    + (SIGF === 'def' && _total > rows.length
-       ? '<div class="empty">共 ' + _total + ' 条失效 · 已显示最近 '
-         + rows.length + ' 条（10 年全量）</div>' : '');
+  }).join('');
+  // 旧→新连续排列时默认落到最新一根；想看早段直接往上滚即可
+  var _box = $('sigList');
+  if(SIGSORT === 'time') _box.scrollTop = _box.scrollHeight;
+  else _box.scrollTop = 0;
 }
 
 /* ================= 信号弹窗 ================= */
@@ -1868,6 +1998,12 @@ function showPage(pg){
 }
 function renderAll(){
   renderMarket(); renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderSigs();
+  // ?expand=1 深链接：直接展开两张雷达卡明细，方便对照 / 截图
+  try{
+    if(new URLSearchParams(location.search).get('expand') === '1'){
+      toggleFold('decFold'); toggleFold('xsFold');
+    }
+  }catch(e){}
 }
 
 /* ================= 启动 ================= */

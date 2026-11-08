@@ -16,12 +16,14 @@ from datetime import datetime, timedelta, timezone
 import build
 import defend_rules
 import engine
+import mw_events
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dist", "data")
 EXIT_ALL = []      # 跨品种出场成交汇总（算全局胜率/净 R）
 XSIG_ALL = []      # 跨品种独立出场信号当前状态
 MKT_ALL = []       # 跨品种市场状态（纯信息展示，不干预信号）
 DEF_ALL = []       # v15：跨品种全量失效事件（manifest 汇总用）
+MW_ALL = []        # v16：跨品种二段 M/W 结构（DIF背离 + 量仓强）
 
 # 品种交易参数（模拟盘用）：乘数 / 手续费 / 保证金率
 # fee: ("lot", 元/手) 或 ("rate", 万分之几)
@@ -173,6 +175,15 @@ def build_product(sym):
                                        sigs, radar_all)
     DEF_ALL.extend(defend)
 
+    # ---- 3c) v16 模块三：二段 M/W 结构（DIF 背离 + 量仓强）----
+    # 与 reports/MW第二峰_特征叠加数据表.md 同源；只做图上 ★ 标记与独立微信推送。
+    try:
+        mw = mw_events.build_mw(sym, cfg["name"], main, S_main)
+        MW_ALL.extend(mw)
+    except Exception as e:                              # noqa: BLE001
+        print("   mw failed %s: %s" % (sym, e))
+        mw = []
+
     # 周/月信号：在主力连续 K 线上按对应周期独立计算（预测层全因果）
     unit_sigs = {}
     for u in ("W", "M"):
@@ -318,6 +329,7 @@ def build_product(sym):
         "contracts": cmeta,
         "signals": sigs,
         "defend": defend,                    # v13：独立防守事件（失效当天即新信号）
+        "mw": mw,                            # v16：★ 二段 M/W 结构（DIF背离 + 量仓强）
         "sigW": unit_sigs.get("W", []),
         "sigM": unit_sigs.get("M", []),
         "radar": radar,
@@ -433,6 +445,18 @@ def main():
             "profitTip": {"atr": 1.5, "text": "利润已达 1.5 ATR，可手动将止损上移至开仓价保本",
                           "advisoryOnly": True},
             "stat": defend_rules.summarize(DEF_ALL),
+        },
+        # v16 模块三：二段 M/W 结构（全期 17 笔，64.7% / +1.79R；盲测 66.7%）
+        "mwCfg": {
+            "version": "v16",
+            "label": "★ 二段M/W结构",
+            "rule": "第二峰 + DIF线背离 + 量仓强（持仓降≥10% 或 当日量≤0.8×20日均量）",
+            "backtest": {"n": 17, "win": 64.7, "avgR": 1.79,
+                         "trainWin": 64.3, "blindWin": 66.7,
+                         "baselineWin": 51.1, "netYuan": 33460},
+            "advisoryOnly": True,
+            "baseExitUnchanged": True,
+            "stat": mw_events.summarize(MW_ALL),
         },
         # v11.1：微信推送白名单（页面仍展示全部 8 品种）
         "pushCfg": {"symbols": (state.get("method", {}).get("push") or {}).get("symbols", []),
