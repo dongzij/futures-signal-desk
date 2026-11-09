@@ -2289,7 +2289,15 @@ function renderFlipBoard(){
   else if(pos.side === 'short') nextTxt = '出现「底部雷达 / 进场预警(多)」→ 平空反手多';
   else nextTxt = '出现「顶部雷达 / 进场预警(空)」→ 平多反手空';
   html += '<div class="frow"><span>下一次触发条件</span><b style="color:#FFD400">'+nextTxt+'</b></div>';
-  html += '<div class="note">反手策略（顶底雷达+进场预警）的理论持仓推导，仅作参考，不构成实盘指令；实盘须自担风险（含 30% 熔断）。</div>';
+  // v19.1 铁律：30% 单笔浮亏强平熔断，优先级高于反手策略（等下一个信号）
+  html += '<div style="margin-top:10px;padding:8px 10px;background:rgba(255,45,45,.12);'
+        + 'border-left:3px solid #FF2D2D;border-radius:4px;font-size:12.5px;line-height:1.8;color:#FF6B6B">'
+        + '<b style="color:#FF2D2D">🚨 铁律 · 30% 强制熔断（优先级最高，高于反手策略）</b><br>'
+        + '任一持仓反向浮亏达到本金的 <b>30%（约 3,000 元）</b>时，'
+        + '<b style="color:#FF2D2D">无条件立即手动平仓</b>——不等反手信号、不等反弹、不抗单。'
+        + '平仓后回到空仓，等待下一个信号再入场。</div>';
+  html += '<div class="note">反手策略（顶底雷达+进场预警）的理论持仓推导，仅作参考，不构成实盘指令；实盘须自担风险。'
+        + '出场只认两条：① 反向信号（反手）；② 30% 熔断（保命）。波动率过滤已永久封存，不参与任何决策。</div>';
   box.innerHTML = html;
 }
 function renderBestCombo(){

@@ -189,6 +189,33 @@ def push_scope(cfg):
     return allow, syms, all_flag
 
 
+# ---------------------------------------------------------------- v19.1：30% 单笔浮亏强制熔断
+# 用户 2026-11-09 拍板：铁律优先级最高，高于反手策略（等下一个信号）。
+# 口径：单笔（1 手）反向浮亏 ≥ 30% 本金（1 万/品种 → 约 3,000 元）即无条件手动平仓。
+BREAKER_YUAN = 3000
+IRON_RULE = (
+    '<div style="margin-top:14px;padding:8px 10px;background:#fff0f0;'
+    'border-left:3px solid #d93025;border-radius:4px;font-size:12px;'
+    'line-height:1.8;color:#d93025">'
+    '<b>⚠️ 铁律 · 30% 强制熔断（优先级最高，高于反手策略）</b>：'
+    '任一持仓单笔浮亏达到本金的 30%（约 3,000 元）时，'
+    '<b>无条件立即手动平仓</b>——不等反手信号、不等反弹、不抗单。'
+    '出场只认两条：① 反向信号（反手）；② 30% 熔断（保命）。'
+    '波动率过滤已永久封存，不参与任何决策。</div>')
+
+
+def breaker_scan(opens, allow_push):
+    """扫描持仓，返回触发 30% 熔断的信号列表（1 手口径浮亏 ≥ BREAKER_YUAN）。"""
+    hits = []
+    for s in opens:
+        mult = engine.MULT.get(s.get("sym"), 10)
+        loss = (s.get("floatPts") or 0) * mult          # 负数 = 亏损
+        if loss <= -BREAKER_YUAN and allow_push(s.get("sym")):
+            s["breakerLoss"] = round(loss)
+            hits.append(s)
+    return hits
+
+
 # ---------------------------------------------------------------- 主流程
 
 def main():
@@ -275,6 +302,9 @@ def main():
                 and allow_push(s["sym"])):
             s["warnPushedAt"] = today
             exit_warns.append(s)
+
+    # ---------- v19.1：30% 单笔浮亏熔断扫描（有触发必醒目推送） ----------
+    breaker_hits = breaker_scan(opens, allow_push)
 
     state["updated"] = now.strftime("%Y-%m-%d %H:%M")
     state["stats"] = {
@@ -408,7 +438,7 @@ def main():
             len(defend_fresh),
             "、".join("%s%s" % (e["name"], "多" if e["side"] == "long" else "空")
                      for e, _d in defend_fresh[:8]))
-        ok = post_push(push_token, title, "".join(cards))
+        ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
         print("push defend:", ok)
         if ok:
             seen_def.extend(dd for _e, dd in defend_fresh)
@@ -473,7 +503,7 @@ def main():
             len(fresh), "、".join("%s%s(%.0f%%)" % (
                 s["sym"], "空" if s["side"] == "short" else "多",
                 (s.get("prob", {}).get("5") or 0) * 100) for s in fresh))
-        ok = post_push(push_token, title, "".join(cards))
+        ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
         print("push:", ok)
 
     # ---------- 推送：出场预警（顶/底盘整特征点亮） ----------
@@ -499,7 +529,7 @@ def main():
         title = "出场预警 %d 条：%s" % (
             len(exit_warns), "、".join("%s%s" % (s["sym"], "多" if s["side"] == "long" else "空")
                                        for s in exit_warns))
-        ok = post_push(push_token, title, "".join(cards))
+        ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
         print("push exit-warn:", ok)
 
     # ---------- 推送：独立出场信号（顶/底） ----------
@@ -527,7 +557,7 @@ def main():
         title = "出场信号 %d 条：%s" % (
             len(xs_fresh), "、".join("%s%s" % (r["sym"], "顶" if r["dir"] == "顶部" else "底")
                                      for r in xs_fresh))
-        ok = post_push(push_token, title, "".join(cards))
+        ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
         print("push xsig:", ok)
 
     # ---------- 推送：趋势跟踪方向确认 ----------
@@ -550,9 +580,53 @@ def main():
         title = "趋势确认 %d 条：%s" % (
             len(tf_flips), "、".join("%s%s" % (c, "多" if L["side"] == "long" else "空")
                                      for c, L in tf_flips))
-        ok = post_push(push_token, title, "".join(cards))
+        ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
         print("push tf:", ok)
 
+    # ---------- v19.1 推送：30% 熔断触发（每个信号每天只推一次，红字置顶） ----------
+    if breaker_hits and push_token:
+        seen_brk = state.setdefault("breakerPushed", {})
+        todo = [s for s in breaker_hits
+                if seen_brk.get("%s|%s" % (s["sym"], s["date"])) != today]
+        if todo:
+            site = cfg.get("siteUrl", "")
+            cards = []
+            for s in todo:
+                sd = "多" if s["side"] == "long" else "空"
+                cards.append(
+                    '<div style="margin-bottom:16px">'
+                    '<div style="font-size:17px;font-weight:700;color:#d93025">'
+                    '🚨 30% 熔断触发：%s %s（持%s）</div>'
+                    '<div style="background:#fff0f0;padding:10px;border-radius:6px;'
+                    'border:1px solid #f3c2c2;font-size:13px;line-height:1.9;margin-top:6px">'
+                    '信号日 <b>%s</b> · 入场 <b>%s</b> · 当前 <b>%s</b><br>'
+                    '单笔浮亏约 <b style="color:#d93025">%s 元</b>'
+                    '（1 手口径，已达本金 30%%）<br>'
+                    '<b style="color:#d93025">⚠️ 无条件立即手动平仓！'
+                    '不等反手信号、不等反弹、不抗单。</b><br>'
+                    '平仓后回到空仓，等待下一个信号再入场。</div></div>'
+                    % (s["sym"], engine.NAMES.get(s["sym"], ""), sd,
+                       s.get("date"), s.get("entry"), s.get("last"),
+                       "{:,}".format(abs(int(s.get("breakerLoss") or 0)))))
+            title = "🚨 30% 熔断触发 %d 笔：%s（立即平仓！）" % (
+                len(todo), "、".join(s["sym"] for s in todo))
+            ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
+            print("push breaker:", ok)
+            if ok:
+                for s in todo:
+                    seen_brk["%s|%s" % (s["sym"], s["date"])] = today
+            state["breakerPushed"] = dict(list(seen_brk.items())[-200:])
+            json.dump(state, open(STATE, "w", encoding="utf-8"),
+                      ensure_ascii=False, indent=1)
+    # 无持仓触发时：仅在交易日把铁律以摘要形式随每日状态落盘，供页面/日志核对
+    state["breaker"] = {
+        "rule": "单笔浮亏 ≥ 30% 本金（约 3,000 元）→ 无条件手动平仓",
+        "thresholdYuan": BREAKER_YUAN,
+        "checkedAt": now.strftime("%Y-%m-%d %H:%M"),
+        "hits": [s["sym"] for s in breaker_hits],
+    }
+
+    json.dump(state, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print("scan done  found=%d  pushed=%d  pred=%d open=%d closed=%d win=%s%% sumYuan=%s"
           % (len(found), len(fresh), len(preds), len(opens), len(closed),
              state["stats"]["win"], state["stats"]["sumYuan"]))

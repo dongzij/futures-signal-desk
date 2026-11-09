@@ -1,6 +1,93 @@
 {
  "signals": [
   {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2017-01-24",
+   "idx": 67,
+   "price": 4092.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.15 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-0.71 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.13 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.20 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 19.3,
+   "gate": false,
+   "segStart": "2016-12-07",
+   "segAge": 35,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.928,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.413,
+       "ret20": 0.082,
+       "vol_chg20": 21.403,
+       "adx": 19.3,
+       "mkt_adx": 20.553
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "FG",
    "kind": "pred",
    "unit": "D",
@@ -362,6 +449,93 @@
    }
   },
   {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2017-03-09",
+   "idx": 94,
+   "price": 3575.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.07 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-0.82 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.23 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.42 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 22.3,
+   "gate": true,
+   "segStart": "2017-02-07",
+   "segAge": 23,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.941,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.091,
+       "ret20": -1.604,
+       "vol_chg20": 39.969,
+       "adx": 22.277,
+       "mkt_adx": 20.332
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "FG",
    "kind": "warn",
    "unit": "D",
@@ -611,6 +785,278 @@
        "vol_chg20": 34.699,
        "adx": 22.399,
        "mkt_adx": 25.311
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "pred",
+   "unit": "D",
+   "side": "long",
+   "dir": "bot",
+   "date": "2017-05-02",
+   "idx": 129,
+   "price": 3320.0,
+   "k": 4,
+   "prob": {
+    "2": 0.5833,
+    "3": 0.6389,
+    "5": 0.6944,
+    "10": 0.8889
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.14 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-2.29 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.55 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.80 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "checksS": [
+    {
+     "k": "S1",
+     "t": "持仓 5 日下降（趋势资金离场）",
+     "ok": false,
+     "v": "+23.1%",
+     "need": "≤0"
+    },
+    {
+     "k": "S2",
+     "t": "自极值回撤 ≥2 ATR",
+     "ok": true,
+     "v": "3.70 ATR",
+     "need": "≥2.00"
+    }
+   ],
+   "strong": false,
+   "doi5": 23.1,
+   "adx": 23.0,
+   "gate": true,
+   "segStart": "2017-03-22",
+   "segAge": 27,
+   "entryIdx": 130,
+   "entry": 3329.0,
+   "atr": 96.9,
+   "bufYuan": 2374,
+   "lead": 6,
+   "holdTo": "反向穿越 MA34",
+   "exit": 3117.0,
+   "lots": 2,
+   "status": "closed",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.881,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.337,
+       "ret20": -0.083,
+       "vol_chg20": -8.735,
+       "adx": 23.016,
+       "mkt_adx": 24.826
+      }
+     },
+     "day1": {
+      "day": 2,
+      "date": "2017-05-04",
+      "why": "破信号日极值+失守MA5"
+     },
+     "struct": {
+      "day": 2,
+      "date": "2017-05-04",
+      "eaten": 0.58,
+      "cushion0": 3.8
+     },
+     "warn": true,
+     "review": true
+    }
+   },
+   "maLine": 3197.5,
+   "chLine": 3046.3,
+   "distMa": 0.83,
+   "distCh": 0.73,
+   "armed": true,
+   "exitWarn": false,
+   "exitWarnWhy": [],
+   "exitDate": "2017-05-04",
+   "why": "反向穿越 MA26",
+   "pts": -212.0,
+   "ret": -6.37,
+   "yuan": -2122,
+   "held": 1,
+   "R": -2.19
+  },
+  {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2017-05-08",
+   "idx": 133,
+   "price": 4312.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "1.13 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.72 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.10 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.53 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 31.4,
+   "gate": true,
+   "segStart": "2017-04-12",
+   "segAge": 18,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.963,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.158,
+       "ret20": -6.279,
+       "vol_chg20": 414.802,
+       "adx": 31.397,
+       "mkt_adx": 23.228
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "confirm",
+   "unit": "D",
+   "side": "long",
+   "date": "2017-05-10",
+   "idx": 135,
+   "price": 3263.0,
+   "k": 0,
+   "predDate": "2017-05-02",
+   "lead": 6,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.927,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.74,
+       "ret20": 0.977,
+       "vol_chg20": 64.226,
+       "adx": 17.7,
+       "mkt_adx": 23.147
       }
      },
      "day1": null,
@@ -873,6 +1319,93 @@
        "vol_chg20": 26.428,
        "adx": 22.805,
        "mkt_adx": 18.894
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2017-07-13",
+   "idx": 179,
+   "price": 4548.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.65 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.54 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.41 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.44 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 18.4,
+   "gate": false,
+   "segStart": "2017-06-08",
+   "segAge": 26,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.071,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.149,
+       "ret20": -0.954,
+       "vol_chg20": -46.964,
+       "adx": 18.362,
+       "mkt_adx": 28.364
       }
      },
      "day1": null,
@@ -1188,6 +1721,260 @@
      },
      "warn": false,
      "review": true
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2017-08-23",
+   "idx": 208,
+   "price": 3965.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.52 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.71 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.19 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.27 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 36.5,
+   "gate": true,
+   "segStart": "2017-06-23",
+   "segAge": 44,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.167,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.384,
+       "ret20": -1.588,
+       "vol_chg20": -13.007,
+       "adx": 36.455,
+       "mkt_adx": 25.78
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "JD",
+   "kind": "pred",
+   "unit": "D",
+   "side": "short",
+   "dir": "top",
+   "date": "2017-08-30",
+   "idx": 213,
+   "price": 4918.0,
+   "k": 4,
+   "prob": {
+    "2": 0.5833,
+    "3": 0.6389,
+    "5": 0.6944,
+    "10": 0.8889
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.20 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-2.22 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.77 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.77 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "checksS": [
+    {
+     "k": "S1",
+     "t": "持仓 5 日下降（趋势资金离场）",
+     "ok": false,
+     "v": "+6.5%",
+     "need": "≤0"
+    },
+    {
+     "k": "S2",
+     "t": "自极值回撤 ≥2 ATR",
+     "ok": true,
+     "v": "3.62 ATR",
+     "need": "≥2.00"
+    }
+   ],
+   "strong": false,
+   "doi5": 6.5,
+   "adx": 26.6,
+   "gate": true,
+   "segStart": "2017-07-31",
+   "segAge": 23,
+   "entryIdx": 214,
+   "entry": 4902.0,
+   "atr": 105.51,
+   "bufYuan": 2585,
+   "lead": 1,
+   "holdTo": "反向穿越 MA34",
+   "exit": 4884.0,
+   "lots": 1,
+   "status": "closed",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.012,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.537,
+       "ret20": -1.299,
+       "vol_chg20": 362.694,
+       "adx": 26.565,
+       "mkt_adx": 26.143
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   },
+   "maLine": 4833.9,
+   "chLine": 4567.5,
+   "distMa": 0.47,
+   "distCh": -3.0,
+   "armed": true,
+   "exitWarn": false,
+   "exitWarnWhy": [],
+   "exitDate": "2017-10-10",
+   "why": "吊灯止损",
+   "pts": 18.0,
+   "ret": 0.37,
+   "yuan": 172,
+   "held": 23,
+   "R": 0.17
+  },
+  {
+   "sym": "JD",
+   "kind": "confirm",
+   "unit": "D",
+   "side": "short",
+   "date": "2017-08-31",
+   "idx": 214,
+   "price": 4901.0,
+   "k": 0,
+   "predDate": "2017-08-30",
+   "lead": 1,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.976,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.332,
+       "ret20": -1.362,
+       "vol_chg20": 301.351,
+       "adx": 25.442,
+       "mkt_adx": 26.0
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
     }
    }
   },
@@ -2394,6 +3181,93 @@
    }
   },
   {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2018-03-06",
+   "idx": 336,
+   "price": 4367.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.09 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "+1.09 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.31 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.10 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 24.3,
+   "gate": true,
+   "segStart": "2018-03-05",
+   "segAge": 2,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.13,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.961,
+       "ret20": 1.155,
+       "vol_chg20": 95.542,
+       "adx": 24.334,
+       "mkt_adx": 29.656
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "M",
    "kind": "warn",
    "unit": "D",
@@ -2555,6 +3429,89 @@
        "vol_chg20": -50.989,
        "adx": 27.838,
        "mkt_adx": 29.267
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2018-04-13",
+   "idx": 362,
+   "price": 3638.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "2.01 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-2.58 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.09 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.43 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 32.8,
+   "gate": true,
+   "segStart": "2018-03-07",
+   "segAge": 26,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.069,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.247,
+       "ret20": -3.046,
+       "vol_chg20": 30.992,
+       "adx": 32.796,
+       "mkt_adx": 28.926
       }
      },
      "day1": null,
@@ -2832,6 +3789,95 @@
    }
   },
   {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2018-05-25",
+   "idx": 390,
+   "price": 3751.0,
+   "k": 4,
+   "prob": {
+    "2": 0.5789,
+    "3": 0.6711,
+    "5": 0.7895,
+    "10": 0.9211
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.18 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.55 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.44 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.36 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 17.6,
+   "gate": false,
+   "segStart": "2018-05-24",
+   "segAge": 2,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.898,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.52,
+       "ret20": 0.112,
+       "vol_chg20": -12.933,
+       "adx": 17.629,
+       "mkt_adx": 20.671
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "M",
    "kind": "warn",
    "unit": "D",
@@ -3002,6 +4048,93 @@
      "day1": null,
      "struct": null,
      "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2018-07-02",
+   "idx": 415,
+   "price": 3937.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.44 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-2.10 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.93 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.35 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 19.4,
+   "gate": false,
+   "segStart": "2018-06-28",
+   "segAge": 3,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.008,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.621,
+       "ret20": -0.237,
+       "vol_chg20": -6.015,
+       "adx": 19.408,
+       "mkt_adx": 30.491
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
      "review": false
     }
    }
@@ -4141,6 +5274,262 @@
        "vol_chg20": 25.462,
        "adx": 38.941,
        "mkt_adx": 34.874
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2018-12-24",
+   "idx": 534,
+   "price": 3637.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "1.34 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.55 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.42 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.78 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 30.8,
+   "gate": true,
+   "segStart": "2018-11-01",
+   "segAge": 38,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.816,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.86,
+       "ret20": -1.136,
+       "vol_chg20": -33.607,
+       "adx": 30.768,
+       "mkt_adx": 35.367
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2019-02-15",
+   "idx": 566,
+   "price": 3785.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.27 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.52 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": false,
+     "v": "+0.39 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.21 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 35.9,
+   "gate": true,
+   "segStart": "2019-01-04",
+   "segAge": 26,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.092,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.752,
+       "ret20": -0.821,
+       "vol_chg20": 13.815,
+       "adx": 35.873,
+       "mkt_adx": 24.96
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2019-02-15",
+   "idx": 566,
+   "price": 4088.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.08 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-1.33 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.01 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.67 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 47.4,
+   "gate": true,
+   "segStart": "2018-11-23",
+   "segAge": 54,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.944,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -4.492,
+       "ret20": -1.622,
+       "vol_chg20": 77.661,
+       "adx": 47.413,
+       "mkt_adx": 24.96
       }
      },
      "day1": null,
@@ -5706,6 +7095,95 @@
    }
   },
   {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2019-07-23",
+   "idx": 672,
+   "price": 4127.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.23 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-1.38 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.22 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.46 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 20.2,
+   "gate": true,
+   "segStart": "2019-06-20",
+   "segAge": 24,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.971,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.097,
+       "ret20": 0.726,
+       "vol_chg20": -41.464,
+       "adx": 20.243,
+       "mkt_adx": 22.355
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "FG",
    "kind": "confirm",
    "unit": "D",
@@ -5831,6 +7309,271 @@
        "vol_chg20": -40.723,
        "adx": 29.428,
        "mkt_adx": 20.315
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2019-08-23",
+   "idx": 695,
+   "price": 3901.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "1.76 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.74 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.18 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.18 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 35.4,
+   "gate": true,
+   "segStart": "2019-07-26",
+   "segAge": 21,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.954,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.935,
+       "ret20": -3.159,
+       "vol_chg20": -47.707,
+       "adx": 35.422,
+       "mkt_adx": 20.817
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "JD",
+   "kind": "pred",
+   "unit": "D",
+   "side": "long",
+   "dir": "bot",
+   "date": "2019-08-30",
+   "idx": 700,
+   "price": 5074.0,
+   "k": 4,
+   "prob": {
+    "2": 0.5833,
+    "3": 0.6389,
+    "5": 0.6944,
+    "10": 0.8889
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.21 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.84 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-1.11 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.72 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "checksS": [
+    {
+     "k": "S1",
+     "t": "持仓 5 日下降（趋势资金离场）",
+     "ok": false,
+     "v": "+6.3%",
+     "need": "≤0"
+    },
+    {
+     "k": "S2",
+     "t": "自极值回撤 ≥2 ATR",
+     "ok": true,
+     "v": "3.26 ATR",
+     "need": "≥2.00"
+    }
+   ],
+   "strong": false,
+   "doi5": 6.3,
+   "adx": 26.6,
+   "gate": true,
+   "segStart": "2019-07-29",
+   "segAge": 25,
+   "entryIdx": 701,
+   "entry": 5094.0,
+   "atr": 87.42,
+   "bufYuan": 2142,
+   "lead": 1,
+   "holdTo": "反向穿越 MA34",
+   "exit": 5076.0,
+   "lots": 2,
+   "status": "closed",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.934,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.612,
+       "ret20": -0.526,
+       "vol_chg20": 92.52,
+       "adx": 26.627,
+       "mkt_adx": 22.499
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   },
+   "maLine": 5093.1,
+   "chLine": 5056.7,
+   "distMa": 0.2,
+   "distCh": 0.22,
+   "armed": true,
+   "exitWarn": false,
+   "exitWarnWhy": [
+    "持仓 -15.6%"
+   ],
+   "exitDate": "2019-09-25",
+   "why": "反向穿越 MA26",
+   "pts": -18.0,
+   "ret": -0.35,
+   "yuan": -188,
+   "held": 16,
+   "R": -0.21
+  },
+  {
+   "sym": "JD",
+   "kind": "confirm",
+   "unit": "D",
+   "side": "long",
+   "date": "2019-09-02",
+   "idx": 701,
+   "price": 5089.0,
+   "k": 0,
+   "predDate": "2019-08-30",
+   "lead": 1,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.929,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.443,
+       "ret20": 1.265,
+       "vol_chg20": 36.303,
+       "adx": 26.238,
+       "mkt_adx": 22.899
       }
      },
      "day1": null,
@@ -6010,6 +7753,94 @@
        "vol_chg20": 15.955,
        "adx": 24.249,
        "mkt_adx": 24.361
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2019-10-09",
+   "idx": 722,
+   "price": 5084.0,
+   "k": 4,
+   "prob": {
+    "2": 0.5789,
+    "3": 0.6711,
+    "5": 0.7895,
+    "10": 0.9211
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.13 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.69 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.58 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.32 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 18.3,
+   "gate": false,
+   "segStart": "2019-10-08",
+   "segAge": 2,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.989,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.466,
+       "ret20": 0.813,
+       "vol_chg20": -66.361,
+       "adx": 18.316,
+       "mkt_adx": 26.68
       }
      },
      "day1": null,
@@ -6996,6 +8827,94 @@
    }
   },
   {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2019-12-24",
+   "idx": 91,
+   "price": 1886.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "1.08 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.91 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.21 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.11 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 23.6,
+   "gate": true,
+   "segStart": "2019-12-04",
+   "segAge": 15,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.935,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.295,
+       "ret20": -2.096,
+       "vol_chg20": -5.725,
+       "adx": 23.632,
+       "mkt_adx": 24.949
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "SM",
    "kind": "pred",
    "unit": "D",
@@ -7440,6 +9359,181 @@
    }
   },
   {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2020-02-19",
+   "idx": 810,
+   "price": 3580.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "1.37 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.59 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.17 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.18 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 15.0,
+   "gate": false,
+   "segStart": "2020-01-23",
+   "segAge": 14,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.029,
+    "lowVol": false,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.998,
+       "ret20": -2.891,
+       "vol_chg20": -8.088,
+       "adx": 15.049,
+       "mkt_adx": 21.85
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2020-03-11",
+   "idx": 140,
+   "price": 1938.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.05 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-1.17 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.09 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.23 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 13.5,
+   "gate": false,
+   "segStart": "2020-02-11",
+   "segAge": 22,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.211,
+    "lowVol": false,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.385,
+       "ret20": -0.538,
+       "vol_chg20": 93.834,
+       "adx": 13.517,
+       "mkt_adx": 19.858
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "M",
    "kind": "warn",
    "unit": "D",
@@ -7523,6 +9617,135 @@
      "review": false
     }
    }
+  },
+  {
+   "sym": "RB",
+   "kind": "pred",
+   "unit": "D",
+   "side": "long",
+   "dir": "bot",
+   "date": "2020-04-16",
+   "idx": 850,
+   "price": 3571.0,
+   "k": 4,
+   "prob": {
+    "2": 0.5833,
+    "3": 0.6389,
+    "5": 0.6944,
+    "10": 0.8889
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.14 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-2.97 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.81 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.48 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "checksS": [
+    {
+     "k": "S1",
+     "t": "持仓 5 日下降（趋势资金离场）",
+     "ok": false,
+     "v": "+0.7%",
+     "need": "≤0"
+    },
+    {
+     "k": "S2",
+     "t": "自极值回撤 ≥2 ATR",
+     "ok": true,
+     "v": "3.88 ATR",
+     "need": "≥2.00"
+    }
+   ],
+   "strong": false,
+   "doi5": 0.7,
+   "adx": 26.6,
+   "gate": true,
+   "segStart": "2020-03-26",
+   "segAge": 15,
+   "entryIdx": 851,
+   "entry": 3584.0,
+   "atr": 72.72,
+   "bufYuan": 1782,
+   "lead": 10,
+   "holdTo": "反向穿越 MA34",
+   "exit": 3548.0,
+   "lots": 2,
+   "status": "closed",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.952,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "dist_ma60"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.368,
+       "ret20": -2.241,
+       "vol_chg20": 6.629,
+       "adx": 26.623,
+       "mkt_adx": 33.761
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   },
+   "maLine": 3557.8,
+   "chLine": 3402.8,
+   "distMa": 0.13,
+   "distCh": 2.0,
+   "armed": true,
+   "exitWarn": false,
+   "exitWarnWhy": [
+    "持仓 -2.9%",
+    "缩量"
+   ],
+   "exitDate": "2020-04-20",
+   "why": "反向穿越 MA26",
+   "pts": -36.0,
+   "ret": -1.0,
+   "yuan": -362,
+   "held": 1,
+   "R": -0.5
   },
   {
    "sym": "MA",
@@ -7788,6 +10011,139 @@
    }
   },
   {
+   "sym": "RB",
+   "kind": "confirm",
+   "unit": "D",
+   "side": "long",
+   "date": "2020-04-30",
+   "idx": 860,
+   "price": 3553.0,
+   "k": 0,
+   "predDate": "2020-04-16",
+   "lead": 10,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.851,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.354,
+       "ret20": 3.187,
+       "vol_chg20": -20.99,
+       "adx": 18.615,
+       "mkt_adx": 32.269
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2020-05-15",
+   "idx": 183,
+   "price": 1738.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.85 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.96 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.20 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.70 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 28.0,
+   "gate": true,
+   "segStart": "2020-03-12",
+   "segAge": 43,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 0,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.809,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.826,
+       "ret20": -0.681,
+       "vol_chg20": 84.235,
+       "adx": 27.983,
+       "mkt_adx": 27.007
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "SP",
    "kind": "warn",
    "unit": "D",
@@ -8046,6 +10402,192 @@
    }
   },
   {
+   "sym": "UR",
+   "kind": "pred",
+   "unit": "D",
+   "side": "short",
+   "dir": "top",
+   "date": "2020-08-21",
+   "idx": 251,
+   "price": 1827.0,
+   "k": 4,
+   "prob": {
+    "2": 0.5833,
+    "3": 0.6389,
+    "5": 0.6944,
+    "10": 0.8889
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.20 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-3.69 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-1.29 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.61 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "checksS": [
+    {
+     "k": "S1",
+     "t": "持仓 5 日下降（趋势资金离场）",
+     "ok": false,
+     "v": "+19.1%",
+     "need": "≤0"
+    },
+    {
+     "k": "S2",
+     "t": "自极值回撤 ≥2 ATR",
+     "ok": true,
+     "v": "4.04 ATR",
+     "need": "≥2.00"
+    }
+   ],
+   "strong": false,
+   "doi5": 19.1,
+   "adx": 26.2,
+   "gate": true,
+   "segStart": "2020-07-20",
+   "segAge": 25,
+   "entryIdx": 252,
+   "entry": 1826.0,
+   "atr": 45.29,
+   "bufYuan": 2219,
+   "lead": 6,
+   "holdTo": "反向穿越 MA34",
+   "exit": 1874.0,
+   "lots": 2,
+   "status": "closed",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.184,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.171,
+       "ret20": -0.022,
+       "vol_chg20": -17.745,
+       "adx": 26.194,
+       "mkt_adx": 30.996
+      }
+     },
+     "day1": {
+      "day": 2,
+      "date": "2020-08-25",
+      "why": "失守MA5"
+     },
+     "struct": {
+      "day": 3,
+      "date": "2020-08-26",
+      "eaten": 0.86,
+      "cushion0": 1.24
+     },
+     "warn": false,
+     "review": true
+    }
+   },
+   "maLine": 1860.2,
+   "chLine": 1954.9,
+   "distMa": 0.3,
+   "distCh": 1.79,
+   "armed": true,
+   "exitWarn": false,
+   "exitWarnWhy": [],
+   "exitDate": "2020-08-26",
+   "why": "反向穿越 MA26",
+   "pts": -48.0,
+   "ret": -2.63,
+   "yuan": -968,
+   "held": 2,
+   "R": -1.06
+  },
+  {
+   "sym": "UR",
+   "kind": "confirm",
+   "unit": "D",
+   "side": "short",
+   "date": "2020-08-31",
+   "idx": 257,
+   "price": 1820.0,
+   "k": 0,
+   "predDate": "2020-08-21",
+   "lead": 6,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.038,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.755,
+       "ret20": 1.885,
+       "vol_chg20": 184.133,
+       "adx": 23.112,
+       "mkt_adx": 32.618
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "SP",
    "kind": "warn",
    "unit": "D",
@@ -8202,6 +10744,91 @@
        "vol_chg20": 324.648,
        "adx": 40.494,
        "mkt_adx": 30.469
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2020-10-13",
+   "idx": 967,
+   "price": 3814.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.75 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.81 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.22 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.54 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 28.5,
+   "gate": true,
+   "segStart": "2020-09-04",
+   "segAge": 22,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.97,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.79,
+       "ret20": -2.194,
+       "vol_chg20": -29.442,
+       "adx": 28.474,
+       "mkt_adx": 26.78
       }
      },
      "day1": null,
@@ -8746,6 +11373,92 @@
    }
   },
   {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2020-11-11",
+   "idx": 988,
+   "price": 4575.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "1.84 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.60 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.01 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.40 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 25.3,
+   "gate": true,
+   "segStart": "2020-10-16",
+   "segAge": 19,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.973,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.914,
+       "ret20": -4.07,
+       "vol_chg20": 81.163,
+       "adx": 25.275,
+       "mkt_adx": 22.483
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "C",
    "kind": "warn",
    "unit": "D",
@@ -8823,6 +11536,188 @@
        "vol_chg20": -56.778,
        "adx": 30.843,
        "mkt_adx": 22.623
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "pred",
+   "unit": "D",
+   "side": "short",
+   "dir": "top",
+   "date": "2020-12-01",
+   "idx": 317,
+   "price": 1939.0,
+   "k": 4,
+   "prob": {
+    "2": 0.6842,
+    "3": 0.7895,
+    "5": 0.8947,
+    "10": 1.0
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.24 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.50 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.13 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.39 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "checksS": [
+    {
+     "k": "S1",
+     "t": "持仓 5 日下降（趋势资金离场）",
+     "ok": true,
+     "v": "-17.7%",
+     "need": "≤0"
+    },
+    {
+     "k": "S2",
+     "t": "自极值回撤 ≥2 ATR",
+     "ok": true,
+     "v": "2.18 ATR",
+     "need": "≥2.00"
+    }
+   ],
+   "strong": true,
+   "doi5": -17.7,
+   "adx": 24.2,
+   "gate": true,
+   "segStart": "2020-10-16",
+   "segAge": 33,
+   "entryIdx": 318,
+   "entry": 1936.0,
+   "atr": 33.96,
+   "bufYuan": 1664,
+   "lead": 1,
+   "holdTo": "反向穿越 MA34",
+   "exit": 1966.0,
+   "lots": 3,
+   "status": "closed",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.039,
+    "lowVol": false,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.637,
+       "ret20": -1.384,
+       "vol_chg20": -38.825,
+       "adx": 24.207,
+       "mkt_adx": 26.419
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 5,
+      "date": "2020-12-08",
+      "eaten": 0.74,
+      "cushion0": 2.27
+     },
+     "warn": false,
+     "review": true
+    }
+   },
+   "maLine": 1952.5,
+   "chLine": 2013.9,
+   "distMa": 0.4,
+   "distCh": 1.41,
+   "armed": true,
+   "exitWarn": false,
+   "exitWarnWhy": [
+    "持仓 -31.5%"
+   ],
+   "exitDate": "2020-12-04",
+   "why": "反向穿越 MA26",
+   "pts": -30.0,
+   "ret": -1.55,
+   "yuan": -608,
+   "held": 2,
+   "R": -0.88
+  },
+  {
+   "sym": "UR",
+   "kind": "confirm",
+   "unit": "D",
+   "side": "short",
+   "date": "2020-12-02",
+   "idx": 318,
+   "price": 1915.0,
+   "k": 0,
+   "predDate": "2020-12-01",
+   "lead": 1,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.032,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.89,
+       "ret20": -0.593,
+       "vol_chg20": -2.532,
+       "adx": 23.125,
+       "mkt_adx": 26.751
       }
      },
      "day1": null,
@@ -9089,6 +11984,92 @@
        "vol_chg20": -8.935,
        "adx": 28.354,
        "mkt_adx": 38.867
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2021-01-22",
+   "idx": 1039,
+   "price": 4480.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.32 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.90 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.44 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.43 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 34.7,
+   "gate": true,
+   "segStart": "2020-10-28",
+   "segAge": 62,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.937,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.062,
+       "ret20": -0.03,
+       "vol_chg20": -25.685,
+       "adx": 34.728,
+       "mkt_adx": 35.605
       }
      },
      "day1": null,
@@ -9443,6 +12424,144 @@
    }
   },
   {
+   "sym": "JD",
+   "kind": "pred",
+   "unit": "D",
+   "side": "short",
+   "dir": "top",
+   "date": "2021-01-27",
+   "idx": 1042,
+   "price": 4948.0,
+   "k": 4,
+   "prob": {
+    "2": 0.5833,
+    "3": 0.6389,
+    "5": 0.6944,
+    "10": 0.8889
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.14 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.75 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.42 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.62 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "checksS": [
+    {
+     "k": "S1",
+     "t": "持仓 5 日下降（趋势资金离场）",
+     "ok": false,
+     "v": "+7.3%",
+     "need": "≤0"
+    },
+    {
+     "k": "S2",
+     "t": "自极值回撤 ≥2 ATR",
+     "ok": true,
+     "v": "3.39 ATR",
+     "need": "≥2.00"
+    }
+   ],
+   "strong": false,
+   "doi5": 7.3,
+   "adx": 37.2,
+   "gate": true,
+   "segStart": "2020-12-10",
+   "segAge": 34,
+   "entryIdx": 1043,
+   "entry": 4929.0,
+   "atr": 119.03,
+   "bufYuan": 2916,
+   "lead": 18,
+   "holdTo": "反向穿越 MA34",
+   "exit": 5303.0,
+   "lots": 1,
+   "status": "closed",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.995,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.82,
+       "ret20": -1.386,
+       "vol_chg20": -35.405,
+       "adx": 37.223,
+       "mkt_adx": 31.624
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2021-01-28",
+      "why": "破信号日极值"
+     },
+     "struct": {
+      "day": 7,
+      "date": "2021-02-05",
+      "eaten": 0.62,
+      "cushion0": 3.55
+     },
+     "warn": false,
+     "review": true
+    }
+   },
+   "maLine": 5111.4,
+   "chLine": 5253.1,
+   "distMa": 1.61,
+   "distCh": -0.42,
+   "armed": false,
+   "exitWarn": false,
+   "exitWarnWhy": [
+    "持仓 -1.5%",
+    "缩量"
+   ],
+   "exitDate": "2021-02-18",
+   "why": "吊灯止损",
+   "pts": -374.0,
+   "ret": -7.59,
+   "yuan": -3748,
+   "held": 10,
+   "R": -3.14
+  },
+  {
    "sym": "FG",
    "kind": "warn",
    "unit": "D",
@@ -9622,6 +12741,54 @@
      "day1": null,
      "struct": null,
      "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "JD",
+   "kind": "confirm",
+   "unit": "D",
+   "side": "short",
+   "date": "2021-03-01",
+   "idx": 1060,
+   "price": 5064.0,
+   "k": 0,
+   "predDate": "2021-01-27",
+   "lead": 18,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.16,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.904,
+       "ret20": -0.714,
+       "vol_chg20": 42.012,
+       "adx": 22.157,
+       "mkt_adx": 30.548
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
      "review": false
     }
    }
@@ -10582,6 +13749,93 @@
    }
   },
   {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2021-06-10",
+   "idx": 1129,
+   "price": 5354.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.74 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.80 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.43 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.03 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 28.1,
+   "gate": true,
+   "segStart": "2021-05-19",
+   "segAge": 17,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.001,
+    "lowVol": false,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.041,
+       "ret20": -3.838,
+       "vol_chg20": -41.182,
+       "adx": 28.058,
+       "mkt_adx": 21.396
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "SA",
    "kind": "warn",
    "unit": "D",
@@ -11194,6 +14448,185 @@
    }
   },
   {
+   "sym": "UR",
+   "kind": "pred",
+   "unit": "D",
+   "side": "long",
+   "dir": "bot",
+   "date": "2021-09-03",
+   "idx": 504,
+   "price": 2598.0,
+   "k": 4,
+   "prob": {
+    "2": 0.5833,
+    "3": 0.6389,
+    "5": 0.6944,
+    "10": 0.8889
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.24 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-2.24 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.29 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.37 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "checksS": [
+    {
+     "k": "S1",
+     "t": "持仓 5 日下降（趋势资金离场）",
+     "ok": false,
+     "v": "+8.0%",
+     "need": "≤0"
+    },
+    {
+     "k": "S2",
+     "t": "自极值回撤 ≥2 ATR",
+     "ok": true,
+     "v": "3.78 ATR",
+     "need": "≥2.00"
+    }
+   ],
+   "strong": false,
+   "doi5": 8.0,
+   "adx": 22.5,
+   "gate": true,
+   "segStart": "2021-08-13",
+   "segAge": 16,
+   "entryIdx": 505,
+   "entry": 2586.0,
+   "atr": 66.22,
+   "bufYuan": 3245,
+   "lead": 1,
+   "holdTo": "反向穿越 MA34",
+   "exit": 3222.0,
+   "lots": 1,
+   "status": "closed",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.993,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.579,
+       "ret20": -2.145,
+       "vol_chg20": 83.803,
+       "adx": 22.476,
+       "mkt_adx": 22.058
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   },
+   "maLine": 2886.3,
+   "chLine": 3344.3,
+   "distMa": -5.07,
+   "distCh": -1.85,
+   "armed": true,
+   "exitWarn": false,
+   "exitWarnWhy": [
+    "持仓 -20.3%"
+   ],
+   "exitDate": "2021-10-13",
+   "why": "吊灯止损",
+   "pts": 636.0,
+   "ret": 24.59,
+   "yuan": 12712,
+   "held": 20,
+   "R": 9.6
+  },
+  {
+   "sym": "UR",
+   "kind": "confirm",
+   "unit": "D",
+   "side": "long",
+   "date": "2021-09-06",
+   "idx": 505,
+   "price": 2622.0,
+   "k": 0,
+   "predDate": "2021-09-03",
+   "lead": 1,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.994,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.911,
+       "ret20": -1.705,
+       "vol_chg20": 118.654,
+       "adx": 22.041,
+       "mkt_adx": 22.365
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "SP",
    "kind": "warn",
    "unit": "D",
@@ -11665,6 +15098,91 @@
      "day1": null,
      "struct": null,
      "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2021-10-22",
+   "idx": 532,
+   "price": 2972.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.21 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.96 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": false,
+     "v": "+0.24 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.51 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 37.1,
+   "gate": true,
+   "segStart": "2021-09-06",
+   "segAge": 28,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.408,
+    "lowVol": false,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "dist_ma60"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.062,
+       "ret20": -1.372,
+       "vol_chg20": 48.565,
+       "adx": 37.123,
+       "mkt_adx": 31.551
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
      "review": false
     }
    }
@@ -12153,6 +15671,93 @@
    }
   },
   {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2021-12-09",
+   "idx": 566,
+   "price": 2526.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.24 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "+0.60 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.19 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.36 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 13.5,
+   "gate": false,
+   "segStart": "2021-10-27",
+   "segAge": 32,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.825,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.499,
+       "ret20": 0.021,
+       "vol_chg20": -28.56,
+       "adx": 13.484,
+       "mkt_adx": 26.417
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "SP",
    "kind": "pred",
    "unit": "D",
@@ -12281,6 +15886,91 @@
      },
      "warn": false,
      "review": true
+    }
+   }
+  },
+  {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2022-01-04",
+   "idx": 1268,
+   "price": 4839.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "1.55 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.79 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.22 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.56 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 33.3,
+   "gate": true,
+   "segStart": "2021-11-22",
+   "segAge": 31,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.945,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.271,
+       "ret20": -2.141,
+       "vol_chg20": 194.361,
+       "adx": 33.322,
+       "mkt_adx": 20.277
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
     }
    }
   },
@@ -13036,6 +16726,184 @@
        "vol_chg20": -33.84,
        "adx": 23.387,
        "mkt_adx": 21.326
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2022-04-06",
+   "idx": 642,
+   "price": 2893.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.43 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-2.31 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.20 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.44 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 15.8,
+   "gate": false,
+   "segStart": "2022-03-02",
+   "segAge": 24,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.926,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.915,
+       "ret20": 0.535,
+       "vol_chg20": -42.47,
+       "adx": 15.824,
+       "mkt_adx": 21.318
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2022-04-14",
+   "idx": 648,
+   "price": 2894.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.05 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-0.62 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.79 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.41 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 12.5,
+   "gate": false,
+   "segStart": "2022-04-13",
+   "segAge": 2,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.853,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.851,
+       "ret20": 0.447,
+       "vol_chg20": -48.403,
+       "adx": 12.463,
+       "mkt_adx": 20.636
       }
      },
      "day1": null,
@@ -13882,6 +17750,179 @@
    }
   },
   {
+   "sym": "RB",
+   "kind": "pred",
+   "unit": "D",
+   "side": "long",
+   "dir": "bot",
+   "date": "2022-08-01",
+   "idx": 1406,
+   "price": 4279.0,
+   "k": 4,
+   "prob": {
+    "2": 0.6842,
+    "3": 0.7895,
+    "5": 0.8947,
+    "10": 1.0
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.01 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-2.41 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.71 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.73 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "checksS": [
+    {
+     "k": "S1",
+     "t": "持仓 5 日下降（趋势资金离场）",
+     "ok": true,
+     "v": "-0.5%",
+     "need": "≤0"
+    },
+    {
+     "k": "S2",
+     "t": "自极值回撤 ≥2 ATR",
+     "ok": true,
+     "v": "3.89 ATR",
+     "need": "≥2.00"
+    }
+   ],
+   "strong": true,
+   "doi5": -0.5,
+   "adx": 46.3,
+   "gate": true,
+   "segStart": "2022-06-13",
+   "segAge": 36,
+   "entryIdx": 1407,
+   "entry": 4256.0,
+   "atr": 129.99,
+   "bufYuan": 3185,
+   "lead": 1,
+   "holdTo": "反向穿越 MA34",
+   "exit": 4166.0,
+   "lots": 1,
+   "status": "closed",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.987,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.868,
+       "ret20": -0.577,
+       "vol_chg20": 24.195,
+       "adx": 46.304,
+       "mkt_adx": 30.978
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   },
+   "maLine": 4187.0,
+   "chLine": 3941.0,
+   "distMa": 0.16,
+   "distCh": 1.73,
+   "armed": true,
+   "exitWarn": false,
+   "exitWarnWhy": [
+    "持仓 -5.5%"
+   ],
+   "exitDate": "2022-08-04",
+   "why": "反向穿越 MA26",
+   "pts": -90.0,
+   "ret": -2.11,
+   "yuan": -902,
+   "held": 2,
+   "R": -0.69
+  },
+  {
+   "sym": "RB",
+   "kind": "confirm",
+   "unit": "D",
+   "side": "long",
+   "date": "2022-08-02",
+   "idx": 1407,
+   "price": 4290.0,
+   "k": 0,
+   "predDate": "2022-08-01",
+   "lead": 1,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.969,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.74,
+       "ret20": -1.047,
+       "vol_chg20": 10.761,
+       "adx": 43.833,
+       "mkt_adx": 30.052
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "C",
    "kind": "warn",
    "unit": "D",
@@ -14005,6 +18046,92 @@
        "vol_chg20": -19.817,
        "adx": 30.493,
        "mkt_adx": 26.611
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2022-08-08",
+   "idx": 726,
+   "price": 2408.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "1.23 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.51 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.46 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.68 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 32.8,
+   "gate": true,
+   "segStart": "2022-06-13",
+   "segAge": 41,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.919,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.989,
+       "ret20": 0.071,
+       "vol_chg20": -60.943,
+       "adx": 32.791,
+       "mkt_adx": 27.096
       }
      },
      "day1": null,
@@ -14190,6 +18317,91 @@
    }
   },
   {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2022-08-22",
+   "idx": 1421,
+   "price": 4800.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "1.50 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.89 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.35 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.62 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 37.8,
+   "gate": true,
+   "segStart": "2022-06-07",
+   "segAge": 55,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.062,
+    "lowVol": false,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -4.188,
+       "ret20": -2.358,
+       "vol_chg20": 76.534,
+       "adx": 37.808,
+       "mkt_adx": 24.159
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "SP",
    "kind": "warn",
    "unit": "D",
@@ -14267,6 +18479,92 @@
        "vol_chg20": 47.444,
        "adx": 17.904,
        "mkt_adx": 22.671
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2022-09-27",
+   "idx": 1446,
+   "price": 4023.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.30 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-0.51 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.15 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.52 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 28.2,
+   "gate": true,
+   "segStart": "2022-08-29",
+   "segAge": 21,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.839,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.899,
+       "ret20": -1.509,
+       "vol_chg20": 12.58,
+       "adx": 28.165,
+       "mkt_adx": 19.214
       }
      },
      "day1": null,
@@ -14503,6 +18801,132 @@
    }
   },
   {
+   "sym": "RB",
+   "kind": "pred",
+   "unit": "D",
+   "side": "long",
+   "dir": "bot",
+   "date": "2022-11-11",
+   "idx": 1474,
+   "price": 3823.0,
+   "k": 4,
+   "prob": {
+    "2": 0.6842,
+    "3": 0.7895,
+    "5": 0.8947,
+    "10": 1.0
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.18 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.82 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.05 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.43 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "checksS": [
+    {
+     "k": "S1",
+     "t": "持仓 5 日下降（趋势资金离场）",
+     "ok": true,
+     "v": "-4.0%",
+     "need": "≤0"
+    },
+    {
+     "k": "S2",
+     "t": "自极值回撤 ≥2 ATR",
+     "ok": true,
+     "v": "3.07 ATR",
+     "need": "≥2.00"
+    }
+   ],
+   "strong": true,
+   "doi5": -4.0,
+   "adx": 30.5,
+   "gate": true,
+   "segStart": "2022-10-11",
+   "segAge": 24,
+   "entryIdx": 1475,
+   "entry": 3823.0,
+   "atr": 80.73,
+   "bufYuan": 1978,
+   "lead": 2,
+   "holdTo": "反向穿越 MA34",
+   "exit": 4270.0,
+   "lots": 2,
+   "status": "closed",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.02,
+    "lowVol": false,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.367,
+       "ret20": -1.511,
+       "vol_chg20": 66.121,
+       "adx": 30.525,
+       "mkt_adx": 20.182
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   },
+   "maLine": 4274.3,
+   "chLine": 4216.8,
+   "distMa": 0.05,
+   "distCh": 0.66,
+   "armed": true,
+   "exitWarn": false,
+   "exitWarnWhy": [],
+   "exitDate": "2023-02-01",
+   "why": "反向穿越 MA26",
+   "pts": 447.0,
+   "ret": 11.69,
+   "yuan": 4468,
+   "held": 51,
+   "R": 5.54
+  },
+  {
    "sym": "FG",
    "kind": "warn",
    "unit": "D",
@@ -14585,6 +19009,56 @@
      "day1": null,
      "struct": null,
      "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "confirm",
+   "unit": "D",
+   "side": "long",
+   "date": "2022-11-15",
+   "idx": 1476,
+   "price": 3878.0,
+   "k": 0,
+   "predDate": "2022-11-11",
+   "lead": 2,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.986,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.512,
+       "ret20": 0.18,
+       "vol_chg20": -23.888,
+       "adx": 27.103,
+       "mkt_adx": 20.02
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
      "review": false
     }
    }
@@ -15027,6 +19501,94 @@
        "vol_chg20": -14.819,
        "adx": 16.641,
        "mkt_adx": 25.533
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2022-12-30",
+   "idx": 1509,
+   "price": 5000.0,
+   "k": 4,
+   "prob": {
+    "2": 0.5789,
+    "3": 0.6711,
+    "5": 0.7895,
+    "10": 0.9211
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.14 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.69 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.31 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.25 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 18.9,
+   "gate": false,
+   "segStart": "2022-12-12",
+   "segAge": 15,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.948,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.46,
+       "ret20": -0.426,
+       "vol_chg20": -2.127,
+       "adx": 18.878,
+       "mkt_adx": 24.493
       }
      },
      "day1": null,
@@ -15871,6 +20433,175 @@
    }
   },
   {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2023-06-02",
+   "idx": 1609,
+   "price": 4856.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.19 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-0.85 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.09 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.41 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 22.1,
+   "gate": true,
+   "segStart": "2023-04-20",
+   "segAge": 29,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.988,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.385,
+       "ret20": 0.531,
+       "vol_chg20": 58.027,
+       "adx": 22.148,
+       "mkt_adx": 37.653
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2023-06-07",
+   "idx": 1612,
+   "price": 3807.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.30 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.86 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.10 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.63 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 30.8,
+   "gate": true,
+   "segStart": "2023-03-21",
+   "segAge": 53,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.025,
+    "lowVol": false,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.676,
+       "ret20": -0.802,
+       "vol_chg20": 17.348,
+       "adx": 30.819,
+       "mkt_adx": 34.541
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "FG",
    "kind": "warn",
    "unit": "D",
@@ -16130,6 +20861,93 @@
    }
   },
   {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2023-07-07",
+   "idx": 1632,
+   "price": 3857.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.27 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-0.22 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.04 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.04 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 13.2,
+   "gate": false,
+   "segStart": "2023-06-08",
+   "segAge": 20,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.904,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.417,
+       "ret20": -0.74,
+       "vol_chg20": 3.908,
+       "adx": 13.239,
+       "mkt_adx": 25.382
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "C",
    "kind": "warn",
    "unit": "D",
@@ -16211,6 +21029,94 @@
      "day1": null,
      "struct": null,
      "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2023-07-19",
+   "idx": 1640,
+   "price": 4843.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.43 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.63 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.30 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.17 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 15.9,
+   "gate": false,
+   "segStart": "2023-07-17",
+   "segAge": 3,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.984,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.245,
+       "ret20": -0.843,
+       "vol_chg20": -41.141,
+       "adx": 15.895,
+       "mkt_adx": 25.016
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
      "review": false
     }
    }
@@ -17006,6 +21912,93 @@
    }
   },
   {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2023-11-20",
+   "idx": 1037,
+   "price": 2477.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.47 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.70 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.17 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.34 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 28.9,
+   "gate": true,
+   "segStart": "2023-10-19",
+   "segAge": 23,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.047,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.713,
+       "ret20": -1.083,
+       "vol_chg20": -36.495,
+       "adx": 28.908,
+       "mkt_adx": 20.065
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "C",
    "kind": "warn",
    "unit": "D",
@@ -17083,6 +22076,91 @@
        "vol_chg20": -21.439,
        "adx": 16.552,
        "mkt_adx": 22.016
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2023-12-04",
+   "idx": 1732,
+   "price": 4057.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.75 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.76 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.26 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.44 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 27.2,
+   "gate": true,
+   "segStart": "2023-10-27",
+   "segAge": 27,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.102,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.36,
+       "ret20": -1.038,
+       "vol_chg20": -40.023,
+       "adx": 27.201,
+       "mkt_adx": 25.68
       }
      },
      "day1": null,
@@ -17977,6 +23055,454 @@
    }
   },
   {
+   "sym": "JD",
+   "kind": "pred",
+   "unit": "D",
+   "side": "short",
+   "dir": "top",
+   "date": "2024-03-22",
+   "idx": 1804,
+   "price": 4128.0,
+   "k": 4,
+   "prob": {
+    "2": 0.5833,
+    "3": 0.6389,
+    "5": 0.6944,
+    "10": 0.8889
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.23 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-3.37 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-1.15 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.56 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "checksS": [
+    {
+     "k": "S1",
+     "t": "持仓 5 日下降（趋势资金离场）",
+     "ok": false,
+     "v": "+11.5%",
+     "need": "≤0"
+    },
+    {
+     "k": "S2",
+     "t": "自极值回撤 ≥2 ATR",
+     "ok": true,
+     "v": "3.40 ATR",
+     "need": "≥2.00"
+    }
+   ],
+   "strong": false,
+   "doi5": 11.5,
+   "adx": 26.0,
+   "gate": true,
+   "segStart": "2024-02-21",
+   "segAge": 23,
+   "entryIdx": 1805,
+   "entry": 4084.0,
+   "atr": 59.66,
+   "bufYuan": 1462,
+   "lead": 1,
+   "holdTo": "反向穿越 MA34",
+   "exit": 4514.0,
+   "lots": 3,
+   "status": "closed",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.917,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.179,
+       "ret20": 1.106,
+       "vol_chg20": -50.885,
+       "adx": 26.001,
+       "mkt_adx": 26.694
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 12,
+      "date": "2024-04-11",
+      "eaten": 4.3,
+      "cushion0": 1.68
+     },
+     "warn": false,
+     "review": true
+    }
+   },
+   "maLine": 4107.8,
+   "chLine": 3975.0,
+   "distMa": 6.81,
+   "distCh": -9.03,
+   "armed": true,
+   "exitWarn": false,
+   "exitWarnWhy": [],
+   "exitDate": "2024-04-11",
+   "why": "吊灯止损",
+   "pts": -430.0,
+   "ret": -10.53,
+   "yuan": -4308,
+   "held": 11,
+   "R": -7.21
+  },
+  {
+   "sym": "JD",
+   "kind": "confirm",
+   "unit": "D",
+   "side": "short",
+   "date": "2024-03-25",
+   "idx": 1805,
+   "price": 4016.0,
+   "k": 0,
+   "predDate": "2024-03-22",
+   "lead": 1,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.991,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 1.517,
+       "ret20": 2.324,
+       "vol_chg20": 12.42,
+       "adx": 26.048,
+       "mkt_adx": 26.531
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2024-04-11",
+   "idx": 1816,
+   "price": 3799.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.08 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.75 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": false,
+     "v": "+0.11 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.70 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 41.3,
+   "gate": true,
+   "segStart": "2024-01-30",
+   "segAge": 45,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.076,
+    "lowVol": false,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.857,
+       "ret20": -0.353,
+       "vol_chg20": 24.862,
+       "adx": 41.312,
+       "mkt_adx": 22.913
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "pred",
+   "unit": "D",
+   "side": "long",
+   "dir": "bot",
+   "date": "2024-04-17",
+   "idx": 1135,
+   "price": 2210.0,
+   "k": 4,
+   "prob": {
+    "2": 0.5833,
+    "3": 0.6389,
+    "5": 0.6944,
+    "10": 0.8889
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.18 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-2.86 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.16 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.67 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "checksS": [
+    {
+     "k": "S1",
+     "t": "持仓 5 日下降（趋势资金离场）",
+     "ok": false,
+     "v": "+4.6%",
+     "need": "≤0"
+    },
+    {
+     "k": "S2",
+     "t": "自极值回撤 ≥2 ATR",
+     "ok": true,
+     "v": "3.90 ATR",
+     "need": "≥2.00"
+    }
+   ],
+   "strong": false,
+   "doi5": 4.6,
+   "adx": 24.1,
+   "gate": true,
+   "segStart": "2024-03-13",
+   "segAge": 24,
+   "entryIdx": 1136,
+   "entry": 2236.0,
+   "atr": 52.82,
+   "bufYuan": 2588,
+   "lead": 1,
+   "holdTo": "反向穿越 MA34",
+   "exit": 2304.0,
+   "lots": 1,
+   "status": "closed",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.053,
+    "lowVol": false,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.823,
+       "ret20": -0.095,
+       "vol_chg20": 85.141,
+       "adx": 24.136,
+       "mkt_adx": 22.754
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
+   },
+   "maLine": 2324.8,
+   "chLine": 2277.5,
+   "distMa": 0.39,
+   "distCh": 0.5,
+   "armed": true,
+   "exitWarn": false,
+   "exitWarnWhy": [
+    "持仓 -12.8%"
+   ],
+   "exitDate": "2024-06-03",
+   "why": "反向穿越 MA26",
+   "pts": 68.0,
+   "ret": 3.04,
+   "yuan": 1352,
+   "held": 29,
+   "R": 1.29
+  },
+  {
+   "sym": "UR",
+   "kind": "confirm",
+   "unit": "D",
+   "side": "long",
+   "date": "2024-04-18",
+   "idx": 1136,
+   "price": 2222.0,
+   "k": 0,
+   "predDate": "2024-04-17",
+   "lead": 1,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.072,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.57,
+       "ret20": 0.593,
+       "vol_chg20": 260.574,
+       "adx": 23.49,
+       "mkt_adx": 22.862
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "FG",
    "kind": "warn",
    "unit": "D",
@@ -18234,6 +23760,94 @@
    }
   },
   {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2024-05-15",
+   "idx": 1837,
+   "price": 3807.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.19 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-1.19 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.14 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.23 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 16.9,
+   "gate": false,
+   "segStart": "2024-04-12",
+   "segAge": 21,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.933,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.544,
+       "ret20": 0.13,
+       "vol_chg20": -5.704,
+       "adx": 16.919,
+       "mkt_adx": 29.979
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "M",
    "kind": "warn",
    "unit": "D",
@@ -18448,6 +24062,93 @@
      },
      "warn": false,
      "review": true
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2024-06-03",
+   "idx": 1165,
+   "price": 2304.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.13 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-2.26 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": false,
+     "v": "+0.24 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.28 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 28.4,
+   "gate": true,
+   "segStart": "2024-04-24",
+   "segAge": 26,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.974,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.873,
+       "ret20": 0.418,
+       "vol_chg20": -10.6,
+       "adx": 28.413,
+       "mkt_adx": 29.547
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
     }
    }
   },
@@ -18930,6 +24631,91 @@
        "vol_chg20": 30.739,
        "adx": 35.27,
        "mkt_adx": 36.598
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2024-08-28",
+   "idx": 1911,
+   "price": 3450.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.73 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-2.51 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.12 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.62 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 43.3,
+   "gate": true,
+   "segStart": "2024-06-03",
+   "segAge": 62,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.047,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.487,
+       "ret20": -0.943,
+       "vol_chg20": -47.736,
+       "adx": 43.337,
+       "mkt_adx": 35.498
       }
      },
      "day1": null,
@@ -19456,6 +25242,185 @@
    }
   },
   {
+   "sym": "UR",
+   "kind": "pred",
+   "unit": "D",
+   "side": "long",
+   "dir": "bot",
+   "date": "2024-09-27",
+   "idx": 1246,
+   "price": 2032.0,
+   "k": 4,
+   "prob": {
+    "2": 0.6842,
+    "3": 0.7895,
+    "5": 0.8947,
+    "10": 1.0
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.25 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.68 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.09 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.63 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "checksS": [
+    {
+     "k": "S1",
+     "t": "持仓 5 日下降（趋势资金离场）",
+     "ok": true,
+     "v": "-19.0%",
+     "need": "≤0"
+    },
+    {
+     "k": "S2",
+     "t": "自极值回撤 ≥2 ATR",
+     "ok": true,
+     "v": "2.93 ATR",
+     "need": "≥2.00"
+    }
+   ],
+   "strong": true,
+   "doi5": -19.0,
+   "adx": 37.9,
+   "gate": true,
+   "segStart": "2024-08-14",
+   "segAge": 31,
+   "entryIdx": 1247,
+   "entry": 2074.0,
+   "atr": 39.89,
+   "bufYuan": 1955,
+   "lead": 1,
+   "holdTo": "反向穿越 MA34",
+   "exit": 2003.0,
+   "lots": 2,
+   "status": "closed",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.122,
+    "lowVol": false,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 0,
+      "hits": [],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.31,
+       "ret20": -0.627,
+       "vol_chg20": 21.021,
+       "adx": 37.898,
+       "mkt_adx": 32.48
+      }
+     },
+     "day1": null,
+     "struct": {
+      "day": 6,
+      "date": "2024-10-14",
+      "eaten": 0.56,
+      "cushion0": 3.94
+     },
+     "warn": false,
+     "review": true
+    }
+   },
+   "maLine": 2003.0,
+   "chLine": 2006.3,
+   "distMa": 0.0,
+   "distCh": -0.08,
+   "armed": true,
+   "exitWarn": false,
+   "exitWarnWhy": [
+    "持仓 -5.9%"
+   ],
+   "exitDate": "2024-10-10",
+   "why": "吊灯止损",
+   "pts": -71.0,
+   "ret": -3.42,
+   "yuan": -1428,
+   "held": 3,
+   "R": -1.78
+  },
+  {
+   "sym": "UR",
+   "kind": "confirm",
+   "unit": "D",
+   "side": "long",
+   "date": "2024-09-30",
+   "idx": 1247,
+   "price": 2071.0,
+   "k": 0,
+   "predDate": "2024-09-27",
+   "lead": 1,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.142,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "ret20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.201,
+       "ret20": 0.123,
+       "vol_chg20": 95.896,
+       "adx": 36.392,
+       "mkt_adx": 32.277
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "C",
    "kind": "warn",
    "unit": "D",
@@ -19624,6 +25589,93 @@
      "day1": null,
      "struct": null,
      "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2024-10-23",
+   "idx": 1944,
+   "price": 3502.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.50 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.61 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.50 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.29 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 31.1,
+   "gate": true,
+   "segStart": "2024-09-24",
+   "segAge": 17,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.01,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.535,
+       "ret20": -1.778,
+       "vol_chg20": -4.682,
+       "adx": 31.095,
+       "mkt_adx": 21.418
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
      "review": false
     }
    }
@@ -19805,6 +25857,93 @@
    }
   },
   {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2024-12-24",
+   "idx": 1303,
+   "price": 1957.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.10 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-1.13 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.05 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.29 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 17.3,
+   "gate": false,
+   "segStart": "2024-11-29",
+   "segAge": 18,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.057,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.895,
+       "ret20": -1.196,
+       "vol_chg20": 178.684,
+       "adx": 17.349,
+       "mkt_adx": 20.456
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "M",
    "kind": "warn",
    "unit": "D",
@@ -19882,6 +26021,92 @@
        "vol_chg20": -21.182,
        "adx": 29.409,
        "mkt_adx": 18.162
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2025-01-24",
+   "idx": 2010,
+   "price": 3958.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "2.11 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.57 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.40 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.55 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 22.1,
+   "gate": true,
+   "segStart": "2024-12-17",
+   "segAge": 28,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.904,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -3.774,
+       "ret20": -3.27,
+       "vol_chg20": 18.684,
+       "adx": 22.141,
+       "mkt_adx": 25.09
       }
      },
      "day1": null,
@@ -19974,6 +26199,182 @@
      "day1": null,
      "struct": null,
      "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2025-03-05",
+   "idx": 1347,
+   "price": 1946.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.12 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-1.08 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.09 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.32 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 23.9,
+   "gate": true,
+   "segStart": "2025-01-17",
+   "segAge": 28,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.034,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.527,
+       "ret20": -1.225,
+       "vol_chg20": 67.621,
+       "adx": 23.902,
+       "mkt_adx": 21.723
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2025-03-18",
+   "idx": 1356,
+   "price": 1962.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.03 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "+0.35 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.53 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.25 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 15.0,
+   "gate": false,
+   "segStart": "2025-03-17",
+   "segAge": 2,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.919,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.968,
+       "ret20": 0.257,
+       "vol_chg20": -54.36,
+       "adx": 15.047,
+       "mkt_adx": 21.788
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
      "review": false
     }
    }
@@ -20712,6 +27113,179 @@
    }
   },
   {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2025-06-25",
+   "idx": 1422,
+   "price": 1926.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "1.16 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.87 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.45 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.23 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 21.2,
+   "gate": true,
+   "segStart": "2025-05-23",
+   "segAge": 23,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 1.123,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.611,
+       "ret20": -1.893,
+       "vol_chg20": 210.761,
+       "adx": 21.226,
+       "mkt_adx": 25.392
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2025-06-30",
+   "idx": 2110,
+   "price": 3183.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.22 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-0.21 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.08 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.37 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 17.1,
+   "gate": false,
+   "segStart": "2025-05-15",
+   "segAge": 32,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.858,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.582,
+       "ret20": 1.066,
+       "vol_chg20": 14.121,
+       "adx": 17.065,
+       "mkt_adx": 23.186
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "MA",
    "kind": "warn",
    "unit": "D",
@@ -21199,6 +27773,92 @@
    }
   },
   {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2025-08-08",
+   "idx": 2139,
+   "price": 3399.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "1.07 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-2.44 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.58 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.42 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 27.8,
+   "gate": true,
+   "segStart": "2025-07-01",
+   "segAge": 29,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.172,
+    "lowVol": false,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.205,
+       "ret20": -1.363,
+       "vol_chg20": -37.09,
+       "adx": 27.754,
+       "mkt_adx": 23.658
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "SR",
    "kind": "pred",
    "unit": "D",
@@ -21519,6 +28179,91 @@
    }
   },
   {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2025-09-11",
+   "idx": 2163,
+   "price": 3204.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "5.81 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.61 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.20 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.82 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 58.6,
+   "gate": true,
+   "segStart": "2025-07-28",
+   "segAge": 34,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.992,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -9.772,
+       "ret20": -9.323,
+       "vol_chg20": 37.065,
+       "adx": 58.632,
+       "mkt_adx": 19.868
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "SA",
    "kind": "warn",
    "unit": "D",
@@ -21603,6 +28348,93 @@
      "day1": null,
      "struct": null,
      "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2025-09-22",
+   "idx": 2170,
+   "price": 3295.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.11 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-1.19 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.50 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.47 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 13.2,
+   "gate": false,
+   "segStart": "2025-08-18",
+   "segAge": 26,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.908,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.688,
+       "ret20": -0.649,
+       "vol_chg20": 37.675,
+       "adx": 13.187,
+       "mkt_adx": 19.617
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
      "review": false
     }
    }
@@ -21789,6 +28621,138 @@
    }
   },
   {
+   "sym": "UR",
+   "kind": "pred",
+   "unit": "D",
+   "side": "long",
+   "dir": "bot",
+   "date": "2025-10-29",
+   "idx": 1506,
+   "price": 1801.0,
+   "k": 4,
+   "prob": {
+    "2": 0.6842,
+    "3": 0.7895,
+    "5": 0.8947,
+    "10": 1.0
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.29 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.98 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.84 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.66 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "checksS": [
+    {
+     "k": "S1",
+     "t": "持仓 5 日下降（趋势资金离场）",
+     "ok": true,
+     "v": "-13.4%",
+     "need": "≤0"
+    },
+    {
+     "k": "S2",
+     "t": "自极值回撤 ≥2 ATR",
+     "ok": true,
+     "v": "3.01 ATR",
+     "need": "≥2.00"
+    }
+   ],
+   "strong": true,
+   "doi5": -13.4,
+   "adx": 29.5,
+   "gate": true,
+   "segStart": "2025-08-20",
+   "segAge": 45,
+   "entryIdx": 1507,
+   "entry": 1805.0,
+   "atr": 22.26,
+   "bufYuan": 1091,
+   "lead": 6,
+   "holdTo": "反向穿越 MA34",
+   "exit": 1795.0,
+   "lots": 4,
+   "status": "closed",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "strong",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.951,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 1,
+      "hits": [
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -2.285,
+       "ret20": -0.629,
+       "vol_chg20": 33.836,
+       "adx": 29.532,
+       "mkt_adx": 22.405
+      }
+     },
+     "day1": {
+      "day": 1,
+      "date": "2025-10-30",
+      "why": "破信号日极值"
+     },
+     "struct": null,
+     "warn": false,
+     "review": true
+    }
+   },
+   "maLine": 1798.8,
+   "chLine": 1769.2,
+   "distMa": 0.17,
+   "distCh": 1.16,
+   "armed": true,
+   "exitWarn": false,
+   "exitWarnWhy": [
+    "持仓 -8.8%"
+   ],
+   "exitDate": "2025-11-24",
+   "why": "反向穿越 MA26",
+   "pts": -10.0,
+   "ret": -0.55,
+   "yuan": -208,
+   "held": 17,
+   "R": -0.45
+  },
+  {
    "sym": "M",
    "kind": "confirm",
    "unit": "D",
@@ -21834,6 +28798,142 @@
      "day1": null,
      "struct": null,
      "warn": true,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "confirm",
+   "unit": "D",
+   "side": "long",
+   "date": "2025-11-06",
+   "idx": 1512,
+   "price": 1801.0,
+   "k": 0,
+   "predDate": "2025-10-29",
+   "lead": 6,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.961,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.652,
+       "ret20": 1.548,
+       "vol_chg20": -41.318,
+       "adx": 26.263,
+       "mkt_adx": 22.637
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2025-11-21",
+   "idx": 2208,
+   "price": 3344.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "1.19 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-3.05 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.18 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.36 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 19.9,
+   "gate": false,
+   "segStart": "2025-10-23",
+   "segAge": 22,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.982,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.624,
+       "ret20": -1.442,
+       "vol_chg20": -42.73,
+       "adx": 19.941,
+       "mkt_adx": 25.243
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
      "review": false
     }
    }
@@ -22184,6 +29284,92 @@
        "vol_chg20": 53.859,
        "adx": 19.959,
        "mkt_adx": 19.521
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2026-01-06",
+   "idx": 2238,
+   "price": 2687.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "5.26 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.95 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.47 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.74 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 43.1,
+   "gate": true,
+   "segStart": "2025-12-03",
+   "segAge": 23,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.796,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -7.346,
+       "ret20": -10.098,
+       "vol_chg20": -6.638,
+       "adx": 43.107,
+       "mkt_adx": 17.942
       }
      },
      "day1": null,
@@ -22630,6 +29816,92 @@
        "vol_chg20": -20.283,
        "adx": 35.718,
        "mkt_adx": 27.342
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2026-04-01",
+   "idx": 1608,
+   "price": 1950.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.13 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-0.12 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.11 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.21 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 29.9,
+   "gate": true,
+   "segStart": "2025-12-23",
+   "segAge": 64,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.94,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.95,
+       "ret20": -0.834,
+       "vol_chg20": -42.312,
+       "adx": 29.939,
+       "mkt_adx": 29.296
       }
      },
      "day1": null,
@@ -23426,6 +30698,92 @@
    }
   },
   {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2026-06-18",
+   "idx": 2345,
+   "price": 3984.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.32 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.52 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.44 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.93 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 43.5,
+   "gate": true,
+   "segStart": "2026-05-06",
+   "segAge": 32,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.991,
+    "lowVol": true,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "ret20",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -4.333,
+       "ret20": -0.276,
+       "vol_chg20": 520.025,
+       "adx": 43.461,
+       "mkt_adx": 17.993
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "M",
    "kind": "warn",
    "unit": "D",
@@ -23733,6 +31091,92 @@
    }
   },
   {
+   "sym": "RB",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2026-07-16",
+   "idx": 2364,
+   "price": 3161.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.30 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.80 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.19 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.48 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 17.7,
+   "gate": false,
+   "segStart": "2026-05-26",
+   "segAge": 37,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.992,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.651,
+       "ret20": -1.498,
+       "vol_chg20": 11.05,
+       "adx": 17.664,
+       "mkt_adx": 24.352
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "MA",
    "kind": "confirm",
    "unit": "D",
@@ -23771,6 +31215,93 @@
        "vol_chg20": 35.9,
        "adx": 27.592,
        "mkt_adx": 26.839
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2026-07-29",
+   "idx": 1688,
+   "price": 1785.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.24 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": false,
+     "v": "-1.08 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.36 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.49 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 12.1,
+   "gate": false,
+   "segStart": "2026-07-28",
+   "segAge": 2,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.912,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "ret20",
+       "adx",
+       "vol_chg20"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -1.865,
+       "ret20": 0.707,
+       "vol_chg20": -16.36,
+       "adx": 12.134,
+       "mkt_adx": 30.827
       }
      },
      "day1": null,
@@ -24043,6 +31574,95 @@
      "day1": null,
      "struct": null,
      "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "short",
+   "date": "2026-09-18",
+   "idx": 1725,
+   "price": 1768.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.05 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-1.57 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": false,
+     "v": "+0.14 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.15 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 11.6,
+   "gate": false,
+   "segStart": "2026-08-28",
+   "segAge": 16,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 0.971,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 5,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "vol_chg20",
+       "mkt_adx"
+      ],
+      "tag": true,
+      "min": 4,
+      "feats": {
+       "dist_ma60": 0.048,
+       "ret20": 0.07,
+       "vol_chg20": -9.588,
+       "adx": 11.554,
+       "mkt_adx": 23.111
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": true,
      "review": false
     }
    }
@@ -24740,6 +32360,179 @@
    }
   },
   {
+   "sym": "UR",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2026-10-30",
+   "idx": 1749,
+   "price": 1736.0,
+   "k": 4,
+   "prob": {
+    "2": 0.5789,
+    "3": 0.6711,
+    "5": 0.7895,
+    "10": 0.9211
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": true,
+     "v": "0.14 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-2.53 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.45 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.51 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 17.4,
+   "gate": false,
+   "segStart": "2026-09-21",
+   "segAge": 24,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": -1,
+    "weekAlign": false,
+    "tier": "normal",
+    "observe": true,
+    "push": false,
+    "volRatio": 0.965,
+    "lowVol": true,
+    "confirm2": "noFollow",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 3,
+      "hits": [
+       "dist_ma60",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.387,
+       "ret20": -0.927,
+       "vol_chg20": 86.171,
+       "adx": 17.371,
+       "mkt_adx": 22.93
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
+   "sym": "JD",
+   "kind": "warn",
+   "unit": "D",
+   "side": "long",
+   "date": "2026-11-02",
+   "idx": 2435,
+   "price": 3564.0,
+   "k": 3,
+   "prob": {
+    "2": 0.41,
+    "3": 0.4598,
+    "5": 0.5785,
+    "10": 0.7625
+   },
+   "checks": [
+    {
+     "k": "A1",
+     "t": "价格逼近 MA34（≤0.3 ATR）",
+     "ok": false,
+     "v": "0.32 ATR",
+     "need": "≤0.30"
+    },
+    {
+     "k": "A9",
+     "t": "10 日累计逆行 ≥1.5 ATR",
+     "ok": true,
+     "v": "-2.59 ATR",
+     "need": "≤-1.50"
+    },
+    {
+     "k": "A15",
+     "t": "MA10 斜率转平或转向",
+     "ok": true,
+     "v": "-0.07 ATR",
+     "need": "≤0.00"
+    },
+    {
+     "k": "A17",
+     "t": "MACD 柱翻向",
+     "ok": true,
+     "v": "-0.55 ATR",
+     "need": "≤0.00"
+    }
+   ],
+   "adx": 35.2,
+   "gate": true,
+   "segStart": "2026-09-29",
+   "segAge": 20,
+   "status": "watch",
+   "foundAt": "2026-11-09 16:11",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.158,
+    "lowVol": false,
+    "confirm2": "followed",
+    "risk": {
+     "pool": "in",
+     "vac": {
+      "score": 2,
+      "hits": [
+       "dist_ma60",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 4,
+      "feats": {
+       "dist_ma60": -0.331,
+       "ret20": -2.417,
+       "vol_chg20": 97.641,
+       "adx": 35.172,
+       "mkt_adx": 23.258
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
+  },
+  {
    "sym": "FG",
    "kind": "pred",
    "unit": "D",
@@ -25234,9 +33027,98 @@
   "C|warn|2026-04-13",
   "C|warn|2026-06-11",
   "C|pred|2026-10-22",
-  "C|confirm|2026-10-27"
+  "C|confirm|2026-10-27",
+  "RB|warn|2017-03-09",
+  "RB|pred|2017-05-02",
+  "RB|confirm|2017-05-10",
+  "RB|warn|2017-08-23",
+  "RB|warn|2018-04-13",
+  "RB|warn|2018-05-25",
+  "RB|warn|2018-07-02",
+  "RB|warn|2018-12-24",
+  "RB|warn|2019-02-15",
+  "RB|warn|2019-07-23",
+  "RB|warn|2019-08-23",
+  "RB|warn|2020-02-19",
+  "RB|pred|2020-04-16",
+  "RB|confirm|2020-04-30",
+  "RB|warn|2020-10-13",
+  "RB|warn|2021-01-22",
+  "RB|warn|2021-06-10",
+  "RB|pred|2022-08-01",
+  "RB|confirm|2022-08-02",
+  "RB|warn|2022-09-27",
+  "RB|pred|2022-11-11",
+  "RB|confirm|2022-11-15",
+  "RB|warn|2023-06-07",
+  "RB|warn|2023-07-07",
+  "RB|warn|2023-12-04",
+  "RB|warn|2024-04-11",
+  "RB|warn|2024-05-15",
+  "RB|warn|2024-08-28",
+  "RB|warn|2024-10-23",
+  "RB|warn|2025-06-30",
+  "RB|warn|2025-08-08",
+  "RB|warn|2025-09-22",
+  "RB|warn|2026-07-16",
+  "UR|warn|2019-12-24",
+  "UR|warn|2020-03-11",
+  "UR|warn|2020-05-15",
+  "UR|pred|2020-08-21",
+  "UR|confirm|2020-08-31",
+  "UR|pred|2020-12-01",
+  "UR|confirm|2020-12-02",
+  "UR|pred|2021-09-03",
+  "UR|confirm|2021-09-06",
+  "UR|warn|2021-10-22",
+  "UR|warn|2021-12-09",
+  "UR|warn|2022-04-06",
+  "UR|warn|2022-04-14",
+  "UR|warn|2022-08-08",
+  "UR|warn|2023-11-20",
+  "UR|pred|2024-04-17",
+  "UR|confirm|2024-04-18",
+  "UR|warn|2024-06-03",
+  "UR|pred|2024-09-27",
+  "UR|confirm|2024-09-30",
+  "UR|warn|2024-12-24",
+  "UR|warn|2025-03-05",
+  "UR|warn|2025-03-18",
+  "UR|warn|2025-06-25",
+  "UR|pred|2025-10-29",
+  "UR|confirm|2025-11-06",
+  "UR|warn|2026-04-01",
+  "UR|warn|2026-07-29",
+  "UR|warn|2026-09-18",
+  "UR|warn|2026-10-30",
+  "JD|warn|2017-01-24",
+  "JD|warn|2017-05-08",
+  "JD|warn|2017-07-13",
+  "JD|pred|2017-08-30",
+  "JD|confirm|2017-08-31",
+  "JD|warn|2018-03-06",
+  "JD|warn|2019-02-15",
+  "JD|pred|2019-08-30",
+  "JD|confirm|2019-09-02",
+  "JD|warn|2019-10-09",
+  "JD|warn|2020-11-11",
+  "JD|pred|2021-01-27",
+  "JD|confirm|2021-03-01",
+  "JD|warn|2022-01-04",
+  "JD|warn|2022-08-22",
+  "JD|warn|2022-12-30",
+  "JD|warn|2023-06-02",
+  "JD|warn|2023-07-19",
+  "JD|pred|2024-03-22",
+  "JD|confirm|2024-03-25",
+  "JD|warn|2025-01-24",
+  "JD|warn|2025-09-11",
+  "JD|warn|2025-11-21",
+  "JD|warn|2026-01-06",
+  "JD|warn|2026-06-18",
+  "JD|warn|2026-11-02"
  ],
- "runs": 8,
+ "runs": 10,
  "xsigSeen": [],
  "tf": {
   "FG": {
@@ -25280,16 +33162,16 @@
    "entry": 2234.0
   }
  },
- "scanDate": "2026-11-08",
- "updated": "2026-11-08 21:21",
+ "scanDate": "2026-11-09",
+ "updated": "2026-11-09 16:12",
  "stats": {
-  "pred": 60,
+  "pred": 74,
   "open": 3,
-  "closed": 57,
-  "warn": 8,
-  "win": 33.3,
-  "avgRet": 0.58,
-  "sumYuan": 11050
+  "closed": 71,
+  "warn": 6,
+  "win": 32.4,
+  "avgRet": 0.52,
+  "sumYuan": 14912
  },
  "method": {
   "name": "反转预测雷达 v9（慢进快出）",
@@ -25374,9 +33256,12 @@
   },
   "push": {
    "symbols": [
-    "SR",
+    "FG",
     "M",
-    "FG"
+    "MA",
+    "RB",
+    "UR",
+    "JD"
    ],
    "all": true,
    "by": "daily",
@@ -25501,119 +33386,6 @@
    "side": "short",
    "dir": "底部",
    "date": "2026-11-06",
-   "close": 961.0,
-   "k": 2,
-   "gate": 0,
-   "aux": 2,
-   "level": "none",
-   "advice": "趋势未到极端位置",
-   "conds": [
-    {
-     "k": "ext",
-     "n": "趋势伸展",
-     "d": "收盘距 MA34 ≥2.6ATR",
-     "ok": false,
-     "gate": true
-    },
-    {
-     "k": "pull",
-     "n": "极值回撤",
-     "d": "自段内高/低点回撤 ≥1.1ATR",
-     "ok": false,
-     "gate": true
-    },
-    {
-     "k": "amp",
-     "n": "段幅足够",
-     "d": "本段振幅 ≥12ATR",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "shadow",
-     "n": "冲高回落",
-     "d": "当根反向影线 ≥0.6ATR",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "age",
-     "n": "趋势老化",
-     "d": "本段已走 ≥30 根",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "adx",
-     "n": "动能衰减",
-     "d": "ADX 自 20 日高点回落 ≥3",
-     "ok": true,
-     "gate": false
-    },
-    {
-     "k": "ma18",
-     "n": "短均失守",
-     "d": "收盘反向穿越 MA18",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "oi",
-     "n": "资金撤退",
-     "d": "持仓 5 日净减",
-     "ok": true,
-     "gate": false
-    }
-   ],
-   "ext": 0.77,
-   "pull": -0.11,
-   "m34": 981.7,
-   "extPx": 958.0,
-   "age": 1,
-   "segSide": -1,
-   "sym": "SA",
-   "meta": {
-    "weekMA": 45,
-    "weekPos": -1,
-    "weekAlign": false,
-    "tier": "normal",
-    "observe": true,
-    "push": false,
-    "volRatio": 1.022,
-    "lowVol": false,
-    "confirm2": "pending",
-    "risk": {
-     "pool": "radar",
-     "vac": {
-      "score": 5,
-      "hits": [
-       "dist_ma60",
-       "ret20",
-       "adx",
-       "vol_chg20",
-       "mkt_adx"
-      ],
-      "tag": true,
-      "min": 5,
-      "feats": {
-       "dist_ma60": -1.807,
-       "ret20": -1.821,
-       "vol_chg20": 26.379,
-       "adx": 16.558,
-       "mkt_adx": 23.43
-      }
-     },
-     "day1": null,
-     "struct": null,
-     "warn": true,
-     "review": false
-    }
-   }
-  },
-  {
-   "side": "short",
-   "dir": "底部",
-   "date": "2026-11-06",
    "close": 3079.0,
    "k": 1,
    "gate": 1,
@@ -25718,231 +33490,6 @@
      "day1": null,
      "struct": null,
      "warn": false,
-     "review": false
-    }
-   }
-  },
-  {
-   "side": "short",
-   "dir": "底部",
-   "date": "2026-11-06",
-   "close": 4626.0,
-   "k": 1,
-   "gate": 1,
-   "aux": 0,
-   "level": "none",
-   "advice": "趋势未到极端位置",
-   "conds": [
-    {
-     "k": "ext",
-     "n": "趋势伸展",
-     "d": "收盘距 MA34 ≥2.6ATR",
-     "ok": false,
-     "gate": true
-    },
-    {
-     "k": "pull",
-     "n": "极值回撤",
-     "d": "自段内高/低点回撤 ≥1.1ATR",
-     "ok": true,
-     "gate": true
-    },
-    {
-     "k": "amp",
-     "n": "段幅足够",
-     "d": "本段振幅 ≥12ATR",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "shadow",
-     "n": "冲高回落",
-     "d": "当根反向影线 ≥0.6ATR",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "age",
-     "n": "趋势老化",
-     "d": "本段已走 ≥30 根",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "adx",
-     "n": "动能衰减",
-     "d": "ADX 自 20 日高点回落 ≥3",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "ma18",
-     "n": "短均失守",
-     "d": "收盘反向穿越 MA18",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "oi",
-     "n": "资金撤退",
-     "d": "持仓 5 日净减",
-     "ok": false,
-     "gate": false
-    }
-   ],
-   "ext": 1.38,
-   "pull": -1.84,
-   "m34": 4743.0,
-   "extPx": 4470.0,
-   "age": 20,
-   "segSide": -1,
-   "sym": "SP",
-   "meta": {
-    "weekMA": 45,
-    "weekPos": -1,
-    "weekAlign": false,
-    "tier": "normal",
-    "observe": true,
-    "push": false,
-    "volRatio": 1.046,
-    "lowVol": false,
-    "confirm2": "pending",
-    "risk": {
-     "pool": "radar",
-     "vac": {
-      "score": 4,
-      "hits": [
-       "dist_ma60",
-       "ret20",
-       "adx",
-       "mkt_adx"
-      ],
-      "tag": false,
-      "min": 5,
-      "feats": {
-       "dist_ma60": -1.704,
-       "ret20": -2.741,
-       "vol_chg20": 237.561,
-       "adx": 29.457,
-       "mkt_adx": 21.587
-      }
-     },
-     "day1": null,
-     "struct": null,
-     "warn": false,
-     "review": false
-    }
-   }
-  },
-  {
-   "side": "short",
-   "dir": "底部",
-   "date": "2026-11-06",
-   "close": 5808.0,
-   "k": 1,
-   "gate": 0,
-   "aux": 1,
-   "level": "none",
-   "advice": "趋势未到极端位置",
-   "conds": [
-    {
-     "k": "ext",
-     "n": "趋势伸展",
-     "d": "收盘距 MA34 ≥2.6ATR",
-     "ok": false,
-     "gate": true
-    },
-    {
-     "k": "pull",
-     "n": "极值回撤",
-     "d": "自段内高/低点回撤 ≥1.1ATR",
-     "ok": false,
-     "gate": true
-    },
-    {
-     "k": "amp",
-     "n": "段幅足够",
-     "d": "本段振幅 ≥12ATR",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "shadow",
-     "n": "冲高回落",
-     "d": "当根反向影线 ≥0.6ATR",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "age",
-     "n": "趋势老化",
-     "d": "本段已走 ≥30 根",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "adx",
-     "n": "动能衰减",
-     "d": "ADX 自 20 日高点回落 ≥3",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "ma18",
-     "n": "短均失守",
-     "d": "收盘反向穿越 MA18",
-     "ok": false,
-     "gate": false
-    },
-    {
-     "k": "oi",
-     "n": "资金撤退",
-     "d": "持仓 5 日净减",
-     "ok": true,
-     "gate": false
-    }
-   ],
-   "ext": 0.43,
-   "pull": -0.11,
-   "m34": 5838.5,
-   "extPx": 5800.0,
-   "age": 1,
-   "segSide": -1,
-   "sym": "SM",
-   "meta": {
-    "weekMA": 45,
-    "weekPos": -1,
-    "weekAlign": false,
-    "tier": "normal",
-    "observe": true,
-    "push": false,
-    "volRatio": 0.916,
-    "lowVol": true,
-    "confirm2": "pending",
-    "risk": {
-     "pool": "radar",
-     "vac": {
-      "score": 5,
-      "hits": [
-       "dist_ma60",
-       "ret20",
-       "adx",
-       "vol_chg20",
-       "mkt_adx"
-      ],
-      "tag": true,
-      "min": 5,
-      "feats": {
-       "dist_ma60": -1.031,
-       "ret20": -0.565,
-       "vol_chg20": -14.001,
-       "adx": 17.716,
-       "mkt_adx": 23.265
-      }
-     },
-     "day1": null,
-     "struct": null,
-     "warn": true,
      "review": false
     }
    }
@@ -26063,10 +33610,10 @@
    "side": "short",
    "dir": "底部",
    "date": "2026-11-06",
-   "close": 5215.0,
-   "k": 2,
+   "close": 3038.0,
+   "k": 1,
    "gate": 1,
-   "aux": 1,
+   "aux": 0,
    "level": "none",
    "advice": "趋势未到极端位置",
    "conds": [
@@ -26074,14 +33621,14 @@
      "k": "ext",
      "n": "趋势伸展",
      "d": "收盘距 MA34 ≥2.6ATR",
-     "ok": true,
+     "ok": false,
      "gate": true
     },
     {
      "k": "pull",
      "n": "极值回撤",
      "d": "自段内高/低点回撤 ≥1.1ATR",
-     "ok": false,
+     "ok": true,
      "gate": true
     },
     {
@@ -26123,17 +33670,17 @@
      "k": "oi",
      "n": "资金撤退",
      "d": "持仓 5 日净减",
-     "ok": true,
+     "ok": false,
      "gate": false
     }
    ],
-   "ext": 2.71,
-   "pull": -0.3,
-   "m34": 5352.1,
-   "extPx": 5200.0,
-   "age": 15,
+   "ext": 1.24,
+   "pull": -1.77,
+   "m34": 3073.2,
+   "extPx": 2988.0,
+   "age": 25,
    "segSide": -1,
-   "sym": "SR",
+   "sym": "RB",
    "meta": {
     "weekMA": 45,
     "weekPos": -1,
@@ -26141,32 +33688,33 @@
     "tier": "normal",
     "observe": true,
     "push": false,
-    "volRatio": 0.909,
+    "volRatio": 0.995,
     "lowVol": true,
     "confirm2": "pending",
     "risk": {
      "pool": "radar",
      "vac": {
-      "score": 4,
+      "score": 5,
       "hits": [
        "dist_ma60",
+       "ret20",
        "adx",
        "vol_chg20",
        "mkt_adx"
       ],
-      "tag": false,
+      "tag": true,
       "min": 5,
       "feats": {
-       "dist_ma60": -2.922,
-       "ret20": -5.457,
-       "vol_chg20": -15.448,
-       "adx": 22.8,
-       "mkt_adx": 22.538
+       "dist_ma60": -1.803,
+       "ret20": -1.485,
+       "vol_chg20": -13.632,
+       "adx": 26.463,
+       "mkt_adx": 22.571
       }
      },
      "day1": null,
      "struct": null,
-     "warn": false,
+     "warn": true,
      "review": false
     }
    }
@@ -26175,7 +33723,7 @@
    "side": "long",
    "dir": "顶部",
    "date": "2026-11-06",
-   "close": 2227.0,
+   "close": 1736.0,
    "k": 2,
    "gate": 0,
    "aux": 2,
@@ -26239,13 +33787,13 @@
      "gate": false
     }
    ],
-   "ext": 1.34,
-   "pull": -0.57,
-   "m34": 2201.3,
-   "extPx": 2238.0,
-   "age": 9,
+   "ext": 0.29,
+   "pull": -0.99,
+   "m34": 1729.2,
+   "extPx": 1759.0,
+   "age": 5,
    "segSide": 1,
-   "sym": "C",
+   "sym": "UR",
    "meta": {
     "weekMA": 45,
     "weekPos": -1,
@@ -26253,7 +33801,7 @@
     "tier": "normal",
     "observe": false,
     "push": true,
-    "volRatio": 0.895,
+    "volRatio": 0.957,
     "lowVol": true,
     "confirm2": "pending",
     "risk": {
@@ -26270,11 +33818,11 @@
       "tag": true,
       "min": 5,
       "feats": {
-       "dist_ma60": 0.128,
-       "ret20": -3.388,
-       "vol_chg20": 0.692,
-       "adx": 14.442,
-       "mkt_adx": 23.732
+       "dist_ma60": 0.375,
+       "ret20": -0.129,
+       "vol_chg20": -27.824,
+       "adx": 16.791,
+       "mkt_adx": 22.571
       }
      },
      "day1": null,
@@ -26283,8 +33831,126 @@
      "review": false
     }
    }
+  },
+  {
+   "side": "short",
+   "dir": "底部",
+   "date": "2026-11-06",
+   "close": 3462.0,
+   "k": 2,
+   "gate": 0,
+   "aux": 2,
+   "level": "none",
+   "advice": "趋势未到极端位置",
+   "conds": [
+    {
+     "k": "ext",
+     "n": "趋势伸展",
+     "d": "收盘距 MA34 ≥2.6ATR",
+     "ok": false,
+     "gate": true
+    },
+    {
+     "k": "pull",
+     "n": "极值回撤",
+     "d": "自段内高/低点回撤 ≥1.1ATR",
+     "ok": false,
+     "gate": true
+    },
+    {
+     "k": "amp",
+     "n": "段幅足够",
+     "d": "本段振幅 ≥12ATR",
+     "ok": false,
+     "gate": false
+    },
+    {
+     "k": "shadow",
+     "n": "冲高回落",
+     "d": "当根反向影线 ≥0.6ATR",
+     "ok": false,
+     "gate": false
+    },
+    {
+     "k": "age",
+     "n": "趋势老化",
+     "d": "本段已走 ≥30 根",
+     "ok": false,
+     "gate": false
+    },
+    {
+     "k": "adx",
+     "n": "动能衰减",
+     "d": "ADX 自 20 日高点回落 ≥3",
+     "ok": true,
+     "gate": false
+    },
+    {
+     "k": "ma18",
+     "n": "短均失守",
+     "d": "收盘反向穿越 MA18",
+     "ok": true,
+     "gate": false
+    },
+    {
+     "k": "oi",
+     "n": "资金撤退",
+     "d": "持仓 5 日净减",
+     "ok": false,
+     "gate": false
+    }
+   ],
+   "ext": 1.02,
+   "pull": -0.31,
+   "m34": 3562.0,
+   "extPx": 3432.0,
+   "age": 2,
+   "segSide": -1,
+   "sym": "JD",
+   "meta": {
+    "weekMA": 45,
+    "weekPos": 1,
+    "weekAlign": true,
+    "tier": "normal",
+    "observe": false,
+    "push": true,
+    "volRatio": 1.068,
+    "lowVol": false,
+    "confirm2": "pending",
+    "risk": {
+     "pool": "radar",
+     "vac": {
+      "score": 4,
+      "hits": [
+       "dist_ma60",
+       "ret20",
+       "adx",
+       "mkt_adx"
+      ],
+      "tag": false,
+      "min": 5,
+      "feats": {
+       "dist_ma60": -1.443,
+       "ret20": -1.567,
+       "vol_chg20": 101.444,
+       "adx": 27.594,
+       "mkt_adx": 22.571
+      }
+     },
+     "day1": null,
+     "struct": null,
+     "warn": false,
+     "review": false
+    }
+   }
   }
  ],
  "defendSeen": [],
- "mwSeen": []
+ "mwSeen": [],
+ "breaker": {
+  "rule": "单笔浮亏 ≥ 30% 本金（约 3,000 元）→ 无条件手动平仓",
+  "thresholdYuan": 3000,
+  "checkedAt": "2026-11-09 16:12",
+  "hits": []
+ }
 }
