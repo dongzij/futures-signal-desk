@@ -107,6 +107,13 @@ font-size:11px;color:var(--dim);margin:2px 0 8px}
 border-radius:9px;padding:5px 12px;font-size:13px;white-space:nowrap}
 .chip.on{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
 .chip small{opacity:.7;font-size:10px;margin-left:3px}
+.annb{display:inline-block;margin-left:5px;padding:0 4px;border-radius:5px;font-size:10px;
+font-weight:600;letter-spacing:-.2px;vertical-align:1px}
+.annb.up{color:#ff7b7f;background:rgba(229,72,77,.14)}
+.annb.dn{color:#37d99b;background:rgba(14,203,129,.14)}
+.chip.on .annb.up{color:#ffd7d8;background:rgba(255,255,255,.18)}
+.chip.on .annb.dn{color:#c8f7e3;background:rgba(255,255,255,.18)}
+.sorthint{font-size:10px;color:var(--dim);margin:0 12px 2px;opacity:.75}
 .pushdot{display:inline-block;margin-left:4px;padding:0 4px;border-radius:6px;
 background:#22D3EE;color:#06212a;font-size:10px;line-height:15px;font-weight:700}
 .quote{display:flex;align-items:baseline;gap:10px;padding:10px 14px 2px}
@@ -293,6 +300,7 @@ background:#10151d;color:var(--tx);font-size:18px}
       <button class="rf" onclick="refresh()">↻ 刷新数据</button>
     </div>
   </div>
+  <div class="sorthint" id="symSortHint"></div>
   <div class="chips" id="symChips"></div>
   <div class="chips" id="ctChips"></div>
   <div class="quote" id="quote"></div>
@@ -749,11 +757,18 @@ function copyPushCfg(){
 function renderSymChips(){
   var ps = ((MAN.pushCfg||{}).symbols||[]).map(function(x){return String(x).toUpperCase();});
   $('symChips').innerHTML = MAN.products.map(function(p){
+    var a = p.ann;
+    var badge = (a===null||a===undefined||isNaN(a)) ? ''
+      : '<span class="annb '+(a>=0?'up':'dn')+'" title="该品种按当前最优组合、1万本金、含30%熔断的10年年化收益">'
+        + (a>=0?'+':'') + (Math.round(a*10)/10).toFixed(1) + '%</span>';
     return '<div class="chip'+(p.sym===cur.sym?' on':'')+'" onclick="selectSym(\''+p.sym+'\')">'
       + p.name
+      + badge
       + (ps.indexOf(p.sym)>=0 ? '<span class="pushdot" title="该品种的进出场信息会推微信">推</span>' : '')
       + '</div>';
   }).join('');
+  var hint = $('symSortHint');
+  if(hint){ hint.textContent = '按年化收益从大到小排序（口径：当前最优组合 · 1万本金 · 含30%熔断 · 10年）'; }
 }
 function selectSym(sym){
   cur.sym = sym; cur.ct = '0'; cur.pt = 'D';
@@ -2325,6 +2340,9 @@ function renderAll(){
 fetchJ('index.json', function(man){
   if(!man){ document.body.innerHTML = '<div style="padding:40px;color:#8b95a7">清单加载失败，请刷新重试</div>'; return; }
   MAN = man;
+  // 默认打开年化排名第一的品种（列表已按年化从大到小排序）
+  var _syms = (man.products||[]).map(function(p){return p.sym;});
+  if(_syms.length) cur.sym = _syms[0];
   $('navAcct').textContent = '模拟盘';
   psInit();
   renderSymChips();

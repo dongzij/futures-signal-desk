@@ -38,7 +38,7 @@ PRODUCTS = {
     "UR": {"name": "尿素", "mult": 20, "fee": ("lot", 4),     "margin": 0.08},
     "JD": {"name": "鸡蛋", "mult": 10, "fee": ("lot", 4),     "margin": 0.08},
 }
-ORDER = ["FG", "M", "MA", "RB", "UR", "JD"]
+ORDER = ["UR", "MA", "RB", "M", "FG", "JD"]  # 按年化收益排名（rank_annualized.py）从大到小
 DAILY_YEARS = 10         # 主力连续日线回看年数（支撑年/月/周视图）
 MAX_CONTRACTS = 8        # 每品种最多打包的合约数
 KEEP_MIN = 40            # 合约至少要有多少根日线才收录
@@ -61,6 +61,15 @@ def probe_contracts(sym, back=2, ahead=8):
             got.append(cid)
     # 已到期但持仓极小的旧合约剔除（保留最近2个月做历史回看）
     return got
+
+
+def _load_json(path, default=None):
+    """容错读取 JSON（文件缺失/损坏时返回 default）。"""
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return default
 
 
 def bars_to_arr(bars):
@@ -361,6 +370,9 @@ def build_product(sym):
     defend_src.sort(key=lambda x: x["d"])
 
     # ---- 5) 写品种主档 ----
+    # v19.3：bestCombo（模块五 双轨最优 / 模块「最佳机会」推送匹配的依据）由
+    # compute_best_combo.py 每月写一次，重建数据时必须原样继承，否则 CI 每日跑完就丢。
+    _old = _load_json(os.path.join(OUT, "%s.json" % sym), {}) or {}
     doc = {
         "sym": sym, "name": cfg["name"],
         "mult": cfg["mult"], "margin": cfg["margin"], "fee": cfg["fee"],
@@ -383,6 +395,8 @@ def build_product(sym):
                    "confirm2Bars": engine.CONFIRM2_BARS,
                    "volRatioTag": engine.VOL_RATIO_TAG},
     }
+    if _old.get("bestCombo"):
+        doc["bestCombo"] = _old["bestCombo"]
     json.dump(doc, open(os.path.join(OUT, "%s.json" % sym), "w",
                         encoding="utf-8"), ensure_ascii=False,
               separators=(",", ":"))
@@ -444,9 +458,16 @@ def main():
     _mw_doi = mw_events.summarize(
         [e for e in MW_ALL if e.get("filterDif") and e.get("filterOi")])
 
+    # 品种年化字段：从上一版 index.json 继承（排名由 rank_annualized.py 每月更新）
+    _root = os.path.dirname(os.path.dirname(OUT))
+    _prev_ann = {p.get("sym"): p.get("ann")
+                 for p in (_load_json(os.path.join(_root, "data", "index.json"), {}) or {}).get("products", [])}
+    if not _prev_ann:
+        _prev_ann = {p.get("sym"): p.get("ann")
+                     for p in (_load_json(os.path.join(OUT, "index.json"), {}) or {}).get("products", [])}
     manifest = {
         "built": datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M"),
-        "products": [{"sym": s, **PRODUCTS[s]} for s in ORDER],
+                "products": [dict({"sym": s, **PRODUCTS[s]}, ann=_prev_ann.get(s)) for s in ORDER],
         "strategyOpen": strat_open,
         "method": state.get("method"),
         "configMode": engine.CONFIG_MODE,
