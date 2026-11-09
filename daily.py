@@ -216,6 +216,69 @@ def breaker_scan(opens, allow_push):
     return hits
 
 
+# ---------------------------------------------------------------- v19.2：最佳机会智能匹配
+# 每个品种的「历史最优/近1年最优」组合由 compute_best_combo.py 写入 data/{sym}.json
+# 的 bestCombo 字段。当天新信号命中该组合 → 最高优先级推送结构化实战建议。
+KIND_NM = {"pred": "顶底雷达", "warn": "进场预警"}
+
+
+def best_combo_for(sym):
+    """读取品种的 bestCombo（hist/recent 两轨），读不到返回空。"""
+    try:
+        pj = load_json(os.path.join(ROOT, "data", sym + ".json"), {})
+        return pj.get("bestCombo") or {}
+    except Exception:                                # noqa: BLE001
+        return {}
+
+
+def combo_match(label, kind):
+    """信号 kind 是否命中组合标签（标签含该信号名即命中，如「顶底雷达+进场预警」两者皆可）。"""
+    return bool(label) and KIND_NM.get(kind, "") in label
+
+
+def theo_pos(sym, signals, exclude=None):
+    """与前端 renderFlipBoard 同源：按信号时间推演该品种当前理论持仓方向。"""
+    pos = None
+    for s in sorted([x for x in signals if x.get("sym") == sym
+                     and x.get("kind") in ("pred", "warn") and x is not exclude],
+                    key=lambda x: x.get("date", "")):
+        if pos is None or pos.get("side") != s.get("side"):
+            pos = {"side": s.get("side"), "date": s.get("date")}
+    return pos
+
+
+def combo_action(label, sig_side, cur_side):
+    """按组合退出模式给出实战建议（反手 / 失效止损 / 观望）。"""
+    if "信号失效出" in label:
+        return "预警失效立刻止损"
+    sd = "多" if sig_side == "long" else "空"
+    if cur_side and cur_side != sig_side:
+        return "平%s反手做%s" % ("多" if cur_side == "long" else "空", sd)
+    if cur_side and cur_side == sig_side:
+        return "持仓观望（方向与理论持仓一致）"
+    return "顺势开仓做%s" % sd
+
+
+def best_match(found, signals, allow_push):
+    """对当天新信号做最优组合匹配，命中的打上 bestTrack/bestInfo/bestAdvice 标记并返回。"""
+    hits = []
+    for s in found:
+        if s.get("kind") not in ("pred", "warn") or not allow_push(s.get("sym")):
+            continue
+        bc = best_combo_for(s["sym"])
+        for track in ("hist", "recent"):
+            t = bc.get(track) or {}
+            if combo_match(t.get("label", ""), s.get("kind")):
+                cur = theo_pos(s["sym"], signals, exclude=s)
+                s["bestTrack"] = track
+                s["bestInfo"] = t
+                s["bestAdvice"] = combo_action(t.get("label", ""), s.get("side"),
+                                               (cur or {}).get("side"))
+                hits.append(s)
+                break
+    return hits
+
+
 # ---------------------------------------------------------------- 主流程
 
 def main():
@@ -305,6 +368,9 @@ def main():
 
     # ---------- v19.1：30% 单笔浮亏熔断扫描（有触发必醒目推送） ----------
     breaker_hits = breaker_scan(opens, allow_push)
+
+    # ---------- v19.2：最佳机会智能匹配（新信号命中该品种最优组合 → 最高优先级推送） ----------
+    best_hits = best_match(found, state["signals"], allow_push)
 
     state["updated"] = now.strftime("%Y-%m-%d %H:%M")
     state["stats"] = {
@@ -454,8 +520,48 @@ def main():
     fresh = [] if first else [s for s in found
                               if s["date"] >= near
                               and s["kind"] == "pred"
+                              and not s.get("bestTrack")
                               and (s.get("prob", {}).get("5") or 0) >= min_prob
                               and allow_push(s["sym"], s.get("meta"))]
+
+    # ---------- v19.2 推送：最佳机会（命中品种最优组合，最高优先级，绕过概率门槛） ----------
+    if best_hits and push_token and not first:
+        site = cfg.get("siteUrl", "")
+        cards = []
+        for s in best_hits:
+            t = s["bestInfo"]
+            bc = best_combo_for(s["sym"])
+            h, r = bc.get("hist") or {}, bc.get("recent") or {}
+            sig_nm = KIND_NM.get(s["kind"], s["kind"])
+            sd_txt = "做多方向" if s.get("side") == "long" else "做空方向"
+            track_txt = "历史最优" if s["bestTrack"] == "hist" else "近1年最优"
+            win_txt = ("历史胜率 <b>%.1f%%</b>（10 年 %s 笔）" % (h["win"], h["n"])
+                       if h else "历史样本不足") + "，" + \
+                      ("近1年胜率 <b>%.1f%%</b>（%s 笔）" % (r["win"], r["n"])
+                       if r else "近1年样本不足")
+            cards.append(
+                '<div style="margin-bottom:18px;border:1px solid #f59e0b;border-radius:8px;'
+                'padding:12px;background:#fffdf5">'
+                '<div style="font-size:17px;font-weight:700;color:#b45309">'
+                '🔥 最佳机会触发：%s %s</div>'
+                '<div style="font-size:13px;line-height:2.0;margin-top:8px">'
+                '【当前信号】出现 <b>%s</b>（%s）· %s<br>'
+                '【胜率支撑】该品种当前最优策略（%s）正是此信号！%s<br>'
+                '【实战建议】根据反手策略，建议 <b style="color:#b45309">%s</b><br>'
+                '【防守底线】🚨 若账户浮亏达本金 30%%（约 3000 元），'
+                '<b style="color:#d93025">无条件平仓保命</b>。</div>'
+                '<div style="color:#888;font-size:12px;margin-top:6px">'
+                '<a href="%s">查看反转雷达 →</a></div></div>'
+                % (s["sym"], engine.NAMES.get(s["sym"], ""), sig_nm, sd_txt, s["date"],
+                   track_txt, win_txt, s.get("bestAdvice", "持仓观望"),
+                   site or "#"))
+        title = "🔥 最佳机会触发 %d 条：%s" % (
+            len(best_hits), "、".join(
+                "%s%s" % (s["sym"], "多" if s.get("side") == "long" else "空")
+                for s in best_hits))
+        ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
+        print("push best-opportunity:", ok)
+
     if fresh and push_token:
         site = cfg.get("siteUrl", "")
         cards = []
@@ -490,6 +596,12 @@ def main():
                        (engine.MODEL.get("stat", {}).get("win", 0) or 0) * 100,
                        engine.MODEL.get("stat", {}).get("payoff", 0),
                        engine.MODEL.get("stat", {}).get("n", 0) / 10.0, acts))
+            # v19.2：非该品种最优组合的基础信号，注明仅供参考
+            if not s.get("bestTrack"):
+                hb = (best_combo_for(s["sym"]).get("hist") or {}).get("label", "—")
+                body += ('<div style="color:#888;font-size:12px;margin-top:6px">'
+                         'ℹ 此信号非该品种当前最优组合（%s 历史最优：%s），仅作参考。</div>'
+                         % (s["sym"], hb))
             if risk_on:
                 body += risk_line(s.get("meta"))
             cards.append(
