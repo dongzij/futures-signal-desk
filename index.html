@@ -125,6 +125,19 @@ justify-content:space-between;align-items:center}
 /* v17.1：主图整体缩约 1/5（700→560），下方版块顺移上移 */
 #chart{width:100%;height:560px}
 @media(max-width:520px){#chart{height:450px}}
+/* ===== 模块五：K线右上角 双轨最优策略 悬浮标签 ===== */
+.bcl{position:absolute;top:8px;right:10px;z-index:6;text-align:right;
+  background:rgba(10,14,20,.72);border:1px solid var(--line);border-radius:8px;
+  padding:6px 10px;font-size:11px;line-height:1.55;pointer-events:none;backdrop-filter:blur(2px)}
+.bcl .bcl-h{color:#9fe0ff;font-weight:700}
+.bcl .bcl-r{color:#FFD400;font-weight:700}
+.bcl .bcl-sub{color:var(--dim);font-size:10px}
+/* ===== 模块三：反手策略专用看板 ===== */
+.fb{font-size:12.5px}
+.fb .frow{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed #1f2733}
+.fb .frow:last-of-type{border-bottom:none}
+.fb .frow span{color:var(--dim)}
+.fb .note{margin-top:8px;font-size:10.5px;color:#6b7689;line-height:1.55}
 
 /* ===== 独立出场雷达（v10）===== */
 .xlv{display:flex;align-items:center;gap:9px;margin-bottom:9px}
@@ -285,7 +298,8 @@ background:#10151d;color:var(--tx);font-size:18px}
   <div class="quote" id="quote"></div>
   <div class="ptabs" id="ptabs"></div>
   <div class="ctn">
-    <div class="card" style="padding:6px 4px 2px">
+    <div class="card" style="padding:6px 4px 2px;position:relative">
+      <div id="bestComboLabel" class="bcl" style="display:none"></div>
       <div id="chart"></div>
       <div class="cleg"><span style="color:#4CC9F0">▼ 进场多</span>
         <span style="color:#C77DFF">▲ 进场空</span>
@@ -307,6 +321,10 @@ background:#10151d;color:var(--tx);font-size:18px}
       <h3>信号栏 · 进场 / 出场 <span class="r" id="sigCnt"></span></h3>
       <div class="fchips" id="sigFilter"></div>
       <div id="sigList"></div>
+    </div>
+    <div class="card">
+      <h3>反手策略看板 · 顶底雷达 + 进场预警 <span class="r" id="fbTime"></span></h3>
+      <div class="fb" id="flipBoard"></div>
     </div>
     <div class="card">
       <h3>进场雷达 <span class="r" id="decTime"></span></h3>
@@ -1770,11 +1788,9 @@ function renderSigs(){
   (DOC.defend || []).forEach(function(e){
     rows.push({d: e.date, kind: 'def', e: e});
   });
-  // —— v18.1 模块三：★ 结构双顶/底（只列高置信：DIF背离 + 持仓降）——
-  (DOC.mw || []).forEach(function(w){
-    if(!w.hiConf) return;
-    rows.push({d: w.mkDate, kind: 'mw', w: w});
-  });
+  // —— 模块一（2026-11-09）：WM 形态阉割 ——
+  // 图上金▲/紫▼形态标注保留（研究参考），但 WM 不再作为独立下单信号 / 反手入口，
+  // 信号栏彻底不再展示 WM 开仓提示（绝不允许系统提示开仓）。详见 mwCfg.advisoryOnly。
 
   var nIn = rows.filter(function(r){ return r.kind === 'in'; }).length;
   var nOut = rows.filter(function(r){ return r.kind === 'out'; }).length;
@@ -1799,7 +1815,7 @@ function renderSigs(){
   if(SIGF !== 'all') rows = rows.filter(function(r){ return r.kind === SIGF; });
 
   var fc = [['all','全部'],['in','只看进场'],['out','只看出场'],
-            ['def','只看失效'],['mw','★ M/W']];
+            ['def','只看失效']];
   $('sigFilter').innerHTML = fc.map(function(f){
     return '<span class="fc' + (SIGF === f[0] ? ' on' : '') + '" onclick="setSigF(\'' + f[0] + '\')">'
       + f[1] + '</span>';
@@ -1839,17 +1855,6 @@ function renderSigs(){
         + '<em>原信号 ' + e.sigDate + ' · 第 ' + e.day + ' 根判定'
         + (e.weak ? ' · ADX ' + e.adx + ' ≥30 · 不单独推微信' : '')
         + ' · ' + (e.detail || '') + ' · 点此看失效明细</em></span></div>';
-    }
-    if(r.kind === 'mw'){
-      var w = r.w;
-      return '<div class="sgr mwrow" onclick="openMw(\'' + w.mkDate + '\')">'
-        + '<span class="dt">' + w.mkDate + '</span>'
-        + '<span class="bd mw">★ 结构双顶/底</span>'
-        + '<span class="tx2">★ ' + (w.name || w.sym) + '（' + w.sym + '）'
-        + w.dir + ' · ' + (w.side === 'short' ? '做空方向' : '做多方向')
-        + ' <b style="color:#FFD400">高置信 · 主峰 ' + (w.mainPeak || '—') + '</b>'
-        + '<em>首峰 ' + w.peak1Date + ' · 第二峰 ' + w.peak2Date + ' · 间隔 ' + w.gap + ' 根 · 颈线 '
-        + w.neckPx + ' · 破位收 ' + w.entry + ' · 破位日 ' + w.date + ' · 点此看明细</em></span></div>';
     }
     if(r.kind === 'in'){
       var s = r.s;
@@ -2261,8 +2266,45 @@ function showPage(pg){
   }
   if(pg==='Main' && CH) CH.resize();
 }
+function renderFlipBoard(){
+  var box = $('flipBoard'); if(!box) return;
+  // 反手策略（顶底雷达 + 进场预警）理论持仓：按信号时间顺序，反向即反手
+  var sigs = (DOC.signals || []).filter(function(s){ return s.kind === 'pred' || s.kind === 'warn'; })
+    .slice().sort(function(a,b){ return a.date < b.date ? -1 : 1; });
+  var pos = null;
+  sigs.forEach(function(s){
+    if(pos === null || pos.side !== s.side) pos = {side: s.side, date: s.date, kind: s.kind};
+  });
+  var html = '';
+  if(pos){
+    var dirTxt = pos.side === 'short' ? '空单（做空）' : '多单（做多）';
+    var col = pos.side === 'short' ? '#C77DFF' : '#4CC9F0';
+    html += '<div class="frow"><span>当前理论持仓</span><b style="color:'+col+'">'+dirTxt+'</b></div>';
+    html += '<div class="frow"><span>最近触发信号</span><b>'+pos.date+' · '+(pos.kind==='pred'?'顶/底雷达':'进场预警')+'</b></div>';
+  } else {
+    html += '<div class="frow"><span>当前理论持仓</span><b style="color:#8b95a7">空仓（无持仓）</b></div>';
+  }
+  var nextTxt;
+  if(!pos) nextTxt = '出现任意「顶/底雷达 或 进场预警」→ 顺势开仓（多 / 空）';
+  else if(pos.side === 'short') nextTxt = '出现「底部雷达 / 进场预警(多)」→ 平空反手多';
+  else nextTxt = '出现「顶部雷达 / 进场预警(空)」→ 平多反手空';
+  html += '<div class="frow"><span>下一次触发条件</span><b style="color:#FFD400">'+nextTxt+'</b></div>';
+  html += '<div class="note">反手策略（顶底雷达+进场预警）的理论持仓推导，仅作参考，不构成实盘指令；实盘须自担风险（含 30% 熔断）。</div>';
+  box.innerHTML = html;
+}
+function renderBestCombo(){
+  var el = $('bestComboLabel'); if(!el) return;
+  var bc = DOC.bestCombo;
+  if(!bc || (!bc.hist && !bc.recent)){ el.style.display = 'none'; return; }
+  var h = bc.hist || {}, r = bc.recent || {};
+  var hh = h.label ? ('历史最优：'+h.label+'，胜率 '+(h.win!=null?h.win.toFixed(0):'—')+'%') : '历史最优：样本不足';
+  var rr = r.label ? ('近1年最优：'+r.label+'，胜率 '+(r.win!=null?r.win.toFixed(0):'—')+'%') : '近1年最优：样本不足';
+  el.style.display = 'block';
+  el.innerHTML = '<div class="bcl-h">'+hh+'</div><div class="bcl-r">'+rr+'</div>';
+}
 function renderAll(){
   renderMarket(); renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderSigs();
+  renderFlipBoard(); renderBestCombo();
   // ?expand=1 深链接：直接展开两张雷达卡明细，方便对照 / 截图
   try{
     if(new URLSearchParams(location.search).get('expand') === '1'){

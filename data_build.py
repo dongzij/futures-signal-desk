@@ -27,17 +27,18 @@ MW_ALL = []        # v16：跨品种二段 M/W 结构（DIF背离 + 量仓强）
 
 # 品种交易参数（模拟盘用）：乘数 / 手续费 / 保证金率
 # fee: ("lot", 元/手) 或 ("rate", 万分之几)
+# ===== 模块二（2026-11-09）：6 大核心品种池 =====
+# 剔除：SR 白糖、C 玉米、SP 纸浆（长期负收益）；SA 纯碱、SM 锰硅（未入选核心池）
+# 新增：RB 螺纹钢、UR 尿素、JD 鸡蛋（扩展选品胜率/盈亏比最高）
 PRODUCTS = {
     "FG": {"name": "玻璃", "mult": 20, "fee": ("lot", 6),     "margin": 0.09},
-    "SA": {"name": "纯碱", "mult": 20, "fee": ("lot", 3.5),   "margin": 0.09},
     "M":  {"name": "豆粕", "mult": 10, "fee": ("lot", 1.5),   "margin": 0.08},
-    "SP": {"name": "纸浆", "mult": 10, "fee": ("rate", 0.5),  "margin": 0.08},
-    "SM": {"name": "锰硅", "mult": 5,  "fee": ("lot", 3),     "margin": 0.09},
     "MA": {"name": "甲醇", "mult": 10, "fee": ("lot", 2),     "margin": 0.08},
-    "SR": {"name": "白糖", "mult": 10, "fee": ("lot", 3),     "margin": 0.08},
-    "C":  {"name": "玉米", "mult": 10, "fee": ("lot", 1.2),   "margin": 0.08},
+    "RB": {"name": "螺纹钢", "mult": 10, "fee": ("lot", 1),   "margin": 0.08},
+    "UR": {"name": "尿素", "mult": 20, "fee": ("lot", 4),     "margin": 0.08},
+    "JD": {"name": "鸡蛋", "mult": 10, "fee": ("lot", 4),     "margin": 0.08},
 }
-ORDER = ["FG", "SA", "M", "SP", "SM", "MA", "SR", "C"]
+ORDER = ["FG", "M", "MA", "RB", "UR", "JD"]
 DAILY_YEARS = 10         # 主力连续日线回看年数（支撑年/月/周视图）
 MAX_CONTRACTS = 8        # 每品种最多打包的合约数
 KEEP_MIN = 40            # 合约至少要有多少根日线才收录
@@ -165,6 +166,23 @@ def build_product(sym):
 
     sigs = [pack(s) for s in state.get("signals", []) if s["sym"] == sym]
     sigs.sort(key=lambda x: x["date"])
+    # —— 模块二：新入选品种（RB/UR/JD）不在 state.json 中，用 engine.scan_symbol 现算 pred/warn ——
+    if not sigs:
+        try:
+            us, _ = engine.scan_symbol(sym, bars=main, unit="D")
+            raw = [x for x in us if x.get("kind") in ("pred", "warn")]
+            sigs = [pack({"kind": x["kind"], "side": x["side"], "date": x["date"],
+                         "price": x.get("price"), "k": x.get("k"), "prob": x.get("prob"),
+                         "checks": x.get("checks", []), "strong": x.get("strong"),
+                         "adx": x.get("adx"), "gate": x.get("gate"), "segStart": x.get("segStart"),
+                         "segAge": x.get("segAge"), "lead": x.get("lead"),
+                         "entry": x.get("entry"), "atr": x.get("atr")})
+                     for x in raw]
+            sigs.sort(key=lambda x: x["date"])
+            print("   signals via scan_symbol（无 state 信号）: %d" % len(sigs))
+        except Exception as e:                      # noqa: BLE001
+            print("   scan_symbol 信号生成失败 %s: %s" % (sym, e))
+            sigs = []
 
     # ---- 3b) v15：失效 = 独立防守事件（全量覆盖 + 四条放宽标准）----
     # 覆盖 4/4 建仓、3/4 预警、顶底雷达；每条信号只取最早一次失效。
@@ -404,6 +422,8 @@ def main():
     state = json.load(open("state.json", encoding="utf-8"))
     strat_open = []
     for s in state.get("signals", []):
+        if s["sym"] not in PRODUCTS:        # 模块二：剔除已下架品种（SR/C/SP/SA/SM 不在核心池）
+            continue
         if s["kind"] != "pred" or s["status"] not in ("open", "pending"):
             continue
         strat_open.append({
@@ -530,7 +550,7 @@ def main():
             "gate": engine.MODEL.get("gate"),
             "stat": engine.MODEL.get("stat"),
             "lead": engine.MODEL.get("lead", {}),
-            "univ": engine.CODES,
+            "univ": ORDER,
             "nofstop": True,
         },
         "tf": {
