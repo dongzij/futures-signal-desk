@@ -304,17 +304,17 @@ background:#10151d;color:var(--tx);font-size:18px}
     <!-- v11.3：完整市场状态卡移到 K 线下方，首屏只留看盘必需 -->
     <div class="mkt inline" id="mktBar"></div>
     <div class="card">
+      <h3>信号栏 · 进场 / 出场 <span class="r" id="sigCnt"></span></h3>
+      <div class="fchips" id="sigFilter"></div>
+      <div id="sigList"></div>
+    </div>
+    <div class="card">
       <h3>进场雷达 <span class="r" id="decTime"></span></h3>
       <div class="dec" id="decGrid"></div>
     </div>
     <div class="card">
       <h3>出场雷达 · 独立<span class="r" id="xsTime"></span></h3>
       <div id="xsBox"></div>
-    </div>
-    <div class="card">
-      <h3>信号栏 · 进场 / 出场 <span class="r" id="sigCnt"></span></h3>
-      <div class="fchips" id="sigFilter"></div>
-      <div id="sigList"></div>
     </div>
   </div>
   <!-- v11.3 推送设置：不常用，移到页面底部且默认收起；只在本机生成配置文本，不写后台 -->
@@ -973,7 +973,7 @@ function renderChart(){
       var b = bars[ix], a = A(ix);
       var isTop = (w.side==='short');      // 双顶(M)做空：▲ 置于最高价上方；双底(W)做多：▼ 置于最低价下方
       var y = isTop ? (b[2] + 1.4*a) : (b[3] - 1.4*a);
-      marks.push({value:[ix, y], mwDate:w.date, mwSym:w.sym, mwDir:w.dir,
+      marks.push({value:[ix, y], mwDate:w.mkDate, mwSym:w.sym, mwDir:w.dir,
         symbol:'triangle', symbolSize: 13,
         symbolRotate: isTop ? 0 : 180,
         itemStyle:{color: isTop ? '#FFD400' : '#C77DFF',
@@ -1175,7 +1175,7 @@ function showAllDef(){
 }
 /* v18 模块三：点 ★ 看结构双顶/底明细 */
 function openMw(date){
-  var w = (DOC.mw||[]).filter(function(x){ return x.date===date; })[0];
+  var w = (DOC.mw||[]).filter(function(x){ return x.mkDate===date; })[0];
   if(!w) return;
   var qty = [];
   if(w.oiDrop10) qty.push('持仓较首峰降 ' + Math.abs(w.oiChg) + '%');
@@ -1202,7 +1202,7 @@ function openMw(date){
     + '（间隔 ' + w.gap + ' 根）</b></div>'
     + '<div class="frow"><span>两峰价 / 颈线</span><b>' + w.peak1Px + ' / ' + w.peak2Px + ' / ' + w.neckPx + '</b></div>'
     + '<div class="frow"><span>颈线回撤 / ATR</span><b>' + w.depth + ' ATR / ' + w.atr + '</b></div>'
-    + '<div class="frow"><span>破位确认收盘</span><b>' + w.entry + '</b></div>'
+    + '<div class="frow"><span>破位确认日 / 收</span><b>' + w.date + ' · ' + w.entry + '</b></div>'
     + '<div class="frow"><span>DIF 线背离</span><b style="color:#FFD400">'
     + (w.divDif ? '✓ 价格更极端、动能反而走弱' : '— 未触发') + '</b></div>'
     + '<div class="frow"><span>持仓 / 量能</span><b>' + (qty.join('；') || '—') + '</b></div>'
@@ -1773,7 +1773,7 @@ function renderSigs(){
   // —— v18.1 模块三：★ 结构双顶/底（只列高置信：DIF背离 + 持仓降）——
   (DOC.mw || []).forEach(function(w){
     if(!w.hiConf) return;
-    rows.push({d: w.date, kind: 'mw', w: w});
+    rows.push({d: w.mkDate, kind: 'mw', w: w});
   });
 
   var nIn = rows.filter(function(r){ return r.kind === 'in'; }).length;
@@ -1842,14 +1842,14 @@ function renderSigs(){
     }
     if(r.kind === 'mw'){
       var w = r.w;
-      return '<div class="sgr mwrow" onclick="openMw(\'' + w.date + '\')">'
-        + '<span class="dt">' + w.date + '</span>'
+      return '<div class="sgr mwrow" onclick="openMw(\'' + w.mkDate + '\')">'
+        + '<span class="dt">' + w.mkDate + '</span>'
         + '<span class="bd mw">★ 结构双顶/底</span>'
         + '<span class="tx2">★ ' + (w.name || w.sym) + '（' + w.sym + '）'
         + w.dir + ' · ' + (w.side === 'short' ? '做空方向' : '做多方向')
         + ' <b style="color:#FFD400">高置信 · 主峰 ' + (w.mainPeak || '—') + '</b>'
         + '<em>首峰 ' + w.peak1Date + ' · 第二峰 ' + w.peak2Date + ' · 间隔 ' + w.gap + ' 根 · 颈线 '
-        + w.neckPx + ' · 破位收 ' + w.entry + ' · 点此看明细</em></span></div>';
+        + w.neckPx + ' · 破位收 ' + w.entry + ' · 破位日 ' + w.date + ' · 点此看明细</em></span></div>';
     }
     if(r.kind === 'in'){
       var s = r.s;
