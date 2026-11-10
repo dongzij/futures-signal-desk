@@ -111,6 +111,7 @@ border-radius:9px;padding:5px 12px;font-size:13px;white-space:nowrap}
 font-weight:600;letter-spacing:-.2px;vertical-align:1px}
 .annb.up{color:#ff7b7f;background:rgba(229,72,77,.14)}
 .annb.dn{color:#37d99b;background:rgba(14,203,129,.14)}
+.annb.na{color:#8b95a7;background:rgba(139,149,167,.16)}
 .chip.on .annb.up{color:#ffd7d8;background:rgba(255,255,255,.18)}
 .chip.on .annb.dn{color:#c8f7e3;background:rgba(255,255,255,.18)}
 .sorthint{font-size:10px;color:var(--dim);margin:0 12px 2px;opacity:.75}
@@ -139,6 +140,9 @@ justify-content:space-between;align-items:center}
 .bcl .bcl-h{color:#9fe0ff;font-weight:700}
 .bcl .bcl-r{color:#FFD400;font-weight:700}
 .bcl .bcl-sub{color:var(--dim);font-size:10px}
+.bcl .bcl-h.bad{color:#ff9a9d}
+.bcl .bcl-tag{display:inline-block;margin-left:4px;padding:0 4px;border-radius:4px;
+background:rgba(229,72,77,.18);color:#ff8f92;font-weight:600;font-size:10px}
 /* ===== 模块三：反手策略专用看板 ===== */
 .fb{font-size:12.5px}
 .fb .frow{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed #1f2733}
@@ -331,7 +335,7 @@ background:#10151d;color:var(--tx);font-size:18px}
       <div id="sigList"></div>
     </div>
     <div class="card">
-      <h3>反手策略看板 · 顶底雷达 + 进场预警 <span class="r" id="fbTime"></span></h3>
+      <h3>策略持仓看板 · 按该品种选定方法推演 <span class="r" id="fbTime"></span></h3>
       <div class="fb" id="flipBoard"></div>
     </div>
     <div class="card">
@@ -758,9 +762,11 @@ function renderSymChips(){
   var ps = ((MAN.pushCfg||{}).symbols||[]).map(function(x){return String(x).toUpperCase();});
   $('symChips').innerHTML = MAN.products.map(function(p){
     var a = p.ann;
+    var na = (p.viable === false);
     var badge = (a===null||a===undefined||isNaN(a)) ? ''
-      : '<span class="annb '+(a>=0?'up':'dn')+'" title="该品种按当前最优组合、1万本金、含30%熔断的10年年化收益">'
-        + (a>=0?'+':'') + (Math.round(a*10)/10).toFixed(1) + '%</span>';
+      : '<span class="annb '+(na?'na':(a>=0?'up':'dn'))+'" title="'
+        + (na ? '该品种在 1万本金/1手 口径下无合格方法，不建议交易' : '按该品种当前最优方法、1万本金、含30%熔断的10年年化收益')
+        + '">' + (na?'⚠ ':'') + (a>=0?'+':'') + (Math.round(a*10)/10).toFixed(1) + '%</span>';
     return '<div class="chip'+(p.sym===cur.sym?' on':'')+'" onclick="selectSym(\''+p.sym+'\')">'
       + p.name
       + badge
@@ -2283,26 +2289,72 @@ function showPage(pg){
 }
 function renderFlipBoard(){
   var box = $('flipBoard'); if(!box) return;
-  // 反手策略（顶底雷达 + 进场预警）理论持仓：按信号时间顺序，反向即反手
-  var sigs = (DOC.signals || []).filter(function(s){ return s.kind === 'pred' || s.kind === 'warn'; })
-    .slice().sort(function(a,b){ return a.date < b.date ? -1 : 1; });
-  var pos = null;
-  sigs.forEach(function(s){
-    if(pos === null || pos.side !== s.side) pos = {side: s.side, date: s.date, kind: s.kind};
+  // v20：看板跟随“该品种当前选定的方法”推演理论持仓（不再写死反手）
+  var bc = DOC.bestCombo || {};
+  var h = bc.hist || {};
+  var spec = h.spec || {entry:['pred','warn'], exit:'flip'};
+  var entry = spec.entry || [];
+  var exitMode = spec.exit || 'flip';
+  var KN = {pred:'顶底雷达', warn:'进场预警', mw:'WM结构'};
+  var DEFKN = {radar:'pred', pred:'pred', warn:'warn', mw:'mw'};
+
+  // 组装事件：开仓信号 + 出场事件，按日期排序（同日先平后开）
+  var evs = [];
+  (DOC.signals || []).forEach(function(s){
+    if(entry.indexOf(s.kind) < 0) return;
+    evs.push({d:s.date, t:0, type:'open', side:s.side, kind:s.kind});
   });
+  if(exitMode === 'fail'){
+    (DOC.defend || []).forEach(function(x){
+      var k = DEFKN[x.sigKind]; if(!k) return;
+      evs.push({d:x.date, t:-1, type:'close', sigDate:x.sigDate, kind:k});
+    });
+  } else if(exitMode === 'next_pred'){
+    (DOC.signals || []).forEach(function(s){
+      if(s.kind !== 'pred') return;
+      evs.push({d:s.date, t:-1, type:'close'});
+    });
+  }
+  evs.sort(function(a,b){ return a.d < b.d ? -1 : (a.d > b.d ? 1 : (a.t - b.t)); });
+
+  var pos = null;
+  evs.forEach(function(e){
+    if(e.type === 'open'){
+      if(pos === null) pos = {side:e.side, date:e.d, kind:e.kind};
+      else if(pos.side !== e.side && exitMode === 'flip') pos = {side:e.side, date:e.d, kind:e.kind};
+      // 非反手模式：反向开仓信号不平仓（与回测一致）
+    } else if(pos){
+      if(exitMode === 'fail'){
+        if(pos.date === e.sigDate && pos.kind === e.kind) pos = null;
+      } else {
+        pos = null;
+      }
+    }
+  });
+
   var html = '';
+  html += '<div class="frow"><span>该品种当前方法</span><b style="color:#9fe0ff">'
+        + (h.label || '—') + (h.viable===false ? '（不满足交易条件）' : '') + '</b></div>';
   if(pos){
     var dirTxt = pos.side === 'short' ? '空单（做空）' : '多单（做多）';
     var col = pos.side === 'short' ? '#C77DFF' : '#4CC9F0';
     html += '<div class="frow"><span>当前理论持仓</span><b style="color:'+col+'">'+dirTxt+'</b></div>';
-    html += '<div class="frow"><span>最近触发信号</span><b>'+pos.date+' · '+(pos.kind==='pred'?'顶/底雷达':'进场预警')+'</b></div>';
+    html += '<div class="frow"><span>最近触发信号</span><b>'+pos.date+' · '+(KN[pos.kind]||pos.kind)+'</b></div>';
   } else {
     html += '<div class="frow"><span>当前理论持仓</span><b style="color:#8b95a7">空仓（无持仓）</b></div>';
   }
+
+  var entTxt = entry.map(function(k){ return '「'+KN[k]+'」'; }).join(' 或 ');
   var nextTxt;
-  if(!pos) nextTxt = '出现任意「顶/底雷达 或 进场预警」→ 顺势开仓（多 / 空）';
-  else if(pos.side === 'short') nextTxt = '出现「底部雷达 / 进场预警(多)」→ 平空反手多';
-  else nextTxt = '出现「顶部雷达 / 进场预警(空)」→ 平多反手空';
+  if(!pos){
+    nextTxt = '出现 '+entTxt+' → 顺势开仓（多 / 空）';
+  } else if(exitMode === 'flip'){
+    nextTxt = pos.side === 'short' ? '出现反向（多）信号 → 平空反手做多' : '出现反向（空）信号 → 平多反手做空';
+  } else if(exitMode === 'fail'){
+    nextTxt = '该笔信号被判失效（均线破位 / 反向>1.5ATR / 原版止损）→ 平'+(pos.side==='short'?'空':'多');
+  } else {
+    nextTxt = '出现任一「顶/底雷达」→ 平'+(pos.side==='short'?'空':'多');
+  }
   html += '<div class="frow"><span>下一次触发条件</span><b style="color:#FFD400">'+nextTxt+'</b></div>';
   // v19.1 铁律：30% 单笔浮亏强平熔断，优先级高于反手策略（等下一个信号）
   html += '<div style="margin-top:10px;padding:8px 10px;background:rgba(255,45,45,.12);'
@@ -2311,8 +2363,8 @@ function renderFlipBoard(){
         + '任一持仓反向浮亏达到本金的 <b>30%（约 3,000 元）</b>时，'
         + '<b style="color:#FF2D2D">无条件立即手动平仓</b>——不等反手信号、不等反弹、不抗单。'
         + '平仓后回到空仓，等待下一个信号再入场。</div>';
-  html += '<div class="note">反手策略（顶底雷达+进场预警）的理论持仓推导，仅作参考，不构成实盘指令；实盘须自担风险。'
-        + '出场只认两条：① 反向信号（反手）；② 30% 熔断（保命）。波动率过滤已永久封存，不参与任何决策。</div>';
+  html += '<div class="note">按“该品种当前选定方法”逐条推演的理论持仓，仅作参考，不构成实盘指令；实盘须自担风险。'
+        + '出场只认两条：① 该方法规定的出场信号；② 30% 熔断（保命）。波动率过滤已永久封存，不参与任何决策。</div>';
   box.innerHTML = html;
 }
 function renderBestCombo(){
@@ -2320,10 +2372,22 @@ function renderBestCombo(){
   var bc = DOC.bestCombo;
   if(!bc || (!bc.hist && !bc.recent)){ el.style.display = 'none'; return; }
   var h = bc.hist || {}, r = bc.recent || {};
-  var hh = h.label ? ('历史最优：'+h.label+'，胜率 '+(h.win!=null?h.win.toFixed(0):'—')+'%') : '历史最优：样本不足';
-  var rr = r.label ? ('近1年最优：'+r.label+'，胜率 '+(r.win!=null?r.win.toFixed(0):'—')+'%') : '近1年最优：样本不足';
+  function line(tag, x){
+    if(!x || !x.label) return tag+'：样本不足';
+    var s = tag+'：'+x.label+'，胜率 '+(x.win!=null?x.win.toFixed(0):'—')+'%';
+    if(x.n!=null) s += '（'+x.n+'笔）';
+    if(x.ann!=null){
+      var sign = x.ann>=0 ? '+' : '';
+      s += '　年化 '+sign+x.ann.toFixed(1)+'%';
+    }
+    return s;
+  }
+  var hh = line('历史最优', h);
+  var rr = h.viable === false ? '近1年最优：不适用（该品种无合格方法）' : line('近1年最优', r);
   el.style.display = 'block';
-  el.innerHTML = '<div class="bcl-h">'+hh+'</div><div class="bcl-r">'+rr+'</div>';
+  el.innerHTML = '<div class="bcl-h'+((h.viable===false)?' bad':'')+'">'+hh
+    + ((h.viable===false) ? '　<span class="bcl-tag">不满足交易条件</span>' : '')
+    + '</div><div class="bcl-r">'+rr+'</div>';
 }
 function renderAll(){
   renderMarket(); renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderSigs();
@@ -2343,6 +2407,11 @@ fetchJ('index.json', function(man){
   // 默认打开年化排名第一的品种（列表已按年化从大到小排序）
   var _syms = (man.products||[]).map(function(p){return p.sym;});
   if(_syms.length) cur.sym = _syms[0];
+  // ?sym=FG 深链接：直接打开指定品种（便于核对/截图）
+  try{
+    var _q = new URLSearchParams(location.search).get('sym');
+    if(_q && _syms.indexOf(_q.toUpperCase()) >= 0) cur.sym = _q.toUpperCase();
+  }catch(e){}
   $('navAcct').textContent = '模拟盘';
   psInit();
   renderSymChips();

@@ -250,7 +250,7 @@ def theo_pos(sym, signals, exclude=None):
 def combo_action(label, sig_side, cur_side):
     """按组合退出模式给出实战建议（反手 / 失效止损 / 观望）。"""
     if "信号失效出" in label:
-        return "预警失效立刻止损"
+        return "该信号一旦失效（均线破位/反向1.5ATR/原版止损）立刻止损离场"
     sd = "多" if sig_side == "long" else "空"
     if cur_side and cur_side != sig_side:
         return "平%s反手做%s" % ("多" if cur_side == "long" else "空", sd)

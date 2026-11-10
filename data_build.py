@@ -38,7 +38,7 @@ PRODUCTS = {
     "UR": {"name": "尿素", "mult": 20, "fee": ("lot", 4),     "margin": 0.08},
     "JD": {"name": "鸡蛋", "mult": 10, "fee": ("lot", 4),     "margin": 0.08},
 }
-ORDER = ["UR", "MA", "RB", "M", "FG", "JD"]  # 按年化收益排名（rank_annualized.py）从大到小
+ORDER = ["M", "UR", "FG", "MA", "RB", "JD"]  # v20：按各品种“选定方法”的年化收益从大到小（methods_final.py 产出）
 DAILY_YEARS = 10         # 主力连续日线回看年数（支撑年/月/周视图）
 MAX_CONTRACTS = 8        # 每品种最多打包的合约数
 KEEP_MIN = 40            # 合约至少要有多少根日线才收录
@@ -458,16 +458,17 @@ def main():
     _mw_doi = mw_events.summarize(
         [e for e in MW_ALL if e.get("filterDif") and e.get("filterOi")])
 
-    # 品种年化字段：从上一版 index.json 继承（排名由 rank_annualized.py 每月更新）
+    # 品种年化/可行性字段：从上一版 index.json 继承（由 methods_final.py 每月更新）
     _root = os.path.dirname(os.path.dirname(OUT))
-    _prev_ann = {p.get("sym"): p.get("ann")
-                 for p in (_load_json(os.path.join(_root, "data", "index.json"), {}) or {}).get("products", [])}
-    if not _prev_ann:
-        _prev_ann = {p.get("sym"): p.get("ann")
-                     for p in (_load_json(os.path.join(OUT, "index.json"), {}) or {}).get("products", [])}
+    _prev = (_load_json(os.path.join(_root, "data", "index.json"), {}) or {}).get("products", [])
+    if not _prev:
+        _prev = (_load_json(os.path.join(OUT, "index.json"), {}) or {}).get("products", [])
+    _prev_ann = {p.get("sym"): p.get("ann") for p in _prev}
+    _prev_viable = {p.get("sym"): p.get("viable") for p in _prev}
     manifest = {
         "built": datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M"),
-                "products": [dict({"sym": s, **PRODUCTS[s]}, ann=_prev_ann.get(s)) for s in ORDER],
+                "products": [dict({"sym": s, **PRODUCTS[s]}, ann=_prev_ann.get(s),
+                          viable=_prev_viable.get(s)) for s in ORDER],
         "strategyOpen": strat_open,
         "method": state.get("method"),
         "configMode": engine.CONFIG_MODE,
