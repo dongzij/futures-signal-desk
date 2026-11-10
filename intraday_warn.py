@@ -211,6 +211,14 @@ def html_of(hits, now):
 
 def run_live(dry=True):
     now = _dt.datetime.now()
+    # v26：盘中班只允许在日盘时段跑。
+    # 本脚本的 live_bar() 把「今日 09:00 之后 + 昨日 21:00 之后」拼成一根 bar，
+    # 若在 23:10 执行，会拼出「今日日盘 + 今晚夜盘」的混合体（且标成今日），
+    # 那是脏数据、结论也是错的。夜盘请走 night_warn.py。
+    if not (9 <= now.hour < 15):
+        print("当前 %s 不在日盘时段（09:00-15:00），盘中预警不执行。" % now.strftime("%H:%M"))
+        print("夜盘（21:00 之后）请用：python night_warn.py")
+        return
     idx = json.load(open(os.path.join(DATA, "index.json"), encoding="utf-8"))
     hits = []
     for p in idx["products"]:

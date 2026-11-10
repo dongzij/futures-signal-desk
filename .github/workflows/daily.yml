@@ -1,13 +1,18 @@
 name: daily-scan
+
+# ⚠️ 本文件只负责「写 K 线」的两班（北京时间 15:20 / 15:50）。
+#    夜盘 23:10 那班在 night.yml，只读 + 只推，绝不进这个 job。
+#    原因：这个 job 会写 state.json、清空重建 dist/data、并 git push。
+#    夜盘 21:00-23:00 是半截行情且属于【下一交易日】，一旦走这条路，
+#    日线图与账本就被永久污染。改 cron 前请先看 daily.py / data_build.py
+#    开头的 nightgate 闸门说明。
 on:
   schedule:
     # 1. 全天正式数据入库（北京时间 15:20）—— 计入 K 线，更新所有账本
     - cron: '20 7 * * 1-5'
     # 2. 兜底重试（北京时间 15:50）—— 计入 K 线
     - cron: '50 7 * * 1-5'
-    # 3. 夜盘盘中预警（北京时间 23:10）—— 仅供查看，绝不入 K 线库
-    - cron: '10 15 * * 1-5'
-  workflow_dispatch:      # 保留手动触发按钮
+  workflow_dispatch:      # 保留手动触发按钮（白天补数用，夜间会被闸门拒绝）
 
 permissions:
   contents: write

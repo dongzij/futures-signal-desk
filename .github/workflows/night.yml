@@ -1,0 +1,50 @@
+name: night-warn
+
+# v26：夜盘预警（北京时间 23:10）—— 只读、只推，零写入。
+#   夜盘 21:00-23:00 只是半截行情，且按交易所口径属于【下一个交易日】。
+#   这一班的唯一作用是回答「如果明早开盘就是这个价，会不会出事？」，
+#   用夜盘 bar 在内存里推演一遍，命中才推微信：
+#     · 持仓夜盘已触发出场（白圈/吊灯/MA26/熔断）→ 推
+#     · 持仓夜盘逆向 ≥0.5 ATR（与白圈同口径）→ 推
+#     · 路况翻成趋势（明早可能开仓）→ 推
+#     · 空仓 + 仍震荡 → 静默
+#   绝不写 state.json / data/ / dist/，也绝不 push；
+#   下面还有一道 git status 断言：只要产生任何文件改动，本次运行直接判失败。
+on:
+  schedule:
+    - cron: '10 15 * * 1-5'   # 北京时间 23:10
+  workflow_dispatch:          # 手动触发（想立刻看一眼夜盘）
+
+permissions:
+  contents: read              # 只读权限：即使脚本写错也推不上去
+
+concurrency:
+  group: night-warn
+  cancel-in-progress: true
+
+jobs:
+  warn:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 夜盘预警（只读，不落盘）
+        run: python night_warn.py
+
+      - name: 确认没有污染正式数据
+        run: |
+          echo "--- 工作区状态（应为空）---"
+          git status --porcelain
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::夜盘预警不应产生任何文件改动，请检查 night_warn.py"
+            git status --porcelain
+            exit 1
+          fi
+          echo "OK：state.json / data/ / dist/ 均未被修改"

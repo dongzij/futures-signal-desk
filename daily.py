@@ -396,6 +396,12 @@ def best_match(found, signals, allow_push):
 # ---------------------------------------------------------------- 主流程
 
 def main():
+    # ---- 夜盘闸门（v26）：北京时间 20:00-08:00 一律拒绝写盘 ----
+    # 23:10 那班只允许跑 night_warn.py（只读+只推）；夜盘半截行情属于下一交易日，
+    # 一旦写进 state.json / data/ 就是永久污染。15:20 / 15:50 两班不受影响。
+    import nightgate
+    nightgate.enforce("daily.py")
+
     cfg = load_json(CONF, {})
     codes = cfg.get("codes") or engine.CODES
     equity = cfg.get("equity", 100_000)

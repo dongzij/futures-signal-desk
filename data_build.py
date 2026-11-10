@@ -545,6 +545,12 @@ def build_product(sym):
 
 
 def main():
+    # ---- 夜盘闸门（v26）：这道必须先于 os.makedirs / os.remove ----
+    # 本函数第一件事是清空 dist/data，夜盘误跑会直接把当天收盘数据清掉；
+    # 而且夜盘 bar 属于下一交易日，写进去就是半截假 K 线。
+    import nightgate
+    nightgate.enforce("data_build.py")
+
     os.makedirs(OUT, exist_ok=True)
     # 清掉旧的品种数据文件（保留目录）；KEEP_DATA=1 时保留（本地快速重算用）
     if not os.environ.get("KEEP_DATA"):
