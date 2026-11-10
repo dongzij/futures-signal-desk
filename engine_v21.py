@@ -53,6 +53,10 @@ def default_cfg():
         "stop30": True,
         "chand": CH_K,
         "ma_exit": MA_EXIT,
+        # v24 失效/出场容错（与 defend_rules 同口径，见 reports/v24_失效容错实验.md）
+        "ma_exit_buf": 0.5,      # 破线要再让 0.5 ATR
+        "ma_exit_confirm": 2,    # 连续 2 根收盘在线外
+        "ma_exit_fast": 0.8,     # 单根暴破 ≥0.8 ATR 立即走（保命，v24 标定）
         "defend_on": True,
         "xsig_on": True,
         "xsig_trend": True,      # True=趋势中强离场也照平（用户规则）；False=趋势中交给 MA26/吊灯
@@ -191,12 +195,40 @@ def run(p, d, cfg, pack, meta, bars=None, S=None):
         # ---- 第二层：底线
         px = bars[t]["c"]
         if cfg["ma_exit"]:
-            ma = S["ma%d" % cfg["ma_exit"]][t] if ("ma%d" % cfg["ma_exit"]) in S else S["ma26"][t]
+            mk = "ma%d" % cfg["ma_exit"]
+            ma = S[mk][t] if mk in S else S["ma26"][t]
             if ma:
-                if pos["side"] == "long" and px < ma:
-                    return ("ma_exit", "收盘跌破 MA%d（%.1f < %.1f）" % (cfg["ma_exit"], px, ma))
-                if pos["side"] == "short" and px > ma:
-                    return ("ma_exit", "收盘涨破 MA%d（%.1f > %.1f）" % (cfg["ma_exit"], px, ma))
+                # v24：均线底线可加「空间缓冲 / 连续确认」，默认 0 / 1 = 原行为不变
+                mbuf = float(cfg.get("ma_exit_buf", 0.0) or 0.0) * (S["atr"][t] or 0.0)
+                mneed = max(1, int(cfg.get("ma_exit_confirm", 1) or 1))
+
+                def _broke(k):
+                    if t - k < 0:
+                        return False
+                    mv = S[mk][t - k] if mk in S else None
+                    if mv is None:
+                        return False
+                    pc = bars[t - k]["c"]
+                    return (pc < mv - mbuf) if pos["side"] == "long" else (pc > mv + mbuf)
+
+                # v24：暴力破线（单根就穿越 ≥ fast×ATR）不等确认，直接走 —— 保命通道
+                hit = all(_broke(k) for k in range(mneed))
+                mfast = float(cfg.get("ma_exit_fast", 0.0) or 0.0)
+                fast_hit = False
+                if (not hit) and mfast > 0 and S["atr"][t]:
+                    a0 = S["atr"][t]
+                    fast_hit = ((px < ma - mfast * a0) if pos["side"] == "long"
+                                else (px > ma + mfast * a0))
+                    hit = fast_hit
+                if hit:
+                    tag = ("MA%d" % cfg["ma_exit"]) + \
+                          ("（缓冲 %.1fATR）" % float(cfg.get("ma_exit_buf") or 0)
+                           if mbuf else "") + \
+                          ("（连 %d 根）" % mneed if mneed > 1 else "") + \
+                          ("（单根暴破 %.1fATR）" % mfast if fast_hit else "")
+                    if pos["side"] == "long":
+                        return ("ma_exit", "收盘跌破 %s（%.1f < %.1f）" % (tag, px, ma))
+                    return ("ma_exit", "收盘涨破 %s（%.1f > %.1f）" % (tag, px, ma))
         if cfg["chand"]:
             a = S["atr"][t] or pos["atr0"]
             if pos["side"] == "long" and px <= pos["hi"] - cfg["chand"] * a:

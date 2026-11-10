@@ -358,7 +358,8 @@ STAGES = {0: "平静", 1: "起变化", 2: "关注", 3: "预警", 4: "准备反�
 
 
 # ---------------------------------------------------------------- 出场雷达（v9）
-def exit_track(bars, S, ei, side, atr, entry=None):
+def exit_track(bars, S, ei, side, atr, entry=None,
+               ma_buf=0.0, ma_confirm=1, ma_fast=0.0):
     """慢进快出的出场跟踪（与 mine_v9.sim 同源）。
 
     ei    进场根（次日开盘进，ei 即该日）
@@ -367,6 +368,11 @@ def exit_track(bars, S, ei, side, atr, entry=None):
           ② 短均线：先站到仓位一侧（armed），之后收盘反向穿越 MA{EXIT_MA}
     预警  自极值回撤 ≥WARN_PULL ATR 且（ATR 收缩 / 持仓 5 日下降 / 量能萎缩）
           —— 只提示，不平仓
+
+    v24（2026-11）：短均线离场可选容错，默认关闭以保持向后兼容。
+      ma_buf     = 0.0  收盘要破到 MA±buf×ATR 之外才算
+      ma_confirm = 1    连续 N 根收盘都在外侧才算（防假突破洗盘）
+      ma_fast    = 0.0  单根就破 ≥fast×ATR → 立即算（保命快通道，不等确认）
     """
     n = len(bars)
     mam = S.get("ma%d" % EXIT_MA) or S.get("ma")
@@ -394,8 +400,27 @@ def exit_track(bars, S, ei, side, atr, entry=None):
         if not armed and mj is not None:
             if (side == 1 and c > mj) or (side == -1 and c < mj):
                 armed = True
-        ma_hit = bool(armed and mj is not None and
-                      ((side == 1 and c < mj) or (side == -1 and c > mj)))
+        ma_hit = False
+        if armed and mj is not None:
+            thr = mj - ma_buf * atr if side == 1 else mj + ma_buf * atr
+            out = (c < thr) if side == 1 else (c > thr)
+            if out:
+                ma_hit = True
+                if ma_fast > 0:                      # 保命快通道：暴破不等确认
+                    thin = mj - ma_fast * atr if side == 1 else mj + ma_fast * atr
+                    ma_hit = (c < thin) if side == 1 else (c > thin)
+                if not ma_hit and ma_confirm > 1:    # 慢通道：连续 N 根都在外侧
+                    for k in range(1, ma_confirm):
+                        jj = j - k
+                        mk = mam[jj] if (mam and 0 <= jj < len(mam)) else None
+                        if jj < ei or mk is None:
+                            ma_hit = False
+                            break
+                        tk = mk - ma_buf * atr if side == 1 else mk + ma_buf * atr
+                        pk = bars[jj]["c"]
+                        if not ((pk < tk) if side == 1 else (pk > tk)):
+                            ma_hit = False
+                            break
         ch_hit = (c <= ch_line) if side == 1 else (c >= ch_line)
         fav = (b["h"] - entry) if side == 1 else (entry - b["l"])
         adv = (b["l"] - entry) if side == 1 else (entry - b["h"])
@@ -426,9 +451,21 @@ def exit_track(bars, S, ei, side, atr, entry=None):
                     "distCh": round((c - ch_line) / atr * side, 2),
                     "pull": round(pull, 2)})
         if ch_hit or ma_hit:
+            if ch_hit:
+                _why = "吊灯止损"
+            else:
+                _why = "反向穿越 MA%d" % EXIT_MA
+                if ma_fast > 0 and ma_buf > 0:
+                    thin = mj - ma_fast * atr if side == 1 else mj + ma_fast * atr
+                    if ((c < thin) if side == 1 else (c > thin)):
+                        _why += "（单根暴破）"
+                    elif ma_confirm > 1:
+                        _why += "（连 %d 根）" % ma_confirm
+                elif ma_confirm > 1:
+                    _why += "（连 %d 根）" % ma_confirm
             res.update({"status": "closed", "exitIdx": j, "exitPx": round(c, 1),
                         "exitDate": b["d"], "hold": j - ei,
-                        "why": ("吊灯止损" if ch_hit else "反向穿越 MA%d" % EXIT_MA),
+                        "why": _why,
                         "R": round((c - entry) * side / atr, 2)})
             break
     return res

@@ -642,16 +642,18 @@ def main():
         },
         # v15：失效打叉全量覆盖（四条任一即算；纯展示，不改进场/出场）
         "defendCfg": {
-            "version": "v17",
+            "version": "v24",
             "scope": ["4/4 建仓", "3/4 预警", "顶底雷达"],
             "rules": [
                 {"key": "rev", "label": "反向幅度", "rule": "收盘逆行 >1.5 ATR（20 根内）"},
                 {"key": "ma", "label": "均线破位",
-                 "rule": "做多收盘跌破 MA26/MA34，做空反向穿（20 根内）"},
+                 "rule": "先在内侧、再连续 2 根收破 MA26/MA34 且超出 0.5 ATR；"
+                         "单根就暴破 ≥0.8 ATR 则立即失效（保命，不等确认）"},
                 {"key": "decay", "label": "时间衰竭",
                  "rule": "5 根内未创新高/低且收破信号日低点/高点"},
                 {"key": "stop", "label": "原版止损失效",
-                 "rule": "MA26 反向穿越或吊灯 3ATR 触发离场（沿用原机制）"},
+                 "rule": "MA26 反向穿越（同上：连 2 根 + 0.5 ATR，暴破 0.8 ATR 例外）"
+                         "或吊灯 3ATR 触发离场"},
             ],
             "onePerSignal": True,
             "baseExitUnchanged": True,
