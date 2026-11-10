@@ -73,6 +73,18 @@ def next_trade_day(d):
     return d
 
 
+def workdays_between(a, b):
+    """(a, b] 之间有几个工作日。周五→周一 = 1，周四→周一 = 2（中间漏了周五）。"""
+    a = _dt.date.fromisoformat(a) if isinstance(a, str) else a
+    b = _dt.date.fromisoformat(b) if isinstance(b, str) else b
+    n, d = 0, a
+    while d < b:
+        d += _dt.timedelta(days=1)
+        if d.weekday() < 5:
+            n += 1
+    return n
+
+
 def push(token, title, html):
     """独立实现，刻意不 import daily —— 那条链路带 state 写入。"""
     if not token:
@@ -288,22 +300,27 @@ def load_pages():
 
 def run_live(dry=True):
     now = bj_now()
-    today = now.date().isoformat()
     pages = load_pages()
     hits, stale, no_night = [], 0, 0
     for sym, nm, page in pages:
         main = page.get("main") or []
         if not main:
             continue
-        if main[-1][0] != today:
-            stale += 1
-            print("%-3s 正式数据停在 %s（不是今日 %s）—— 15:20 那班可能没跑成，跳过"
-                  % (sym, main[-1][0], today))
-            continue
         tb = night_bar(sym, now)
         if tb is None:
             no_night += 1
             print("%-3s 今晚无夜盘数据，跳过" % sym)
+            continue
+        # 基线必须是「夜盘交易日之前的那一根」。
+        # 不用 now.date() 判断：schedule 延迟到零点之后时 now 已是次日，
+        # 那样会把整晚误判成「基线过期」而全程空转。
+        # 也不能只看自然日差（周五夜盘→周一是 3 天，属正常）。
+        # 用「两个日期之间夹了几个工作日」最准：=1 才说明中间没漏交易日。
+        miss = workdays_between(main[-1][0], tb["d"])
+        if miss != 1:
+            stale += 1
+            print("%-3s 正式数据停在 %s，到夜盘交易日 %s 之间夹了 %d 个工作日 —— "
+                  "基线有缺口，跳过以免误判" % (sym, main[-1][0], tb["d"], miss))
             continue
         try:
             h = judge(sym, nm, page, tb)
@@ -317,7 +334,7 @@ def run_live(dry=True):
     # 全线基线过期 = 15:20 那班没跑成，这一班等于空转。
     # 不推微信（避免制造噪音），但让 Actions 标一条 warning 便于事后发现。
     if pages and stale == len(pages):
-        print("::warning::全部品种的正式数据都停在今日之前，夜盘预警空转 —— "
+        print("::warning::全部品种的正式数据都没跟上，夜盘预警空转 —— "
               "请检查 15:20 的 daily-scan 是否失败")
     if not hits:
         return
