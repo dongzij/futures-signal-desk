@@ -1,0 +1,53 @@
+name: data-watchdog
+
+# v27.1 数据更新自愈：处理「GitHub schedule 整个班次没触发 / 延迟 / 漏跑」。
+# 只做只读检查 + 派发正式班次，绝不自己写 state.json / data/ / dist/。
+# 与 daily.yml 的关系：daily.yml 内部由 fresh_guard.py 做 3~5 分钟取数重试；
+# 本 workflow 负责 job 外部的补触发，两者合起来覆盖「没取到 / 没触发 / 不一致」。
+#
+# 北京时间对照（cron 为 UTC）：
+#   07:55→15:55  08:20→16:20  08:45→16:45  09:10→17:10
+#   09:40→17:40  10:10→18:10  10:40→18:40
+# 最晚 18:40，距 20:00 夜盘闸门留 80 分钟；guard_watch.py 内还有硬时段断言。
+on:
+  schedule:
+    - cron: '55 7 * * 1-5'
+    - cron: '20 8 * * 1-5'
+    - cron: '45 8 * * 1-5'
+    - cron: '10 9 * * 1-5'
+    - cron: '40 9 * * 1-5'
+    - cron: '10 10 * * 1-5'
+    - cron: '40 10 * * 1-5'
+  workflow_dispatch:          # 想立刻检查一次线上数据是否到位
+
+permissions:
+  contents: read
+  actions: write              # 允许派发 daily.yml
+
+concurrency:
+  group: data-watchdog
+  cancel-in-progress: true
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 检查线上数据新鲜度，必要时派发正式班次
+        run: python guard_watch.py
+
+      - name: 确认没有污染正式数据
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::watchdog 只读，却产生了文件改动，立即中止"; git status --porcelain; exit 1
+          fi
+          echo "✔ 零改动"

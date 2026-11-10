@@ -27,7 +27,12 @@ UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
 
 # ---------------------------------------------------------------- 基础工具
 
-def http_get(url, referer="https://finance.sina.com.cn", timeout=25, retries=2):
+def http_get(url, referer="https://finance.sina.com.cn", timeout=20, retries=4):
+    """v27.1：国内访问行情接口抖动较多，改指数退避重试（0.8/1.6/3.2/6 秒）。
+
+    单次超时从 25s 缩到 20s：快速失败 + 多次重试，比死等一次更稳。
+    上层 fresh_guard.py 还会按 3~5 分钟粒度做第二轮自愈。
+    """
     last = None
     for i in range(retries + 1):
         try:
@@ -40,7 +45,7 @@ def http_get(url, referer="https://finance.sina.com.cn", timeout=25, retries=2):
         except Exception as e:          # noqa: BLE001
             last = e
             if i < retries:
-                time.sleep(0.5 + i * 0.5)
+                time.sleep(min(0.8 * (2 ** i), 6.0))
     raise last
 
 
@@ -65,6 +70,10 @@ def cache_file(key):
 
 
 def cache_load(key, ttl_hours):
+    # v27.1：新鲜度预检必须走真实网络，否则 4 小时缓存会把「昨天的 K 线」
+    # 当成「今天已取到数据」，自愈重试就永远发现不了数据没更新。
+    if os.environ.get("FRESH_BYPASS") == "1":
+        return None
     p = cache_file(key)
     if not os.path.exists(p):
         return None

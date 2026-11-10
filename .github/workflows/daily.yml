@@ -6,6 +6,11 @@ name: daily-scan
 #    夜盘 21:00-23:00 是半截行情且属于【下一交易日】，一旦走这条路，
 #    日线图与账本就被永久污染。改 cron 前请先看 daily.py / data_build.py
 #    开头的 nightgate 闸门说明。
+#
+# v27.1 自愈：fresh_guard.py 在写盘【之前】只读预检行情源，取不到当日完整日线
+#   就等 4 分钟重取（最多 5 轮）；渲染之后再用 --verify 校验产物一致性，
+#   不通过就阻断「提交更新」。整体超时放到 45 分钟，容纳重试窗口。
+#   job 外部若整班没触发，由 guard.yml / guard_watch.py 补派发。
 on:
   schedule:
     # 1. 全天正式数据入库（北京时间 15:20）—— 计入 K 线，更新所有账本
@@ -24,9 +29,12 @@ concurrency:
 jobs:
   scan:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45          # v27.1：预留 fresh_guard 最多 5 轮 × 4 分钟重试
     env:
       PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+      GUARD_MAX_TRY: '5'
+      GUARD_RETRY_SEC: '240'      # 4 分钟，落在用户要求的 3~5 分钟区间
+      PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - uses: actions/checkout@v4
 
@@ -36,6 +44,11 @@ jobs:
 
       - name: 准备配置（凭据不入库）
         run: cp config.ci.json config.json
+
+      # v27.1：只读预检。失败时按 4 分钟间隔自愈重取，最多 5 轮；
+      # 绝不把 daily.py / data_build.py 放进重试循环（会重复写 state、重复推微信）。
+      - name: 数据新鲜度守卫（取数自愈）
+        run: python fresh_guard.py
 
       - name: 扫描信号
         run: python daily.py
@@ -51,6 +64,11 @@ jobs:
           cp -r dist/data data
           cp dist/echarts.min.js echarts.min.js
           touch .nojekyll
+
+      # v27.1：产物一致性（7 品种末根 / data 与 dist/data / 页面与数据包 / 策略口径 / built）。
+      # 不一致就阻断提交，由 guard.yml 下一轮派发补跑，绝不推残缺数据上线。
+      - name: 产物一致性校验
+        run: python fresh_guard.py --verify
 
       # v17：静默观察期 —— 扫描后生成当天极简日志（只记录，不改任何交易逻辑）
       - name: 生成每日极简日志
