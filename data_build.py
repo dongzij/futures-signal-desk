@@ -16,7 +16,10 @@ from datetime import datetime, timedelta, timezone
 import build
 import defend_rules
 import engine
+import engine_v21 as E21
 import mw_events
+import regime_lib
+import sig_pack as SP
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dist", "data")
 EXIT_ALL = []      # 跨品种出场成交汇总（算全局胜率/净 R）
@@ -27,18 +30,40 @@ MW_ALL = []        # v16：跨品种二段 M/W 结构（DIF背离 + 量仓强）
 
 # 品种交易参数（模拟盘用）：乘数 / 手续费 / 保证金率
 # fee: ("lot", 元/手) 或 ("rate", 万分之几)
-# ===== 模块二（2026-11-09）：6 大核心品种池 =====
-# 剔除：SR 白糖、C 玉米、SP 纸浆（长期负收益）；SA 纯碱、SM 锰硅（未入选核心池）
-# 新增：RB 螺纹钢、UR 尿素、JD 鸡蛋（扩展选品胜率/盈亏比最高）
+# ===== v22（2026-11）：新 6 大核心品种池 =====
+# 海选结论（reports/v22_final.json）：UR/RB/JD 双段全不合格已剔除；
+# 全市场 26 个候选里，遵守「震荡空仓」纪律且双段盲测合格的只有 P/SM/HC/Y/RU，
+# 其中 RU 单手保证金 18,665 元（1 万本金无法独立交易）被排除，
+# Y 与 P 同属油脂（相关性过高），故最终 3 个为：P 棕榈油 / SM 锰硅 / HC 热卷。
 PRODUCTS = {
-    "FG": {"name": "玻璃", "mult": 20, "fee": ("lot", 6),     "margin": 0.09},
     "M":  {"name": "豆粕", "mult": 10, "fee": ("lot", 1.5),   "margin": 0.08},
+    "FG": {"name": "玻璃", "mult": 20, "fee": ("lot", 6),     "margin": 0.09},
     "MA": {"name": "甲醇", "mult": 10, "fee": ("lot", 2),     "margin": 0.08},
-    "RB": {"name": "螺纹钢", "mult": 10, "fee": ("lot", 1),   "margin": 0.08},
-    "UR": {"name": "尿素", "mult": 20, "fee": ("lot", 4),     "margin": 0.08},
-    "JD": {"name": "鸡蛋", "mult": 10, "fee": ("lot", 4),     "margin": 0.08},
+    "P":  {"name": "棕榈油", "mult": 10, "fee": ("lot", 2.5), "margin": 0.08},
+    "Y":  {"name": "豆油", "mult": 10, "fee": ("lot", 2.5),   "margin": 0.08},
+    "HC": {"name": "热卷", "mult": 10, "fee": ("rate", 1.0),  "margin": 0.08},
 }
-ORDER = ["M", "UR", "FG", "MA", "RB", "JD"]  # v20：按各品种“选定方法”的年化收益从大到小（methods_final.py 产出）
+_PLAN_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "reports", "v22_final.json")
+V22 = {}
+
+
+def _load_plan():
+    global V22
+    try:
+        with open(_PLAN_PATH, encoding="utf-8") as f:
+            V22 = json.load(f)
+    except Exception:                                   # noqa: BLE001
+        V22 = {}
+
+
+_load_plan()
+# 品种栏顺序 = 近 1 年净收益降序（v22_final.py 产出）
+ORDER = V22.get("order") or ["MA", "HC", "Y", "FG", "P", "M"]
+
+REGIME_NM = {"trend_up": "上涨趋势", "trend_dn": "下跌趋势",
+             "range": "震荡", "transition": "过渡态"}
+SIG_NM = {"pred": "顶底雷达", "warn": "进场预警", "mw": "WM结构",
+          "confirm": "反转兑现", "tf": "转折确认"}
 DAILY_YEARS = 10         # 主力连续日线回看年数（支撑年/月/周视图）
 MAX_CONTRACTS = 8        # 每品种最多打包的合约数
 KEEP_MIN = 40            # 合约至少要有多少根日线才收录
@@ -75,6 +100,105 @@ def _load_json(path, default=None):
 def bars_to_arr(bars):
     return [[b["d"], b["o"], b["h"], b["l"], b["c"], b.get("v") or 0, b.get("oi") or 0]
             for b in bars]
+
+
+def _regime_since(bars, S, label):
+    """当前路况已持续多少根（同日口径，逐日回溯同一判定函数）"""
+    n = 0
+    for t in range(len(bars) - 1, 60, -1):
+        if regime_lib.causal_regime(bars, S, t) != label:
+            break
+        n += 1
+    return bars[max(60, len(bars) - n)]["d"] if n else bars[-1]["d"], n
+
+
+def build_plan(sym, doc, main, S):
+    """v22：按该品种定稿方案跑一遍完整回测，产出「路况 + 方案持仓 + 进出标识 + 下次触发」。
+
+    与回测引擎同一份代码、同一份数据、同一套风控（防守>底线>反手 + 30% 熔断 + 资金追加），
+    因此页面上看到的每一笔进出都能在报告里找到对应行。
+    """
+    v = (V22.get("symbols") or {}).get(sym)
+    if not v:
+        return {}
+    spec = v["spec"]
+    cfg = E21.default_cfg()
+    cfg["entry"] = {k: tuple(x) for k, x in spec["entry"].items()}
+    for k in ("align", "reverse", "xsig_trend", "chand", "ma_exit", "stop30"):
+        if k in spec:
+            cfg[k] = spec[k]
+    pack, meta = SP.build(doc, main, S)
+    r = E21.run(doc, doc, cfg, pack, meta, main, S)
+    st = E21.stats(doc, r)
+
+    marks = []
+    for t in r["trades"]:
+        marks.append({"d": t["entry_date"], "t": "in", "side": t["side"],
+                      "k": SIG_NM.get(t["kind"], t["kind"]), "px": round(t["entry"], 1)})
+        marks.append({"d": t["exit_date"], "t": "out", "side": t["side"],
+                      "k": t["why"], "px": round(t["exit"], 1),
+                      "net": round(t["net"]), "bars": t["bars"]})
+    marks.sort(key=lambda x: (x["d"], 0 if x["t"] == "out" else 1))
+
+    N = len(main)
+    reg = regime_lib.causal_regime(main, S, N - 1)
+    since, days = _regime_since(main, S, reg)
+    kinds = cfg["entry"].get(reg, ())
+    pos = r["open_pos"]
+
+    # 建议策略只按路况给，口径与用户定义一致：
+    #   上涨/下跌趋势 → 该品种趋势方案（G1 即 D3）；震荡 → 观望空仓；过渡态 → 顶底雷达探测
+    if reg == "range":
+        advice, code = "观望空仓", "wait"
+    elif reg == "transition":
+        advice, code = "顶底雷达探测", "radar"
+    elif kinds:
+        advice = "D3策略" if v["method"] == "G1" else "趋势策略"
+        code = "plan"
+    else:
+        advice, code = "观望空仓", "wait"
+
+    allow_txt = "、".join(SIG_NM.get(k, k) for k in kinds) if kinds else "无（本场景不开仓）"
+    if kinds and cfg.get("align") and reg in ("trend_up", "trend_dn"):
+        allow_txt += "（仅做%s）" % ("多" if reg == "trend_up" else "空")
+    trend_kinds = tuple(dict.fromkeys(tuple(spec["entry"].get("trend_up") or ())
+                                      + tuple(spec["entry"].get("trend_dn") or ())))
+    trend_txt = "/".join(SIG_NM.get(k, k) for k in trend_kinds) or "反向进场"
+    if pos:
+        nxt = ("持仓中：①「失效（白圈）/ 强烈离场」→ 次日开盘平仓　②跌破 MA26 或吊灯 3ATR → 平仓"
+               "　③出现反向「%s」且原仓已平 → 反手" % trend_txt)
+    elif reg == "range":
+        nxt = "震荡市系统静默：不开仓、不推信号，等路况切出震荡再评估"
+    else:
+        nxt = "等待「%s」信号出现 → 次日开盘顺势开仓" % allow_txt
+
+    te, tr_, fu, rc = v["test"], v["train"], v["full"], v["recent"]
+    return {
+        "v": "v22",
+        "method": v["method"], "methodLabel": v["methodLabel"],
+        "spec": spec,
+        "regime": {"now": reg, "label": REGIME_NM.get(reg, reg), "since": since,
+                   "days": days, "advice": advice, "adviceCode": code,
+                   "allow": allow_txt},
+        "verify": {"win": te["win"], "pf": te["pf"], "n": te["n"], "net": te["net"],
+                   "mdd": te["mdd"], "ann": te["ann"],
+                   "trainWin": tr_["win"], "trainPf": tr_["pf"], "trainNet": tr_["net"],
+                   "recentNet": rc["net"], "recentWin": rc["win"], "recentN": rc["n"],
+                   "span": "%s ~ %s" % (v["period"]["train_end"], v["period"]["end"])},
+        "full": {"n": st["n"], "win": st["win"], "pf": st["pf"], "net": st["net"],
+                 "ann": st["ann"], "mdd": st["mdd"], "adds": st["adds"],
+                 "avgDays": st["avg_days"], "maxDays": st["max_days"],
+                 "final": st["final"], "totalIn": st["total_in"]},
+        "open": ({"side": pos["side"], "kind": SIG_CN(pos["kind"]), "bars": pos["bars"],
+                  "float": pos["float"]} if pos else None),
+        "openDate": (r["trades"][-1]["entry_date"] if (pos and r["trades"]) else None),
+        "marks": marks,
+        "next": nxt,
+    }
+
+
+def SIG_CN(k):
+    return SIG_NM.get(k, k)
 
 
 def _exit_all_stat():
@@ -397,6 +521,13 @@ def build_product(sym):
     }
     if _old.get("bestCombo"):
         doc["bestCombo"] = _old["bestCombo"]
+    # v22：路况指示器 + 方案持仓 + 进出标识（替代 v20 的 bestCombo 双轨标签）
+    try:
+        doc["plan"] = build_plan(sym, doc, main, S_main)
+        doc.pop("bestCombo", None)          # 旧结论不再继承，防止“虚假排序”回流
+    except Exception as e:                              # noqa: BLE001
+        print("   plan 构建失败 %s: %s" % (sym, e))
+        doc["plan"] = {}
     json.dump(doc, open(os.path.join(OUT, "%s.json" % sym), "w",
                         encoding="utf-8"), ensure_ascii=False,
               separators=(",", ":"))
@@ -458,17 +589,29 @@ def main():
     _mw_doi = mw_events.summarize(
         [e for e in MW_ALL if e.get("filterDif") and e.get("filterOi")])
 
-    # 品种年化/可行性字段：从上一版 index.json 继承（由 methods_final.py 每月更新）
-    _root = os.path.dirname(os.path.dirname(OUT))
-    _prev = (_load_json(os.path.join(_root, "data", "index.json"), {}) or {}).get("products", [])
-    if not _prev:
-        _prev = (_load_json(os.path.join(OUT, "index.json"), {}) or {}).get("products", [])
-    _prev_ann = {p.get("sym"): p.get("ann") for p in _prev}
-    _prev_viable = {p.get("sym"): p.get("viable") for p in _prev}
+    # 品种年化/可行性字段：v22 起直接取 reports/v22_final.json（双段盲测结论），
+    # 不再从上一版 index.json 继承——避免旧结论（v20 的虚假年化）随重建回流。
+    _v22s = V22.get("symbols") or {}
+
+    def _prod(s):
+        v = _v22s.get(s) or {}
+        fu = v.get("full") or {}
+        rc = v.get("recent") or {}
+        te = v.get("test") or {}
+        return dict({"sym": s, **PRODUCTS[s]},
+                    ann=fu.get("ann"), viable=bool(v),
+                    method=v.get("method"), methodLabel=v.get("methodLabel"),
+                    recentNet=rc.get("net"), recentWin=rc.get("win"), recentN=rc.get("n"),
+                    testWin=te.get("win"), testPf=te.get("pf"),
+                    testNet=te.get("net"), testMdd=te.get("mdd"))
+
     manifest = {
         "built": datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M"),
-                "products": [dict({"sym": s, **PRODUCTS[s]}, ann=_prev_ann.get(s),
-                          viable=_prev_viable.get(s)) for s in ORDER],
+        "products": [_prod(s) for s in ORDER],
+        "v22": {"orderBasis": "近 1 年净收益降序",
+                "newSyms": ["P", "SM", "HC"], "dropped": ["RB", "UR", "JD"],
+                "rules": {"startCap": 10000, "addUnit": 10000, "stop30": 3000,
+                          "lot": 1, "rangeSilent": True}},
         "strategyOpen": strat_open,
         "method": state.get("method"),
         "configMode": engine.CONFIG_MODE,

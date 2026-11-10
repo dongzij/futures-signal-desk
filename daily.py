@@ -22,6 +22,7 @@ import urllib.request
 import defend_rules
 import engine
 import mw_events
+import regime_lib
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 STATE = os.path.join(ROOT, "state.json")
@@ -71,6 +72,103 @@ def engine_S(code):
     if code not in _S:
         _S[code] = engine.make_S(engine_bars(code))
     return _S[code]
+
+
+# ---------------------------------------------------------------- v22 路况 + 方案
+# 每个品种的定稿方案（G1=D3 / G2 / G4 / G8）与双段盲测数据由 v22_final.py 写入
+# dist/data/{sym}.json 的 plan 字段。路况则【实时计算】——daily 在 data_build 之前跑，
+# 读文件会拿到昨天的路况，所以这里用同一份 regime_lib 当场算，口径与页面完全一致。
+REGIME_NM = {"trend_up": "上涨趋势", "trend_dn": "下跌趋势",
+             "range": "震荡", "transition": "过渡态"}
+SIG_NM = {"pred": "顶底雷达", "warn": "进场预警", "mw": "WM结构",
+          "confirm": "反转兑现", "tf": "转折确认"}
+_PLAN = {}
+_REG = {}
+
+
+def plan_for(sym):
+    """读该品种定稿方案（spec / verify）。读不到返回 {}。"""
+    if sym in _PLAN:
+        return _PLAN[sym]
+    p = {}
+    for base in (os.path.join(ROOT, "dist", "data"), os.path.join(ROOT, "data")):
+        try:
+            with open(os.path.join(base, sym + ".json"), encoding="utf-8") as f:
+                p = (json.load(f) or {}).get("plan") or {}
+            if p:
+                break
+        except Exception:                            # noqa: BLE001
+            continue
+    _PLAN[sym] = p
+    return p
+
+
+def regime_now(sym):
+    """实时路况：(kind, 中文)。只依赖日线收盘，与页面/回测同一函数。"""
+    if sym in _REG:
+        return _REG[sym]
+    try:
+        bars = engine_bars(sym)
+        reg = regime_lib.causal_regime(bars, engine_S(sym), len(bars) - 1)
+    except Exception:                                # noqa: BLE001
+        reg = "na"
+    _REG[sym] = (reg, REGIME_NM.get(reg, "未知"))
+    return _REG[sym]
+
+
+def entry_kinds(sym, reg):
+    """该品种在当前路况下允许的进场信号集合（来自定稿方案 spec）"""
+    sp = (plan_for(sym) or {}).get("spec") or {}
+    return tuple((sp.get("entry") or {}).get(reg) or ())
+
+
+def regime_side_ok(sym, reg, side):
+    """趋势中只做顺势（与回测 align=True 一致）"""
+    sp = (plan_for(sym) or {}).get("spec") or {}
+    if not sp.get("align"):
+        return True
+    if reg == "trend_up":
+        return side == "long"
+    if reg == "trend_dn":
+        return side == "short"
+    return True
+
+
+def regime_banner(syms):
+    """推送顶部的路况一览：哪些在趋势/过渡（可交易）、哪些在震荡（静默）"""
+    on, off = [], []
+    for s in syms:
+        reg, nm = regime_now(s)
+        if reg in ("trend_up", "trend_dn", "transition"):
+            on.append("%s %s%s" % (s, nm, "（过渡·雷达）" if reg == "transition" else ""))
+        elif reg == "range":
+            off.append(s)
+    h = ""
+    if on:
+        h += ('<div style="background:#f0f7ff;border-left:3px solid #4c8dff;padding:7px 10px;'
+              'border-radius:4px;font-size:12.5px;line-height:1.7;margin-bottom:12px">'
+              '<b>🌤 今日路况（可交易）</b><br>%s</div>') % "　|　".join(on)
+    if off:
+        h += ('<div style="background:#f6f6f6;border-left:3px solid #999;padding:7px 10px;'
+              'border-radius:4px;font-size:12px;line-height:1.7;color:#666;margin-bottom:12px">'
+              '<b>💤 震荡静默（不推进场信号）</b>：%s</div>') % "、".join(off)
+    return h
+
+
+def regime_line(sym):
+    """单条推送里的路况行"""
+    reg, nm = regime_now(sym)
+    p = plan_for(sym) or {}
+    kk = entry_kinds(sym, reg)
+    if reg == "range":
+        tail = "本场景不开仓（系统静默）"
+    elif reg == "transition":
+        tail = "允许信号：%s" % ("、".join(SIG_NM.get(k, k) for k in kk) or "无")
+    else:
+        tail = "允许信号：%s%s" % ("、".join(SIG_NM.get(k, k) for k in kk) or "无",
+                                 "（仅顺势）" if (p.get("spec") or {}).get("align") else "")
+    return "【当前路况】<b>%s</b>（已持续 %s 个交易日）· %s" % (
+        nm, (p.get("regime") or {}).get("days") or "—", tail)
 
 
 # ---------------------------------------------------------------- 持仓推进
@@ -197,11 +295,12 @@ IRON_RULE = (
     '<div style="margin-top:14px;padding:8px 10px;background:#fff0f0;'
     'border-left:3px solid #d93025;border-radius:4px;font-size:12px;'
     'line-height:1.8;color:#d93025">'
-    '<b>⚠️ 铁律 · 30% 强制熔断（优先级最高，高于反手策略）</b>：'
-    '任一持仓单笔浮亏达到本金的 30%（约 3,000 元）时，'
-    '<b>无条件立即手动平仓</b>——不等反手信号、不等反弹、不抗单。'
-    '出场只认两条：① 反向信号（反手）；② 30% 熔断（保命）。'
-    '波动率过滤已永久封存，不参与任何决策。</div>')
+    '<b>⚠️ 铁律 · 出场优先级（v21 防守优先，严禁死扛）</b>：'
+    '① 出现<b>失效（白圈）</b>或<b>强烈离场</b> → 立刻平仓，先下车再等新信号；'
+    '② 跌破 MA26 或吊灯 3ATR → 立刻平仓；'
+    '③ 原仓已平之后，才允许反向反手。'
+    '任一持仓单笔浮亏达到本金 30%（约 3,000 元）→ <b>无条件平仓保命</b>，'
+    '优先级高于以上全部。</div>')
 
 
 def breaker_scan(opens, allow_push):
@@ -216,24 +315,10 @@ def breaker_scan(opens, allow_push):
     return hits
 
 
-# ---------------------------------------------------------------- v19.2：最佳机会智能匹配
-# 每个品种的「历史最优/近1年最优」组合由 compute_best_combo.py 写入 data/{sym}.json
-# 的 bestCombo 字段。当天新信号命中该组合 → 最高优先级推送结构化实战建议。
-KIND_NM = {"pred": "顶底雷达", "warn": "进场预警"}
-
-
-def best_combo_for(sym):
-    """读取品种的 bestCombo（hist/recent 两轨），读不到返回空。"""
-    try:
-        pj = load_json(os.path.join(ROOT, "data", sym + ".json"), {})
-        return pj.get("bestCombo") or {}
-    except Exception:                                # noqa: BLE001
-        return {}
-
-
-def combo_match(label, kind):
-    """信号 kind 是否命中组合标签（标签含该信号名即命中，如「顶底雷达+进场预警」两者皆可）。"""
-    return bool(label) and KIND_NM.get(kind, "") in label
+# ---------------------------------------------------------------- v22：方案内信号（最高优先级）
+# v20 的 bestCombo（历史最优/近1年最优标签）已被 v21 双段盲测推翻并删除。
+# 现在的判断依据是 data/{sym}.json 的 plan.spec：该品种定稿方案在当前路况下
+# 允许哪些进场信号、是否只做顺势。震荡市一律不匹配 → 系统静默。
 
 
 def theo_pos(sym, signals, exclude=None):
@@ -248,34 +333,60 @@ def theo_pos(sym, signals, exclude=None):
 
 
 def combo_action(label, sig_side, cur_side):
-    """按组合退出模式给出实战建议（反手 / 失效止损 / 观望）。"""
-    if "信号失效出" in label:
-        return "该信号一旦失效（均线破位/反向1.5ATR/原版止损）立刻止损离场"
+    """v22：按「防守优先」口径给出实战建议（不再默认反手）"""
     sd = "多" if sig_side == "long" else "空"
     if cur_side and cur_side != sig_side:
-        return "平%s反手做%s" % ("多" if cur_side == "long" else "空", sd)
+        return "先平%s（防守优先，不等反手），再顺信号做%s" % (
+            "多" if cur_side == "long" else "空", sd)
     if cur_side and cur_side == sig_side:
-        return "持仓观望（方向与理论持仓一致）"
-    return "顺势开仓做%s" % sd
+        return "持仓观望（方向与当前持仓一致，不加仓）"
+    return "次日开盘顺势开仓做%s" % sd
+
+
+def fwd_gate(s):
+    """v22 纪律闸门：震荡 / 未知路况一律不推进场信号；趋势中只推顺势。
+
+    这是用户明确要求的「震荡市系统必须保持静默（不推虚假信号）」的代码落点。
+    注意只管「推不推微信」：页面照常展示全部信号，回测/统计不变。
+    """
+    sym = s.get("sym")
+    reg, _nm = regime_now(sym)
+    if reg in ("range", "na"):
+        return False
+    return regime_side_ok(sym, reg, s.get("side"))
 
 
 def best_match(found, signals, allow_push):
-    """对当天新信号做最优组合匹配，命中的打上 bestTrack/bestInfo/bestAdvice 标记并返回。"""
+    """v22：信号命中「该品种定稿方案 + 当前路况允许 + 顺势」→ 最高优先级推送。
+
+    震荡市一律不匹配（系统静默，不推虚假进场信号）。
+    这是 v19.2「最佳机会」的 v22 版本：判断依据从 v20 的 bestCombo 标签，
+    换成双段盲测定稿的 plan.spec，且叠加实时路况闸门。
+    """
     hits = []
     for s in found:
-        if s.get("kind") not in ("pred", "warn") or not allow_push(s.get("sym")):
+        sym = s.get("sym")
+        if s.get("kind") not in ("pred", "warn", "mw", "confirm", "tf"):
             continue
-        bc = best_combo_for(s["sym"])
-        for track in ("hist", "recent"):
-            t = bc.get(track) or {}
-            if combo_match(t.get("label", ""), s.get("kind")):
-                cur = theo_pos(s["sym"], signals, exclude=s)
-                s["bestTrack"] = track
-                s["bestInfo"] = t
-                s["bestAdvice"] = combo_action(t.get("label", ""), s.get("side"),
-                                               (cur or {}).get("side"))
-                hits.append(s)
-                break
+        if not allow_push(sym):
+            continue
+        reg, nm = regime_now(sym)
+        if reg in ("range", "na"):
+            continue                      # 震荡/未知 → 静默
+        kk = entry_kinds(sym, reg)
+        if s.get("kind") not in kk:
+            continue
+        if not regime_side_ok(sym, reg, s.get("side")):
+            continue
+        p = plan_for(sym) or {}
+        cur = theo_pos(sym, signals, exclude=s)
+        if (p.get("open") or {}).get("side"):
+            cur = {"side": p["open"]["side"]}
+        s["bestTrack"] = "plan"
+        s["bestRegime"] = nm
+        s["bestInfo"] = p.get("verify") or {}
+        s["bestAdvice"] = combo_action("plan", s.get("side"), (cur or {}).get("side"))
+        hits.append(s)
     return hits
 
 
@@ -369,8 +480,12 @@ def main():
     # ---------- v19.1：30% 单笔浮亏熔断扫描（有触发必醒目推送） ----------
     breaker_hits = breaker_scan(opens, allow_push)
 
-    # ---------- v19.2：最佳机会智能匹配（新信号命中该品种最优组合 → 最高优先级推送） ----------
-    best_hits = best_match(found, state["signals"], allow_push)
+    # ---------- v22：方案内信号匹配（路况允许 + 方案进场集合 → 最高优先级推送） ----------
+    # 只认「近 12 天」的新信号：首次回填新品种时 found 里会有 10 年历史信号，
+    # 不过滤会把它们当成今天的交易机会推出去（上一版漏了这个过滤，实测推出 16 条）。
+    near = (now - _dt.timedelta(days=12)).strftime("%Y-%m-%d")
+    best_hits = best_match([x for x in found if x["date"] >= near],
+                           state["signals"], allow_push)
 
     state["updated"] = now.strftime("%Y-%m-%d %H:%M")
     state["stats"] = {
@@ -446,7 +561,12 @@ def main():
         tf_now[c] = {"side": L["side"], "since": L["since"], "entry": L["entry"]}
         if (not first and tf_prev.get(c, {}).get("since") != L["since"]
                 and allow_push(c)):
-            tf_flips.append((c, L))
+            # v22 纪律：震荡 / 逆势的趋势确认同样是虚假信号，一并不推
+            _reg, _nm = regime_now(c)
+            if _reg in ("range", "na") or not regime_side_ok(c, _reg, L["side"]):
+                print("muted tf flip: %s %s(%s)" % (c, L["side"], _nm))
+            else:
+                tf_flips.append((c, L))
     state["tf"] = tf_now
     json.dump(state, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 
@@ -516,51 +636,59 @@ def main():
     json.dump(state, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 
     # ---------- 推送：概率达阈值的新信号（首次回填不推） ----------
-    near = (now - _dt.timedelta(days=12)).strftime("%Y-%m-%d")
-    fresh = [] if first else [s for s in found
-                              if s["date"] >= near
-                              and s["kind"] == "pred"
-                              and not s.get("bestTrack")
-                              and (s.get("prob", {}).get("5") or 0) >= min_prob
-                              and allow_push(s["sym"], s.get("meta"))]
+    # v22：先过纪律闸门（震荡静默 / 只做顺势），再谈概率门槛。
+    # 被闸门拦下的信号会打印出来，数得清、查得到，不是"悄悄消失"。
+    raw_fresh = [] if first else [s for s in found
+                                  if s["date"] >= near
+                                  and s["kind"] == "pred"
+                                  and not s.get("bestTrack")
+                                  and (s.get("prob", {}).get("5") or 0) >= min_prob
+                                  and allow_push(s["sym"], s.get("meta"))]
+    fresh = [s for s in raw_fresh if fwd_gate(s)]
+    muted = [s for s in raw_fresh if s not in fresh]
+    if muted:
+        print("muted by regime gate:", ", ".join(
+            "%s %s(%s)" % (s["sym"], s.get("kind"), regime_now(s["sym"])[1]) for s in muted))
 
-    # ---------- v19.2 推送：最佳机会（命中品种最优组合，最高优先级，绕过概率门槛） ----------
+    # ---------- v22 推送：方案内信号（路况允许 + 方案匹配 → 最高优先级） ----------
+    # 与 v19.2 的区别：判断依据从「v20 的 bestCombo 标签」换成「v21 双段盲测定稿的 plan.spec」，
+    # 并叠加实时路况闸门（震荡一律静默）。文案必须带当前路况——这是明确的纪律要求。
     if best_hits and push_token and not first:
         site = cfg.get("siteUrl", "")
         cards = []
         for s in best_hits:
-            t = s["bestInfo"]
-            bc = best_combo_for(s["sym"])
-            h, r = bc.get("hist") or {}, bc.get("recent") or {}
-            sig_nm = KIND_NM.get(s["kind"], s["kind"])
+            sym = s["sym"]
+            v = s.get("bestInfo") or {}
+            p = plan_for(sym) or {}
+            sig_nm = SIG_NM.get(s["kind"], s["kind"])
             sd_txt = "做多方向" if s.get("side") == "long" else "做空方向"
-            track_txt = "历史最优" if s["bestTrack"] == "hist" else "近1年最优"
-            win_txt = ("历史胜率 <b>%.1f%%</b>（10 年 %s 笔）" % (h["win"], h["n"])
-                       if h else "历史样本不足") + "，" + \
-                      ("近1年胜率 <b>%.1f%%</b>（%s 笔）" % (r["win"], r["n"])
-                       if r else "近1年样本不足")
+            ver_txt = ("%s 笔 · 胜率 <b>%.1f%%</b> · 盈亏比 <b>%.2f</b> · 净 %+d 元 · 回撤 %.1f%%"
+                       % (v.get("n", 0), v.get("win") or 0, v.get("pf") or 0,
+                          v.get("net") or 0, v.get("mdd") or 0)) if v.get("n") \
+                      else "验证段样本不足（不足 3 笔），按方案信号执行但降低仓位预期"
             cards.append(
                 '<div style="margin-bottom:18px;border:1px solid #f59e0b;border-radius:8px;'
                 'padding:12px;background:#fffdf5">'
                 '<div style="font-size:17px;font-weight:700;color:#b45309">'
-                '🔥 最佳机会触发：%s %s</div>'
+                '🔥 方案内信号：%s %s</div>'
                 '<div style="font-size:13px;line-height:2.0;margin-top:8px">'
-                '【当前信号】出现 <b>%s</b>（%s）· %s<br>'
-                '【胜率支撑】该品种当前最优策略（%s）正是此信号！%s<br>'
-                '【实战建议】根据反手策略，建议 <b style="color:#b45309">%s</b><br>'
-                '【防守底线】🚨 若账户浮亏达本金 30%%（约 3000 元），'
-                '<b style="color:#d93025">无条件平仓保命</b>。</div>'
+                '%s<br>'
+                '【当前信号】<b>%s</b>（%s）· 触发日 %s<br>'
+                '【方案依据】%s『%s』的后 30%% 盲测段：%s<br>'
+                '【实战建议】<b style="color:#b45309">%s</b><br>'
+                '【防守底线】🚨 浮亏达本金 30%%（约 3000 元）无条件平仓，不等反手、不抗单。</div>'
                 '<div style="color:#888;font-size:12px;margin-top:6px">'
                 '<a href="%s">查看反转雷达 →</a></div></div>'
-                % (s["sym"], engine.NAMES.get(s["sym"], ""), sig_nm, sd_txt, s["date"],
-                   track_txt, win_txt, s.get("bestAdvice", "持仓观望"),
-                   site or "#"))
-        title = "🔥 最佳机会触发 %d 条：%s" % (
+                % (sym, engine.NAMES.get(sym, ""), regime_line(sym), sig_nm, sd_txt,
+                   s["date"], sym, p.get("methodLabel") or p.get("method") or "—", ver_txt,
+                   s.get("bestAdvice", "持仓观望"), site or "#"))
+        title = "🔥 方案内信号 %d 条：%s" % (
             len(best_hits), "、".join(
-                "%s%s" % (s["sym"], "多" if s.get("side") == "long" else "空")
-                for s in best_hits))
-        ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
-        print("push best-opportunity:", ok)
+                "%s%s(%s)" % (s["sym"], "多" if s.get("side") == "long" else "空",
+                              (s.get("bestRegime") or "")[:2]) for s in best_hits))
+        ok = post_push(push_token, title,
+                       regime_banner([s["sym"] for s in best_hits]) + "".join(cards) + IRON_RULE)
+        print("push plan-signal:", ok)
 
     if fresh and push_token:
         site = cfg.get("siteUrl", "")
@@ -575,33 +703,39 @@ def main():
                 '<span style="float:right;color:#555">%s</span></div>'
                 % ("#0a0" if c["ok"] else "#c33", "✓" if c["ok"] else "✗", c["t"], c["v"])
                 for c in s["checks"])
-            body = ('<div style="background:#fff1f0;padding:10px;border-radius:6px;'
-                    'font-size:13px;line-height:1.9">'
-                    '当前价 <b>%s</b> · 距 MA34 仅 %s ATR<br>'
+            body = ('<div style="background:#f7f9ff;padding:8px 10px;border-radius:6px;'
+                    'border-left:3px solid #4c8dff;font-size:13px;line-height:1.85">%s</div>'
+                    '<div style="background:#fff1f0;padding:10px;border-radius:6px;'
+                    'font-size:13px;line-height:1.9;margin-top:8px">'
+                    '当前价 <b>%s</b> · 距 MA34 仅 %s ATR · 参考入场 <b>%s</b>（次日开盘）<br>'
                     '4 条反转特征 <b>全部命中</b> + ADX <b>%s</b>（门槛 20）%s：'
                     '未来 3 日内反转概率 <b>%.0f%%</b>，5 日内 <b>%.0f%%</b>（首轮触发实测 69.4%%）<br>'
-                    '参考入场 <b>%s</b>（次日开盘）· <b>不设止损</b>，持有到反向穿越 MA34<br>'
+
                     '建议 <b>%s 手</b>（本金 %s，浮亏预算 %s%%，每手预留约 %s 元）'
                     '<div style="color:#a33;font-size:12px;margin-top:8px">'
                     '⚠ 该口径历史 %d 笔（10 年 5 品种）：胜率 %.0f%%、盈亏比 %.1f、'
                     '年均约 %.1f 笔；持仓期浮亏中位 0.95ATR、最深 8.7ATR（约 8,900 元/手）。'
                     '收益集中在少数大行情，务必小仓。</div>'
                     '</div>%s'
-                    % (s["price"], "%.2f" % abs(s.get("dist", 0)) if s.get("dist") is not None else "—",
+                    % (regime_line(s["sym"]),
+                       s["price"], "%.2f" % abs(s.get("dist", 0)) if s.get("dist") is not None else "—",
+                       s.get("entry"),
                        s.get("adx"), "★ 强确认" if s.get("strong") else "", p3, p5,
-                       s.get("entry"), s.get("lots", "—"),
+                       s.get("lots", "—"),
                        "{:,}".format(int(equity)), cfg.get("riskPct", 5),
                        "{:,}".format(int(s.get("bufYuan") or 0)),
                        int(engine.MODEL.get("stat", {}).get("n", 0)),
                        (engine.MODEL.get("stat", {}).get("win", 0) or 0) * 100,
                        engine.MODEL.get("stat", {}).get("payoff", 0),
                        engine.MODEL.get("stat", {}).get("n", 0) / 10.0, acts))
-            # v19.2：非该品种最优组合的基础信号，注明仅供参考
-            if not s.get("bestTrack"):
-                hb = (best_combo_for(s["sym"]).get("hist") or {}).get("label", "—")
-                body += ('<div style="color:#888;font-size:12px;margin-top:6px">'
-                         'ℹ 此信号非该品种当前最优组合（%s 历史最优：%s），仅作参考。</div>'
-                         % (s["sym"], hb))
+            # v22：此通道只推「路况允许 + 顺势」但不在该品种方案进场集合内的信号，
+            # 明确定性为参考，不写进方案账本。
+            _p = plan_for(s["sym"]) or {}
+            body += ('<div style="color:#8a6d3b;background:#fffbe6;padding:6px 8px;'
+                     'border-left:3px solid #f59e0b;border-radius:4px;font-size:12px;'
+                     'margin-top:6px">ℹ 该信号不在 %s 定稿方案（%s）的进场集合内，'
+                     '仅作方向参考，不构成进场指令。</div>'
+                     % (s["sym"], _p.get("methodLabel") or _p.get("method") or "—"))
             if risk_on:
                 body += risk_line(s.get("meta"))
             cards.append(

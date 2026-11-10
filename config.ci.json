@@ -1,11 +1,11 @@
 {
  "codes": [
-  "FG",
   "M",
+  "FG",
   "MA",
-  "RB",
-  "UR",
-  "JD"
+  "Y",
+  "P",
+  "HC"
  ],
  "equity": 100000,
  "riskPct": 5.0,
@@ -16,12 +16,12 @@
  "pass": "",
  "pushMinProb": 0.7,
  "pushSymbols": [
-  "FG",
   "M",
+  "FG",
   "MA",
-  "RB",
-  "UR",
-  "JD"
+  "Y",
+  "P",
+  "HC"
  ],
  "pushSymbolsAll": true,
  "riskTags": true,

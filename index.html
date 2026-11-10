@@ -143,11 +143,35 @@ justify-content:space-between;align-items:center}
 .bcl .bcl-h.bad{color:#ff9a9d}
 .bcl .bcl-tag{display:inline-block;margin-left:4px;padding:0 4px;border-radius:4px;
 background:rgba(229,72,77,.18);color:#ff8f92;font-weight:600;font-size:10px}
+/* ===== v22：K线右上角「当前路况指示器」 ===== */
+.rgb{position:absolute;top:8px;right:10px;z-index:7;min-width:196px;max-width:246px;
+background:linear-gradient(180deg,rgba(9,13,19,.94),rgba(9,13,19,.78));
+border:1px solid #2b3a4a;border-radius:10px;padding:7px 11px 8px;text-align:right;
+pointer-events:none;backdrop-filter:blur(3px);box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.rgb .rlab{font-size:10px;color:#8b95a7;letter-spacing:.4px}
+.rgb .rbig{font-size:23px;font-weight:800;line-height:1.12;letter-spacing:.6px}
+.rgb .rsince{font-size:10px;color:#6b7689;margin-top:1px}
+.rgb .radv{font-size:13.5px;font-weight:800;margin-top:4px;letter-spacing:.3px}
+.rgb .radv.plan{color:#9fe0ff}
+.rgb .radv.wait{color:#8b95a7}
+.rgb .radv.radar{color:#FFD400}
+.rgb .rallow{font-size:10px;color:#7fb3ff;margin-top:1px}
+.rgb .rquiet{font-size:10px;color:#ff9a9d;margin-top:1px}
+.rgb .rver{font-size:10.5px;color:#9aa7ba;margin-top:5px;border-top:1px dashed #2b3a4a;
+padding-top:4px;line-height:1.5}
+.rgb.up{border-color:#e5484d66}.rgb.up .rbig{color:#ff6b6f;text-shadow:0 0 16px rgba(229,72,77,.4)}
+.rgb.dn{border-color:#0ecb8166}.rgb.dn .rbig{color:#2ee6a0;text-shadow:0 0 16px rgba(14,203,129,.35)}
+.rgb.rg{border-color:#7fb3ff66}.rgb.rg .rbig{color:#7fb3ff}
+.rgb.tr{border-color:#FFD40055}.rgb.tr .rbig{color:#FFD400}
+@media(max-width:420px){.rgb{min-width:150px;max-width:180px;padding:6px 8px}
+.rgb .rbig{font-size:18px}.rgb .radv{font-size:12px}.rgb .rver{font-size:9.5px}}
 /* ===== 模块三：反手策略专用看板 ===== */
 .fb{font-size:12.5px}
-.fb .frow{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed #1f2733}
+.fb .frow{display:flex;justify-content:space-between;gap:18px;padding:4px 0;border-bottom:1px dashed #1f2733;align-items:flex-start}
+.fb .frow>span{color:var(--dim);flex:0 0 96px;white-space:nowrap}
+.fb .frow>b{flex:1 1 auto;text-align:right;min-width:0;word-break:break-word}
 .fb .frow:last-of-type{border-bottom:none}
-.fb .frow span{color:var(--dim)}
+
 .fb .note{margin-top:8px;font-size:10.5px;color:#6b7689;line-height:1.55}
 
 /* ===== 独立出场雷达（v10）===== */
@@ -311,7 +335,7 @@ background:#10151d;color:var(--tx);font-size:18px}
   <div class="ptabs" id="ptabs"></div>
   <div class="ctn">
     <div class="card" style="padding:6px 4px 2px;position:relative">
-      <div id="bestComboLabel" class="bcl" style="display:none"></div>
+      <div id="regimeBox" class="rgb" style="display:none"></div>
       <div id="chart"></div>
       <div class="cleg"><span style="color:#4CC9F0">▼ 进场多</span>
         <span style="color:#C77DFF">▲ 进场空</span>
@@ -324,7 +348,10 @@ background:#10151d;color:var(--tx);font-size:18px}
         <span style="color:#FFC400">◆ 建议离场</span>
         <span style="color:#FFE94A;font-weight:700">◆ 强烈离场</span>
         <span style="color:#ff8a3d">┄ MA26 离场线</span>
-        <span style="color:#4c8dff">— MA34 趋势线</span></div>
+        <span style="color:#4c8dff">— MA34 趋势线</span>
+        <span style="color:#4CC9F0;font-weight:800">▮进多</span>
+        <span style="color:#C77DFF;font-weight:800">▮进空</span>
+        <span style="color:#E8EEFA;font-weight:800">▮出（方案平仓）</span></div>
       <div id="defNav" class="defnav"></div>
     </div>
     <!-- v11.3：完整市场状态卡移到 K 线下方，首屏只留看盘必需 -->
@@ -335,7 +362,7 @@ background:#10151d;color:var(--tx);font-size:18px}
       <div id="sigList"></div>
     </div>
     <div class="card">
-      <h3>策略持仓看板 · 按该品种选定方法推演 <span class="r" id="fbTime"></span></h3>
+      <h3>策略持仓看板 · 按该品种定稿方案推演（v21 引擎 · 防守优先） <span class="r" id="fbTime"></span></h3>
       <div class="fb" id="flipBoard"></div>
     </div>
     <div class="card">
@@ -667,30 +694,53 @@ function apExport(){
 }
 function renderMarket(){
   var box = $('mktBar'); if(!box) return;
-  var M = DOC.market;
-  if(!M && MAN.marketBySym){
+  var M0 = DOC.market;
+  if(!M0 && MAN.marketBySym){
     var hit = MAN.marketBySym.filter(function(x){ return x.sym===cur.sym; });
-    if(hit.length) M = hit[0];
+    if(hit.length) M0 = hit[0];
   }
-  if(!M){ box.innerHTML='<div class="mk"><div class="mkh"><span>市场状态</span></div>'
-    + '<div class="mkv" style="font-size:16px;color:var(--dim)">加载中…</div></div>'; return; }
-  var cl = M.state==='Up'?'up':(M.state==='Down'?'dn':'rg');
+  // v22：全站只允许一套路况口径 —— 以该品种定稿方案里的 plan.regime 为准。
+  // 旧的「市场状态」（布林带宽分位 + MA60 斜率）仍保留数值，但降级为证据行，
+  // 不再单独给结论：否则同一屏会出现「过渡态」和「下跌趋势」两个判断，实盘必打架。
+  var RG = (DOC.plan && DOC.plan.regime) || null;
+  if(!M0 && !RG){
+    box.innerHTML='<div class="mk"><div class="mkh"><span>市场状态</span></div>'
+      + '<div class="mkv" style="font-size:16px;color:var(--dim)">加载中…</div></div>';
+    return;
+  }
+  var label, state, date;
+  if(RG){
+    label = RG.label;
+    state = RG.now==='trend_up' ? 'Up' : (RG.now==='trend_dn' ? 'Down' : 'Range');
+    date = RG.since;
+  }else{
+    label = M0.label; state = M0.state; date = M0.date;
+  }
+  var cl = state==='Up'?'up':(state==='Down'?'dn':'rg');
   var mini = $('mktMini');
   if(mini){
-    mini.textContent = String(M.label||'市场状态').replace(/（.*?）/g,'').trim();
+    mini.textContent = String(label||'路况').replace(/（.*?）/g,'').trim();
     mini.className = 'mktmini ' + cl;
   }
-  var sub = '布林带宽分位 ' + (M.bwQ!=null ? Math.round(M.bwQ*100)+'%' : '—')
-    + ' · MA60 斜率 ' + (M.ma60Slope!=null ? (M.ma60Slope>0?'+':'')+M.ma60Slope : '—')
-    + ' · 20日内穿越中轨 ' + (M.midCross!=null ? M.midCross+' 次' : '—');
+  var ev = [];
+  if(M0){
+    if(M0.bwQ!=null) ev.push('布林带宽分位 '+Math.round(M0.bwQ*100)+'%');
+    if(M0.ma60Slope!=null) ev.push('MA60 斜率 '+(M0.ma60Slope>0?'+':'')+M0.ma60Slope);
+    if(M0.midCross!=null) ev.push('20日内穿越中轨 '+M0.midCross+' 次');
+  }
+  var foot = RG
+    ? ('本路况已持续 <b style="color:var(--tx)">'+RG.days+'</b> 个交易日 · 建议策略 '
+       + '<b style="color:var(--tx)">'+RG.advice+'</b>'
+       + (RG.now==='range'
+            ? '· <span style="color:#ff9a9d">震荡静默：不开仓、不推微信</span>'
+            : '· 允许信号 '+(RG.allow||'—')))
+    : ('本状态 <span style="color:var(--tx);font-weight:600;margin:0 2px">不拦截、不隐藏、不降级</span>任何信号');
   box.innerHTML = '<div class="mk '+cl+'">'
-    + '<div class="mkh"><span>市场状态 · '+(DOC.name||'')+' · '+M.date+'</span>'
-    + '<span class="mktag">仅信息参考</span></div>'
-    + '<div class="mkv">'+M.label+'</div>'
-    + '<div class="mks">'+sub+'</div>'
-    + '<div class="mks" style="margin-top:4px">本状态 '
-    + '<span style="color:var(--tx);font-weight:600;margin:0 2px">不拦截、不隐藏、不降级</span>任何信号；'
-    + '微信推送范围按品种白名单</div></div>';
+    + '<div class="mkh"><span>'+(RG?'当前路况':'市场状态')+' · '+(DOC.name||'')+' · '+date+'</span>'
+    + '<span class="mktag">v22 单一口径</span></div>'
+    + '<div class="mkv">'+label+'</div>'
+    + (ev.length ? '<div class="mks">证据：'+ev.join(' · ')+'</div>' : '')
+    + '<div class="mks" style="margin-top:4px">'+foot+'</div></div>';
 }
 
 /* ================= v11.2 推送设置面板 =================
@@ -761,12 +811,15 @@ function copyPushCfg(){
 function renderSymChips(){
   var ps = ((MAN.pushCfg||{}).symbols||[]).map(function(x){return String(x).toUpperCase();});
   $('symChips').innerHTML = MAN.products.map(function(p){
-    var a = p.ann;
-    var na = (p.viable === false);
-    var badge = (a===null||a===undefined||isNaN(a)) ? ''
-      : '<span class="annb '+(na?'na':(a>=0?'up':'dn'))+'" title="'
-        + (na ? '该品种在 1万本金/1手 口径下无合格方法，不建议交易' : '按该品种当前最优方法、1万本金、含30%熔断的10年年化收益')
-        + '">' + (na?'⚠ ':'') + (a>=0?'+':'') + (Math.round(a*10)/10).toFixed(1) + '%</span>';
+    // v22：徽标 = 近 1 年净收益率（1 万本金口径），与品种栏排序键完全一致，
+    // 不再用 v20 那套“历史最优年化”数字（那正是被推翻的虚假排序）。
+    // recentNet 是 1 万本金口径的元数 → 百分比 = 元数 / 10000 * 100 = 元数/100
+    var a = (p.recentNet===null||p.recentNet===undefined) ? null : p.recentNet/100;
+    var badge = (a===null) ? ''
+      : '<span class="annb '+(a>=0?'up':'dn')+'" title="近 1 年（'+((p.recentN)||0)+' 笔平仓'
+        + (p.recentN ? '' : '，数字为未平仓浮动') + '）净收益 '
+        + (a>=0?'+':'') + a.toFixed(1) + '% · 1 万本金 · 含 30% 熔断">'
+        + (a>=0?'+':'') + a.toFixed(1) + '%</span>';
     return '<div class="chip'+(p.sym===cur.sym?' on':'')+'" onclick="selectSym(\''+p.sym+'\')">'
       + p.name
       + badge
@@ -774,7 +827,7 @@ function renderSymChips(){
       + '</div>';
   }).join('');
   var hint = $('symSortHint');
-  if(hint){ hint.textContent = '按年化收益从大到小排序（口径：当前最优组合 · 1万本金 · 含30%熔断 · 10年）'; }
+  if(hint){ hint.textContent = '按最近 1 年净收益从大到小排序（口径：该品种定稿方案 · 1万本金 · 含30%熔断；徽标即该数字）'; }
 }
 function selectSym(sym){
   cur.sym = sym; cur.ct = '0'; cur.pt = 'D';
@@ -1083,6 +1136,38 @@ function renderChart(){
                                        type:'dashed'}}]);
           }
         }
+      }
+    });
+  }
+  // ===== v22：方案进出标识（最外层）=====
+  // 每一笔都来自该品种定稿方案在 v21 引擎上的真实回测结果（DOC.plan.marks），
+  // 不是事后标注：进场=信号次日开盘，出场=防守/底线/熔断三者之一。
+  // 放在信号层之外（±2.1ATR 进 / ±2.95ATR 出），与原始信号标记分带显示，互不遮挡。
+  if(cur.pt==='D' && DOC.plan && DOC.plan.marks){
+    var WHY={defend:'失效',xsig_strong:'强离场',ma_exit:'破MA26',chandelier:'吊灯',
+             stop30:'熔断',max_hold:'到期',flip:'反手'};
+    (DOC.plan.marks||[]).forEach(function(m){
+      var ix=dateIdx(dates,m.d); if(ix==null) return;
+      var a=A(ix), b=bars[ix], isS=(m.side==='short');
+      if(m.t==='in'){
+        var yin = isS ? (b[2] + 2.1*a) : (b[3] - 2.1*a);
+        marks.push({value:[ix,yin], pm:'in',
+          symbol:'roundRect', symbolSize:[30,17], z:12,
+          itemStyle:{color: isS? '#3b1e6e':'#0b3444',
+                     borderColor: isS? '#C77DFF':'#4CC9F0', borderWidth:1.5,
+                     shadowBlur:8, shadowColor: isS? 'rgba(199,125,255,.65)':'rgba(76,201,240,.65)'},
+          label:{show:true, position:'inside', formatter: isS?'进空':'进多',
+                 color: isS? '#E9D5FF':'#C8F0FA', fontSize:10, fontWeight:800}});
+      }else{
+        var yout = isS ? (b[2] + 2.95*a) : (b[3] - 2.95*a);
+        var wnm = WHY[m.k] || m.k || '出';
+        var col = (m.k==='stop30')? '#FF2D2D'
+                : (m.k==='defend'||m.k==='xsig_strong')? '#E8EEFA' : '#ff8a3d';
+        marks.push({value:[ix,yout], pm:'out',
+          symbol:'roundRect', symbolSize:[34,16], z:11,
+          itemStyle:{color:'rgba(11,14,19,.88)', borderColor:col, borderWidth:1.3},
+          label:{show:true, position:'inside', formatter:'出·'+wnm,
+                 color:col, fontSize:9.5, fontWeight:700}});
       }
     });
   }
@@ -2289,73 +2374,45 @@ function showPage(pg){
 }
 function renderFlipBoard(){
   var box = $('flipBoard'); if(!box) return;
-  // v20：看板跟随“该品种当前选定的方法”推演理论持仓（不再写死反手）
-  var bc = DOC.bestCombo || {};
-  var h = bc.hist || {};
-  var spec = h.spec || {entry:['pred','warn'], exit:'flip'};
-  var entry = spec.entry || [];
-  var exitMode = spec.exit || 'flip';
-  var KN = {pred:'顶底雷达', warn:'进场预警', mw:'WM结构'};
-  var DEFKN = {radar:'pred', pred:'pred', warn:'warn', mw:'mw'};
-
-  // 组装事件：开仓信号 + 出场事件，按日期排序（同日先平后开）
-  var evs = [];
-  (DOC.signals || []).forEach(function(s){
-    if(entry.indexOf(s.kind) < 0) return;
-    evs.push({d:s.date, t:0, type:'open', side:s.side, kind:s.kind});
-  });
-  if(exitMode === 'fail'){
-    (DOC.defend || []).forEach(function(x){
-      var k = DEFKN[x.sigKind]; if(!k) return;
-      evs.push({d:x.date, t:-1, type:'close', sigDate:x.sigDate, kind:k});
-    });
-  } else if(exitMode === 'next_pred'){
-    (DOC.signals || []).forEach(function(s){
-      if(s.kind !== 'pred') return;
-      evs.push({d:s.date, t:-1, type:'close'});
-    });
+  // v22：看板直接读后端按该品种定稿方案跑出来的真实回测状态（DOC.plan），
+  // 前端不再自行复演信号序列 —— 页面与报告同源，避免两套逻辑各说各话。
+  var p = DOC.plan || {};
+  if(!p.regime){
+    box.innerHTML = '<div class="note">该品种暂无定稿方案（未通过双段盲测）。</div>';
+    return;
   }
-  evs.sort(function(a,b){ return a.d < b.d ? -1 : (a.d > b.d ? 1 : (a.t - b.t)); });
-
-  var pos = null;
-  evs.forEach(function(e){
-    if(e.type === 'open'){
-      if(pos === null) pos = {side:e.side, date:e.d, kind:e.kind};
-      else if(pos.side !== e.side && exitMode === 'flip') pos = {side:e.side, date:e.d, kind:e.kind};
-      // 非反手模式：反向开仓信号不平仓（与回测一致）
-    } else if(pos){
-      if(exitMode === 'fail'){
-        if(pos.date === e.sigDate && pos.kind === e.kind) pos = null;
-      } else {
-        pos = null;
-      }
-    }
-  });
-
+  var rg = p.regime, v = p.verify || {}, fu = p.full || {};
+  var RC = {trend_up:'#ff6b6f', trend_dn:'#2ee6a0', range:'#7fb3ff', transition:'#FFD400'};
+  var AC = {plan:'#9fe0ff', wait:'#8b95a7', radar:'#FFD400'};
   var html = '';
-  html += '<div class="frow"><span>该品种当前方法</span><b style="color:#9fe0ff">'
-        + (h.label || '—') + (h.viable===false ? '（不满足交易条件）' : '') + '</b></div>';
-  if(pos){
-    var dirTxt = pos.side === 'short' ? '空单（做空）' : '多单（做多）';
-    var col = pos.side === 'short' ? '#C77DFF' : '#4CC9F0';
-    html += '<div class="frow"><span>当前理论持仓</span><b style="color:'+col+'">'+dirTxt+'</b></div>';
-    html += '<div class="frow"><span>最近触发信号</span><b>'+pos.date+' · '+(KN[pos.kind]||pos.kind)+'</b></div>';
+  html += '<div class="frow"><span>当前路况</span><b style="color:'+ (RC[rg.now]||'#fff') +'">'
+        + rg.label + '　<small style="color:#6b7689;font-weight:400">已持续 '+rg.days
+        + ' 个交易日 · 自 '+rg.since+'</small></b></div>';
+  html += '<div class="frow"><span>建议策略</span><b style="color:'+ (AC[rg.adviceCode]||'#fff') +'">'
+        + rg.advice + (rg.adviceCode==='wait' ? '（震荡市静默，不推信号）' : '') + '</b></div>';
+  html += '<div class="frow"><span>本品种方案</span><b>'+ (p.methodLabel || '—')
+        + ' <small style="color:#6b7689">'+ (p.method||'') +'</small></b></div>';
+  if(p.open){
+    var col = p.open.side === 'short' ? '#C77DFF' : '#4CC9F0';
+    var dirTxt = p.open.side === 'short' ? '空单（做空）' : '多单（做多）';
+    html += '<div class="frow"><span>当前理论持仓</span><b style="color:'+col+'">'+dirTxt
+          + '　<small style="color:#6b7689;font-weight:400">已持 '+(p.open.bars||0)+' 根 · 浮盈 '
+          + (p.open.float>=0?'+':'') + p.open.float + ' 元</small></b></div>';
+    html += '<div class="frow"><span>最近触发</span><b>'+(p.openDate||'—')+' · '+p.open.kind+'</b></div>';
   } else {
     html += '<div class="frow"><span>当前理论持仓</span><b style="color:#8b95a7">空仓（无持仓）</b></div>';
+    html += '<div class="frow"><span>最近一笔</span><b>'
+          + ((p.marks&&p.marks.length)? (p.marks[p.marks.length-1].d+' · 已平仓') : '—') + '</b></div>';
   }
-
-  var entTxt = entry.map(function(k){ return '「'+KN[k]+'」'; }).join(' 或 ');
-  var nextTxt;
-  if(!pos){
-    nextTxt = '出现 '+entTxt+' → 顺势开仓（多 / 空）';
-  } else if(exitMode === 'flip'){
-    nextTxt = pos.side === 'short' ? '出现反向（多）信号 → 平空反手做多' : '出现反向（空）信号 → 平多反手做空';
-  } else if(exitMode === 'fail'){
-    nextTxt = '该笔信号被判失效（均线破位 / 反向>1.5ATR / 原版止损）→ 平'+(pos.side==='short'?'空':'多');
-  } else {
-    nextTxt = '出现任一「顶/底雷达」→ 平'+(pos.side==='short'?'空':'多');
-  }
-  html += '<div class="frow"><span>下一次触发条件</span><b style="color:#FFD400">'+nextTxt+'</b></div>';
+  html += '<div class="frow"><span>下一次触发条件</span><b style="color:#FFD400">'+p.next+'</b></div>';
+  html += '<div class="frow"><span>验证段（后 30% 盲测）</span><b style="color:#9fe0ff">'
+        + (v.n||0) + ' 笔 · 胜率 ' + (v.win!=null?v.win.toFixed(1):'—') + '% · 盈亏比 '
+        + (v.pf!=null?v.pf.toFixed(2):'—') + ' · 净 ' + (v.net>=0?'+':'') + (v.net||0)
+        + ' 元 · 回撤 ' + (v.mdd!=null?v.mdd.toFixed(1):'—') + '%</b></div>';
+  html += '<div class="frow"><span>全样本（10 年）</span><b>'
+        + (fu.n||0) + ' 笔 · 胜率 ' + (fu.win!=null?fu.win.toFixed(1):'—') + '% · 年化 '
+        + (fu.ann>=0?'+':'') + (fu.ann!=null?fu.ann.toFixed(1):'—') + '% · 期末 '
+        + (fu.final||0) + ' 元</b></div>';
   // v19.1 铁律：30% 单笔浮亏强平熔断，优先级高于反手策略（等下一个信号）
   html += '<div style="margin-top:10px;padding:8px 10px;background:rgba(255,45,45,.12);'
         + 'border-left:3px solid #FF2D2D;border-radius:4px;font-size:12.5px;line-height:1.8;color:#FF6B6B">'
@@ -2363,35 +2420,33 @@ function renderFlipBoard(){
         + '任一持仓反向浮亏达到本金的 <b>30%（约 3,000 元）</b>时，'
         + '<b style="color:#FF2D2D">无条件立即手动平仓</b>——不等反手信号、不等反弹、不抗单。'
         + '平仓后回到空仓，等待下一个信号再入场。</div>';
-  html += '<div class="note">按“该品种当前选定方法”逐条推演的理论持仓，仅作参考，不构成实盘指令；实盘须自担风险。'
-        + '出场只认两条：① 该方法规定的出场信号；② 30% 熔断（保命）。波动率过滤已永久封存，不参与任何决策。</div>';
+  html += '<div class="note">按该品种定稿方案在 v21 引擎上逐日裁决的真实结果（1 万本金 · 1 手 · 资金不足自动追加 1 万 · 防守优先）。'
+        + 'K 线上「进多/进空/出」三色方块即该方案的每一笔进出，与报告逐笔清单一一对应。仅作参考，不构成实盘指令。</div>';
   box.innerHTML = html;
 }
-function renderBestCombo(){
-  var el = $('bestComboLabel'); if(!el) return;
-  var bc = DOC.bestCombo;
-  if(!bc || (!bc.hist && !bc.recent)){ el.style.display = 'none'; return; }
-  var h = bc.hist || {}, r = bc.recent || {};
-  function line(tag, x){
-    if(!x || !x.label) return tag+'：样本不足';
-    var s = tag+'：'+x.label+'，胜率 '+(x.win!=null?x.win.toFixed(0):'—')+'%';
-    if(x.n!=null) s += '（'+x.n+'笔）';
-    if(x.ann!=null){
-      var sign = x.ann>=0 ? '+' : '';
-      s += '　年化 '+sign+x.ann.toFixed(1)+'%';
-    }
-    return s;
-  }
-  var hh = line('历史最优', h);
-  var rr = h.viable === false ? '近1年最优：不适用（该品种无合格方法）' : line('近1年最优', r);
+function renderRegime(){
+  var el = $('regimeBox'); if(!el) return;
+  var p = DOC.plan || {}, rg = p.regime;
+  if(!rg){ el.style.display = 'none'; return; }
+  var v = p.verify || {};
+  var cls = rg.now==='trend_up'?'up':rg.now==='trend_dn'?'dn':rg.now==='range'?'rg':'tr';
+  el.className = 'rgb ' + cls;
   el.style.display = 'block';
-  el.innerHTML = '<div class="bcl-h'+((h.viable===false)?' bad':'')+'">'+hh
-    + ((h.viable===false) ? '　<span class="bcl-tag">不满足交易条件</span>' : '')
-    + '</div><div class="bcl-r">'+rr+'</div>';
+  el.innerHTML =
+      '<div class="rlab">当前路况</div>'
+    + '<div class="rbig">'+rg.label+'</div>'
+    + '<div class="rsince">已持续 '+rg.days+' 个交易日</div>'
+    + '<div class="radv '+rg.adviceCode+'">建议策略：'+rg.advice+'</div>'
+    + (rg.adviceCode==='wait'
+        ? '<div class="rquiet">震荡市静默 · 不推信号</div>'
+        : '<div class="rallow">允许信号：'+rg.allow+'</div>')
+    + '<div class="rver">验证段 '+((v.n)||0)+' 笔：胜率 '
+    + (v.win!=null?v.win.toFixed(1):'—')+'% · 盈亏比 '
+    + (v.pf!=null?v.pf.toFixed(2):'—')+'</div>';
 }
 function renderAll(){
   renderMarket(); renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderSigs();
-  renderFlipBoard(); renderBestCombo();
+  renderFlipBoard(); renderRegime();
   // ?expand=1 深链接：直接展开两张雷达卡明细，方便对照 / 截图
   try{
     if(new URLSearchParams(location.search).get('expand') === '1'){
