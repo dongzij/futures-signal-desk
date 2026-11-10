@@ -222,6 +222,13 @@ def run_live(dry=True):
         if page["main"] and page["main"][-1][0] == tb["d"]:
             print("%-3s 正式数据已含今日，跳过" % sym)
             continue
+        # 基线太旧（上一个交易日的正式 build 失败过）→ 不用旧基线瞎比，直接跳过
+        lag = (_dt.date.fromisoformat(tb["d"])
+               - _dt.date.fromisoformat(page["main"][-1][0])).days
+        if lag > 7:
+            print("%-3s 正式数据停在 %s（距今 %d 天），跳过以免误判"
+                  % (sym, page["main"][-1][0], lag))
+            continue
         try:
             h = judge(sym, nm, page, tb)
         except Exception as e:                                # noqa: BLE001
