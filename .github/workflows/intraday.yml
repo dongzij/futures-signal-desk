@@ -1,0 +1,41 @@
+name: intraday-warn
+
+# v23：盘中预警 —— 每天第二班，只读不写
+#   11:33（北京时间）→ 用上午收盘价拼一根临时日线，复跑同一套引擎，
+#   只在「会多出一笔进出 / 路况真的翻」时推微信；震荡空仓一律静默。
+#   不写 state.json、不写 data/、不提交任何文件 —— 正式口径仍以 15:20 那一班为准。
+on:
+  schedule:
+    - cron: '33 3 * * 1-5'    # 北京时间 11:33（午盘收盘后 3 分钟）
+  workflow_dispatch:          # 手动触发按钮
+
+permissions:
+  contents: read
+
+concurrency:
+  group: intraday-warn
+  cancel-in-progress: true
+
+jobs:
+  warn:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 盘中预警（只读，不落盘）
+        run: python intraday_warn.py
+
+      - name: 确认没有污染正式数据
+        run: |
+          git status --porcelain
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "::error::盘中预警不应产生任何文件改动"
+            exit 1
+          fi
