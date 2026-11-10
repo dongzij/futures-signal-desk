@@ -21,6 +21,7 @@ import urllib.request
 
 import defend_rules
 import engine
+import extreme_gate
 import mw_events
 import regime_lib
 
@@ -419,6 +420,13 @@ def best_match(found, signals, allow_push):
         # 去掉它等于偷偷改方案账本，这两个品种的方案内信号会漏推。
         if s.get("kind") not in ("pred", "warn", "mw", "confirm", "tf"):
             continue
+        # v27 兜底：即使信号来自旧 state，只要触犯【顶不做多·底不做空】就不推。
+        try:
+            if extreme_gate.blocked_at(engine_bars(sym), s.get("date"),
+                                       s.get("side"), s.get("kind")):
+                continue
+        except Exception:                       # noqa: BLE001
+            pass
         if not allow_push(sym):
             continue
         reg, nm = regime_now(sym)
@@ -465,11 +473,12 @@ def main():
     state["scanDate"] = now.strftime("%Y-%m-%d")
     state["runs"] = state.get("runs", 0) + 1
 
-    found, newest = [], None
+    found, newest, ext_muted = [], None, []
     cut_back = (now - _dt.timedelta(days=365 * 10)).strftime("%Y-%m-%d")
     for c in codes:
         try:
-            sigs, _ = engine.scan_symbol(c, bars=engine_bars(c))
+            bars_c = engine_bars(c)
+            sigs, _ = engine.scan_symbol(c, bars=bars_c)
         except Exception as e:                  # noqa: BLE001
             print("scan %s failed: %s" % (c, e), file=sys.stderr)
             continue
@@ -480,6 +489,13 @@ def main():
             if key in state["seen"]:
                 continue
             state["seen"].append(key)
+            # ---- v27【顶不做多·底不做空】：违规进场信号不入库、不推送 ----
+            # 只拦进场类；出场类（白圈 / 吊灯 / MA26 / 熔断 / 独立出场雷达）照常。
+            if extreme_gate.blocked_at(bars_c, s["date"],
+                                       s.get("side"), s.get("kind")):
+                ext_muted.append("%s %s %s(%s)" %
+                                 (s["sym"], s["date"], s["kind"], s.get("side")))
+                continue
             if s["kind"] == "pred":
                 pos = engine.position_of(s)
                 s.update(pos)
@@ -492,6 +508,9 @@ def main():
             if newest is None or s["date"] > newest:
                 newest = s["date"]
 
+    if ext_muted:
+        print("v27 极值禁令拦截 %d 条进场信号（不入库、不推送）：%s" %
+              (len(ext_muted), "、".join(ext_muted[:12])))
     state["signals"] = sorted(state["signals"] + found, key=lambda x: x["date"])
     # ---------- v11 甲方案：周线 MA45 降级档位 + 复盘标签 ----------
     # 只决定「要不要推微信」，不删除、不延迟任何信号；后台盈亏计算完全不变。

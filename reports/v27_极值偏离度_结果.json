@@ -1,0 +1,593 @@
+{
+ "rows": 990,
+ "grid": [
+  {
+   "N": 30,
+   "T": 2.0,
+   "blocked": {
+    "n": 957,
+    "win": 41.0,
+    "pf": 1.59,
+    "avgR": 0.577,
+    "netR": 552.2
+   },
+   "kept": {
+    "n": 33,
+    "win": 33.3,
+    "pf": 0.86,
+    "avgR": -0.185,
+    "netR": -6.1
+   },
+   "blockPct": 96.7,
+   "longBlocked": 465,
+   "shortBlocked": 492
+  },
+  {
+   "N": 30,
+   "T": 2.5,
+   "blocked": {
+    "n": 897,
+    "win": 41.7,
+    "pf": 1.64,
+    "avgR": 0.615,
+    "netR": 551.6
+   },
+   "kept": {
+    "n": 93,
+    "win": 31.2,
+    "pf": 0.95,
+    "avgR": -0.059,
+    "netR": -5.4
+   },
+   "blockPct": 90.6,
+   "longBlocked": 434,
+   "shortBlocked": 463
+  },
+  {
+   "N": 30,
+   "T": 3.0,
+   "blocked": {
+    "n": 786,
+    "win": 41.5,
+    "pf": 1.59,
+    "avgR": 0.569,
+    "netR": 447.1
+   },
+   "kept": {
+    "n": 204,
+    "win": 37.7,
+    "pf": 1.44,
+    "avgR": 0.486,
+    "netR": 99.0
+   },
+   "blockPct": 79.4,
+   "longBlocked": 389,
+   "shortBlocked": 397
+  },
+  {
+   "N": 30,
+   "T": 3.5,
+   "blocked": {
+    "n": 673,
+    "win": 41.3,
+    "pf": 1.56,
+    "avgR": 0.556,
+    "netR": 374.0
+   },
+   "kept": {
+    "n": 317,
+    "win": 39.4,
+    "pf": 1.55,
+    "avgR": 0.543,
+    "netR": 172.1
+   },
+   "blockPct": 68.0,
+   "longBlocked": 342,
+   "shortBlocked": 331
+  },
+  {
+   "N": 30,
+   "T": 4.0,
+   "blocked": {
+    "n": 525,
+    "win": 41.0,
+    "pf": 1.52,
+    "avgR": 0.525,
+    "netR": 275.9
+   },
+   "kept": {
+    "n": 465,
+    "win": 40.4,
+    "pf": 1.6,
+    "avgR": 0.581,
+    "netR": 270.2
+   },
+   "blockPct": 53.0,
+   "longBlocked": 270,
+   "shortBlocked": 255
+  },
+  {
+   "N": 30,
+   "T": 5.0,
+   "blocked": {
+    "n": 243,
+    "win": 37.4,
+    "pf": 1.37,
+    "avgR": 0.41,
+    "netR": 99.7
+   },
+   "kept": {
+    "n": 747,
+    "win": 41.8,
+    "pf": 1.63,
+    "avgR": 0.598,
+    "netR": 446.4
+   },
+   "blockPct": 24.5,
+   "longBlocked": 121,
+   "shortBlocked": 122
+  },
+  {
+   "N": 30,
+   "T": 6.0,
+   "blocked": {
+    "n": 107,
+    "win": 32.7,
+    "pf": 0.95,
+    "avgR": -0.064,
+    "netR": -6.9
+   },
+   "kept": {
+    "n": 883,
+    "win": 41.7,
+    "pf": 1.66,
+    "avgR": 0.626,
+    "netR": 553.0
+   },
+   "blockPct": 10.8,
+   "longBlocked": 55,
+   "shortBlocked": 52
+  },
+  {
+   "N": 60,
+   "T": 2.0,
+   "blocked": {
+    "n": 952,
+    "win": 41.2,
+    "pf": 1.6,
+    "avgR": 0.584,
+    "netR": 555.8
+   },
+   "kept": {
+    "n": 38,
+    "win": 28.9,
+    "pf": 0.81,
+    "avgR": -0.255,
+    "netR": -9.7
+   },
+   "blockPct": 96.2,
+   "longBlocked": 466,
+   "shortBlocked": 486
+  },
+  {
+   "N": 60,
+   "T": 2.5,
+   "blocked": {
+    "n": 906,
+    "win": 41.8,
+    "pf": 1.66,
+    "avgR": 0.632,
+    "netR": 572.6
+   },
+   "kept": {
+    "n": 84,
+    "win": 28.6,
+    "pf": 0.76,
+    "avgR": -0.316,
+    "netR": -26.5
+   },
+   "blockPct": 91.5,
+   "longBlocked": 441,
+   "shortBlocked": 465
+  },
+  {
+   "N": 60,
+   "T": 3.0,
+   "blocked": {
+    "n": 800,
+    "win": 41.8,
+    "pf": 1.6,
+    "avgR": 0.572,
+    "netR": 457.7
+   },
+   "kept": {
+    "n": 190,
+    "win": 36.3,
+    "pf": 1.43,
+    "avgR": 0.465,
+    "netR": 88.4
+   },
+   "blockPct": 80.8,
+   "longBlocked": 397,
+   "shortBlocked": 403
+  },
+  {
+   "N": 60,
+   "T": 3.5,
+   "blocked": {
+    "n": 696,
+    "win": 41.1,
+    "pf": 1.54,
+    "avgR": 0.535,
+    "netR": 372.6
+   },
+   "kept": {
+    "n": 294,
+    "win": 39.8,
+    "pf": 1.6,
+    "avgR": 0.59,
+    "netR": 173.6
+   },
+   "blockPct": 70.3,
+   "longBlocked": 355,
+   "shortBlocked": 341
+  },
+  {
+   "N": 60,
+   "T": 4.0,
+   "blocked": {
+    "n": 567,
+    "win": 41.4,
+    "pf": 1.54,
+    "avgR": 0.537,
+    "netR": 304.4
+   },
+   "kept": {
+    "n": 423,
+    "win": 39.7,
+    "pf": 1.59,
+    "avgR": 0.571,
+    "netR": 241.7
+   },
+   "blockPct": 57.3,
+   "longBlocked": 292,
+   "shortBlocked": 275
+  },
+  {
+   "N": 60,
+   "T": 5.0,
+   "blocked": {
+    "n": 339,
+    "win": 39.5,
+    "pf": 1.42,
+    "avgR": 0.446,
+    "netR": 151.4
+   },
+   "kept": {
+    "n": 651,
+    "win": 41.3,
+    "pf": 1.64,
+    "avgR": 0.606,
+    "netR": 394.8
+   },
+   "blockPct": 34.2,
+   "longBlocked": 178,
+   "shortBlocked": 161
+  },
+  {
+   "N": 60,
+   "T": 6.0,
+   "blocked": {
+    "n": 199,
+    "win": 40.7,
+    "pf": 1.22,
+    "avgR": 0.236,
+    "netR": 46.9
+   },
+   "kept": {
+    "n": 791,
+    "win": 40.7,
+    "pf": 1.66,
+    "avgR": 0.631,
+    "netR": 499.2
+   },
+   "blockPct": 20.1,
+   "longBlocked": 103,
+   "shortBlocked": 96
+  },
+  {
+   "N": 90,
+   "T": 2.0,
+   "blocked": {
+    "n": 953,
+    "win": 40.9,
+    "pf": 1.59,
+    "avgR": 0.573,
+    "netR": 546.2
+   },
+   "kept": {
+    "n": 37,
+    "win": 35.1,
+    "pf": 1.0,
+    "avgR": -0.002,
+    "netR": -0.1
+   },
+   "blockPct": 96.3,
+   "longBlocked": 469,
+   "shortBlocked": 484
+  },
+  {
+   "N": 90,
+   "T": 2.5,
+   "blocked": {
+    "n": 914,
+    "win": 41.4,
+    "pf": 1.62,
+    "avgR": 0.595,
+    "netR": 544.2
+   },
+   "kept": {
+    "n": 76,
+    "win": 32.9,
+    "pf": 1.02,
+    "avgR": 0.025,
+    "netR": 1.9
+   },
+   "blockPct": 92.3,
+   "longBlocked": 449,
+   "shortBlocked": 465
+  },
+  {
+   "N": 90,
+   "T": 3.0,
+   "blocked": {
+    "n": 829,
+    "win": 41.1,
+    "pf": 1.58,
+    "avgR": 0.563,
+    "netR": 466.6
+   },
+   "kept": {
+    "n": 161,
+    "win": 38.5,
+    "pf": 1.46,
+    "avgR": 0.494,
+    "netR": 79.6
+   },
+   "blockPct": 83.7,
+   "longBlocked": 413,
+   "shortBlocked": 416
+  },
+  {
+   "N": 90,
+   "T": 3.5,
+   "blocked": {
+    "n": 738,
+    "win": 40.9,
+    "pf": 1.58,
+    "avgR": 0.567,
+    "netR": 418.2
+   },
+   "kept": {
+    "n": 252,
+    "win": 40.1,
+    "pf": 1.51,
+    "avgR": 0.508,
+    "netR": 127.9
+   },
+   "blockPct": 74.5,
+   "longBlocked": 378,
+   "shortBlocked": 360
+  },
+  {
+   "N": 90,
+   "T": 4.0,
+   "blocked": {
+    "n": 620,
+    "win": 40.8,
+    "pf": 1.55,
+    "avgR": 0.554,
+    "netR": 343.3
+   },
+   "kept": {
+    "n": 370,
+    "win": 40.5,
+    "pf": 1.57,
+    "avgR": 0.548,
+    "netR": 202.8
+   },
+   "blockPct": 62.6,
+   "longBlocked": 323,
+   "shortBlocked": 297
+  },
+  {
+   "N": 90,
+   "T": 5.0,
+   "blocked": {
+    "n": 405,
+    "win": 39.3,
+    "pf": 1.53,
+    "avgR": 0.548,
+    "netR": 221.8
+   },
+   "kept": {
+    "n": 585,
+    "win": 41.7,
+    "pf": 1.59,
+    "avgR": 0.554,
+    "netR": 324.3
+   },
+   "blockPct": 40.9,
+   "longBlocked": 211,
+   "shortBlocked": 194
+  },
+  {
+   "N": 90,
+   "T": 6.0,
+   "blocked": {
+    "n": 274,
+    "win": 40.9,
+    "pf": 1.38,
+    "avgR": 0.397,
+    "netR": 108.8
+   },
+   "kept": {
+    "n": 716,
+    "win": 40.6,
+    "pf": 1.64,
+    "avgR": 0.611,
+    "netR": 437.3
+   },
+   "blockPct": 27.7,
+   "longBlocked": 142,
+   "shortBlocked": 132
+  },
+  {
+   "N": 120,
+   "T": 2.0,
+   "blocked": {
+    "n": 940,
+    "win": 40.7,
+    "pf": 1.6,
+    "avgR": 0.586,
+    "netR": 551.0
+   },
+   "kept": {
+    "n": 50,
+    "win": 40.0,
+    "pf": 0.92,
+    "avgR": -0.097,
+    "netR": -4.8
+   },
+   "blockPct": 94.9,
+   "longBlocked": 469,
+   "shortBlocked": 471
+  },
+  {
+   "N": 120,
+   "T": 2.5,
+   "blocked": {
+    "n": 914,
+    "win": 41.0,
+    "pf": 1.62,
+    "avgR": 0.605,
+    "netR": 552.5
+   },
+   "kept": {
+    "n": 76,
+    "win": 36.8,
+    "pf": 0.93,
+    "avgR": -0.085,
+    "netR": -6.4
+   },
+   "blockPct": 92.3,
+   "longBlocked": 455,
+   "shortBlocked": 459
+  },
+  {
+   "N": 120,
+   "T": 3.0,
+   "blocked": {
+    "n": 842,
+    "win": 40.9,
+    "pf": 1.61,
+    "avgR": 0.591,
+    "netR": 497.5
+   },
+   "kept": {
+    "n": 148,
+    "win": 39.9,
+    "pf": 1.31,
+    "avgR": 0.329,
+    "netR": 48.6
+   },
+   "blockPct": 85.1,
+   "longBlocked": 424,
+   "shortBlocked": 418
+  },
+  {
+   "N": 120,
+   "T": 3.5,
+   "blocked": {
+    "n": 756,
+    "win": 40.7,
+    "pf": 1.59,
+    "avgR": 0.581,
+    "netR": 439.1
+   },
+   "kept": {
+    "n": 234,
+    "win": 40.6,
+    "pf": 1.46,
+    "avgR": 0.457,
+    "netR": 107.0
+   },
+   "blockPct": 76.4,
+   "longBlocked": 388,
+   "shortBlocked": 368
+  },
+  {
+   "N": 120,
+   "T": 4.0,
+   "blocked": {
+    "n": 654,
+    "win": 40.2,
+    "pf": 1.55,
+    "avgR": 0.545,
+    "netR": 356.1
+   },
+   "kept": {
+    "n": 336,
+    "win": 41.7,
+    "pf": 1.59,
+    "avgR": 0.565,
+    "netR": 190.0
+   },
+   "blockPct": 66.1,
+   "longBlocked": 338,
+   "shortBlocked": 316
+  },
+  {
+   "N": 120,
+   "T": 5.0,
+   "blocked": {
+    "n": 469,
+    "win": 38.2,
+    "pf": 1.45,
+    "avgR": 0.475,
+    "netR": 222.7
+   },
+   "kept": {
+    "n": 521,
+    "win": 43.0,
+    "pf": 1.67,
+    "avgR": 0.621,
+    "netR": 323.4
+   },
+   "blockPct": 47.4,
+   "longBlocked": 241,
+   "shortBlocked": 228
+  },
+  {
+   "N": 120,
+   "T": 6.0,
+   "blocked": {
+    "n": 340,
+    "win": 38.2,
+    "pf": 1.3,
+    "avgR": 0.312,
+    "netR": 106.1
+   },
+   "kept": {
+    "n": 650,
+    "win": 42.0,
+    "pf": 1.71,
+    "avgR": 0.677,
+    "netR": 440.0
+   },
+   "blockPct": 34.3,
+   "longBlocked": 174,
+   "shortBlocked": 166
+  }
+ ]
+}

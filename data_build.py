@@ -7,6 +7,7 @@ MA34 定义趋势段 · 4 条入选特征计分 + ADX≥20 门槛 · 命中 k �
 信号来自 state.json（engine.scan_symbol 产出）；周/月信号用同一方法
 在聚合后的周/月 K 线上独立计算（看哪个周期就用哪个周期的信号）。
 """
+import bisect
 import json
 import os
 import re
@@ -17,6 +18,7 @@ import build
 import defend_rules
 import engine
 import engine_v21 as E21
+import extreme_gate
 import mw_events
 import regime_lib
 import sig_pack as SP
@@ -27,6 +29,7 @@ XSIG_ALL = []      # 跨品种独立出场信号当前状态
 MKT_ALL = []       # 跨品种市场状态（纯信息展示，不干预信号）
 DEF_ALL = []       # v15：跨品种全量失效事件（manifest 汇总用）
 MW_ALL = []        # v16：跨品种二段 M/W 结构（DIF背离 + 量仓强）
+EXT_BLOCKED = []   # v27：被【顶不做多·底不做空】拦下的页面标识
 
 # 品种交易参数（模拟盘用）：乘数 / 手续费 / 保证金率
 # fee: ("lot", 元/手) 或 ("rate", 万分之几)
@@ -127,7 +130,12 @@ def build_plan(sym, doc, main, S):
     for k in ("align", "reverse", "xsig_trend", "chand", "ma_exit", "stop30"):
         if k in spec:
             cfg[k] = spec[k]
-    pack, meta = SP.build(doc, main, S)
+    # v27【顶不做多·底不做空】：引擎层拦截。违规进场信号在信号包编译期就被剔除，
+    # 因此 marks 里不会出现「进多/进空」方块，账本也不会留下这笔成交。
+    _blocked = []
+    pack, meta = SP.build(doc, main, S,
+                          gate=extreme_gate.gate_for(main),
+                          blocked_log=_blocked)
     r = E21.run(doc, doc, cfg, pack, meta, main, S)
     st = E21.stats(doc, r)
 
@@ -194,6 +202,16 @@ def build_plan(sym, doc, main, S):
         "openDate": (r["trades"][-1]["entry_date"] if (pos and r["trades"]) else None),
         "marks": marks,
         "next": nxt,
+        # v27：铁律过滤说明。verify 仍是 v22 双段盲测的【原始报告值】，不篡改历史验证；
+        # full / marks / open 则是按 v27 铁律过滤后重算的真实账本，两者口径须分清。
+        "extGate": {
+            "version": "v27",
+            "label": extreme_gate.LABEL,
+            "blockedN": len(_blocked),
+            "rule": extreme_gate.cfg()["rule"],
+            "note": "本页进出标识与 full 统计已按铁律过滤；"
+                    "verify 为 v22 定稿方案原始双段盲测报告，未改动。",
+        },
     }
 
 
@@ -491,6 +509,58 @@ def build_product(sym):
         })
     defend_src.sort(key=lambda x: x["d"])
 
+    # ---- 4b) v27【顶不做多·底不做空】：页面数组清理 ----
+    # 与 build_plan 的引擎闸门共用 extreme_gate.blocked() 单一口径。
+    # 只删【进场】标识及其成对的失效白圈；出场类（xsig / exit / 熔断）一条不动。
+    _di = extreme_gate.date_index(main)
+    _all_d = [b["d"] for b in main]
+
+    def _i_of(dt):
+        if not dt:
+            return None
+        j = _di.get(dt)
+        if j is None:
+            j = bisect.bisect_right(_all_d, dt) - 1
+        return j if j >= 0 else None
+
+    def _ban(dt, side, kind=None):
+        i = _i_of(dt)
+        return i is not None and extreme_gate.blocked(main, i, side, kind)
+
+    _n0 = len(sigs) + len(mw) + len(defend) + len(defend_src)
+    _banned_keys = set()
+    _sigs_kept = []
+    for s in sigs:
+        if _ban(s.get("date"), s.get("side"), s.get("kind")):
+            _banned_keys.add((s.get("date"), s.get("kind")))
+            EXT_BLOCKED.append({"sym": sym, "date": s.get("date"),
+                                "kind": s.get("kind"), "side": s.get("side"),
+                                "from": "signals"})
+        else:
+            _sigs_kept.append(s)
+    _mw_kept = []
+    for w in mw:
+        dt = w.get("confirmDate") or w.get("date") or w.get("mkDate")
+        if _ban(dt, w.get("side"), "mw"):
+            _banned_keys.add((dt, "mw"))
+            EXT_BLOCKED.append({"sym": sym, "date": dt, "kind": "mw",
+                                "side": w.get("side"), "from": "mw"})
+        else:
+            _mw_kept.append(w)
+    _km = {"radar": "pred", "pred": "pred", "warn": "warn",
+           "mw": "mw", "confirm": "confirm"}
+    _def_kept = [e for e in defend
+                 if (e.get("sigDate"), _km.get(e.get("sigKind"), e.get("sigKind")))
+                 not in _banned_keys]
+    _dsrc_kept = [e for e in defend_src
+                  if not _ban(e.get("d"), e.get("side"))]
+    for u in ("W", "M"):
+        unit_sigs[u] = [x for x in unit_sigs[u]
+                        if not _ban(x.get("date"), x.get("side"), x.get("kind"))]
+    _n1 = len(_sigs_kept) + len(_mw_kept) + len(_def_kept) + len(_dsrc_kept)
+    print("   v27 极值禁令：本品种页面标识清理 %d 条" % (_n0 - _n1))
+    sigs, mw, defend, defend_src = _sigs_kept, _mw_kept, _def_kept, _dsrc_kept
+
     # ---- 5) 写品种主档 ----
     # v19.3：bestCombo（模块五 双轨最优 / 模块「最佳机会」推送匹配的依据）由
     # compute_best_combo.py 每月写一次，重建数据时必须原样继承，否则 CI 每日跑完就丢。
@@ -608,8 +678,16 @@ def main():
                     testWin=te.get("win"), testPf=te.get("pf"),
                     testNet=te.get("net"), testMdd=te.get("mdd"))
 
+    _ext_cfg = extreme_gate.cfg()
+    _ext_cfg["stat"] = {
+        "clearedMarks": len(EXT_BLOCKED),
+        "bySym": {s: sum(1 for x in EXT_BLOCKED if x["sym"] == s) for s in ORDER},
+        "scope": "仅清进场标识；出场雷达 / 白圈失效 / 吊灯 / MA26 / 30% 熔断一律不动",
+    }
+
     manifest = {
         "built": datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M"),
+        "extGate": _ext_cfg,
         "products": [_prod(s) for s in ORDER],
         "v22": {"orderBasis": "近 1 年净收益降序",
                 "newSyms": ["P", "HC"], "added": ["SM"], "dropped": ["RB", "UR", "JD"],

@@ -24,6 +24,7 @@ from collections import defaultdict
 
 sys.stdout.reconfigure(encoding="utf-8")
 import engine
+import extreme_gate
 
 KIND_NM = {
     "pred": "顶底雷达", "warn": "进场预警", "mw": "WM结构",
@@ -52,8 +53,12 @@ def _tags(x, weekly, i):
     }
 
 
-def build(d, bars=None, S=None, weekly=None):
-    """返回 {sig_i: [信号...]} + 元信息"""
+def build(d, bars=None, S=None, weekly=None, gate=None, blocked_log=None):
+    """返回 {sig_i: [信号...]} + 元信息
+
+    v27：gate 为 extreme_gate.gate_for(bars) 时，触犯【顶不做多·底不做空】的
+    进场信号在编译期就被剔除，引擎层根本看不到它。出场类信号不受影响。
+    """
     bars = bars or bars_of(d)
     S = S or engine.make_S(bars)
     weekly = weekly if weekly is not None else engine.weekly_pos_series(bars)
@@ -65,6 +70,13 @@ def build(d, bars=None, S=None, weekly=None):
 
     def put(i, **kw):
         if i is None or i < 0 or i + 1 >= N:
+            return
+        if gate is not None and kw.get("kind") in extreme_gate.ENTRY_KINDS \
+                and gate(i, kw.get("side"), kw.get("kind")):
+            if blocked_log is not None:
+                blocked_log.append({"date": bars[i]["d"], "kind": kw.get("kind"),
+                                    "side": kw.get("side"),
+                                    "dev": extreme_gate.deviation(bars, i)})
             return
         kw["i"] = i
         kw["exec_i"] = i + 1

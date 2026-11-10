@@ -428,6 +428,7 @@ background:#10151d;color:var(--tx);font-size:18px}
           <div class="slrow"><span class="slk">列表里看</span><span>反转预警 / 顶底到位 / 失效 → 本栏；方案逐笔账本 → 策略持仓看板；雷达口径离场线 → 出场雷达。</span></div>
           <div class="slrow"><span class="slk warnc">研究参考</span><span>🏔 大结构与转折确认形态的归档行统一带 <b class="archTag">[研究参考·非建仓指令]</b>，只记形态、无任何操作字眼；大结构随第⑤通道做信息推送，小结构只归档不推。</span></div>
           <div class="slrow"><span class="slk">口径提醒</span><span>本栏恒为日线归档；切到周 / 月 / 分钟线时标题旁会亮起警示，图上标记随周期变、本栏不变。</span></div>
+          <div class="slrow"><span class="slk warnc">极值禁令</span><span>🛡 <b>顶不做多 · 底不做空</b>：信号生成日回看 60 根，距最低点涨幅 ≥20% 且贴在区间顶部（pos ≥0.90）的做多信号、以及对称的做空信号，<b>已从图上与本栏一并清除</b>，也不会推送。出场标识（黄◆ / 青◇ / 白圈 / 熔断）一条不动。</span></div>
         </div>
       </div>
       <div class="fchips" id="sigFilter"></div>
@@ -2554,9 +2555,11 @@ function renderFlipBoard(){
         + (fu.final||0) + ' 元</b></div>';
   // v26：原先散落在看板红块、方法说明、推送面板、两张雷达里的规则，收成一处说明。
   var dc = (MAN && MAN.defendCfg) || {};
+  var eg = (MAN && MAN.extGate) || {};
   var scope = (dc.scope || ['4/4 建仓', '3/4 预警', '顶底雷达']).join(' · ');
   html += '<div class="fbrule">'
-    + '<div class="frh">当前生效口径 · 白圈 <b>'+(dc.version||'v24')+'</b> ＋ v25 推送收敛（全页唯一说明）</div>'
+    + '<div class="frh">当前生效口径 · 白圈 <b>'+(dc.version||'v24')+'</b> ＋ v25 推送收敛 ＋ '
+    + '<b>v27 极值禁令</b>（全页唯一说明）</div>'
     + '<div class="frl"><i>①</i><span><b>白圈失效</b>：连续 2 根收破 MA26/MA34 且超出 0.5 ATR；'
       + '单根暴破 ≥0.8 ATR 立即失效（保命，不等确认）。只覆盖 '+scope
       + '；方案内的 WM结构 / 转折确认 进场没有白圈。</span></div>'
@@ -2566,6 +2569,11 @@ function renderFlipBoard(){
       + '无条件立即平仓，优先级高于反手策略 —— 不等信号、不等反弹、不抗单。</span></div>'
     + '<div class="frl"><i>④</i><span><b>推送 6 通道</b>：失效打叉 / 方案内信号 / 反转预警 / '
       + '出场预警 / 独立出场雷达 / 熔断；<b>震荡只静音进场，出场一律照推</b>。</span></div>'
+    + (eg.enabled
+      ? '<div class="frl hot"><i>⑤</i><span><b>🛡 '+(eg.label||'顶不做多 · 底不做空')+'</b>（'+(eg.version||'v27')+'）：'
+        + (eg.rule||'') + ' 命中即拦截并取消该笔进场，图上与本栏均不显示；'
+        + '<b>出场类一律不动</b>。</span></div>'
+      : '')
     + '</div>';
   html += '<div class="note">持仓口径：此处为该品种定稿方案在 v21 引擎上逐日裁决的真实结果（1 万本金 · 1 手 · 防守优先）。'
         + 'K 线上「进多/进空/出」三色方块与报告逐笔清单对应；雷达口径的参考持仓与离场线见下方「出场雷达」，'

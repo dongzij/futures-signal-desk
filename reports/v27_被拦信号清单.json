@@ -1,0 +1,208 @@
+{
+ "total": 29,
+ "rows": [
+  {
+   "sym": "MA",
+   "from": "mw",
+   "date": "2017-05-04",
+   "kind": "mw",
+   "side": "short"
+  },
+  {
+   "sym": "MA",
+   "from": "mw",
+   "date": "2018-11-07",
+   "kind": "mw",
+   "side": "short"
+  },
+  {
+   "sym": "MA",
+   "from": "mw",
+   "date": "2018-11-20",
+   "kind": "mw",
+   "side": "short"
+  },
+  {
+   "sym": "MA",
+   "from": "mw",
+   "date": "2022-03-02",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "MA",
+   "from": "mw",
+   "date": "2022-07-11",
+   "kind": "mw",
+   "side": "short"
+  },
+  {
+   "sym": "MA",
+   "from": "mw",
+   "date": "2023-08-01",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "MA",
+   "from": "mw",
+   "date": "2023-08-30",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "MA",
+   "from": "mw",
+   "date": "2026-03-03",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "MA",
+   "from": "mw",
+   "date": "2026-06-18",
+   "kind": "mw",
+   "side": "short"
+  },
+  {
+   "sym": "HC",
+   "from": "mw",
+   "date": "2017-08-04",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "HC",
+   "from": "mw",
+   "date": "2018-11-26",
+   "kind": "mw",
+   "side": "short"
+  },
+  {
+   "sym": "HC",
+   "from": "mw",
+   "date": "2019-03-01",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "HC",
+   "from": "mw",
+   "date": "2020-06-02",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "HC",
+   "from": "mw",
+   "date": "2022-12-15",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "Y",
+   "from": "mw",
+   "date": "2021-08-11",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "Y",
+   "from": "mw",
+   "date": "2022-07-01",
+   "kind": "mw",
+   "side": "short"
+  },
+  {
+   "sym": "Y",
+   "from": "mw",
+   "date": "2023-08-25",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "SM",
+   "from": "mw",
+   "date": "2017-12-04",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "FG",
+   "from": "mw",
+   "date": "2021-09-13",
+   "kind": "mw",
+   "side": "short"
+  },
+  {
+   "sym": "FG",
+   "from": "mw",
+   "date": "2024-10-28",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "FG",
+   "from": "mw",
+   "date": "2025-07-22",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "FG",
+   "from": "mw",
+   "date": "2025-07-24",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "P",
+   "from": "mw",
+   "date": "2020-07-15",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "P",
+   "from": "mw",
+   "date": "2021-07-27",
+   "kind": "mw",
+   "side": "long"
+  },
+  {
+   "sym": "P",
+   "from": "mw",
+   "date": "2021-12-13",
+   "kind": "mw",
+   "side": "short"
+  },
+  {
+   "sym": "P",
+   "from": "mw",
+   "date": "2021-12-13",
+   "kind": "mw",
+   "side": "short"
+  },
+  {
+   "sym": "P",
+   "from": "mw",
+   "date": "2022-06-23",
+   "kind": "mw",
+   "side": "short"
+  },
+  {
+   "sym": "P",
+   "from": "mw",
+   "date": "2022-06-23",
+   "kind": "mw",
+   "side": "short"
+  },
+  {
+   "sym": "M",
+   "from": "mw",
+   "date": "2024-08-13",
+   "kind": "mw",
+   "side": "short"
+  }
+ ]
+}
