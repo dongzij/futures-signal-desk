@@ -8,14 +8,15 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8")
 ROOT = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(ROOT, "reports")
-SYMS = ["M", "FG", "MA", "Y", "P", "HC"]
+SYMS = None          # v22.1：运行期取 F["order"]（随定稿池走）
 WHY = {"defend": "失效", "xsig_strong": "强离场", "ma_exit": "破MA26",
        "chandelier": "吊灯", "stop30": "熔断", "max_hold": "到期", "flip": "反手"}
 
 F = json.load(open(os.path.join(OUT, "v22_final.json"), encoding="utf-8"))
+SYMS = F["order"]
 
 # ---------- 表2 ----------
-with open(os.path.join(OUT, "v22_表2_六池定稿.csv"), "w", encoding="utf-8-sig", newline="") as f:
+with open(os.path.join(OUT, "v22_表2_核心池7定稿.csv"), "w", encoding="utf-8-sig", newline="") as f:
     w = csv.writer(f)
     w.writerow(["排序", "品种", "名称", "方案", "方案内容", "训练笔数", "训练胜率", "训练净",
                 "训练盈亏比", "训练回撤", "验证笔数", "验证胜率", "验证净", "验证盈亏比",
@@ -39,7 +40,7 @@ with open(os.path.join(OUT, "v22_表2_六池定稿.csv"), "w", encoding="utf-8-s
 print("表2 ok")
 
 # ---------- 表3 逐笔 ----------
-with open(os.path.join(OUT, "v22_表3_六池逐笔清单.csv"), "w", encoding="utf-8-sig", newline="") as f:
+with open(os.path.join(OUT, "v22_表3_核心池7逐笔清单.csv"), "w", encoding="utf-8-sig", newline="") as f:
     w = csv.writer(f)
     w.writerow(["品种", "名称", "方向", "开仓日", "开仓价", "平仓日", "平仓价",
                 "平仓原因", "持仓根数", "净盈亏(元)", "开仓信号"])
