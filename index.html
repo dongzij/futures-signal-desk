@@ -15,11 +15,10 @@ body{background:var(--bg);color:var(--tx);font:14px/1.45 -apple-system,"PingFang
 .hd .rf{border:1px solid var(--line);background:var(--card);color:var(--blue);
 border-radius:14px;padding:3px 12px;font-size:12px}
 .hdtools{display:flex;align-items:center;gap:7px}
+/* v26：顶部小标签不再复制路况结论，改为「展开判据」开关 */
 .mktmini{font-size:11px;border:1px solid var(--line);border-radius:10px;padding:1px 8px;
-color:var(--dim);cursor:pointer;white-space:nowrap}
-.mktmini.up{color:#e5484d;border-color:#e5484d55}
-.mktmini.dn{color:#0ecb81;border-color:#0ecb8155}
-.mktmini.rg{color:#7fb3ff;border-color:#7fb3ff55}
+background:transparent;font-family:inherit;color:var(--dim);cursor:pointer;white-space:nowrap}
+.mktmini:hover{border-color:#4c8dff;color:var(--blue)}
 
 /* ===== v11.2 推送设置面板：纯前端配置生成器，绝不写后台 ===== */
 .ps{padding:0 12px;margin:2px 0 6px}
@@ -56,18 +55,17 @@ border-radius:7px;padding:4px 10px;font-size:11px;white-space:nowrap}
 .psdiff{color:var(--gold);font-size:10.5px;line-height:1.6;margin-top:5px}
 .psdiff:empty{display:none}
 
-/* ===== 顶部市场状态（v11：纯信息展示，不干预信号） ===== */
-.mkt{padding:0 12px;margin:2px 0 6px}
-.mkt.inline{padding:0;margin:0 0 10px}
-.mk{background:var(--card);border:1px solid var(--line);border-left:4px solid #4c8dff;
-border-radius:10px;padding:10px 12px}
-.mk.up{border-left-color:#e5484d;background:linear-gradient(90deg,#e5484d18,var(--card) 62%)}
-.mk.dn{border-left-color:#0ecb81;background:linear-gradient(90deg,#0ecb8118,var(--card) 62%)}
-.mkh{display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--dim)}
-.mktag{border:1px solid var(--line);border-radius:10px;padding:1px 8px;font-size:10px}
-.mkv{font-size:25px;font-weight:800;letter-spacing:.5px;margin:3px 0 5px;line-height:1.25}
-.mk.up .mkv{color:#e5484d} .mk.dn .mkv{color:#0ecb81} .mk.rg .mkv{color:#7fb3ff}
-.mks{font-size:11px;color:var(--dim);line-height:1.8;word-break:break-word}
+/* ===== v26：旧「市场状态」大字卡已并入行情条 =====
+   结论全站只认 plan.regime；布林带宽/MA60 斜率等数值降级为「判据」，
+   默认收起、点顶部 ⓘ 才展开第三行，不占首屏高度。 */
+.rgb .revid{font-size:9.5px;color:#9aa7ba;line-height:1.45;flex:0 0 auto;width:100%;
+border-top:1px solid #2b3a4a;margin-top:3px;padding-top:3px;
+display:flex;flex-direction:column;gap:1px;pointer-events:auto}
+.rgb .revid.hide{display:none}
+.rgb .revid>div{height:14px;line-height:14px;white-space:nowrap;
+overflow:hidden;text-overflow:ellipsis}
+.rgb .revid b{color:var(--tx);font-weight:600}
+.rgb .revid .rv2{color:#6b7689}
 .wkrow{font-size:10.5px;color:var(--dim);margin-top:8px;padding-top:7px;
 border-top:1px solid var(--line);line-height:1.6}
 
@@ -189,6 +187,34 @@ text-shadow:0 0 8px rgba(255,212,0,.35);white-space:nowrap}
 .fb .frow:last-of-type{border-bottom:none}
 
 .fb .note{margin-top:8px;font-size:10.5px;color:#6b7689;line-height:1.55}
+/* v26：当前生效口径 —— 原先散落在看板红块、方法说明、推送面板里的规则收在一处 */
+.fbrule{margin-top:10px;border:1px solid var(--line);border-radius:8px;
+background:#0f141c;padding:8px 10px 9px}
+.fbrule .frh{font-size:11px;color:var(--dim);margin-bottom:5px;letter-spacing:.2px}
+.fbrule .frh b{color:#9fe0ff}
+.fbrule .frl{font-size:11px;line-height:1.7;color:#9aa7ba;padding:2px 0;
+display:flex;gap:7px;align-items:flex-start}
+.fbrule .frl i{font-style:normal;color:#4c8dff;flex:0 0 14px}
+.fbrule .frl span{flex:1 1 auto;min-width:0}
+.fbrule .frl b{color:var(--tx);font-weight:600}
+.fbrule .frl.hot{color:#ff9a9d}
+.fbrule .frl.hot i{color:#FF2D2D}
+.fbrule .frl.hot b{color:#FF6B6B}
+
+/* v26：全站唯一的「持仓防守线」区（雷达口径，明确标注只作复盘参考） */
+.xpos{border:1px solid var(--line);border-radius:8px;background:#0f141c;
+padding:8px 10px 9px;margin:9px 0 10px}
+.xpos .xph{display:flex;align-items:baseline;gap:8px;margin-bottom:7px;flex-wrap:wrap}
+.xpos .xph b{font-size:12px}
+.xpos .xph span{font-size:10px;color:#6b7689}
+.xpos .xpr{display:flex;align-items:center;gap:8px;font-size:11.5px;
+color:var(--dim);margin-bottom:7px;flex-wrap:wrap}
+.xpos .xpr em{font-style:normal;color:var(--tx);font-weight:700}
+.xpos .xpw{border-left:3px solid #22D3EE;background:rgba(34,211,238,.10);
+padding:5px 8px;border-radius:4px;font-size:11px;color:#8fdbea;margin-bottom:7px}
+.xpos .xpt{border-left:3px solid #FFD400;background:rgba(255,212,0,.09);
+padding:5px 8px;border-radius:4px;font-size:11.5px;color:#FFD400;margin-bottom:7px}
+.xpos .xpt span{color:#d8c27a;font-size:10.5px}
 
 /* ===== 独立出场雷达（v10）===== */
 .xlv{display:flex;align-items:center;gap:9px;margin-bottom:9px}
@@ -340,8 +366,8 @@ background:#10151d;color:var(--tx);font-size:18px}
   <div class="hd">
     <b>期货信号台 <span style="font-size:11px;color:var(--dim)">· 个人参考</span></b>
     <div class="hdtools">
-      <span class="mktmini" id="mktMini" title="点击查看完整市场状态"
-            onclick="document.getElementById('mktBar').scrollIntoView({behavior:'smooth'})">状态…</span>
+      <button class="mktmini" id="mktMini" title="展开 / 收起路况判据（布林带宽分位、MA60 斜率、中轨穿越）"
+              onclick="toggleRegimeEvid()">ⓘ 路况判据</button>
       <button class="rf" onclick="refresh()">↻ 刷新数据</button>
     </div>
   </div>
@@ -370,23 +396,22 @@ background:#10151d;color:var(--tx);font-size:18px}
         <span style="color:#E8EEFA;font-weight:800">▮出（方案平仓）</span></div>
       <div id="defNav" class="defnav"></div>
     </div>
-    <!-- v11.3：完整市场状态卡移到 K 线下方，首屏只留看盘必需 -->
-    <div class="mkt inline" id="mktBar"></div>
+    <!-- v26：路况唯一显示在行情条 #regimeBox（横向两行），旧的 K 线下方大字卡已合并下线 -->
     <div class="card">
       <h3>信号栏 · 进场 / 出场 <span class="r" id="sigCnt"></span></h3>
       <div class="fchips" id="sigFilter"></div>
       <div id="sigList"></div>
     </div>
     <div class="card">
-      <h3>策略持仓看板 · 按该品种定稿方案推演（v21 引擎 · 防守优先） <span class="r" id="fbTime"></span></h3>
+      <h3>策略持仓看板 · 定稿方案（唯一持仓口径）<span class="r" id="fbTime"></span></h3>
       <div class="fb" id="flipBoard"></div>
     </div>
     <div class="card">
-      <h3>进场雷达 <span class="r" id="decTime"></span></h3>
+      <h3>进场雷达 · 反转概率（方向参考 · 非建仓指令） <span class="r" id="decTime"></span></h3>
       <div class="dec" id="decGrid"></div>
     </div>
     <div class="card">
-      <h3>出场雷达 · 独立<span class="r" id="xsTime"></span></h3>
+      <h3>出场雷达 · 独立顶底 ＋ 持仓防守线 <span class="r" id="xsTime"></span></h3>
       <div id="xsBox"></div>
     </div>
   </div>
@@ -477,7 +502,9 @@ background:#10151d;color:var(--tx);font-size:18px}
   <b>信号从未被删除或延迟</b>，页面照常显示，只是不推微信。
   两个复盘标签：<b>⚠️ 2日未跟进</b>（信号后 2 根内未顺向破极值，需事后判定，只用于复盘）、
   <b>💤 低波动待观察</b>（ATR/ATR20 &lt; 1.0，当日可知）。
-  【市场状态】为<b>纯信息展示</b>（20 日布林带宽 120 日分位 + MA60 斜率），完整大字卡片位于 K 线下方、顶部只留一枚小状态标签，
+  【路况 v26】全站只保留一块：行情条里的横向两行（结论、建议策略、允许信号、验证统计）。
+  旧「市场状态」大字卡已合并下线，其布林带宽分位 / MA60 斜率 / 中轨穿越降级为证据，
+  点顶部「ⓘ 路况判据」展开查看；结论只认定稿方案 plan.regime（v22 单一口径），
   <b>不拦截、不隐藏、不降级任何信号</b>，也不影响推送；
   趋势穿越确认状态后台仍参与持仓周期与盈亏计算，前端已彻底不再展示。<br>
   <b style="color:#FF1F1F">v25 · 推送通道收敛为 6 条（tf 通道彻底关停）</b>：按优先级 ——
@@ -514,7 +541,7 @@ background:#10151d;color:var(--tx);font-size:18px}
       <div id="myPos"></div>
     </div>
     <div class="card">
-      <h3>策略参考持仓 <span class="r">方法自动跟踪 · 不可操作</span></h3>
+      <h3>方法跟踪持仓 <span class="r">雷达口径 · 复盘用 · 不可操作</span></h3>
       <div id="stratPos"></div>
     </div>
     <div class="card">
@@ -721,55 +748,34 @@ function apExport(){
   });
   if(!need.length) finish();
 }
-function renderMarket(){
-  var box = $('mktBar'); if(!box) return;
-  var M0 = DOC.market;
-  if(!M0 && MAN.marketBySym){
-    var hit = MAN.marketBySym.filter(function(x){ return x.sym===cur.sym; });
+/* ================= v26 路况判据（原「市场状态」大字卡合并于此） =================
+   全站只保留一套路况结论：DOC.plan.regime，显示在行情条横条里。
+   旧卡的布林带宽分位 / MA60 斜率 / 中轨穿越仍是有效证据，但不再单独给结论 ——
+   否则同屏会出现「过渡态」和「上涨趋势」两个判断，实盘必打架。
+   证据默认收起（第三行），点顶部「ⓘ 路况判据」才展开，不占首屏高度。 */
+function toggleRegimeEvid(){
+  var e = $('regimeEvid'); if(!e) return;
+  var hidden = e.classList.toggle('hide');
+  var b = $('mktMini');
+  if(b) b.textContent = hidden ? 'ⓘ 路况判据' : 'ⓘ 收起判据';
+}
+function regimeEvidence(rg){
+  var M0 = DOC.market || {}, ev = [];
+  if(!M0 || !Object.keys(M0).length){
+    var hit = (MAN.marketBySym||[]).filter(function(x){ return x.sym===cur.sym; });
     if(hit.length) M0 = hit[0];
   }
-  // v22：全站只允许一套路况口径 —— 以该品种定稿方案里的 plan.regime 为准。
-  // 旧的「市场状态」（布林带宽分位 + MA60 斜率）仍保留数值，但降级为证据行，
-  // 不再单独给结论：否则同一屏会出现「过渡态」和「下跌趋势」两个判断，实盘必打架。
-  var RG = (DOC.plan && DOC.plan.regime) || null;
-  if(!M0 && !RG){
-    box.innerHTML='<div class="mk"><div class="mkh"><span>市场状态</span></div>'
-      + '<div class="mkv" style="font-size:16px;color:var(--dim)">加载中…</div></div>';
-    return;
-  }
-  var label, state, date;
-  if(RG){
-    label = RG.label;
-    state = RG.now==='trend_up' ? 'Up' : (RG.now==='trend_dn' ? 'Down' : 'Range');
-    date = RG.since;
-  }else{
-    label = M0.label; state = M0.state; date = M0.date;
-  }
-  var cl = state==='Up'?'up':(state==='Down'?'dn':'rg');
-  var mini = $('mktMini');
-  if(mini){
-    mini.textContent = String(label||'路况').replace(/（.*?）/g,'').trim();
-    mini.className = 'mktmini ' + cl;
-  }
-  var ev = [];
-  if(M0){
-    if(M0.bwQ!=null) ev.push('布林带宽分位 '+Math.round(M0.bwQ*100)+'%');
-    if(M0.ma60Slope!=null) ev.push('MA60 斜率 '+(M0.ma60Slope>0?'+':'')+M0.ma60Slope);
-    if(M0.midCross!=null) ev.push('20日内穿越中轨 '+M0.midCross+' 次');
-  }
-  var foot = RG
-    ? ('本路况已持续 <b style="color:var(--tx)">'+RG.days+'</b> 个交易日 · 建议策略 '
-       + '<b style="color:var(--tx)">'+RG.advice+'</b>'
-       + (RG.now==='range'
-            ? '· <span style="color:#ff9a9d">震荡静默：不开仓、不推微信</span>'
-            : '· 允许信号 '+(RG.allow||'—')))
-    : ('本状态 <span style="color:var(--tx);font-weight:600;margin:0 2px">不拦截、不隐藏、不降级</span>任何信号');
-  box.innerHTML = '<div class="mk '+cl+'">'
-    + '<div class="mkh"><span>'+(RG?'当前路况':'市场状态')+' · '+(DOC.name||'')+' · '+date+'</span>'
-    + '<span class="mktag">v22 单一口径</span></div>'
-    + '<div class="mkv">'+label+'</div>'
-    + (ev.length ? '<div class="mks">证据：'+ev.join(' · ')+'</div>' : '')
-    + '<div class="mks" style="margin-top:4px">'+foot+'</div></div>';
+  if(M0.bwQ != null)       ev.push('布林带宽分位 '+Math.round(M0.bwQ*100)+'%');
+  if(M0.ma60Slope != null) ev.push('MA60 斜率 '+(M0.ma60Slope>0?'+':'')+M0.ma60Slope);
+  if(M0.midCross != null)  ev.push('20 日内穿越中轨 '+M0.midCross+' 次');
+  // 横条上已有的「N 日 / 建议策略 / 允许信号 / 静默」不再重复，
+  // 这里只放旧卡里独有的证据数值、起始日与旧标签追溯说明。
+  return '<div class="revid hide" id="regimeEvid">'
+    + '<div class="rv1"><b>判据</b> ' + (ev.length ? ev.join(' · ') : '—')
+    + '　·　路况自 ' + rg.since + '（已持续 ' + rg.days + ' 个交易日）</div>'
+    + '<div class="rv2">旧标签 ' + (M0.label||'—') + '（' + (M0.date||'—')
+    + '）仅追溯、不作结论 · 结论只认 plan.regime（v22 单一口径）。</div>'
+    + '</div>';
 }
 
 /* ================= v11.2 推送设置面板 =================
@@ -1466,27 +1472,9 @@ function renderXs(){
   var html = '';
 
   html += '<div style="font-size:11px;color:var(--dim);line-height:1.7;margin-bottom:9px">'
-    + '独立机制：<b style="color:#FFC400">不依赖进场信号、也不需要你有持仓</b>，'
-    + '只在价格走到趋势极端（伸展 + 回头）时提示。走不走由你决定。</div>';
-
-  // v15 A'：持仓卡（首屏可见）—— 只加黄字视觉提示，不动吊灯 / MA26 离场线
-  var _sp = (MAN.strategyOpen || []).filter(function(s){ return s.sym === cur.sym; })[0];
-  if(_sp){
-    var _pk = Math.max(+(_sp.mfe || 0), +(_sp.R || 0));
-    html += '<div style="background:var(--bg2);border:1px solid var(--line);border-radius:7px;'
-      + 'padding:7px 9px;margin-bottom:9px;font-size:11.5px;line-height:1.7">'
-      + '<b>策略参考持仓 · ' + (_sp.side === 'short' ? '空' : '多') + ' @ '
-      + f2(_sp.en) + '</b> <span style="color:var(--dim)">确认 ' + _sp.cd
-      + ' · 最新 ' + (_sp.last || '—') + ' · 峰值 +' + f2(_pk) + ' ATR</span>'
-      + (_pk >= 1.5
-         ? '<div style="color:#FFD400;font-size:12px;font-weight:700;margin-top:4px">'
-           + '💡 利润已达 1.5 ATR，可手动将止损上移至开仓价保本。'
-           + '<span style="color:#d8c27a;font-size:10.5px;font-weight:400">'
-           + '（仅提示，后台吊灯 3ATR / MA26 不变）</span></div>'
-           + apCtrl(_sp)
-         : '')
-      + '</div>';
-  }
+    + '⑤ 独立出场雷达：<b style="color:#FFC400">不依赖进场信号、也不需要你有持仓</b>，'
+    + '只在价格走到趋势极端（伸展 + 回头）时提示；<b>震荡市照常推送</b>（只静音进场）。'
+    + '下方「持仓防守线」为雷达口径的复盘参考，指令以定稿方案为准。</div>';
 
   html += '<div class="xlv ' + lvl + '">'
     + '<span class="bg">' + head[0] + '</span>'
@@ -1499,6 +1487,63 @@ function renderXs(){
     html += '<div class="tagrow"><span class="wk">'+weekTxt(N.meta)+'</span>'
       + (lvl!=='none' ? tagHtml(N.meta) : '') + '</div>';
   }
+
+  /* v26：全站唯一的「持仓防守线」。合并了三处重复内容：
+     ① 本卡原先的「策略参考持仓」卡；② 进场雷达末尾的同名卡；
+     ③ 早已下线、只剩死代码的 v9 出场雷达 renderExit() 里的吊灯 / MA26 数值。
+     口径明确标为「雷达口径 · 复盘参考」，与定稿方案持仓看板不打架。 */
+  var ep = (DOC.exit && DOC.exit.pos) || null;
+  var sp = (MAN.strategyOpen || []).filter(function(s){ return s.sym === cur.sym; })[0];
+  var ecfg = (DOC.exit && DOC.exit.cfg) || {};
+  var ma = ecfg.ma || 26, chK = ecfg.chK || 3;
+  html += '<div class="xpos"><div class="xph"><b>持仓防守线</b>'
+    + '<span>雷达口径 · 复盘参考；指令以「策略持仓看板」的定稿方案为准</span></div>';
+  if(ep && ep.status !== 'closed'){
+    var _long = ep.side === 'long';
+    html += '<div class="xpr"><em style="color:'+(_long?'var(--up)':'var(--dn)')+'">'
+      + (_long?'持多':'持空') + '</em> ' + (ep.date||'—') + ' 信号 · 入场 ' + f2(ep.entry)
+      + ' · 最新 ' + f2(ep.last) + ' · 已持 ' + ((ep.held||0)+1) + ' 天'
+      + ' · <em>' + sgn(ep.R||0) + f2(ep.R||0) + 'R</em></div>';
+    if(ep.warn){
+      html += '<div class="xpw"><b>◇ 盘整预警</b>　' + ((ep.why||[]).join(' · ') || '—')
+        + '　趋势可能停滞：不要加仓，跌破任一离场线立即离场。</div>';
+    }
+    html += '<div style="display:flex;gap:8px;font-size:12px">'
+      + exCard('吊灯离场线', f2(ep.chLine), '距触发 ' + f2(ep.distCh) + ' ATR', '#f5a524')
+      + exCard('MA' + ma + ' 离场线', f2(ep.maLine),
+               (ep.armed ? '已站上·跌破即走' : '未站上·先等') + ' · ' + f2(ep.distMa) + ' ATR', '#4ea1ff')
+      + '</div>';
+    var _peak = Math.max(+(ep.mfe||0), +(ep.R||0));
+    if(_peak >= 1.5){
+      html += '<div class="xpt" style="margin-top:8px">💡 <b>利润已达 1.5 ATR，可手动把止损上移到开仓价保本。</b>'
+        + '<span>（峰值 +' + f2(_peak) + ' ATR · 仅提示，吊灯 ' + chK + ' ATR / MA' + ma + ' 不变）</span>'
+        + apCtrl({sym:cur.sym, name:DOC.name, cd:ep.date, en:ep.entry, mfe:ep.mfe, R:ep.R})
+        + '</div>';
+    }
+  } else if(sp){
+    html += '<div class="xpr"><em style="color:'+(sp.side==='short'?'var(--dn)':'var(--up)')+'">'
+      + (sp.side==='short'?'空':'多') + '</em> 确认 ' + sp.cd + ' · 入 ' + f2(sp.en)
+      + ' · 最新 ' + f2(sp.last) + ' · 浮动 '
+      + (sp.float!=null ? sgn(sp.float)+f2(sp.float)+'%' : '—')
+      + ' · 已持 ' + (sp.held||0) + ' 天</div>'
+      + '<div style="font-size:10.5px;color:#6b7689">该笔来自 4/4 建仓清单，无逐日离场线记录；'
+      + '吊灯 ' + chK + ' ATR 与 MA' + ma + ' 规则仍适用，数值以方案账本为准。</div>';
+  } else {
+    html += '<div style="font-size:11.5px;color:var(--dim);text-align:center;padding:8px 0">'
+      + '当前无雷达口径持仓　·　基础出场：吊灯 ' + chK + ' ATR ＋ MA' + ma
+      + ' 反向穿越（一字未改）</div>';
+  }
+  // 原 v9 卡里的 10 年出场统计压成一行保留（逐笔清单已在信号栏 / K 线，不重复铺开）
+  var est = (DOC.exit && DOC.exit.stat) || null;
+  if(est && est.n){
+    html += '<div style="border-top:1px solid var(--line);margin-top:8px;padding-top:6px;'
+      + 'font-size:10.5px;color:var(--dim);line-height:1.7">'
+      + '本品种 10 年（模型口径）<b style="color:var(--tx)">' + est.n + '</b> 笔 · 胜率 '
+      + est.win + '% · 累计 ' + sgn(est.R) + est.R + 'R · 回撤 ' + est.dd
+      + 'R　|　出场构成 MA' + ma + ' ' + (est.byMa||0) + ' 笔 / 吊灯 '
+      + (est.byCh||0) + ' 笔</div>';
+  }
+  html += '</div>';
 
   if(N.dir){
     html += '<div class="xdetcards" style="display:flex;gap:8px;font-size:11.5px;margin-bottom:8px">'
@@ -1531,97 +1576,10 @@ function exCard(label, val, sub, color){
     + '<div style="font-weight:700;margin-top:2px;color:' + (color||'var(--txt)') + '">' + val + '</div>'
     + '<div style="color:var(--dim);font-size:10.5px;margin-top:1px">' + sub + '</div></div>';
 }
-function renderExit(){
-  var box = $('exitBox');
-  if(!box) return;                       // 卡片已按需隐藏，仅保留计算
-  var E = DOC.exit;
-  if(!E){ box.innerHTML = '<div class="empty">出场雷达数据缺失</div>'; return; }
-  var cfg = E.cfg || {}, st = E.stat || {}, P = E.pos;
-  var ma = cfg.ma || 26, chK = cfg.chK || 3;
-  var html = '';
-
-  html += '<div style="font-size:11px;color:var(--dim);line-height:1.75;margin-bottom:10px">'
-    + '离场两条独立规则：<b style="color:#f5a524">吊灯</b> 自进场后极值回撤 ' + chK + ' ATR（触及无条件走）· '
-    + '<b style="color:#4ea1ff">MA' + ma + '</b> 站到仓位一侧后收盘反向穿越<br>'
-    + '盘整预警（回撤≥' + (cfg.warnPull || 1.2) + ' ATR 且 ATR 收缩/持仓降/缩量）只提示，<b>不平仓</b></div>';
-
-  if(P && P.status !== 'closed'){
-    var long = P.side === 'long';
-    var col = long ? 'var(--up)' : 'var(--dn)';
-    var R = P.R || 0;
-    html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
-      + '<span style="background:' + (long?'rgba(224,74,74,.13)':'rgba(47,180,110,.13)')
-      + ';color:' + col + ';border:1px solid ' + col + ';border-radius:6px;padding:3px 10px;'
-      + 'font-weight:700;font-size:15px">' + (long?'持多':'持空') + '</span>'
-      + '<span style="font-size:12px;color:var(--dim)">' + P.date + ' 信号 · 入场 '
-      + f2(P.entry) + ' · 已持 ' + ((P.held || 0) + 1) + ' 天</span>'
-      + '<span style="margin-left:auto;font-size:17px;font-weight:700;color:'
-      + (R>=0?'var(--up)':'var(--dn)') + '">' + (R>=0?'+':'') + f2(R) + 'R</span></div>';
-
-    // v15 A'：利润保护提示（黄字，纯视觉；后台吊灯 3ATR / MA26 离场线一字不改）
-    var _peak = Math.max(+(P.mfe || 0), +(R || 0));
-    if(_peak >= 1.5){
-      html += '<div style="background:rgba(255,212,0,.10);border-left:3px solid #FFD400;'
-        + 'padding:8px 10px;border-radius:5px;font-size:12.5px;line-height:1.75;'
-        + 'margin-bottom:10px;color:#FFD400">'
-        + '💡 <b>利润已达 1.5 ATR，可手动将止损上移至开仓价保本。</b>'
-        + '<div style="color:#d8c27a;font-size:11.5px;margin-top:3px;font-weight:400">'
-        + '峰值浮盈 +' + f2(_peak) + ' ATR · 当前 ' + sgn(R) + f2(R) + ' ATR'
-        + ' · 开仓价 ' + f2(P.entry)
-        + '　｜　仅视觉提示，吊灯 3ATR 与 MA26 离场线不变</div>'
-        + apCtrl({sym:cur.sym, name:DOC.name, cd:P.date, en:P.entry,
-                  mfe:P.mfe, R:R})
-        + '</div>';
-    }
-
-    if(P.warn){
-      html += '<div style="background:rgba(34,211,238,.12);border-left:3px solid #22D3EE;'
-        + 'padding:8px 10px;border-radius:5px;font-size:12.5px;line-height:1.8;margin-bottom:10px">'
-        + '<b style="color:#22D3EE">◇ 盘整预警</b>　' + ((P.why||[]).join(' · ') || '—')
-        + '<div style="color:var(--dim);font-size:11.5px;margin-top:3px">'
-        + '趋势可能停滞：不要再加仓，跌破任一离场线立即离场。</div></div>';
-    }
-
-    html += '<div style="display:flex;gap:8px;font-size:12px;margin-bottom:10px">'
-      + exCard('吊灯离场线', f2(P.chLine), '距触发 ' + f2(P.distCh) + ' ATR', '#f5a524')
-      + exCard('MA' + ma + ' 离场线', f2(P.maLine),
-               (P.armed ? '已站上·跌破即走' : '未站上·先等') + ' · ' + f2(P.distMa) + ' ATR', '#4ea1ff')
-      + '</div>';
-  } else {
-    html += '<div style="background:var(--bg2);border-radius:6px;padding:14px;text-align:center;'
-      + 'font-size:12.5px;color:var(--dim);margin-bottom:10px">当前无持仓<br>'
-      + '<span style="font-size:11.5px">出场雷达只在有持仓时工作；吊灯线随每日极值自动移动</span></div>';
-  }
-
-  if(st && st.n){
-    html += '<div style="border-top:1px solid var(--line);padding-top:8px;font-size:11px;'
-      + 'color:var(--dim);line-height:1.8">'
-      + '本品种 10 年 <b style="color:var(--txt)">' + st.n + '</b> 笔 · 胜率 <b style="color:var(--txt)">'
-      + st.win + '%</b> · 累计 <b style="color:' + (st.R>=0?'var(--up)':'var(--dn)') + '">'
-      + (st.R>=0?'+':'') + st.R + 'R</b> · 回撤 ' + st.dd + 'R<br>'
-      + '出场构成：MA' + ma + ' 反向穿越 ' + (st.byMa||0) + ' 笔 / 吊灯 ' + (st.byCh||0) + ' 笔 · '
-      + '均盈 ' + (st.winR||0) + 'R · 均亏 ' + (st.losR||0) + 'R</div>';
-  }
-
-  var ts = (E.trades || []).slice(-5).reverse();
-  if(ts.length){
-    html += '<div style="font-size:11px;color:var(--dim);margin:8px 0 4px">最近 5 笔出场</div>'
-      + '<div style="font-size:12px;line-height:1.85">' + ts.map(function(t){
-        var c = t.R >= 0 ? 'var(--up)' : 'var(--dn)';
-        return '<div style="display:flex;gap:8px">'
-          + '<span style="color:var(--dim);width:76px">' + t.d + '</span>'
-          + '<span style="width:26px;color:' + (t.sd==='long'?'var(--up)':'var(--dn)') + '">'
-          + (t.sd==='long'?'多':'空') + '</span>'
-          + '<span style="width:96px;color:var(--dim)">' + (t.why||'') + '</span>'
-          + '<span style="width:44px;color:var(--dim)">' + t.hold + '根</span>'
-          + '<span style="margin-left:auto;color:' + c + ';font-weight:600">'
-          + (t.R>=0?'+':'') + t.R + 'R</span></div>';
-      }).join('') + '</div>';
-  }
-
-  box.innerHTML = html;
-  if($('exitTime')) $('exitTime').textContent = '数据 ' + MAN.built;
-}
+/* v26：v9 出场雷达 renderExit() 已下线 ——
+   其吊灯 / MA26 离场线数值、盘整预警、1.5 ATR 保本提示已全部合并进
+   上方「出场雷达 · 持仓防守线」；数据 DOC.exit 仍在，继续供 K 线出场标记
+   与逐笔清单使用。exCard() 保留为共用小组件。 */
 
 /* ================= 反转预测雷达 ================= */
 var STG = {0:'平静',1:'起变化',2:'关注',3:'预警',4:'准备反转'};
@@ -1687,11 +1645,11 @@ function renderDec(){
     +   '<div class="pcell"><div class="l">10 日内</div><div class="v">'+Math.round(p10*100)+'%</div></div>'
     + '</div>'
     + '<div class="hit"><span>特征匹配 <b style="color:'+(k>=3?'var(--gold)':'var(--tx)')+'">'+k+'/4</b>'
-    +   ' · 4 条 + ADX≥'+(R.adxMin||20)+' = 建仓 · <span style="color:var(--gold)">+持仓降+深回撤 = 强确认</span></span><span>历史提前量中位 '
+    +   ' · 4 条 + ADX≥'+(R.adxMin||20)+' = 历史建仓档（模型口径·非指令） · <span style="color:var(--gold)">+持仓降+深回撤 = 强确认</span></span><span>历史提前量中位 '
     +   (((MAN.model||{}).lead||{}).median!=null? MAN.model.lead.median : '1')+' 根</span></div>'
     + '<div class="wkrow">周线 MA'+(R.weekMA||45)+'：'
     +   (R.weekPos===1?'偏多':(R.weekPos===-1?'偏空':'数据不足'))
-    +   ' · 逆势普通档 ⏸ 观察，强档与顺势正常推送'
+    +   ' · 逆势普通档 ⏸ 观察，强档与顺势正常推送 · 震荡市一律静音（v25 只静音进场）'
     +   (recent ? '<div style="margin-top:5px"><span class="tg dim">最近建仓 '+recent.date+'</span>'
         + tagHtml(recent.meta) + '</div>' : '')
     + '</div>'
@@ -1708,8 +1666,9 @@ function renderDec(){
       }).join('')
     + '</div>'
     + (hot
-        ? '<div class="cta">'+(R.strong?'★ 强确认 · ':'')+(newLong?'▲ 底部成型，可尝试做多':'▼ 顶部成型，可尝试做空')
-          + '<span>次日开盘进 · 出场＝吊灯 3ATR 止损 或 收盘反向穿 MA26（'
+        ? '<div class="cta">'+(R.strong?'★ 强确认 · ':'')+(newLong?'▲ 底部成型，方向偏多':'▼ 顶部成型，方向偏空')
+          + '<span>仅作方向参考 · 非建仓指令（唯一指令＝②🔥 方案内信号，需路况允许且顺势）'
+          + ' · 参考出场＝吊灯 3ATR 止损 或 收盘反向穿 MA26（'
           + (R.ma34!=null? f2(R.ma34):'—') + '）· 每手预留浮亏 '
           + (R.bufYuan? R.bufYuan.toLocaleString()+' 元':'—') + '</span></div>'
         : (k>=3
@@ -1718,17 +1677,15 @@ function renderDec(){
             : ''))
     + '</div>';
 
-  // 策略参考持仓
-  var stratPos = (MAN.strategyOpen||[]).filter(function(s){return s.sym===cur.sym;});
-  html += '<div class="dv" style="grid-column:1/-1"><div class="l">策略参考持仓（雷达口径）</div>'
-    + '<div class="v '+(stratPos.length?(stratPos[0].side==='short'?'up':'dn'):'nt')+'" style="font-size:13px">'
-    + (stratPos.length? stratPos.map(function(p){
-        return (p.side==='short'?'空 ':'多 ')+p.en+' · 吊灯 '+(p.ch!=null?p.ch:'—')
-          +' / MA26 '+(p.ml!=null?p.ml:'—')
-          + (p.float!=null? ' · 浮动 '+sgn(p.float)+f2(p.float)+'%':'')+' · 已持 '+(p.held||0)+' 天'
-          + (Math.max(+(p.mfe||0), +(p.R||0)) >= 1.5
-             ? ' · <span style="color:#FFD400">💡 已达 1.5 ATR，可保本</span>' : '');
-      }).join(' / ') : '无（当前无 4/4 命中的品种）')+'</div></div>';
+  // v26：持仓口径统一 —— 原来进场雷达、出场雷达各渲染一份「策略参考持仓」，
+  // 数值还分别取自 MAN.strategyOpen 的不同字段，容易与定稿方案持仓混淆。
+  // 现在定稿方案持仓只在「策略持仓看板」，雷达口径的离场线只在「出场雷达」。
+  html += '<div class="dv" style="grid-column:1/-1"><div class="l">口径说明</div>'
+    + '<div class="v nt" style="font-size:11px;line-height:1.65;text-align:left">'
+    + '本雷达只给反转概率与方向参考，<b style="color:#FFD400">不是建仓指令</b>；'
+    + '唯一指令来自 ②🔥 方案内信号（定稿方案 + 路况允许 + 顺势）。'
+    + '持仓与离场线请统一看「策略持仓看板」（方案口径）与「出场雷达」（雷达口径 · 复盘参考）。'
+    + '</div></div>';
 
   $('decGrid').innerHTML = html;
   installFold($('decGrid'), 'decFold',
@@ -2273,31 +2230,27 @@ function renderFlipBoard(){
   var box = $('flipBoard'); if(!box) return;
   // v22：看板直接读后端按该品种定稿方案跑出来的真实回测状态（DOC.plan），
   // 前端不再自行复演信号序列 —— 页面与报告同源，避免两套逻辑各说各话。
+  // v26：路况结论统一在行情条，这里不再重复「当前路况 / 建议策略」两行；
+  // 持仓以定稿方案为唯一口径，雷达口径的参考持仓与离场线统一放到出场雷达卡。
   var p = DOC.plan || {};
+  if($('fbTime')) $('fbTime').textContent = '数据 ' + MAN.built;
   if(!p.regime){
     box.innerHTML = '<div class="note">该品种暂无定稿方案（未通过双段盲测）。</div>';
     return;
   }
-  var rg = p.regime, v = p.verify || {}, fu = p.full || {};
-  var RC = {trend_up:'#ff6b6f', trend_dn:'#2ee6a0', range:'#7fb3ff', transition:'#FFD400'};
-  var AC = {plan:'#9fe0ff', wait:'#8b95a7', radar:'#FFD400'};
+  var v = p.verify || {}, fu = p.full || {};
   var html = '';
-  html += '<div class="frow"><span>当前路况</span><b style="color:'+ (RC[rg.now]||'#fff') +'">'
-        + rg.label + '　<small style="color:#6b7689;font-weight:400">已持续 '+rg.days
-        + ' 个交易日 · 自 '+rg.since+'</small></b></div>';
-  html += '<div class="frow"><span>建议策略</span><b style="color:'+ (AC[rg.adviceCode]||'#fff') +'">'
-        + rg.advice + (rg.adviceCode==='wait' ? '（震荡市静默，不推信号）' : '') + '</b></div>';
   html += '<div class="frow"><span>本品种方案</span><b>'+ (p.methodLabel || '—')
         + ' <small style="color:#6b7689">'+ (p.method||'') +'</small></b></div>';
   if(p.open){
     var col = p.open.side === 'short' ? '#C77DFF' : '#4CC9F0';
     var dirTxt = p.open.side === 'short' ? '空单（做空）' : '多单（做多）';
-    html += '<div class="frow"><span>当前理论持仓</span><b style="color:'+col+'">'+dirTxt
+    html += '<div class="frow"><span>当前持仓 · 方案</span><b style="color:'+col+'">'+dirTxt
           + '　<small style="color:#6b7689;font-weight:400">已持 '+(p.open.bars||0)+' 根 · 浮盈 '
           + (p.open.float>=0?'+':'') + p.open.float + ' 元</small></b></div>';
     html += '<div class="frow"><span>最近触发</span><b>'+(p.openDate||'—')+' · '+p.open.kind+'</b></div>';
   } else {
-    html += '<div class="frow"><span>当前理论持仓</span><b style="color:#8b95a7">空仓（无持仓）</b></div>';
+    html += '<div class="frow"><span>当前持仓 · 方案</span><b style="color:#8b95a7">空仓（无持仓）</b></div>';
     html += '<div class="frow"><span>最近一笔</span><b>'
           + ((p.marks&&p.marks.length)? (p.marks[p.marks.length-1].d+' · 已平仓') : '—') + '</b></div>';
   }
@@ -2310,21 +2263,36 @@ function renderFlipBoard(){
         + (fu.n||0) + ' 笔 · 胜率 ' + (fu.win!=null?fu.win.toFixed(1):'—') + '% · 年化 '
         + (fu.ann>=0?'+':'') + (fu.ann!=null?fu.ann.toFixed(1):'—') + '% · 期末 '
         + (fu.final||0) + ' 元</b></div>';
-  // v19.1 铁律：30% 单笔浮亏强平熔断，优先级高于反手策略（等下一个信号）
-  html += '<div style="margin-top:10px;padding:8px 10px;background:rgba(255,45,45,.12);'
-        + 'border-left:3px solid #FF2D2D;border-radius:4px;font-size:12.5px;line-height:1.8;color:#FF6B6B">'
-        + '<b style="color:#FF2D2D">🚨 铁律 · 30% 强制熔断（优先级最高，高于反手策略）</b><br>'
-        + '任一持仓反向浮亏达到本金的 <b>30%（约 3,000 元）</b>时，'
-        + '<b style="color:#FF2D2D">无条件立即手动平仓</b>——不等反手信号、不等反弹、不抗单。'
-        + '平仓后回到空仓，等待下一个信号再入场。</div>';
-  html += '<div class="note">按该品种定稿方案在 v21 引擎上逐日裁决的真实结果（1 万本金 · 1 手 · 资金不足自动追加 1 万 · 防守优先）。'
-        + 'K 线上「进多/进空/出」三色方块即该方案的每一笔进出，与报告逐笔清单一一对应。仅作参考，不构成实盘指令。</div>';
+  // v26：原先散落在看板红块、方法说明、推送面板、两张雷达里的规则，收成一处说明。
+  var dc = (MAN && MAN.defendCfg) || {};
+  var scope = (dc.scope || ['4/4 建仓', '3/4 预警', '顶底雷达']).join(' · ');
+  html += '<div class="fbrule">'
+    + '<div class="frh">当前生效口径 · 白圈 <b>'+(dc.version||'v24')+'</b> ＋ v25 推送收敛（全页唯一说明）</div>'
+    + '<div class="frl"><i>①</i><span><b>白圈失效</b>：连续 2 根收破 MA26/MA34 且超出 0.5 ATR；'
+      + '单根暴破 ≥0.8 ATR 立即失效（保命，不等确认）。只覆盖 '+scope
+      + '；方案内的 WM结构 / 转折确认 进场没有白圈。</span></div>'
+    + '<div class="frl"><i>②</i><span><b>基础出场</b>：MA26 反向穿越 ＋ 吊灯 3ATR，一字未改；'
+      + '出场预警、独立出场雷达照常推送。</span></div>'
+    + '<div class="frl hot"><i>③</i><span><b>🚨 30% 熔断</b>：任一持仓浮亏达本金 30%（约 3,000 元）'
+      + '无条件立即平仓，优先级高于反手策略 —— 不等信号、不等反弹、不抗单。</span></div>'
+    + '<div class="frl"><i>④</i><span><b>推送 6 通道</b>：失效打叉 / 方案内信号 / 反转预警 / '
+      + '出场预警 / 独立出场雷达 / 熔断；<b>震荡只静音进场，出场一律照推</b>。</span></div>'
+    + '</div>';
+  html += '<div class="note">持仓口径：此处为该品种定稿方案在 v21 引擎上逐日裁决的真实结果（1 万本金 · 1 手 · 防守优先）。'
+        + 'K 线上「进多/进空/出」三色方块与报告逐笔清单对应；雷达口径的参考持仓与离场线见下方「出场雷达」，'
+        + '仅供复盘、不作指令。路况结论统一看顶部行情条。</div>';
   box.innerHTML = html;
 }
 function renderRegime(){
   var el = $('regimeBox'); if(!el) return;
   var p = DOC.plan || {}, rg = p.regime;
-  if(!rg){ el.style.display = 'none'; return; }
+  var mini = $('mktMini');
+  if(!rg){
+    el.style.display = 'none';
+    if(mini) mini.style.display = 'none';
+    return;
+  }
+  if(mini){ mini.style.display = ''; mini.textContent = 'ⓘ 路况判据'; }
   var v = p.verify || {};
   // 盈亏比 ≥5 视为「高赔率」品种（锰硅 G4 = 12.25）：主角位置给盈亏比，胜率退为灰色脚注。
   var pfHi = (v.pf != null && v.pf >= 5);
@@ -2352,10 +2320,11 @@ function renderRegime(){
         + (rg.adviceCode==='wait'
             ? '<span class="rquiet">静默 · 不推信号</span>'
             : '<span class="rallow">✓ '+rg.allow+'</span>')
-      + '</div>';
+      + '</div>'
+      + regimeEvidence(rg);        // v26：第三行默认收起，顶部 ⓘ 展开
 }
 function renderAll(){
-  renderMarket(); renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderSigs();
+  renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderSigs();
   renderFlipBoard(); renderRegime();
   // ?expand=1 深链接：直接展开两张雷达卡明细，方便对照 / 截图
   try{
