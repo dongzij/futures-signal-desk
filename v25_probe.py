@@ -10,6 +10,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 import time
 import urllib.request
 
@@ -17,7 +18,7 @@ import websocket
 
 CHROME = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 ROOT = os.path.dirname(os.path.abspath(__file__))
-PROFILE = os.path.join(ROOT, "_shot", "cdprobe25")
+PROFILE = os.path.join(tempfile.gettempdir(), "cdprobe25-profile")
 
 
 def main():
