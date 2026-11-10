@@ -303,6 +303,54 @@ IRON_RULE = (
     '优先级高于以上全部。</div>')
 
 
+# ---------------------------------------------------------------- v26.2：大级别结构双顶/底
+# 用户 2026-11-10：「大的结构性双顶、双底要做信息推送，重要程度类似于现在的顶和底；
+# 小的顶和底可不推」。
+# 归属：并入既有第 ⑤ 条「独立出场雷达 / 结构信息」通道，与顶底预警同一条消息一起发，
+#       不新增第 7 条通道 —— v25 拍板的 6 条通道结构保持不变。
+# 大结构定义（10 年 370 条 M/W 中命中 78 条 = 21%，近 1 年 6 条）：
+#   gap   >= 20 根    —— 两峰间隔，形态跨度约一个月以上
+#   depth >= 3.5 ATR  —— 颈线回撤深度，真实洗盘而非小毛刺
+# 纪律：这是【结构信息】，不是交易指令。文案强制带固定标签 [研究参考·非建仓指令]，
+#       除该固定标签外，全卡片不出现「进场 / 开仓 / 建仓 / 做多 / 做空 / 反手」等动作字眼。
+# 阈值单一真源在 mw_events，推送与页面共用，不允许各写一份。
+BIG_MW_GAP = mw_events.BIG_GAP
+BIG_MW_DEPTH = mw_events.BIG_DEPTH
+ARCHIVE_TAG = mw_events.BIG_TAG
+
+
+def big_struct_scan(codes, state, allow_push):
+    """找每品种最新一根 bar 上「新确认」的大级别 M/W；小结构只留页面归档，不推微信。
+
+    用 bars[-1]['d'] 作 asof 而不是 now.date()：日线源偶有延迟，按自然日会漏推；
+    bigMwSeen 去重保证 15:20 推过之后 15:50 兜底班不会重发。
+    """
+    seen = state.setdefault("bigMwSeen", [])
+    out = []
+    for c in codes:
+        if not allow_push(c):
+            continue
+        try:
+            bars = engine_bars(c)
+            recs = mw_events.build_mw(c, engine.NAMES.get(c, c), bars, engine_S(c))
+        except Exception as e:                              # noqa: BLE001
+            print("big-mw %s failed: %s" % (c, e), file=sys.stderr)
+            continue
+        asof = bars[-1]["d"] if bars else ""
+        for r in recs:
+            if not mw_events.is_big(r):
+                continue                                   # 小结构：不推
+            if r.get("date") != asof:
+                continue                                   # 只推最新一根确认的
+            key = "%s|%s|%s" % (c, r.get("date"), r.get("dir"))
+            if key in seen:
+                continue
+            seen.append(key)
+            out.append(r)
+    state["bigMwSeen"] = seen[-300:]
+    return out
+
+
 def breaker_scan(opens, allow_push):
     """扫描持仓，返回触发 30% 熔断的信号列表（1 手口径浮亏 ≥ BREAKER_YUAN）。"""
     hits = []
@@ -562,6 +610,12 @@ def main():
     state["xsigSeen"] = seen_x[-400:]
     state["xsigToday"] = xs_today
 
+    # ---------- v26.2：大级别结构双顶/底（第 ⑤ 通道内的第二类事件）----------
+    # 与 xs_fresh 合并成一条微信消息发出；小结构不推，只在页面做只读归档。
+    big_mw_fresh = big_struct_scan(codes, state, allow_push)
+    state["bigMwToday"] = ["%s|%s|%s" % (r.get("sym"), r.get("date"), r.get("dir"))
+                           for r in big_mw_fresh]
+
     # ---------- v25：旧的「趋势确认（tf）」通道已彻底关停 ----------
     # 该通道走独立的 v9 趋势逻辑（自极值回撤 3.5ATR 反向确认），不认 7 品种定稿方案，
     # 也不进方案账本，属纯噪音。推送通道由 7 条收敛为 6 条。
@@ -777,9 +831,11 @@ def main():
         ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
         print("push exit-warn:", ok)
 
-    # ---------- 推送：独立出场信号（顶/底） ----------
+    # ---------- 推送：独立出场信号（顶/底）＋ v26.2 大级别结构双顶/底 ----------
     # v25：出场类通道，**不过路况闸门**——震荡市顶/底雷达照样推，只是不推进场。
-    if xs_fresh and push_token:
+    # v26.2：仍是第 ⑤ 条通道、仍是一次 post_push，只是消息里多了一种「大结构」事件，
+    #        与顶底预警同一优先级、同一版式；小结构不进这条消息。
+    if (xs_fresh or big_mw_fresh) and push_token:
         site = cfg.get("siteUrl", "")
         cards = []
         for r in xs_fresh:
@@ -800,11 +856,53 @@ def main():
                    r["date"], r["close"], r["ext"], r["pull"],
                    len([x for x in r["conds"] if x["ok"]]), okn,
                    (risk_line(r.get("meta")) if risk_on else "")))
-        title = "出场信号 %d 条：%s" % (
-            len(xs_fresh), "、".join("%s%s" % (r["sym"], "顶" if r["dir"] == "顶部" else "底")
-                                     for r in xs_fresh))
+        # ---- v26.2 大级别结构双顶/底：纯结构信息，强制带纪律标签 ----
+        for r in big_mw_fresh:
+            dirn = r.get("dir") or "结构"
+            cards.append(
+                '<div style="margin-bottom:16px;border:1px solid #d97706;border-radius:6px;'
+                'padding:10px;background:#fffdf5">'
+                '<div style="font-size:16px;font-weight:700;color:#b45309">'
+                '🏔 大级别结构%s：%s %s</div>'
+                '<div style="font-size:12px;color:#8a6d3b;margin:5px 0 8px">'
+                '<b style="color:#b45309">%s</b> · 信息推送，与顶/底预警同级</div>'
+                '<div style="background:#fff;padding:9px 10px;border-radius:5px;'
+                'font-size:13px;line-height:1.9;color:#333">'
+                '形态第二峰 <b>%s</b> · 颈线确认 <b>%s</b><br>'
+                '规模：两峰间隔 <b>%s 根</b> · 颈线深度 <b>%.2f ATR</b>'
+                '（大结构门槛 %s 根 / %.1f ATR）<br>'
+                '峰1 <b>%s</b> · 峰2 <b>%s</b> · 颈线 <b>%s</b> · 波动 %s ATR<br>'
+                '<span style="color:#666;font-size:12px">仅为形态信息记录，不构成任何操作指令；'
+                '实盘以定稿方案的 ②🔥方案内信号 与出场线为准。%s</span></div></div>'
+                % ("双顶" if dirn == "顶部" else "双底" if dirn == "底部" else "形态",
+                   r.get("sym"), engine.NAMES.get(r.get("sym"), ""),
+                   ARCHIVE_TAG,
+                   r.get("mkDate") or "—", r.get("date") or "—",
+                   r.get("gap"), r.get("depth") or 0, BIG_MW_GAP, BIG_MW_DEPTH,
+                   r.get("peak1Px"), r.get("peak2Px"), r.get("neckPx"), r.get("atr"),
+                   ("<a href='%s'>查看图上标记 →</a>" % site) if site else ""))
+            # 纪律硬校验：固定标签是唯一例外；其余文字出现任何动作字眼就撤下这张卡片，
+            # 保证「信息推送」永远不会被读成操作指令。
+            _ban = ("进场", "开仓", "建仓", "做多", "做空", "反手", "可尝试", "次日开盘", "下单")
+            _hit = [w for w in _ban if w in cards[-1].replace(ARCHIVE_TAG, "")]
+            if _hit:
+                print("big-mw DISCIPLINE FAIL %s -> 撤下卡片: %s"
+                      % (r.get("sym"), _hit), file=sys.stderr)
+                cards.pop()
+        parts = []
+        if xs_fresh:
+            parts.append("出场信号 %d 条：%s" % (
+                len(xs_fresh), "、".join(
+                    "%s%s" % (r["sym"], "顶" if r["dir"] == "顶部" else "底")
+                    for r in xs_fresh)))
+        if big_mw_fresh:
+            parts.append("🏔 大结构 %d 条：%s" % (
+                len(big_mw_fresh), "、".join(
+                    "%s%s" % (r.get("sym"), "双顶" if r.get("dir") == "顶部" else "双底")
+                    for r in big_mw_fresh)))
+        title = " · ".join(parts)
         ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
-        print("push xsig:", ok)
+        print("push xsig:", ok, "big-mw:", len(big_mw_fresh))
 
     # ---------- v25：旧的「趋势确认（tf）」推送已删除 ----------
     # 原来是第 6 条通道（📈 趋势确认 N 条），走 engine.tf_live 的独立 v9 逻辑。

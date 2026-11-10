@@ -330,6 +330,10 @@ def build_product(sym):
     # 与 mw_events.full_report() 同源；只做图上 ★ 三角形标记与列表提示，不推微信。
     try:
         mw = mw_events.build_mw(sym, cfg["name"], main, S_main)
+        # v26.2：大结构标记（与 daily.py 推送筛选共用 mw_events.is_big 单一口径）。
+        # 只用于「信息推送 / 页面只读归档标注」，不改任何形态判定与回测结果。
+        for w in mw:
+            w["big"] = mw_events.is_big(w)
         MW_ALL.extend(mw)
     except Exception as e:                              # noqa: BLE001
         print("   mw failed %s: %s" % (sym, e))
@@ -690,6 +694,17 @@ def main():
             },
             "advisoryOnly": True,
             "baseExitUnchanged": True,
+            # v26.2：大级别结构（信息推送门槛）。小结构不推微信，只在信号栏做只读归档。
+            "bigRule": {
+                "gap": mw_events.BIG_GAP,
+                "depth": mw_events.BIG_DEPTH,
+                "tag": mw_events.BIG_TAG,
+                "label": "🏔 大级别结构 · 信息推送级",
+                "rule": "两峰间隔 ≥%s 根 且 颈线回撤 ≥%.1f ATR = 大结构，随第⑤通道做信息推送；"
+                        "小结构不推，仅在信号栏做只读归档。" % (mw_events.BIG_GAP, mw_events.BIG_DEPTH),
+                "n": sum(1 for w in MW_ALL if w.get("big")),
+                "advisoryOnly": True,
+            },
             "stat": mw_events.summarize(MW_ALL),
         },
         # v17：静默观察期（用户 2026-11-08 拍板）——只做记录，不加任何新指标/规则

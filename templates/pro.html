@@ -268,6 +268,28 @@ border-left:2px solid rgba(255,212,0,.55);padding-left:6px}
 #sigList::-webkit-scrollbar{width:7px}
 #sigList::-webkit-scrollbar-thumb{background:#3b4a63;border-radius:6px}
 #sigList::-webkit-scrollbar-track{background:transparent}
+/* ===== v26.2 模块三：周期口径提示 + 图上标记对照 ===== */
+.ptwarn{color:#FFB020;background:rgba(255,176,32,.12);border:1px solid rgba(255,176,32,.45);
+  border-radius:10px;padding:1px 8px;font-size:10.5px;font-weight:700;margin-left:8px;
+  white-space:nowrap;vertical-align:middle}
+.siglegend{margin:0 0 9px;font-size:11px;color:var(--dim)}
+.slbtn{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);
+  background:#0f141c;border-radius:12px;padding:3px 10px;font-size:11px;
+  color:#aebbd0;cursor:pointer;user-select:none}
+.slbtn:hover{border-color:#33507a;color:var(--tx)}
+.slbody{margin-top:7px;padding:8px 10px;background:#101722;border:1px solid var(--line);
+  border-radius:8px;line-height:1.85;color:#9aa7ba}
+.slbody.hide{display:none}
+.slbody b{color:var(--tx);font-weight:600}
+.slrow{display:flex;gap:8px;align-items:flex-start}
+.slk{flex:0 0 66px;color:#7fb3ff}
+.slk.warnc{color:#FFB020}
+/* ===== v26.2 模块二：研究参考只读归档行（低饱和，与可推送消息明显区分） ===== */
+.sgr.archrow{background:linear-gradient(90deg,rgba(159,176,201,.06),rgba(159,176,201,0) 72%);
+  cursor:pointer}
+.bd.arch{background:#202a38;color:#b7c4d8;border:1px dashed #6b7689;font-weight:600}
+.archTag{color:#FFB020;font-size:10px;font-weight:700}
+.archBig{color:#FFD400;font-size:10.5px;font-weight:700}
 /* v16 模块六：雷达卡下半明细默认折叠 */
 .foldbtn{display:inline-block;border:1px solid var(--line);background:#141c28;color:#aebbd0;
   border-radius:14px;padding:3px 12px;font-size:11px;cursor:pointer;margin:8px 0 2px}
@@ -398,7 +420,16 @@ background:#10151d;color:var(--tx);font-size:18px}
     </div>
     <!-- v26：路况唯一显示在行情条 #regimeBox（横向两行），旧的 K 线下方大字卡已合并下线 -->
     <div class="card">
-      <h3>信号栏 · 进场 / 出场 <span class="r" id="sigCnt"></span></h3>
+      <h3>信号栏 · 消息归档 <span id="sigPtWarn" class="ptwarn" style="display:none"></span><span class="r" id="sigCnt"></span></h3>
+      <div class="siglegend">
+        <span class="slbtn" onclick="toggleSigLegend()">ⓘ 图上标记对照 <span id="slArrow">▾</span></span>
+        <div class="slbody hide" id="slBody">
+          <div class="slrow"><span class="slk">图上点开</span><span>蓝▼/紫▲、灰◆ → 信号明细；○ 白圈 → 失效明细；★ 金▲/紫▼ → 结构形态；<b>黄◆ → 离场原因</b>；青◇ / 白箭头 → 离场复盘；<b>▮方块 → 方案该笔回测详情</b>。鼠标悬停（手机长按）先看文字提示。</span></div>
+          <div class="slrow"><span class="slk">列表里看</span><span>反转预警 / 顶底到位 / 失效 → 本栏；方案逐笔账本 → 策略持仓看板；雷达口径离场线 → 出场雷达。</span></div>
+          <div class="slrow"><span class="slk warnc">研究参考</span><span>🏔 大结构与转折确认形态的归档行统一带 <b class="archTag">[研究参考·非建仓指令]</b>，只记形态、无任何操作字眼；大结构随第⑤通道做信息推送，小结构只归档不推。</span></div>
+          <div class="slrow"><span class="slk">口径提醒</span><span>本栏恒为日线归档；切到周 / 月 / 分钟线时标题旁会亮起警示，图上标记随周期变、本栏不变。</span></div>
+        </div>
+      </div>
       <div class="fchips" id="sigFilter"></div>
       <div id="sigList"></div>
     </div>
@@ -992,6 +1023,150 @@ function ma(arr,n){
     out.push(i>=n-1? +(s/n).toFixed(2):null); }
   return out;
 }
+/* ===== v26.2 模块一：图上标记统一提示 + 点击闭环 =====
+   所有图标一律是「历史 / 复盘 / 形态」信息，弹窗不含任何操作指令；
+   方案回测记录与形态归档统一挂 [研究参考·非建仓指令]。 */
+var ARCH_TAG = '[研究参考·非建仓指令]';
+function tipEsc(x){
+  return String(x==null?'—':x).replace(/[<>&]/g,function(c){
+    return {'<':'&lt;','>':'&gt;','&':'&amp;'}[c];
+  });
+}
+function tipLine(t){ return '<div style="line-height:1.7">'+t+'</div>'; }
+function tipFoot(t){ return '<div style="color:#8a95a8;font-size:10.5px;margin-top:4px">'+t+'</div>'; }
+function markTip(d){
+  if(!d) return '';
+  var H = '<div style="font-size:12px;font-weight:700;color:#e8eefa;margin-bottom:3px">';
+  if(d.pmData){
+    var m = d.pmData;
+    return H+'▮ 方案回测记录 · '+tipEsc(m.d)+'</div>'
+      + tipLine('记录端 <b>'+(m.t==='in'?'起始':'结束')+'</b> · 形态 '+tipEsc(m.k))
+      + tipLine('价格 '+tipEsc(m.px)
+        + (m.net!=null?' · 净 '+tipEsc(m.net)+' 元':'')
+        + (m.bars!=null?' · 持有 '+tipEsc(m.bars)+' 根':''))
+      + tipFoot('点击看该笔回测详情');
+  }
+  if(d.exData){
+    var t = d.exData;
+    return H+(d.exKind==='warn'?'◇ 盘整预警':'➤ 实际离场')+' · '+tipEsc(t.d)+'</div>'
+      + tipLine('原因 '+tipEsc(t.why||'—')+' · 离场日 '+tipEsc(t.out||'—'))
+      + tipLine('持有 '+tipEsc(t.hold||'—')+' 根 · R '+tipEsc(t.R!=null?t.R:'—'))
+      + tipFoot('点击看离场复盘明细');
+  }
+  if(d.srcData){
+    var h = d.srcData;
+    return H+'◆ 顶底到位预警 · '+tipEsc(h.d)+'</div>'
+      + tipLine(tipEsc(h.dir||'—')+' · '+(h.level==='strong'?'强烈档':'建议档')
+        + ' · 满足 '+tipEsc(h.k||'—')+' 条')
+      + tipLine('回撤 '+tipEsc(h.pull!=null?h.pull:'—')+' ATR · 段龄 '
+        + tipEsc(h.age||'—')+' 根 · 收 '+tipEsc(h.px!=null?h.px:'—'))
+      + (h.defDate?tipLine('后续 '+tipEsc(h.defDate)+' 被证伪（图上白圈）'):'')
+      + tipFoot('点击看具体离场原因');
+  }
+  if(d.vacSig) return H+'• 动能真空 · '+tipEsc(d.vacSig.date)+'</div>'
+    + tipLine('原信号动能不足，图标已淡化') + tipFoot('点击看原信号明细');
+  if(d.sig) return H+(d.sig.kind==='warn'?'◆ 反转预警':'▼/▲ 雷达信号')+' · '
+    + tipEsc(d.sig.date)+'</div>' + tipLine('点击看信号明细');
+  if(d.defDate) return H+'○ 失效白圈 · '+tipEsc(d.defDate)+'</div>'
+    + tipLine('点击看当天全部失效明细');
+  if(d.mwDate) return H+'★ 结构双顶/底 · '+tipEsc(d.mwDate)+'</div>'
+    + tipLine('点击看形态明细') + tipFoot(ARCH_TAG);
+  return '';
+}
+function openPlanMark(m){
+  var html = '<h3>▮ 方案回测 · 该笔明细 <span onclick="closeSheet()">关闭 ✕</span></h3>';
+  html += '<div style="font-size:11px;color:#8a95a8;line-height:1.7;margin-bottom:8px">'
+    + tipEsc(DOC.name)+' · '+tipEsc(m.d)+' · 来自定稿方案在 v21 引擎上的真实回测账本，'
+    + '与「策略持仓看板」逐笔清单同源。</div>';
+  html += '<div class="frow"><span>记录端</span><b>'+(m.t==='in'?'起始':'结束')+'</b></div>';
+  html += '<div class="frow"><span>触发形态</span><b>'+tipEsc(m.k)+'</b></div>';
+  html += '<div class="frow"><span>方向标记</span><b>'
+    + (m.side==='short'?'空头方向':'多头方向')+'</b></div>';
+  html += '<div class="frow"><span>成交价</span><b>'+tipEsc(m.px)+'</b></div>';
+  if(m.net!=null) html += '<div class="frow"><span>该笔净额</span><b style="color:'
+    + (m.net>=0?'#ff6b6f':'#2ee6a0')+'">'+(m.net>=0?'+':'')+tipEsc(m.net)+' 元</b></div>';
+  if(m.bars!=null) html += '<div class="frow"><span>持有根数</span><b>'
+    + tipEsc(m.bars)+' 根</b></div>';
+  html += '<div style="margin-top:10px;padding:8px 10px;background:rgba(255,176,32,.10);'
+    + 'border-left:3px solid #FFB020;border-radius:4px;font-size:11.5px;line-height:1.7;'
+    + 'color:#FFB020"><b>'+ARCH_TAG+'</b><br>历史回测记录，不构成任何操作指令；'
+    + '实盘以定稿方案的 ②🔥方案内信号 与出场线为准。</div>';
+  $('sheet').innerHTML = html; $('mask').classList.add('on');
+}
+function openExitSignal(h){
+  var html = '<h3>◆ 顶底到位预警 · 离场原因 <span onclick="closeSheet()">关闭 ✕</span></h3>';
+  html += '<div style="font-size:11px;color:#8a95a8;line-height:1.7;margin-bottom:8px">'
+    + '独立于其它信号、不需要持仓也可参考的顶/底到位提示（独立出场雷达口径）。</div>';
+  html += '<div class="frow"><span>日期</span><b>'+tipEsc(h.d)+'</b></div>';
+  html += '<div class="frow"><span>位置</span><b>'+tipEsc(h.dir||'—')+'</b></div>';
+  html += '<div class="frow"><span>档位</span><b style="color:'
+    + (h.level==='strong'?'#FFE94A':'#FFC400')+'">'
+    + (h.level==='strong'?'◆ 强烈离场':'◆ 建议离场')+'</b></div>';
+  html += '<div class="frow"><span>离场依据</span><b>趋势伸展 + 极值回撤 + 段幅 / 影线等条件</b></div>';
+  html += '<div class="frow"><span>本次满足</span><b>'+tipEsc(h.k||'—')+' 条'
+    + (h.aux!=null?' · 辅助 '+tipEsc(h.aux)+' 条':'')+'</b></div>';
+  html += '<div class="frow"><span>自极值回撤</span><b>'
+    + tipEsc(h.pull!=null?h.pull:'—')+' ATR</b></div>';
+  html += '<div class="frow"><span>段龄 / 收盘</span><b>'+tipEsc(h.age||'—')
+    + ' 根 · '+tipEsc(h.px!=null?h.px:'—')+'</b></div>';
+  if(h.defDate) html += '<div class="frow"><span>后续</span><b style="color:#FF6B6B">'
+    + tipEsc(h.defDate)+' 被走势证伪（图上白圈）</b></div>';
+  var mt = h.meta || {};
+  html += '<div class="frow"><span>周线 MA45</span><b>'
+    + (mt.weekAlign===false?'逆势 · 观察档':'顺势')+'</b></div>';
+  html += '<div style="margin-top:10px;padding:8px 10px;background:rgba(255,196,0,.08);'
+    + 'border-left:3px solid #FFC400;border-radius:4px;font-size:11.5px;line-height:1.7;'
+    + 'color:#FFC400">是否离场由你自己决定；此卡只解释「为什么亮灯」，不改动任何平仓线。</div>';
+  $('sheet').innerHTML = html; $('mask').classList.add('on');
+}
+function openExitTrade(t, isWarn){
+  var html = '<h3>'+(isWarn?'◇ 盘整预警':'➤ 实际离场')+' · 复盘明细 '
+    + '<span onclick="closeSheet()">关闭 ✕</span></h3>';
+  html += '<div style="font-size:11px;color:#8a95a8;line-height:1.7;margin-bottom:8px">'
+    + '雷达口径的历史离场复盘记录，与「出场雷达 · 持仓防守线」同源。</div>';
+  html += '<div class="frow"><span>信号日</span><b>'+tipEsc(t.d)+'</b></div>';
+  html += '<div class="frow"><span>离场原因</span><b style="color:#FFC400">'
+    + tipEsc(t.why||'—')+'</b></div>';
+  html += '<div class="frow"><span>盘整预警日</span><b>'+tipEsc(t.warn||'—')+'</b></div>';
+  html += '<div class="frow"><span>离场日</span><b>'+tipEsc(t.out||'—')+'</b></div>';
+  html += '<div class="frow"><span>持有 / R 倍数</span><b>'+tipEsc(t.hold||'—')
+    + ' 根 · '+tipEsc(t.R!=null?t.R:'—')+'</b></div>';
+  html += '<div style="margin-top:10px;padding:8px 10px;background:rgba(34,211,238,.08);'
+    + 'border-left:3px solid #22D3EE;border-radius:4px;font-size:11.5px;line-height:1.7;'
+    + 'color:#22D3EE">盘整特征出现不代表必须立即离场；跌破吊灯 3ATR / MA26 离场线才走。</div>';
+  $('sheet').innerHTML = html; $('mask').classList.add('on');
+}
+/* v26.2 模块二：形态归档的只读弹窗（绝不含任何操作字眼） */
+function openArchive(a){
+  var html = '<h3>'+(a.type==='mw'?'★ 结构形态归档':'◇ 转折确认归档')+' · '
+    + tipEsc(a.d)+' <span onclick="closeSheet()">关闭 ✕</span></h3>';
+  html += '<div style="padding:7px 9px;background:rgba(255,176,32,.12);'
+    + 'border-left:3px solid #FFB020;border-radius:4px;font-size:11.5px;'
+    + 'line-height:1.7;color:#FFB020;margin-bottom:9px"><b>'+ARCH_TAG+'</b><br>'
+    + '只读形态记录，不构成任何操作指令。</div>';
+  html += '<div class="frow"><span>品种 / 形态</span><b>'+tipEsc(DOC.name)+' · '
+    + tipEsc(a.name)+'</b></div>';
+  html += '<div class="frow"><span>第二峰 / 图上定位</span><b>'+tipEsc(a.mkDate||a.d)+'</b></div>';
+  if(a.cDate) html += '<div class="frow"><span>颈线确认日</span><b>'+tipEsc(a.cDate)+'</b></div>';
+  if(a.gap!=null) html += '<div class="frow"><span>两峰间隔</span><b>'+tipEsc(a.gap)+' 根</b></div>';
+  if(a.depth!=null) html += '<div class="frow"><span>颈线深度</span><b>'
+    + tipEsc(a.depth)+' ATR</b></div>';
+  if(a.px!=null) html += '<div class="frow"><span>记录价</span><b>'+tipEsc(a.px)+'</b></div>';
+  html += '<div class="frow"><span>级别</span><b style="color:'
+    + (a.big?'#FFD400':'#9aa7ba')+'">'+(a.big?'🏔 大结构 · 信息推送级':'小结构 · 仅归档')+'</b></div>';
+  html += '<div style="margin-top:10px;font-size:11px;color:#8a95a8;line-height:1.7">'
+    + '大结构随第⑤通道做信息推送，小结构只在页面留痕；两者都只记录形态，'
+    + '实盘以定稿方案的 ②🔥方案内信号 与出场线为准。</div>';
+  html += '<div style="margin-top:12px"><button class="btn" style="width:100%" '
+    + 'onclick="closeSheet();zoomToSrc(\'' + tipEsc(a.mkDate||a.d) + '\')">'
+    + '在 K 线上定位该形态 →</button></div>';
+  $('sheet').innerHTML = html; $('mask').classList.add('on');
+}
+function toggleSigLegend(){
+  var b = $('slBody'); if(!b) return;
+  b.classList.toggle('hide');
+  var a = $('slArrow'); if(a) a.textContent = b.classList.contains('hide')?'▾':'▴';
+}
 function renderChart(){
   if(typeof echarts==='undefined') return;
   var bars = barsFor(cur.pt);
@@ -1050,6 +1225,7 @@ function renderChart(){
       if(vac){
         // 动能真空：原图标变暗 + 外侧多一个小黄点
         marks.push({value:[idx, sh? (b[4]+1.55*a) : (b[3]-1.55*a)],
+          vacDate:s.date, vacSig:s,
           symbol:'circle', symbolSize:4.5,
           itemStyle:{color:'#FFD400', borderColor:'#0B0E13', borderWidth:1}});
       }
@@ -1120,6 +1296,7 @@ function renderChart(){
         if(iw!=null){
           var aw = A(iw);
           marks.push({value:[iw, t.sd==='long'? (bars[iw][3]-0.9*aw) : (bars[iw][4]+0.9*aw)],
+            exData:t, exKind:'warn',
             symbol:'diamond', symbolSize:9,
             itemStyle:{color:'transparent', borderColor:'#22D3EE', borderWidth:1.8}});
         }
@@ -1128,6 +1305,7 @@ function renderChart(){
       if(io!=null){
         var ao = A(io);
         marks.push({value:[io, t.sd==='long'? (bars[io][3]-1.55*ao) : (bars[io][4]+1.55*ao)],
+          exData:t, exKind:'out',
           symbol:'arrow', symbolRotate: t.sd==='long'? 180 : 0, symbolSize:11,
           itemStyle:{color:'#F2F6FF', borderColor:'#0B0E13', borderWidth:.6}});
       }
@@ -1151,7 +1329,7 @@ function renderChart(){
       // xsig.hist 原有 16 条仍按原 ±1.75 ATR 画法，一字不改。
       var off = h.defDate? 0.85 : 1.75;
       var py = top? (bars[ix][4] + off*a) : (bars[ix][3] - off*a);
-      marks.push({value:[ix, py], srcDate:h.d,
+      marks.push({value:[ix, py], srcDate:h.d, srcData:h,
         symbol:'diamond', symbolSize: strong? 15 : 11,
         itemStyle:{color: strong? '#FFE94A':'#FFC400',
                    borderColor: strong? '#FFFFFF':'#0B0E13',
@@ -1161,7 +1339,7 @@ function renderChart(){
       if(h.defDate){
         var iy = dateIdx(dates, h.defDate);
         if(iy!=null){
-          marks.push({value:[ix, py], srcDate:h.d,
+          marks.push({value:[ix, py], srcDate:h.d, srcData:h,
             symbol:'circle', symbolSize: strong? 22 : 18, z:9,
             itemStyle:{color:'transparent', borderColor:'rgba(232,238,250,.72)',
                        borderWidth:1.2, borderType:'dashed'}});
@@ -1189,7 +1367,7 @@ function renderChart(){
       var a=A(ix), b=bars[ix], isS=(m.side==='short');
       if(m.t==='in'){
         var yin = isS ? (b[2] + 2.1*a) : (b[3] - 2.1*a);
-        marks.push({value:[ix,yin], pm:'in',
+        marks.push({value:[ix,yin], pm:'in', pmData:m,
           symbol:'roundRect', symbolSize:[30,17], z:12,
           itemStyle:{color: isS? '#3b1e6e':'#0b3444',
                      borderColor: isS? '#C77DFF':'#4CC9F0', borderWidth:1.5,
@@ -1201,7 +1379,7 @@ function renderChart(){
         var wnm = WHY[m.k] || m.k || '出';
         var col = (m.k==='stop30')? '#FF2D2D'
                 : (m.k==='defend'||m.k==='xsig_strong')? '#E8EEFA' : '#ff8a3d';
-        marks.push({value:[ix,yout], pm:'out',
+        marks.push({value:[ix,yout], pm:'out', pmData:m,
           symbol:'roundRect', symbolSize:[34,16], z:11,
           itemStyle:{color:'rgba(11,14,19,.88)', borderColor:col, borderWidth:1.3},
           label:{show:true, position:'inside', formatter:'出·'+wnm,
@@ -1252,6 +1430,25 @@ function renderChart(){
   ];
   CH.setOption({
     animation:false,
+    // v26.2 模块一：全局 tooltip —— 悬停 / 手机长按先看文字，再点开看明细。
+    // 信号层给完整图标说明，K 线给 OHLC，其余均线不弹空框。
+    tooltip:{trigger:'item', confine:true, triggerOn:'mousemove|click',
+      backgroundColor:'rgba(14,20,30,.97)', borderColor:'#3b4a63', borderWidth:1,
+      padding:[7,10], textStyle:{color:'#e8eefa',fontSize:11},
+      extraCssText:'max-width:320px;border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,.5);',
+      formatter:function(p){
+        if(p.seriesName==='信号') return markTip(p.data);
+        if(p.seriesName==='K'){
+          var v = p.value || p.data;
+          if(!Array.isArray(v)) return '';
+          var a = v.length>=5 ? v.slice(1,5) : (v.length>=4 ? v.slice(0,4) : null);
+          if(!a) return '';
+          return '<div style="font-size:11px;line-height:1.7"><b>'+tipEsc(p.name)
+            +'</b><br>开 '+tipEsc(a[0])+' · 收 '+tipEsc(a[1])
+            +'<br>低 '+tipEsc(a[2])+' · 高 '+tipEsc(a[3])+'</div>';
+        }
+        return '';
+      }},
     axisPointer:{link:[{xAxisIndex:'all'}], label:{backgroundColor:'#232b38'}},
     // v17.1：改用固定 bottom，消除「日期刻度 ↔ 滑块」之间的大段空白
     grid:[{left:8,right:8,top:10,bottom:32}],
@@ -1272,12 +1469,17 @@ function renderChart(){
     series: series
   }, true);
   CH.off('click');
+  // v26.2 模块一：图上所有标记统一点击闭环（原先只有 3 类可点，其余点了没反应）
   CH.on('click', function(p){
-    if(p.seriesName==='信号' && p.data){
-      if(p.data.sig) openSig(p.data.sig);
-      else if(p.data.defDate) openDef(p.data.defDate);   // 点白圈 → 当天全部失效明细
-      else if(p.data.mwDate) openMw(p.data.mwDate);      // 点 ★ → 结构双顶/底明细
-    }
+    if(p.seriesName!=='信号' || !p.data) return;
+    var d = p.data;
+    if(d.pmData)      openPlanMark(d.pmData);                       // ▮ 进/出方块 → 该笔回测详情
+    else if(d.exData) openExitTrade(d.exData, d.exKind==='warn');  // 青◇ / 白箭头 → 离场复盘
+    else if(d.srcData) openExitSignal(d.srcData);                  // 黄◆ → 具体离场原因
+    else if(d.vacSig) openSig(d.vacSig);                           // 动能真空 → 原信号
+    else if(d.sig)    openSig(d.sig);
+    else if(d.defDate) openDef(d.defDate);
+    else if(d.mwDate) openMw(d.mwDate);
   });
   // ?focus= 只执行一次，避免切换品种/周期时被反复拉回
   if(_FOCUS_PEND){
@@ -1718,14 +1920,80 @@ function kindBadge(s){
 var SIGF = 'all', SIGSORT = 'time';
 try{
   var _f0 = new URLSearchParams(location.search).get('f');
-  if(_f0 && ['all','in','out','def','mw'].indexOf(_f0)>=0) SIGF = _f0;
+  if(_f0 && ['all','in','out','def','mw','arch'].indexOf(_f0)>=0) SIGF = _f0;
   if(new URLSearchParams(location.search).get('sort') === 'def') SIGSORT = 'def';
 }catch(e){}
 function setSigF(f){ SIGF = f; renderSigs(); }
 /* v18.1：默认按时间新→旧排列（最新置顶）；需要时仍可一键切回「失效优先」 */
 function toggleSigSort(){ SIGSORT = (SIGSORT === 'time' ? 'def' : 'time'); renderSigs(); }
 
+/* ===== v26.2 模块二：形态归档（微信②通道口径同步 + 纪律闭环） =====
+   微信「🔥方案内信号」会推 mw / tf 形态；以前信号栏按 v11 隐藏 confirm、
+   v13 隐藏 WM 的老规则，导致「微信有、页面无」。这里补只读归档：
+     · 范围 = 图上可见的 hiConf 结构 ∪ 信息推送级大结构 ∪ 转折确认(tf)
+     · 每行强制带 [研究参考·非建仓指令]，绝不含任何操作字眼
+     · 归档只记形态，不改引擎、不改账本、不产生任何新信号 */
+var ARCH_BAN = ['进场','开仓','建仓','做多','做空','反手','可尝试','次日开盘','下单'];
+function bigMw(w){
+  var c = ((MAN.mwCfg||{}).bigRule)||{};
+  return w.big!=null ? !!w.big
+       : ((w.gap||0)>=(c.gap||20) && (w.depth||0)>=(c.depth||3.5));
+}
+function archDiscipline(html){
+  // 固定标签是用户强制要求的禁止性表述，本身含「非建仓指令」——它是唯一例外。
+  var has = html.indexOf(ARCH_TAG) >= 0;
+  var bad = ARCH_BAN.filter(function(w){
+    return html.split(ARCH_TAG).join('').indexOf(w) >= 0;
+  });
+  if(!has || bad.length){
+    console.error('[纪律断言] 归档行不合格 · 标签=' + has + ' · 禁用字眼=' + bad.join('/'));
+    return false;
+  }
+  return true;
+}
+function archiveRows(){
+  var out = [];
+  (DOC.mw||[]).forEach(function(w){
+    var big = bigMw(w);
+    if(!w.hiConf && !big) return;                 // 小结构既不上图也不推送 → 不进列表
+    out.push({d:w.mkDate, kind:'arch', a:{
+      type:'mw', name:(w.dir==='顶部'?'结构双顶':'结构双底'),
+      mkDate:w.mkDate, cDate:w.date, gap:w.gap, depth:w.depth,
+      big:big, px:w.peak2Px
+    }});
+  });
+  (((DOC.plan||{}).marks)||[]).forEach(function(m){
+    if(m.t!=='in' || m.k!=='转折确认') return;
+    out.push({d:m.d, kind:'arch', a:{
+      type:'tf', name:'转折确认', mkDate:m.d, big:false, px:m.px
+    }});
+  });
+  return out;
+}
+function openArchiveBy(type, d){
+  var a;
+  if(type==='mw'){
+    var w = (DOC.mw||[]).filter(function(x){ return x.mkDate===d; })[0];
+    if(!w) return;
+    a = {type:'mw', d:d, name:(w.dir==='顶部'?'结构双顶':'结构双底'),
+         mkDate:w.mkDate, cDate:w.date, gap:w.gap, depth:w.depth,
+         big:bigMw(w), px:w.peak2Px};
+  }else{
+    var m = (((DOC.plan||{}).marks)||[]).filter(function(x){
+      return x.t==='in' && x.k==='转折确认' && x.d===d; })[0];
+    if(!m) return;
+    a = {type:'tf', d:d, name:'转折确认', mkDate:d, big:false, px:m.px};
+  }
+  openArchive(a);
+}
 function renderSigs(){
+  // v26.2 模块三：本栏恒为日线归档；切到周 / 月 / 分钟线时标题旁亮警示。
+  var _pw = $('sigPtWarn');
+  if(_pw){
+    var _nonDay = cur.pt !== 'D';
+    _pw.textContent = _nonDay ? '⚠️ 当前为日线归档口径' : '';
+    _pw.style.display = _nonDay ? 'inline-block' : 'none';
+  }
   var rows = [];
   // —— 进场侧（v11：confirm 兑现状态后台仍参与盈亏计算，前端彻底不展示）——
   (DOC.signals || []).forEach(function(s){
@@ -1748,14 +2016,17 @@ function renderSigs(){
   (DOC.defend || []).forEach(function(e){
     rows.push({d: e.date, kind: 'def', e: e});
   });
-  // —— 模块一（2026-11-09）：WM 形态阉割 ——
-  // 图上金▲/紫▼形态标注保留（研究参考），但 WM 不再作为独立下单信号 / 反手入口，
-  // 信号栏彻底不再展示 WM 开仓提示（绝不允许系统提示开仓）。详见 mwCfg.advisoryOnly。
+  // —— v13 WM 阉割 → v26.2 升级为「只读形态归档」——
+  // 原纪律保持不变：WM 不作为独立信号入口，绝不提示任何操作（mwCfg.advisoryOnly）。
+  // 变化时：微信②通道会推 mw / tf 形态，故补一条纯形态记录，
+  // 强制带 [研究参考·非建仓指令]、无任何操作字眼，不产生新信号、不改账本。
+  rows = rows.concat(archiveRows());
 
   var nIn = rows.filter(function(r){ return r.kind === 'in'; }).length;
   var nOut = rows.filter(function(r){ return r.kind === 'out'; }).length;
   var nDef = rows.filter(function(r){ return r.kind === 'def'; }).length;
   var nMw = rows.filter(function(r){ return r.kind === 'mw'; }).length;
+  var nArch = rows.filter(function(r){ return r.kind === 'arch'; }).length;
   var nHi = rows.filter(function(r){ return r.kind === 'out' && r.h.level === 'strong'; }).length;
   var nWeak = rows.filter(function(r){ return r.kind === 'def' && r.e.weak; }).length;
   // v17：周线 MA45 降级结论落到页面三档（顺势 / 逆势强档 / 观察），与微信档位同源
@@ -1766,16 +2037,17 @@ function renderSigs(){
     else if(m.observe) tO++;
     else tS++;
   });
-  $('sigCnt').textContent = '进场 ' + nIn + ' · 出场 ' + nOut
+  $('sigCnt').textContent = '信号 ' + nIn + ' · 离场 ' + nOut
     + (nHi ? '（强烈 ' + nHi + '）' : '')
     + (nDef ? ' · ○ 失效 ' + nDef + ' 条' + (nWeak ? '（弱 '+nWeak+'）' : '') : '')
     + (nMw ? ' · ★ M/W ' + nMw + ' 条' : '')
+    + (nArch ? ' · 研究参考 ' + nArch + ' 条' : '')
     + ' · 档位 顺势 ' + tA + ' / 强档 ' + tS + ' / 观察 ' + tO;
 
   if(SIGF !== 'all') rows = rows.filter(function(r){ return r.kind === SIGF; });
 
-  var fc = [['all','全部'],['in','只看进场'],['out','只看出场'],
-            ['def','只看失效']];
+  var fc = [['all','全部'],['in','只看信号'],['out','只看出场'],
+            ['def','只看失效'],['arch','研究参考']];
   $('sigFilter').innerHTML = fc.map(function(f){
     return '<span class="fc' + (SIGF === f[0] ? ' on' : '') + '" onclick="setSigF(\'' + f[0] + '\')">'
       + f[1] + '</span>';
@@ -1799,6 +2071,23 @@ function renderSigs(){
     return;
   }
   $('sigList').innerHTML = rows.map(function(r){
+    if(r.kind === 'arch'){
+      // 纪律：标签强制、文案零动作字眼；运行时断言不通过就拦下整行。
+      var a = r.a;
+      var line = '<div class="sgr archrow" onclick="openArchiveBy(\''
+        + a.type + '\',\'' + r.d + '\')">'
+        + '<span class="dt">' + r.d + '</span>'
+        + '<span class="bd arch">' + ARCH_TAG + '</span>'
+        + '<span class="tx2">'
+        + (a.big ? '<span class="archBig">🏔 大结构 · 信息推送级</span> · ' : '')
+        + a.name + ' · ' + DOC.name
+        + '<em>形态定位 ' + r.d
+        + (a.cDate ? ' · 颈线确认 ' + a.cDate : '')
+        + (a.gap != null ? ' · 间隔 ' + a.gap + ' 根 · 深度 ' + a.depth + ' ATR' : '')
+        + ' · 只读归档 · 点此看形态明细</em></span></div>';
+      return archDiscipline(line) ? line
+        : '<div class="sgr archrow" style="color:#ff6b6f">归档行纪律校验未通过（已拦截）</div>';
+    }
     if(r.kind === 'def'){
       var e = r.e, sd = e.side === 'short' ? '空' : '多';
       /* v17 弱叉：降级为空心圈 + 标「弱」，只记录、不推微信；数据一条不删 */
