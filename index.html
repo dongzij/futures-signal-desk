@@ -31,6 +31,8 @@ border-radius:8px;padding:1px 7px;white-space:nowrap}
 .psfold{margin-left:auto;border:1px solid var(--line);background:#1a2029;color:var(--dim);
 border-radius:8px;padding:2px 9px;font-size:11px;cursor:pointer;white-space:nowrap}
 .psbody.hide{display:none}
+/* v25：6 条推送通道常驻提示（面板收起时也可见） */
+.pschan{margin-top:5px;font-size:10.5px;color:var(--dim);line-height:1.65}
 .pssw{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0 8px}
 .psb{border:1px solid var(--line);background:#1a2029;color:var(--dim);border-radius:8px;
 padding:5px 9px;font-size:12px;cursor:pointer;white-space:nowrap}
@@ -386,6 +388,8 @@ background:#10151d;color:var(--tx);font-size:18px}
         <span style="font-size:10.5px;color:var(--dim)">换持仓品种时展开</span>
         <button class="psfold" id="psFold" onclick="togglePushPanel()">展开 ▼</button>
       </div>
+      <div class="pschan">微信只发这 <b>6</b> 条：🛑 失效打叉 · 🔥 方案内信号 · 🔔 反转预警 · ⚠ 出场预警 · 🔔 独立出场雷达 · 🚨 30% 熔断
+        （旧的「📈 趋势确认」已于 v25 彻底关停）—— <b>震荡只静音进场，出场一律照推</b>。</div>
       <div class="psbody hide" id="psBody">
         <div class="pssw" id="psSw"></div>
         <div class="psout">
