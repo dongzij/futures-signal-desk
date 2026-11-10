@@ -769,13 +769,13 @@ def live_status(code, bars=None, years=10):
 
 
 
-# ==================== 趋势跟踪模块（v8，独立于反转雷达） ====================
-# 口径来自 mine_v8.py 的参数寻优（5 品种 / 10 年 / 训练段与盲测段双正）：
-#   转折确认：自极值回撤 ≥3.5×ATR → 认定趋势转向，次日开盘顺新方向入场
-#   出场：下一次反向确认 或 持有满 40 根（先到者）
-#   成绩：255 笔、胜率 49%、累计 +134R、最大回撤 -27R、多空对称、五品种全正
+# ==================== 转折确认信号（tf）与旧趋势跟踪模块 ====================
+# 【v25 关停】旧的「趋势确认」**推送通道**已删除（tf_live / tf_trades / tf_stat 一并删掉）：
+#   它按「自极值回撤 3.5×ATR」快照变化推微信，走独立于 7 品种方案的旧逻辑，属纯噪音。
+# 【保留】tf_events 必须留：它是 sig_pack 里 kind="tf"（转折确认）信号的唯一来源，
+#   而 Y 豆油 / P 棕榈油的 G2 方案，趋势档的进场集合里就含 'tf'。
+#   删掉它 = 改方案账本，实测直接导致 plan 构建失败，故信号本体保留、只关推送与展示。
 TF_K = 3.5
-TF_HOLD = 40
 
 
 def _bars_of(code, years=10):
@@ -811,83 +811,6 @@ def tf_events(bars, S, k=None):
             dirn = 1
             hi, hi_i = c, i
     return ev
-
-
-def tf_trades(code, bars, S=None, k=None, hold=None):
-    """历史成交（与回测同源）：确认日次日开盘入场，反向确认或满 hold 根离场。"""
-    hold = TF_HOLD if hold is None else hold
-    S = S or make_S(bars)
-    ev = tf_events(bars, S, k)
-    out = []
-    for j in range(len(ev) - 1):
-        ci, nd, _pi, _pp = ev[j]
-        if ci + 1 >= len(bars):
-            continue
-        xi = min(ci + hold, len(bars) - 1, ev[j + 1][0])
-        if xi <= ci + 1:
-            continue
-        entry = bars[ci + 1]["o"]
-        exitp = bars[xi]["c"]
-        atr = S["atr"][ci] or entry * 0.01
-        cost = FEE[code] / MULT[code] + 1.0
-        pts = (exitp - entry) * nd
-        out.append({"date": bars[ci + 1]["d"], "side": "long" if nd == 1 else "short",
-                    "entry": round(entry, 1), "exit": round(exitp, 1),
-                    "exitDate": bars[xi]["d"], "pts": round(pts - cost, 1),
-                    "R": round((pts - cost) / atr, 2), "bars": xi - ci - 1,
-                    "why": "反向确认" if xi == ev[j + 1][0] else "持有满 %d 根" % hold,
-                    "atr": round(atr, 1)})
-    return out
-
-
-def tf_live(code, bars=None, years=10):
-    """当前趋势跟踪状态：方向 / 入场 / 已持有 / 反向确认价 / 浮动盈亏"""
-    bars = bars or _bars_of(code, years)
-    S = make_S(bars)
-    ev = tf_events(bars, S)
-    if not ev:
-        return None
-    ci, nd, _pi, _pp = ev[-1]
-    ei = ci + 1
-    atr = S["atr"][ci] or bars[ci]["c"] * 0.01
-    last = len(bars) - 1
-    entry = bars[ei]["o"] if ei < len(bars) else bars[-1]["c"]
-    held = last - ei if ei <= last else 0
-    ext = entry
-    for j in range(ei, last + 1):
-        if nd == 1:
-            ext = max(ext, bars[j]["h"])
-        else:
-            ext = min(ext, bars[j]["l"])
-    flip = ext - TF_K * atr if nd == 1 else ext + TF_K * atr
-    cur = bars[-1]["c"]
-    ptsv = (cur - entry) * nd
-    return {"side": "long" if nd == 1 else "short",
-            "since": bars[ei]["d"] if ei < len(bars) else bars[-1]["d"],
-            "entry": round(entry, 1), "held": held, "hold": TF_HOLD,
-            "remain": max(0, TF_HOLD - held),
-            "extreme": round(ext, 1), "flip": round(flip, 1),
-            "floatR": round(ptsv / atr, 2), "floatPts": round(ptsv, 1),
-            "atr": round(atr, 1), "last": round(cur, 1),
-            "expired": held >= TF_HOLD, "k": TF_K}
-
-
-def tf_stat(code=None, years=10):
-    trs = []
-    for c in ([code] if code else CODES):
-        b = _bars_of(c, years)
-        trs += tf_trades(c, b)
-    if not trs:
-        return None
-    n = len(trs)
-    w = sum(1 for t in trs if t["R"] > 0)
-    eq = peak = dd = 0.0
-    for t in sorted(trs, key=lambda x: x["date"]):
-        eq += t["R"]
-        peak = max(peak, eq)
-        dd = min(dd, eq - peak)
-    return {"n": n, "win": round(w / n, 3), "R": round(eq, 1), "dd": round(dd, 1),
-            "avg": round(eq / n, 2), "perYear": round(n / 10.0, 1)}
 
 
 def position_of(sig):

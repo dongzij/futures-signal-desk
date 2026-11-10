@@ -359,14 +359,8 @@ def build_product(sym):
     except Exception as e:                                  # noqa: BLE001
         print("   live_status failed: %s" % e)
 
-    # 趋势跟踪模块（v8）
-    tf = None
-    try:
-        tf = {"live": engine.tf_live(sym, bars=main),
-              "trades": engine.tf_trades(sym, main)[-40:],
-              "stat": engine.tf_stat(sym)}
-    except Exception as e:                                  # noqa: BLE001
-        print("   tf failed: %s" % e)
+    # v25：趋势跟踪模块（原 v8 tf）已彻底下线 —— tf 通道关停，页面卡片同步删除，
+    # 这里不再计算/写入 DOC.tf（每品种省 40 笔历史 + 统计，纯减负，不影响任何信号与账本）。
 
     # 出场雷达（v9 慢进快出）
     exit_doc = {"cfg": {"ma": engine.EXIT_MA, "chK": engine.CH_K,
@@ -510,7 +504,6 @@ def build_product(sym):
         "sigW": unit_sigs.get("W", []),
         "sigM": unit_sigs.get("M", []),
         "radar": radar,
-        "tf": tf,
         "exit": exit_doc,
         "xsig": xsig,
         "market": market,                    # v11：纯信息展示，不干预任何信号/推送
@@ -718,12 +711,6 @@ def main():
             "lead": engine.MODEL.get("lead", {}),
             "univ": ORDER,
             "nofstop": True,
-        },
-        "tf": {
-            "k": engine.TF_K,
-            "hold": engine.TF_HOLD,
-            "stat": engine.tf_stat(),
-            "live": [dict(engine.tf_live(s), sym=s) for s in ORDER],
         },
         "xsig": {
             "cfg": {"ext": engine.XS_EXT, "pull": engine.XS_PULL, "amp": engine.XS_AMP,

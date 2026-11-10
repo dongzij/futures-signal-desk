@@ -466,9 +466,20 @@ background:#10151d;color:var(--tx);font-size:18px}
   【市场状态】为<b>纯信息展示</b>（20 日布林带宽 120 日分位 + MA60 斜率），完整大字卡片位于 K 线下方、顶部只留一枚小状态标签，
   <b>不拦截、不隐藏、不降级任何信号</b>，也不影响推送；
   趋势穿越确认状态后台仍参与持仓周期与盈亏计算，前端已彻底不再展示。<br>
-  <b>按品种推送（v11.1）</b>：微信只推 <b>白糖 / 豆粕 / 玻璃</b> 三支（品种按钮上的「推」角标），
-  这三支的<b>进场、独立出场雷达、持仓离场预警、趋势确认</b>全部推送，不套用周线降级档位；
-  其余 5 支<b>页面照常显示全部信号</b>，仅不发微信。<br>
+  <b style="color:#FF1F1F">v25 · 推送通道收敛为 6 条（tf 通道彻底关停）</b>：按优先级 ——
+  ① <b>失效打叉</b>（原信号被证伪，与 K 线白圈同源）② <b>🔥 方案内信号</b>
+  （定稿方案进场集合 + 路况允许 + 顺势，唯一被当作「指令」的）
+  ③ <b>反转预警</b>（≥70%，不在方案内的强制标注「仅作方向参考」）
+  ④ <b>出场预警</b>（盘整特征点亮，直接给吊灯/MA26 离场线数值）
+  ⑤ <b>独立出场雷达</b>（顶/底，强=建议离场 · 弱=建议减仓）
+  ⑥ <b>🚨 30% 熔断</b>（浮亏 ≥3000 元，无条件平仓）。
+  旧的<b>趋势确认（tf）</b>通道走独立 v9 逻辑、不认 7 品种方案、也不进方案账本，属纯噪音，
+  已连同前端卡片与后台状态一并删除。<br>
+  <b>震荡市只静默进场、不静默出场</b>：震荡 / 过渡态下不推任何进场类信号（宁可不推，
+  不在震荡里被来回割），但<b style="color:#FF1F1F">失效、吊灯、熔断、出场雷达照常推送</b>——
+  震荡里把出场也静音，等于自断退路。<br>
+  <b>按品种推送（v22 起 7 品种）</b>：MA / Y / HC / SM / FG / P / M 全部推送（品种按钮上的「推」角标），
+  当日无信号则该品种不发；<b>白名单只管「发不发」，不碰信号、不碰页面、不碰计算</b>。<br>
   <b>换品种（v11.2 / v11.3）</b>：用页面底部【推送设置】面板（默认收起，点「展开 ▼」）点选 → 一键复制 → 前往 GitHub 保存
   config.ci.json 即可；该面板<b>只在浏览器里生成配置文本，不写入任何后台文件</b>，
   保存后下一次自动更新生效。</div>
@@ -1608,141 +1619,6 @@ function prOf(k, h){
   var mx = (MAN.model && MAN.model.matrix) || {};
   var r = mx[h] && mx[h].rows && mx[h].rows[String(k)];
   return r ? r.p : 0;
-}
-function renderTF(){
-  var box = $('tfBox');
-  if(!box) return;                       // 卡片已按需隐藏，仅保留计算
-  var T = DOC.tf;
-  if(!T || !T.live){ box.innerHTML = '<div class="empty">趋势跟踪数据缺失</div>'; return; }
-  var L = T.live, st = T.stat || {};
-  var isLong = L.side === 'long';
-  var col = isLong ? 'var(--up)' : 'var(--dn)';
-  var fr = L.floatR || 0;
-  var pct = Math.min(100, Math.round((L.held / (L.hold||40)) * 100));
-  var html = '';
-  html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
-    + '<span style="background:' + (isLong?'rgba(224,74,74,.14)':'rgba(47,180,110,.14)')
-    + ';color:' + col + ';border:1px solid ' + col + ';border-radius:6px;padding:3px 10px;'
-    + 'font-weight:700;font-size:15px">' + (isLong?'持多':'持空') + '</span>'
-    + '<span style="font-size:12px;color:var(--dim)">' + L.since + ' 确认 · 入场 '
-    + f2(L.entry) + '</span>'
-    + '<span style="margin-left:auto;font-size:17px;font-weight:700;color:'
-    + (fr>=0?'var(--up)':'var(--dn)') + '">' + (fr>=0?'+':'') + f2(fr) + 'R</span></div>';
-
-  html += '<div style="display:flex;gap:8px;font-size:12px;margin-bottom:8px">'
-    + '<div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px">'
-    + '<div style="color:var(--dim);font-size:11px">已持有</div>'
-    + '<div style="font-weight:700;margin-top:2px">' + L.held + ' / ' + L.hold + ' 根</div></div>'
-    + '<div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px">'
-    + '<div style="color:var(--dim);font-size:11px">反向确认价</div>'
-    + '<div style="font-weight:700;margin-top:2px;color:' + (isLong?'var(--dn)':'var(--up)') + '">'
-    + f2(L.flip) + '</div></div>'
-    + '<div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px">'
-    + '<div style="color:var(--dim);font-size:11px">' + (isLong?'离场线（自高点回落）':'离场线（自低点回升）')
-    + '</div><div style="font-weight:700;margin-top:2px">' + f2(L.extreme) + ' → ' + f2(L.flip) + '</div></div>'
-    + '</div>';
-
-  html += '<div style="height:4px;background:var(--bg2);border-radius:2px;overflow:hidden;margin-bottom:10px">'
-    + '<div style="width:' + pct + '%;height:100%;background:' + col + '"></div></div>';
-
-  if(L.expired){
-    html += '<div style="background:rgba(245,165,36,.12);border-left:3px solid #f5a524;'
-      + 'padding:7px 9px;border-radius:4px;font-size:12px;margin-bottom:10px">'
-      + '已满 ' + L.hold + ' 根持有上限，按回测口径应离场，等下一次反向确认再进。</div>';
-  }
-
-  var ts = (T.trades||[]).slice(-5).reverse();
-  if(ts.length){
-    html += '<div style="font-size:11px;color:var(--dim);margin-bottom:4px">最近 5 笔</div>';
-    html += '<div style="font-size:12px;line-height:1.9">' + ts.map(function(t){
-      var c = t.R >= 0 ? 'var(--up)' : 'var(--dn)';
-      return '<div style="display:flex;gap:8px">'
-        + '<span style="color:var(--dim);width:78px">' + t.date + '</span>'
-        + '<span style="width:28px;color:' + (t.side==='long'?'var(--up)':'var(--dn)') + '">'
-        + (t.side==='long'?'多':'空') + '</span>'
-        + '<span style="width:66px">' + f2(t.entry) + '→' + f2(t.exit) + '</span>'
-        + '<span style="margin-left:auto;color:' + c + ';font-weight:600">'
-        + (t.R>=0?'+':'') + t.R + 'R</span></div>';
-    }).join('') + '</div>';
-  }
-
-  html += '<div style="border-top:1px solid var(--line);margin-top:10px;padding-top:8px;'
-    + 'font-size:11px;color:var(--dim);line-height:1.7">'
-    + '口径：自极值回撤 ' + L.k + '×ATR 视为趋势转折 → 次日开盘顺新方向入场，'
-    + '反向确认或持满 ' + L.hold + ' 根离场，不设止损。<br>'
-    + '本品种 10 年 ' + (st.n||0) + ' 笔 · 胜率 ' + Math.round((st.win||0)*100) + '% · 累计 '
-    + (st.R>=0?'+':'') + st.R + 'R · 最大回撤 ' + st.dd + 'R</div>';
-
-  box.innerHTML = html;
-  $('tfTime').textContent = '数据 ' + MAN.built;
-}
-
-function renderTF(){
-  var box = $('tfBox');
-  if(!box) return;                       // 卡片已按需隐藏，仅保留计算
-  var T = DOC.tf;
-  if(!T || !T.live){ box.innerHTML = '<div class="empty">趋势跟踪数据缺失</div>'; return; }
-  var L = T.live, st = T.stat || {};
-  var isLong = L.side === 'long';
-  var col = isLong ? 'var(--up)' : 'var(--dn)';
-  var fr = L.floatR || 0;
-  var pct = Math.min(100, Math.round((L.held / (L.hold||40)) * 100));
-  var html = '';
-  html += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'
-    + '<span style="background:' + (isLong?'rgba(224,74,74,.14)':'rgba(47,180,110,.14)')
-    + ';color:' + col + ';border:1px solid ' + col + ';border-radius:6px;padding:3px 10px;'
-    + 'font-weight:700;font-size:15px">' + (isLong?'持多':'持空') + '</span>'
-    + '<span style="font-size:12px;color:var(--dim)">' + L.since + ' 确认 · 入场 '
-    + f2(L.entry) + '</span>'
-    + '<span style="margin-left:auto;font-size:17px;font-weight:700;color:'
-    + (fr>=0?'var(--up)':'var(--dn)') + '">' + (fr>=0?'+':'') + f2(fr) + 'R</span></div>';
-
-  html += '<div style="display:flex;gap:8px;font-size:12px;margin-bottom:8px">'
-    + '<div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px">'
-    + '<div style="color:var(--dim);font-size:11px">已持有</div>'
-    + '<div style="font-weight:700;margin-top:2px">' + L.held + ' / ' + L.hold + ' 根</div></div>'
-    + '<div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px">'
-    + '<div style="color:var(--dim);font-size:11px">反向确认价</div>'
-    + '<div style="font-weight:700;margin-top:2px;color:' + (isLong?'var(--dn)':'var(--up)') + '">'
-    + f2(L.flip) + '</div></div>'
-    + '<div style="flex:1;background:var(--bg2);border-radius:6px;padding:7px 9px">'
-    + '<div style="color:var(--dim);font-size:11px">' + (isLong?'离场线（自高点回落）':'离场线（自低点回升）')
-    + '</div><div style="font-weight:700;margin-top:2px">' + f2(L.extreme) + ' → ' + f2(L.flip) + '</div></div>'
-    + '</div>';
-
-  html += '<div style="height:4px;background:var(--bg2);border-radius:2px;overflow:hidden;margin-bottom:10px">'
-    + '<div style="width:' + pct + '%;height:100%;background:' + col + '"></div></div>';
-
-  if(L.expired){
-    html += '<div style="background:rgba(245,165,36,.12);border-left:3px solid #f5a524;'
-      + 'padding:7px 9px;border-radius:4px;font-size:12px;margin-bottom:10px">'
-      + '已满 ' + L.hold + ' 根持有上限，按回测口径应离场，等下一次反向确认再进。</div>';
-  }
-
-  var ts = (T.trades||[]).slice(-5).reverse();
-  if(ts.length){
-    html += '<div style="font-size:11px;color:var(--dim);margin-bottom:4px">最近 5 笔</div>';
-    html += '<div style="font-size:12px;line-height:1.9">' + ts.map(function(t){
-      var c = t.R >= 0 ? 'var(--up)' : 'var(--dn)';
-      return '<div style="display:flex;gap:8px">'
-        + '<span style="color:var(--dim);width:78px">' + t.date + '</span>'
-        + '<span style="width:28px;color:' + (t.side==='long'?'var(--up)':'var(--dn)') + '">'
-        + (t.side==='long'?'多':'空') + '</span>'
-        + '<span style="width:66px">' + f2(t.entry) + '→' + f2(t.exit) + '</span>'
-        + '<span style="margin-left:auto;color:' + c + ';font-weight:600">'
-        + (t.R>=0?'+':'') + t.R + 'R</span></div>';
-    }).join('') + '</div>';
-  }
-
-  html += '<div style="border-top:1px solid var(--line);margin-top:10px;padding-top:8px;'
-    + 'font-size:11px;color:var(--dim);line-height:1.7">'
-    + '口径：自极值回撤 ' + L.k + '×ATR 视为趋势转折 → 次日开盘顺新方向入场，'
-    + '反向确认或持满 ' + L.hold + ' 根离场，不设止损。<br>'
-    + '本品种 10 年 ' + (st.n||0) + ' 笔 · 胜率 ' + Math.round((st.win||0)*100) + '% · 累计 '
-    + (st.R>=0?'+':'') + st.R + 'R · 最大回撤 ' + st.dd + 'R</div>';
-
-  box.innerHTML = html;
-  $('tfTime').textContent = '数据 ' + MAN.built;
 }
 
 function renderDec(){

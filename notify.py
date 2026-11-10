@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """独立补推工具：从 state.json 读本次新信号，发一条纯文本微信。
 
-v11.1 起 GitHub Actions 已改由 daily.py 统一推送（覆盖进场 / 出场雷达 / 持仓离场 /
-趋势确认四类，并按 config.pushSymbols 白名单过滤），本文件不再由 workflow 调用，
-避免同一条信号重复发两遍。手动补推时口径与 daily.py 保持一致。
+v11.1 起 GitHub Actions 已改由 daily.py 统一推送（v25 起为 6 条通道：失效打叉 / 方案内信号 /
+反转预警 / 出场预警 / 独立出场雷达 / 30% 熔断，并按 config.pushSymbols 白名单过滤），
+本文件不再由 workflow 调用，避免同一条信号重复发两遍。手动补推时口径与 daily.py 保持一致。
+注：旧的「趋势确认（tf）」通道已于 v25 彻底关停，本工具不再补推该通道。
 """
 import json
 import os

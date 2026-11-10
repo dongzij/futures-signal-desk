@@ -366,6 +366,9 @@ def best_match(found, signals, allow_push):
     hits = []
     for s in found:
         sym = s.get("sym")
+        # v25 注意：'tf' 必须留着 —— 它不是那条被关停的推送通道，而是一种**信号形态**
+        # （转折确认，engine.tf_events）。Y 豆油 / P 棕榈油的 G2 方案，趋势档进场集合里含 'tf'；
+        # 去掉它等于偷偷改方案账本，这两个品种的方案内信号会漏推。
         if s.get("kind") not in ("pred", "warn", "mw", "confirm", "tf"):
             continue
         if not allow_push(sym):
@@ -469,6 +472,9 @@ def main():
                 break
 
     # ---------- 离场预警（v9）：盘整特征点亮，当天推一次 ----------
+    # v25 纪律（用户 2026-11-10 定稿）：**出场类通道一律不过路况闸门**。
+    # 震荡里可以不开新仓，但绝不能把出场也静音——那是自断退路。
+    # 所以这里只有 allow_push（品种白名单）与当日去重，没有 fwd_gate / regime_now。
     today = now.strftime("%Y-%m-%d")
     exit_warns = []
     for s in opens:
@@ -550,30 +556,17 @@ def main():
     state["xsigSeen"] = seen_x[-400:]
     state["xsigToday"] = xs_today
 
-    # ---------- 趋势跟踪状态（v8）：方向变化时推送 ----------
-    tf_prev = state.get("tf", {})
-    tf_now = {}
-    tf_flips = []
-    for c in engine.CODES:
-        L = engine.tf_live(c)
-        if not L:
-            continue
-        tf_now[c] = {"side": L["side"], "since": L["since"], "entry": L["entry"]}
-        if (not first and tf_prev.get(c, {}).get("since") != L["since"]
-                and allow_push(c)):
-            # v22 纪律：震荡 / 逆势的趋势确认同样是虚假信号，一并不推
-            _reg, _nm = regime_now(c)
-            if _reg in ("range", "na") or not regime_side_ok(c, _reg, L["side"]):
-                print("muted tf flip: %s %s(%s)" % (c, L["side"], _nm))
-            else:
-                tf_flips.append((c, L))
-    state["tf"] = tf_now
-    json.dump(state, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    # ---------- v25：旧的「趋势确认（tf）」通道已彻底关停 ----------
+    # 该通道走独立的 v9 趋势逻辑（自极值回撤 3.5ATR 反向确认），不认 7 品种定稿方案，
+    # 也不进方案账本，属纯噪音。推送通道由 7 条收敛为 6 条。
+    # 这里只做一次状态清理：把历史遗留的 state["tf"] 从 state.json 里摘掉。
+    state.pop("tf", None)
 
     # ---------- v15/v17：独立防守事件（全量失效打叉，白名单独立推送）----------
     # 与页面 K 线白圈同源：4/4 建仓 / 3/4 预警 / 顶底雷达，四条标准任一成立即失效。
     # v17：weak=True（顶底雷达 & ADX≥30）只在图上画空心圈、列表标「弱」，不进独立推送。
     # 只加提示，不改 MA34 进场与 MA26 + 吊灯 3ATR 出场。
+    # v25 纪律：失效/吊灯/熔断属**出场类**，路况为震荡 / 过渡态 / 未知时照常推，不受闸门影响。
     defend_fresh = []
     seen_def = state.setdefault("defendSeen", [])
     if not first:
@@ -779,6 +772,7 @@ def main():
         print("push exit-warn:", ok)
 
     # ---------- 推送：独立出场信号（顶/底） ----------
+    # v25：出场类通道，**不过路况闸门**——震荡市顶/底雷达照样推，只是不推进场。
     if xs_fresh and push_token:
         site = cfg.get("siteUrl", "")
         cards = []
@@ -806,28 +800,10 @@ def main():
         ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
         print("push xsig:", ok)
 
-    # ---------- 推送：趋势跟踪方向确认 ----------
-    if tf_flips and push_token:
-        site = cfg.get("siteUrl", "")
-        cards = []
-        for c, L in tf_flips:
-            sd = "多" if L["side"] == "long" else "空"
-            cards.append(
-                '<div style="margin-bottom:14px">'
-                '<div style="font-size:15px;font-weight:700">📈 趋势确认：%s %s → 持%s</div>'
-                '<div style="font-size:13px;line-height:1.8;margin-top:4px">'
-                '确认日 <b>%s</b> · 参考入场 <b>%s</b>（次日开盘顺势）<br>'
-                '反向确认价 <b>%s</b>（触及即离场）· 持有上限 %d 根<br>'
-                '<span style="color:#888;font-size:12px">该口径 10 年 254 笔、胜率 49%%、'
-                '累计 +136R、回撤 -27R；属趋势确认层，比反转信号晚但可靠，'
-                '适合与反转仓位分仓管理。</span></div></div>'
-                % (c, engine.NAMES.get(c, ""), sd, L["since"], L["entry"],
-                   L["flip"], L["hold"]))
-        title = "趋势确认 %d 条：%s" % (
-            len(tf_flips), "、".join("%s%s" % (c, "多" if L["side"] == "long" else "空")
-                                     for c, L in tf_flips))
-        ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
-        print("push tf:", ok)
+    # ---------- v25：旧的「趋势确认（tf）」推送已删除 ----------
+    # 原来是第 6 条通道（📈 趋势确认 N 条），走 engine.tf_live 的独立 v9 逻辑。
+    # 已由用户拍板关停：7 品种 G1~G8 方案已覆盖进场/出场/路况，tf 与之无对应关系，只会误导。
+    # 现在是 6 条：① 失效打叉 ② 方案内信号 ③ 反转预警 ④ 出场预警 ⑤ 独立出场雷达 ⑥ 30% 熔断
 
     # ---------- v19.1 推送：30% 熔断触发（每个信号每天只推一次，红字置顶） ----------
     if breaker_hits and push_token:

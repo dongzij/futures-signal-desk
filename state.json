@@ -33120,48 +33120,6 @@
  ],
  "runs": 10,
  "xsigSeen": [],
- "tf": {
-  "FG": {
-   "side": "short",
-   "since": "2026-09-30",
-   "entry": 895.0
-  },
-  "SA": {
-   "side": "short",
-   "since": "2026-10-09",
-   "entry": 990.0
-  },
-  "M": {
-   "side": "short",
-   "since": "2026-10-19",
-   "entry": 3273.0
-  },
-  "SP": {
-   "side": "short",
-   "since": "2026-10-22",
-   "entry": 4676.0
-  },
-  "SM": {
-   "side": "short",
-   "since": "2026-09-08",
-   "entry": 5902.0
-  },
-  "MA": {
-   "side": "long",
-   "since": "2026-10-12",
-   "entry": 3327.0
-  },
-  "SR": {
-   "side": "short",
-   "since": "2026-10-27",
-   "entry": 5297.0
-  },
-  "C": {
-   "side": "long",
-   "since": "2026-11-03",
-   "entry": 2234.0
-  }
- },
  "scanDate": "2026-11-09",
  "updated": "2026-11-09 16:12",
  "stats": {
