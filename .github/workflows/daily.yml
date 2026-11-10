@@ -59,11 +59,23 @@ jobs:
       - name: 校验数据新鲜度
         run: |
           python - <<'PY'
-          import json, sys
-          d = json.load(open('dist/data/index.json', encoding='utf-8'))
-          last = max(b["main"][-1][0] for b in [json.load(open('dist/data/%s.json' % c, encoding='utf-8')) for c in ('FG','M','MA','RB','UR','JD')])
-          print('latest bar:', last)
-          if last < __import__('datetime').date.today().isoformat():
+          import json, os, datetime
+          # v27.1：品种池必须与当前 7 品种一致。旧版读的 RB/UR/JD 已在 v25
+          # 清理历史垃圾时从仓库删除；继续读会抛 FileNotFoundError，
+          # 让本步骤失败、后面的「提交更新」根本不执行（数据就永远不更新）。
+          codes = ('MA', 'HC', 'Y', 'SM', 'FG', 'P', 'M')
+          last, missing = None, []
+          for c in codes:
+              p = 'dist/data/%s.json' % c
+              if not os.path.exists(p):
+                  missing.append(c)
+                  continue
+              b = json.load(open(p, encoding='utf-8'))['main'][-1][0]
+              last = max(last, b) if last else b
+          today = datetime.datetime.now(
+              datetime.timezone(datetime.timedelta(hours=8))).date().isoformat()
+          print('latest bar:', last, '| 北京时间:', today, '| 缺文件:', missing or '无')
+          if last and last < today:
               print('WARNING: 数据未到当日，可能接口延迟或抓取失败')
           PY
 
