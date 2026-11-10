@@ -5,7 +5,8 @@
   "MA",
   "Y",
   "P",
-  "HC"
+  "HC",
+  "SM"
  ],
  "equity": 100000,
  "riskPct": 5.0,
@@ -21,7 +22,8 @@
   "MA",
   "Y",
   "P",
-  "HC"
+  "HC",
+  "SM"
  ],
  "pushSymbolsAll": true,
  "riskTags": true,

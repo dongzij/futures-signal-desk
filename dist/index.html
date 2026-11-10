@@ -146,7 +146,7 @@ background:rgba(229,72,77,.18);color:#ff8f92;font-weight:600;font-size:10px}
 /* ===== v22：K线右上角「当前路况指示器」 ===== */
 .rgb{position:absolute;top:8px;right:10px;z-index:7;min-width:196px;max-width:246px;
 background:linear-gradient(180deg,rgba(9,13,19,.94),rgba(9,13,19,.78));
-border:1px solid #2b3a4a;border-radius:10px;padding:7px 11px 8px;text-align:right;
+border:1px solid #2b3a4a;border-radius:10px;padding:7px 11px 9px;text-align:right;
 pointer-events:none;backdrop-filter:blur(3px);box-shadow:0 6px 18px rgba(0,0,0,.35)}
 .rgb .rlab{font-size:10px;color:#8b95a7;letter-spacing:.4px}
 .rgb .rbig{font-size:23px;font-weight:800;line-height:1.12;letter-spacing:.6px}
@@ -159,6 +159,10 @@ pointer-events:none;backdrop-filter:blur(3px);box-shadow:0 6px 18px rgba(0,0,0,.
 .rgb .rquiet{font-size:10px;color:#ff9a9d;margin-top:1px}
 .rgb .rver{font-size:10.5px;color:#9aa7ba;margin-top:5px;border-top:1px dashed #2b3a4a;
 padding-top:4px;line-height:1.5}
+/* 高盈亏比品种（如锰硅 G4）：盈亏比当主角、胜率退为脚注——低胜率高赔率，不拿胜率当卖点 */
+.rgb .rpf{display:block;color:#FFD400;font-weight:800;font-size:10.5px;letter-spacing:.2px;
+margin:2px 0 1px;line-height:1.1;text-shadow:0 0 10px rgba(255,212,0,.35)}
+.rgb .rpf b{font-size:17px;font-weight:800;margin-left:3px;letter-spacing:0}
 .rgb.up{border-color:#e5484d66}.rgb.up .rbig{color:#ff6b6f;text-shadow:0 0 16px rgba(229,72,77,.4)}
 .rgb.dn{border-color:#0ecb8166}.rgb.dn .rbig{color:#2ee6a0;text-shadow:0 0 16px rgba(14,203,129,.35)}
 .rgb.rg{border-color:#7fb3ff66}.rgb.rg .rbig{color:#7fb3ff}
@@ -199,7 +203,8 @@ border-radius:14px;padding:3px 12px;font-size:11.5px}
 .sgr{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #1a2029}
 .sgr:last-child{border-bottom:none}
 .sgr .dt{color:var(--dim);font-size:11px;flex:0 0 68px}
-.sgr .bd{font-size:10.5px;font-weight:800;border-radius:4px;padding:2px 6px;flex:0 0 auto}
+.sgr .bd{font-size:10.5px;font-weight:800;border-radius:4px;padding:2px 6px;flex:0 0 auto;
+  white-space:nowrap;word-break:keep-all}
 .bd.in{background:#12325c;color:#7fb3ff}
 /* v16 模块一：失效标识改为中性白圈 / 白字，不再刺眼 */
 .bd.def{background:#202a38;color:#E8EEFA;box-shadow:0 0 0 1px rgba(232,238,250,.45) inset}
@@ -2429,6 +2434,14 @@ function renderRegime(){
   var p = DOC.plan || {}, rg = p.regime;
   if(!rg){ el.style.display = 'none'; return; }
   var v = p.verify || {};
+  // 盈亏比 ≥5 视为「高赔率」品种（锰硅 G4 = 12.25）：主角位置给盈亏比，胜率退为灰色脚注。
+  var pfHi = (v.pf != null && v.pf >= 5);
+  var verLine = pfHi
+      ? '验证段 '+((v.n)||0)+' 笔 · 胜率 '+((v.win!=null?v.win.toFixed(1):'—'))+'%'
+        + '<span class="rpf">盈亏比<b>'+v.pf.toFixed(2)+'</b></span>'
+      : '验证段 '+((v.n)||0)+' 笔：胜率 '
+        + (v.win!=null?v.win.toFixed(1):'—')+'% · 盈亏比 '
+        + (v.pf!=null?v.pf.toFixed(2):'—');
   var cls = rg.now==='trend_up'?'up':rg.now==='trend_dn'?'dn':rg.now==='range'?'rg':'tr';
   el.className = 'rgb ' + cls;
   el.style.display = 'block';
@@ -2440,9 +2453,7 @@ function renderRegime(){
     + (rg.adviceCode==='wait'
         ? '<div class="rquiet">震荡市静默 · 不推信号</div>'
         : '<div class="rallow">允许信号：'+rg.allow+'</div>')
-    + '<div class="rver">验证段 '+((v.n)||0)+' 笔：胜率 '
-    + (v.win!=null?v.win.toFixed(1):'—')+'% · 盈亏比 '
-    + (v.pf!=null?v.pf.toFixed(2):'—')+'</div>';
+    + '<div class="rver">'+verLine+'</div>';
 }
 function renderAll(){
   renderMarket(); renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderSigs();

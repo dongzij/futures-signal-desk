@@ -30,11 +30,10 @@ MW_ALL = []        # v16：跨品种二段 M/W 结构（DIF背离 + 量仓强）
 
 # 品种交易参数（模拟盘用）：乘数 / 手续费 / 保证金率
 # fee: ("lot", 元/手) 或 ("rate", 万分之几)
-# ===== v22（2026-11）：新 6 大核心品种池 =====
-# 海选结论（reports/v22_final.json）：UR/RB/JD 双段全不合格已剔除；SM 锰硅虽双段为正，
-# 但训练段胜率仅 27.6%，与「找胜率最高」的目标相反，已换成 Y 豆油（唯一双段>55% 的品种）。
-# 其中 RU 单手保证金 18,665 元（1 万本金无法独立交易）被排除，
-# Y 与 P 同属油脂（相关性过高），故最终 3 个为：P 棕榈油 / SM 锰硅 / HC 热卷。
+# ===== v22（2026-11）：新核心品种池 =====
+# 海选结论（reports/v22_final.json）：UR/RB/JD 双段全不合格已剔除；SM 锰硅双段为正、
+# 验证段盈亏比 12.25（极高）但胜率仅 27.6%~33%，按用户定稿以「高盈亏比」定位纳入池内，
+# 不作为胜率型品种宣传。RU 单手保证金 18,665 元（1 万本金无法独立交易）被排除。
 PRODUCTS = {
     "M":  {"name": "豆粕", "mult": 10, "fee": ("lot", 1.5),   "margin": 0.08},
     "FG": {"name": "玻璃", "mult": 20, "fee": ("lot", 6),     "margin": 0.09},
@@ -42,6 +41,7 @@ PRODUCTS = {
     "P":  {"name": "棕榈油", "mult": 10, "fee": ("lot", 2.5), "margin": 0.08},
     "Y":  {"name": "豆油", "mult": 10, "fee": ("lot", 2.5),   "margin": 0.08},
     "HC": {"name": "热卷", "mult": 10, "fee": ("rate", 1.0),  "margin": 0.08},
+    "SM": {"name": "锰硅", "mult": 5,  "fee": ("lot", 3),     "margin": 0.09},
 }
 _PLAN_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "reports", "v22_final.json")
 V22 = {}
@@ -58,7 +58,7 @@ def _load_plan():
 
 _load_plan()
 # 品种栏顺序 = 近 1 年净收益降序（v22_final.py 产出）
-ORDER = V22.get("order") or ["MA", "HC", "Y", "FG", "P", "M"]
+ORDER = V22.get("order") or ["MA", "HC", "Y", "SM", "FG", "P", "M"]
 
 REGIME_NM = {"trend_up": "上涨趋势", "trend_dn": "下跌趋势",
              "range": "震荡", "transition": "过渡态"}
@@ -567,7 +567,7 @@ def main():
     state = json.load(open("state.json", encoding="utf-8"))
     strat_open = []
     for s in state.get("signals", []):
-        if s["sym"] not in PRODUCTS:        # 模块二：剔除已下架品种（SR/C/SP/SA/SM 不在核心池）
+        if s["sym"] not in PRODUCTS:        # 模块二：剔除已下架品种（SR/C/SP/SA 不在核心池）
             continue
         if s["kind"] != "pred" or s["status"] not in ("open", "pending"):
             continue
@@ -609,7 +609,7 @@ def main():
         "built": datetime.now(timezone(timedelta(hours=8))).strftime("%Y-%m-%d %H:%M"),
         "products": [_prod(s) for s in ORDER],
         "v22": {"orderBasis": "近 1 年净收益降序",
-                "newSyms": ["P", "SM", "HC"], "dropped": ["RB", "UR", "JD"],
+                "newSyms": ["P", "HC"], "added": ["SM"], "dropped": ["RB", "UR", "JD"],
                 "rules": {"startCap": 10000, "addUnit": 10000, "stop30": 3000,
                           "lot": 1, "rangeSilent": True}},
         "strategyOpen": strat_open,
@@ -702,10 +702,9 @@ def main():
                          "source": "dist/data/*.json + state.json", "advisoryOnly": True},
             "baseEntryUnchanged": True, "baseExitUnchanged": True,
         },
-        # v11.1：微信推送白名单（页面仍展示全部 8 品种）
-        "pushCfg": {"symbols": (state.get("method", {}).get("push") or {}).get("symbols", []),
-                    "all": (state.get("method", {}).get("push") or {}).get("all", True),
-                    "by": (state.get("method", {}).get("push") or {}).get("by", "daily")},
+        # v22.1：微信推送白名单 = 当前核心池（与 engine.CODES / ORDER 同源，不再读 state 里的旧名单）
+        "pushCfg": {"symbols": list(ORDER), "all": True, "by": "daily",
+                    "rangeSilent": True},
         "model": {
             "version": engine.MODEL.get("version", 4),
             "ma": engine.MA,
