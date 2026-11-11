@@ -86,7 +86,9 @@ def api(method, path, body=None, auth=False, timeout=30, tries=3):
         "Cache-Control": "no-cache",
     }
     t = token()
-    if auth and t:
+    # v27.2-b：GET 也带凭据。--wait 每 30 秒轮询一次，若走匿名通道会撞上
+    # GitHub 60 次/小时的限流，导致「等待运行结果」误判失败。
+    if t:
         hdr["Authorization"] = "Bearer " + t
     if data is not None:
         hdr["Content-Type"] = "application/json"
@@ -171,23 +173,45 @@ def dispatch(force="0", ref="main", workflow="daily"):
     return 0
 
 
-def wait(ref="main", max_sec=1800):
-    """等待本次派发的 daily-scan 出结果（供自动化任务判定成败）。"""
-    url = "/repos/%s/actions/workflows/%s/runs?per_page=5" % (REPO, WORKFLOW)
+def latest_run_id():
+    """派发前取最新 run id 作基线，避免把历史成功运行误判成本次结果。"""
+    try:
+        d = api("GET", "/repos/%s/actions/workflows/%s/runs?per_page=1"
+                % (REPO, WORKFLOW))
+        rs = d.get("workflow_runs") or []
+        return int(rs[0]["id"]) if rs else 0
+    except Exception:                      # noqa: BLE001
+        return 0
+
+
+def wait(baseline_id=0, max_sec=1800):
+    """只等待「本次派发」产生的新 run，忽略所有历史运行。
+
+    v27.2-b 修复：旧版第一次轮询就会命中历史里已 completed 的 workflow_dispatch
+    run（例如 #26 success），立刻返回成功 —— 自动化任务会据此误报「今日数据已更新」。
+    """
+    url = "/repos/%s/actions/workflows/%s/runs?per_page=10" % (REPO, WORKFLOW)
     started = time.time()
-    seen = set()
-    while time.time() - started < max_sec:
+    announced = False
+    loops = 0
+    max_loops = max(1, max_sec // 30 + 2)   # 防止 sleep 异常时忙循环打爆日志
+    while time.time() - started < max_sec and loops < max_loops:
+        loops += 1
         try:
-            runs = api("GET", url)
-            for r in (runs.get("workflow_runs") or []):
-                if r["id"] in seen:
-                    continue
-                seen.add(r["id"])
-                if r["event"] != "workflow_dispatch":
-                    continue
+            runs = api("GET", url).get("workflow_runs") or []
+            new = [r for r in runs
+                   if int(r["id"]) > baseline_id and r["event"] == "workflow_dispatch"]
+            if not new:
+                print("[wait] 新 run 尚未出现（基线 id=%d），继续等待…" % baseline_id)
+            else:
+                r = new[0]                 # 列表按创建时间倒序
+                if not announced:
+                    print("[wait] 检测到本次派发：run #%s %s"
+                          % (r["run_number"], r["html_url"]))
+                    announced = True
                 if r["status"] == "completed":
-                    print("[wait] run #%s conclusion=%s %s"
-                          % (r["run_number"], r["conclusion"], r["html_url"]))
+                    print("[wait] run #%s conclusion=%s"
+                          % (r["run_number"], r["conclusion"]))
                     return 0 if r["conclusion"] == "success" else 1
                 print("[wait] run #%s status=%s ..." % (r["run_number"], r["status"]))
         except Exception as e:              # noqa: BLE001
@@ -208,9 +232,11 @@ def main():
     a = p.parse_args()
     if a.check:
         return check()
+    # 先记录基线，再派发；否则 --wait 会把上一次运行当成这一次的结果。
+    baseline = latest_run_id() if (a.wait and a.workflow == "daily") else 0
     rc = dispatch(a.force, a.ref, a.workflow)
     if rc == 0 and a.wait and a.workflow == "daily":
-        return wait(a.ref)
+        return wait(baseline)
     return rc
 
 
