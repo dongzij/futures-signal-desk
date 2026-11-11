@@ -254,7 +254,10 @@ def run_live(dry=True):
     sys.path.insert(0, ROOT)
     import daily
     ok = daily.post_push(os.environ.get("PUSHPLUS_TOKEN", ""),
-                         "【盘中预警】%s" % now.strftime("%m-%d %H:%M"), body)
+                         "【盘中预警】%s" % now.strftime("%m-%d %H:%M"), body,
+                         # v28.2：盘中预警跑在 11:33，不在 15:00-20:00 日盘窗口内，
+                         # 必须绕过时段闸门，否则会被统一静音规则误杀。
+                         gated=False)
     print("推送:", ok)
 
 

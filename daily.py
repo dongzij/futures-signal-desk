@@ -42,9 +42,42 @@ def load_json(p, default):
         return default
 
 
-def post_push(token, title, html):
+# ------------------------------------------------------- v28.2 推送时段闸门
+# 用户 2026-11-11：晚班（21:00 以后）补跑的数据【坚决静音】—— 那个点人已休息，
+# 半夜的微信推送只打扰睡眠，没有任何决策价值。补跑成功就让页面静默更新。
+# 只有 15:00-20:00 的【正常日盘班次】才允许触发微信推送。
+#
+# 落地方式：所有日盘微信推送都走 post_push()，只在这一处拦，六个调用点无需改。
+#   · RUN_MODE=late            → 晚班补跑，静默
+#   · 北京时刻不在 15:00-20:00 → 静默（schedule 被 GitHub 延迟到深夜时的兜底）
+#   · NO_PUSH=1                → 强制静音（手动补数 / 排障时用）
+# 注意：夜盘 23:10 的 night_warn.py 有自己的 push()，不经过这里，夜盘预警照常发。
+_PUSH_MUTED = []
+
+
+def push_muted():
+    """返回静音原因；空字符串表示允许推送。"""
+    if (os.environ.get("NO_PUSH") or "").strip() not in ("", "0", "false", "False"):
+        return "NO_PUSH=1"
+    if (os.environ.get("RUN_MODE") or "").strip().lower() == "late":
+        return "RUN_MODE=late（晚班补跑）"
+    now = _dt.datetime.now(_dt.timezone(_dt.timedelta(hours=8)))
+    if not (15 * 60 <= now.hour * 60 + now.minute < 20 * 60):
+        return "北京 %s 不在 15:00-20:00 日盘时段" % now.strftime("%H:%M")
+    return ""
+
+
+def post_push(token, title, html, gated=True):
     if not token:
         return False
+    if gated:
+        why = push_muted()
+        if why:
+            _PUSH_MUTED.append(title)
+            print("[push] 静音（%s）：本条不推送 —— %s" % (why, title))
+            # 静音 ≠ 失败。返回 True 让调用方照常消费「已推送」标记，
+            # 否则第二天正常班次会把昨天的旧信号当成新信号补推一遍。
+            return True
     body = urllib.parse.urlencode({
         "token": token, "title": title, "content": html, "template": "html"}).encode()
     try:
@@ -975,6 +1008,8 @@ def main():
     print("scan done  found=%d  pushed=%d  pred=%d open=%d closed=%d win=%s%% sumYuan=%s"
           % (len(found), len(fresh), len(preds), len(opens), len(closed),
              state["stats"]["win"], state["stats"]["sumYuan"]))
+    if _PUSH_MUTED:
+        print("push muted  %d 条（静默期内不发微信，数据已正常落库）" % len(_PUSH_MUTED))
 
 
 if __name__ == "__main__":

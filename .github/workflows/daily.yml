@@ -92,6 +92,10 @@ jobs:
           # v28：late 班次（20:00-23:00）必须显式带 late，否则 daily.py 会被
           # nightgate 在夜盘窗口直接 exit 3 —— 21:00/22:00 兜底班次过去必挂的原因。
           RUN_MODE: ${{ steps.guard.outputs.run_mode }}
+          # v28.2 双保险：late 班次物理层不给推送开关。代码里 daily.post_push 已按
+          # RUN_MODE=late 静音，这里再把 NO_PUSH 写死，防止将来有人改坏代码逻辑。
+          # 用户要求：晚班补跑一律静默，只有 15:00-20:00 正常日盘才发微信。
+          NO_PUSH: ${{ steps.guard.outputs.run_mode == 'late' && '1' || '' }}
         run: python daily.py
 
       - name: 重建数据包
