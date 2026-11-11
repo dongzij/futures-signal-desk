@@ -79,10 +79,16 @@ jobs:
 
       - name: 扫描信号
         if: steps.guard.outputs.proceed == '1'
+        env:
+          # v28：late 班次（20:00-23:00）必须显式带 late，否则 daily.py 会被
+          # nightgate 在夜盘窗口直接 exit 3 —— 21:00/22:00 兜底班次过去必挂的原因。
+          RUN_MODE: ${{ steps.guard.outputs.run_mode }}
         run: python daily.py
 
       - name: 重建数据包
         if: steps.guard.outputs.proceed == '1'
+        env:
+          RUN_MODE: ${{ steps.guard.outputs.run_mode }}
         run: python data_build.py
 
       - name: 渲染页面

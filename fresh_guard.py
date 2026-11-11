@@ -66,10 +66,25 @@ def emit(key, val):
             f.write("%s=%s\n" % (key, val))
 
 
+def out_mode():
+    """交给 workflow 的 RUN_MODE：force / late / ''（正常窗口）。
+
+    v28：late 班次必须显式告诉 daily.py / data_build.py 走 late，
+    否则会撞上 nightgate 的 20:00-08:00 拒绝（exit 3）—— 这正是
+    21:00 / 22:00 兜底班次历史上必然失败的原因。
+    """
+    if FORCE:
+        return "force"
+    if LATE and in_window():
+        return "late"
+    return ""
+
+
 def skip(reason, local_code):
     """统一收口「本班不写盘」：CI 里 proceed=0 + exit 0；本地返回非零码。"""
     emit("proceed", "0")
     emit("skip_reason", reason)
+    emit("run_mode", "")
     print("::warning:: [guard] 本班跳过写盘：%s" % reason)
     return 0 if CI else local_code
 
@@ -77,7 +92,8 @@ def skip(reason, local_code):
 def allow(reason):
     emit("proceed", "1")
     emit("skip_reason", "")
-    print("[guard] ✔ 放行正式写盘：%s" % reason)
+    emit("run_mode", out_mode())
+    print("[guard] ✔ 放行正式写盘：%s（RUN_MODE=%s）" % (reason, out_mode() or "正常"))
     return 0
 
 
@@ -92,15 +108,20 @@ def in_window(now=None):
 
 
 def expect_date(now=None):
-    """期望的交易日：工作日取当天，周末回退到上一工作日。
+    """期望交易日 = 最后一个【已收盘】交易日（与 build.asof_day 同一口径）。
 
-    法定节假日不硬编码（每年会变），由「连续多轮结果完全一致」的降级分支处理：
-    休市时数据一致、只是没有新 bar，复用旧数据不会产生半截假 bar。
+    v28：原来取「今天」，导致 15:05 前的班次把昨天的 bar 当今天的要求；
+    而 build.py 现在会把所有日线截断到 asof，两边必须用同一个函数，
+    否则守卫与数据会永远对不上（守卫要 11-11、数据只给到 11-10）。
     """
-    d = (now or bj_now()).date()
-    while d.weekday() >= 5:
-        d -= timedelta(days=1)
-    return d.isoformat()
+    try:
+        import build
+        return build.asof_day(now).isoformat()
+    except Exception:                       # noqa: BLE001  预检阶段导入失败时兜底
+        d = (now or bj_now()).date()
+        while d.weekday() >= 5:
+            d -= timedelta(days=1)
+        return d.isoformat()
 
 
 def already_fresh(expect):

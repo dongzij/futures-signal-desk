@@ -47,6 +47,11 @@ def forced(argv=None):
             or "--force" in argv)
 
 
+def run_mode():
+    """CI 里由 fresh_guard 的 run_mode 输出决定：'' / late / force。"""
+    return os.environ.get("RUN_MODE", "").strip().lower()
+
+
 def enforce(who, argv=None):
     """写盘入口的第一行调用。夜盘窗口内直接退出，绝不往下走。"""
     if forced(argv):
@@ -55,11 +60,21 @@ def enforce(who, argv=None):
     now = bj_now()
     if not in_night(now):
         return
+    if run_mode() == "late":
+        # v28：late 班次（20:00-23:00 兜底）。
+        # 安全性不再靠时间，而靠 build.asof_day()：所有日线在离开 build.py
+        # 之前已按「最后一个已收盘交易日」截断，夜盘那半截（属于下一交易日）
+        # 物理上不可能进入 K 线。所以这里可以放行，写的是今天 15:00 的终值。
+        import build
+        print("[gate] RUN_MODE=late —— 数据已按 asof=%s 截断（夜盘半截 bar 已剔除），"
+              "允许写入正式日线：%s" % (build.asof_str(), who))
+        return
     print("[gate] 北京时间 %s —— 处于夜盘窗口 %02d:00-08:00。" % (
         now.strftime("%Y-%m-%d %H:%M"), NIGHT_FROM))
     print("[gate] %s 会写 state.json / data/，夜盘半截行情属于下一交易日，" % who)
     print("[gate] 入库会永久污染日线图与账本，已拒绝执行（exit 3）。")
     print("[gate] 夜盘只看不写：python night_warn.py")
+    print("[gate] late 班次请用 RUN_MODE=late（数据自动截断到已收盘交易日）")
     print("[gate] 确需人工补数：RUN_MODE=force python %s" % who)
     sys.exit(3)
 

@@ -16,11 +16,59 @@ import re
 import sys
 import time
 import urllib.request
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 CACHE = os.path.join(ROOT, "cache")
 os.makedirs(CACHE, exist_ok=True)
+
+# ---------------------------------------------------------------- v28 asof 截断
+# 期货交易日 = 前一晚 21:00-23:00 夜盘 + 当日日盘 09:00-15:00。
+# 21:00 之后，数据源会开始出现【下一交易日】的未完成日线（带夜盘半截成交）。
+# 那不是「今天的收盘价」，一旦写进 K 线就永久错误。
+# 因此所有日线 / 分钟线在离开 build.py 之前，一律按「最后一个已收盘交易日」
+# 截断：日期大于 asof 的行直接丢弃。这是物理层面的防未来函数，
+# 不依赖任何人记得「晚上别跑」。
+
+BJ = timezone(timedelta(hours=8))
+
+
+def asof_day(now=None):
+    """最后一个【已收盘】交易日的日期（date 对象）。
+
+    · 工作日 15:05 之后 → 今天（日盘已收盘，当日日线是终值）
+    · 工作日 15:05 之前 → 上一个工作日（今天还没收盘，不能算数）
+    · 周末 → 上一个工作日
+    法定节假日不特判：那天数据源本来就没有新 bar，截断不会丢数据。
+    """
+    env = os.environ.get("ASOF_DAY", "").strip()
+    if env:
+        try:
+            return datetime.strptime(env, "%Y-%m-%d").date()
+        except ValueError:
+            pass
+    n = now or datetime.now(BJ).replace(tzinfo=None)
+    d = n.date()
+    if d.weekday() >= 5:
+        # 周末：今天本来就没有盘，最近的工作日一定已经收盘，不能再往前退一天
+        while d.weekday() >= 5:
+            d -= timedelta(days=1)
+        return d
+    if (n.hour, n.minute) < (15, 5):
+        d -= timedelta(days=1)
+        while d.weekday() >= 5:
+            d -= timedelta(days=1)
+    return d
+
+
+def asof_str(now=None):
+    return asof_day(now).isoformat()
+
+
+def _asof_trim(rows):
+    """丢掉日期晚于 asof 的行（夜盘半截 bar / 未完成日线）。"""
+    a = asof_str()
+    return [r for r in rows if (r.get("d") or "")[:10] <= a]
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
@@ -110,7 +158,7 @@ def fetch_daily(sym):
     key = "daily_" + sym
     hit = cache_load(key, 4)
     if hit is not None:
-        return hit
+        return _asof_trim(hit)
     url = ("https://stock2.finance.sina.com.cn/futures/api/jsonp.php/var%20_"
            + sym + "=/InnerFuturesNewService.getDailyKLine?symbol=" + sym)
     rows = parse_jsonp(http_get(url))
@@ -128,7 +176,7 @@ def fetch_daily(sym):
     out.sort(key=lambda x: x["d"])
     if out:
         cache_save(key, out)
-    return out
+    return _asof_trim(out)
 
 
 def fetch_minute(sym, mtype):
@@ -136,7 +184,7 @@ def fetch_minute(sym, mtype):
     key = "min%d_%s" % (mtype, sym)
     hit = cache_load(key, 1)
     if hit is not None:
-        return hit
+        return _asof_trim(hit)
     url = ("https://stock2.finance.sina.com.cn/futures/api/jsonp.php/var%20_"
            + sym + "_" + str(mtype)
            + "=/InnerFuturesNewService.getFewMinLine?symbol=" + sym
@@ -155,7 +203,7 @@ def fetch_minute(sym, mtype):
     out.sort(key=lambda x: x["d"])
     if out:
         cache_save(key, out)
-    return out
+    return _asof_trim(out)
 
 
 # ---------------------------------------------------------------- 主力连续复权
