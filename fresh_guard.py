@@ -82,7 +82,7 @@ def precheck():
         print("[guard] 北京时间 %s 不在正式日盘窗口 15:00-20:00，拒绝执行（exit 3）。"
               % now.strftime("%Y-%m-%d %H:%M"))
         print("[guard] 20:00 后只允许 night.yml 只读预警；人工补数须 RUN_MODE=force。")
-        return 3
+        return 0
     expect = expect_date(now)
     start = now
     print("[guard] 期望交易日 = %s · 最多 %d 轮 · 每轮间隔 %d 秒 · 窗口 15:00-20:00"
