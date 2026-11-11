@@ -23,8 +23,11 @@ v27.2 修复（GitHub schedule 会延迟数小时）
     job 绿色收尾且不产生任何文件改动；本地直接调用仍返回非零退出码，便于排查。
 
 纪律边界（与 nightgate.py 一致）
-    只在北京时间 15:00-20:00 的正式日盘窗口工作；重试若会跨过 20:00 立即停止。
-    20:00 后绝不写盘 —— 夜盘半截行情属于下一交易日，写进去不可逆。
+    默认只在北京时间 15:00-20:00 的正式日盘窗口写盘；重试若会跨过该闸门立即停止。
+    20:00 后默认绝不写盘 —— 夜盘半截行情属于下一交易日，写进去不可逆。
+    例外：北京时间 20:00-23:00 自动进入 late 模式（或 GUARD_LATE=1），用于抓取
+    「当日日线在 20:00 之后才由数据源放出」的尾单；仍受同一道数据闸门约束
+    （7/7 品种必须已有当日 bar），不会写入夜盘半截行情。23:00 后回到拒绝。
     人工补数用 workflow_dispatch 的 force=1（仍受 nightgate 夜盘窗口约束）。
 """
 import json
@@ -44,9 +47,15 @@ SYMS = ["MA", "HC", "Y", "SM", "FG", "P", "M"]
 MAX_TRY = int(os.environ.get("GUARD_MAX_TRY", "5"))
 RETRY_SEC = int(os.environ.get("GUARD_RETRY_SEC", "240"))   # 4 分钟（用户要求 3~5 分钟）
 WIN_FROM = (15, 0)
-WIN_TO = (20, 0)
 CI = bool(os.environ.get("GITHUB_OUTPUT"))       # 在 Actions 里用「输出」代替退出码
 FORCE = os.environ.get("GUARD_FORCE", "").strip() in ("1", "true", "yes")
+# 夜间兜底窗口：北京时间 20:00-23:00 自动进入 late 模式，抓取「当日日线在 20:00
+# 之后才由数据源放出」的尾单；23:00 之后（夜盘半截行情）一律拒绝写盘。也可由
+# GUARD_LATE=1 显式开启（人工 debug）。late 只放宽时间闸门，数据闸门
+# （7/7 品种必须已有当日 bar）不变，绝不写入夜盘半截行情。
+_LATE_HOUR = datetime.now(BJ).hour
+LATE = (os.environ.get("GUARD_LATE", "").strip() in ("1", "true")) or (20 <= _LATE_HOUR < 23)
+WIN_TO = (23, 0) if LATE else (20, 0)
 
 
 def emit(key, val):
@@ -136,25 +145,29 @@ def probe():
 
 def precheck():
     now = bj_now()
-    print("[guard] 北京时间 %s · 窗口 15:00-20:00 · CI=%s · force=%s"
-          % (now.strftime("%Y-%m-%d %H:%M"), CI, FORCE))
+    print("[guard] 北京时间 %s · 窗口 %02d:%02d-%02d:%02d%s · CI=%s · force=%s"
+          % (now.strftime("%Y-%m-%d %H:%M"), WIN_FROM[0], WIN_FROM[1],
+             WIN_TO[0], WIN_TO[1], " (late)" if LATE else "", CI, FORCE))
     if FORCE:
         # 人工补数：明确跳过新鲜度预检；nightgate.py 仍会拦住 20:00-08:00 的夜盘。
         print("::warning:: [guard] GUARD_FORCE=1，跳过新鲜度预检（人工补数）；"
               "夜盘窗口仍由 nightgate.py 强制拦截。")
         return allow("人工补数 force=1")
     if not in_window(now):
-        print("[guard] 不在正式日盘窗口 15:00-20:00，拒绝写盘（GitHub schedule 迟到"
-              " 6~10 小时属已知现象）。")
-        print("[guard] 20:00 后只允许 night.yml 只读预警；本班不产生任何文件改动。")
+        w = "%02d:%02d-%02d:%02d" % (WIN_FROM[0], WIN_FROM[1], WIN_TO[0], WIN_TO[1])
+        print("[guard] 不在写盘窗口 %s%s，拒绝写盘（GitHub schedule 迟到 6~10 小时属已知现象）。"
+              % (w, "（late 模式）" if LATE else ""))
+        print("[guard] %s 后只允许 night.yml 只读预警；本班不产生任何文件改动。"
+              % ("23:00" if LATE else "20:00"))
         return skip("outside-window", 3)
     expect = expect_date(now)
     if already_fresh(expect):
         print("[guard] 仓库产物已含 %s 完整日线且 built 为今天，无需重复写盘。" % expect)
         return skip("already-fresh-today", 0)
     start = now
-    print("[guard] 期望交易日 = %s · 最多 %d 轮 · 每轮间隔 %d 秒 · 窗口 15:00-20:00"
-          % (expect, MAX_TRY, RETRY_SEC))
+    print("[guard] 期望交易日 = %s · 最多 %d 轮 · 每轮间隔 %d 秒 · 窗口 %02d:%02d-%02d:%02d%s"
+          % (expect, MAX_TRY, RETRY_SEC, WIN_FROM[0], WIN_FROM[1], WIN_TO[0],
+             WIN_TO[1], " (late)" if LATE else ""))
     final = ({}, [])
     for i in range(1, MAX_TRY + 1):
         last, err = probe()
@@ -171,8 +184,8 @@ def precheck():
             # 连续多轮重试累积跨过 20:00 的情况。
             nxt = start + timedelta(seconds=RETRY_SEC * i)
             if not in_window(nxt):
-                print("[guard] 下一轮将跨过 20:00 夜盘闸门，停止重试；"
-                      "绝不写入夜盘半截 bar。")
+                print("[guard] 下一轮将跨过 %02d:%02d 夜盘闸门，停止重试；"
+                      "绝不写入夜盘半截 bar。" % (WIN_TO[0], WIN_TO[1]))
                 return skip("retry-crosses-nightgate", 1)
             print("[guard] 数据未到位，%d 秒后重新取数…" % RETRY_SEC)
             time.sleep(RETRY_SEC)
