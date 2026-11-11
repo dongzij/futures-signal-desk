@@ -86,7 +86,13 @@ def workdays_between(a, b):
 
 
 def push(token, title, html):
-    """独立实现，刻意不 import daily —— 那条链路带 state 写入。"""
+    """独立实现，刻意不 import daily —— 那条链路带 state 写入。
+
+    ⚠️ 23:10 夜盘预警**故意不接** daily.post_push() 的 15:00-20:00 静音闸门。
+    2026-11-11 用户明确拍板保留：「23:10 那条告诉你明早开盘就是这个价会不会出事，
+    是明早的操作依据」。所以它落在闸门窗口外也照发。
+    不要为了"统一规则"把它接进闸门 —— 那会让用户失去次日开盘前唯一的主动提示。
+    """
     if not token:
         return False
     body = urllib.parse.urlencode({
