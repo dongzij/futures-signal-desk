@@ -7,33 +7,55 @@ name: daily-scan
 #    日线图与账本就被永久污染。改 cron 前请先看 daily.py / data_build.py
 #    开头的 nightgate 闸门说明。
 #
-# v27.1 自愈：fresh_guard.py 在写盘【之前】只读预检行情源，取不到当日完整日线
-#   就等 4 分钟重取（最多 5 轮）；渲染之后再用 --verify 校验产物一致性，
-#   不通过就阻断「提交更新」。整体超时放到 45 分钟，容纳重试窗口。
-#   job 外部若整班没触发，由 guard.yml / guard_watch.py 补派发。
+# v27.2 定时修复（2026-11-11）
+#   GitHub Actions 的 schedule 在本仓库实测每天延迟 6~10 小时（全部班次一致），
+#   07:20/07:50 UTC 的 cron 实际在 15:37/15:50 UTC 才触发，也就是北京时间深夜。
+#   v27.1 的守卫会 exit 3 -> job 标红 + 每天失败邮件；直接把 exit 3 改成 exit 0
+#   更危险：迟到班次会跳过预检写盘，把昨天 K 线配今天 built 发布（假新鲜）。
+#   现在由 fresh_guard.py 输出 proceed=1/0，所有写盘步骤加 if 条件：
+#     · 迟到班次 / 当日数据未到位 -> proceed=0 -> 全部写盘步骤跳过，job 绿色收尾；
+#     · 只有在 15:00-20:00 且 7 品种当日日线到位，才允许正式跑一次。
+#   真正「按时」靠外部精确触发器（见 tools/dispatch_daily.py 与 reports/v27.2_*.md），
+#   schedule 与下面两条「延迟补偿班次」只作为兜底。
 on:
   schedule:
     # 1. 全天正式数据入库（北京时间 15:20）—— 计入 K 线，更新所有账本
     - cron: '20 7 * * 1-5'
     # 2. 兜底重试（北京时间 15:50）—— 计入 K 线
     - cron: '50 7 * * 1-5'
-  workflow_dispatch:      # 保留手动触发按钮（白天补数用，夜间会被闸门拒绝）
+    # 3/4. 延迟补偿班次：GitHub schedule 积压约 6~10 小时，把两班提前 8 小时
+    #      排进队列，若延迟落在 15:00-20:00 窗口内即可自动补上正式数据。
+    #      不在窗口则由闸门安全跳过，不写任何文件（无副作用、不会误伤）。
+    - cron: '20 23 * * 0-4'   # UTC 周日~周四 23:20 = 北京时间周一~周五 07:20
+    - cron: '50 23 * * 0-4'   # UTC 周日~周四 23:50 = 北京时间周一~周五 07:50
+  repository_dispatch:          # 外部定时器（cron-job.org / 云函数 / 本机计划任务）
+    types: [daily-scan]
+  workflow_dispatch:            # 手动触发；force=1 可在白天补数（夜间仍被 nightgate 拒绝）
+    inputs:
+      force:
+        description: '补数模式：1=跳过时间窗口预检（夜盘 20:00-08:00 仍被 nightgate 拦截）'
+        type: choice
+        options: ['0', '1']
+        default: '0'
 
 permissions:
   contents: write
 
 concurrency:
   group: daily-scan
-  cancel-in-progress: true
+  # v27.2：同一时间只允许一个写盘班次；后来的排队等待，不打断正在写 state.json 的班次。
+  # 排队到手的班次会被 fresh_guard 的 already_fresh 判定跳过，因此不会重复写盘/重复推微信。
+  cancel-in-progress: false
 
 jobs:
   scan:
-    runs-on: ubuntu-latest
-    timeout-minutes: 45          # v27.1：预留 fresh_guard 最多 5 轮 × 4 分钟重试
+    runs-on: ubuntu-24.04       # v27.2：锁定镜像，避开 ubuntu-latest → Ubuntu 26 迁移
+    timeout-minutes: 45         # 预留 fresh_guard 最多 5 轮 × 4 分钟重试
     env:
       PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
       GUARD_MAX_TRY: '5'
-      GUARD_RETRY_SEC: '240'      # 4 分钟，落在用户要求的 3~5 分钟区间
+      GUARD_RETRY_SEC: '240'
+      GUARD_FORCE: ${{ github.event.inputs.force || github.event.client_payload.force || '0' }}
       PYTHONDONTWRITEBYTECODE: '1'
     steps:
       - uses: actions/checkout@v4
@@ -45,18 +67,22 @@ jobs:
       - name: 准备配置（凭据不入库）
         run: cp config.ci.json config.json
 
-      # v27.1：只读预检。失败时按 4 分钟间隔自愈重取，最多 5 轮；
-      # 绝不把 daily.py / data_build.py 放进重试循环（会重复写 state、重复推微信）。
-      - name: 数据新鲜度守卫（取数自愈）
+      # 决策步骤：只读预检 + 输出 proceed=1/0。迟到/数据未到位时本步骤 exit 0，
+      # 但后续所有写盘步骤都会被 if 跳过 —— 不再有红叉和失败邮件，也不写脏数据。
+      - name: 数据新鲜度守卫（取数自愈 + 班次闸门）
+        id: guard
         run: python fresh_guard.py
 
       - name: 扫描信号
+        if: steps.guard.outputs.proceed == '1'
         run: python daily.py
 
       - name: 重建数据包
+        if: steps.guard.outputs.proceed == '1'
         run: python data_build.py
 
       - name: 渲染页面
+        if: steps.guard.outputs.proceed == '1'
         run: |
           python render.py
           # GitHub Pages 的站点根：页面 + 图表库 + 数据包
@@ -65,22 +91,21 @@ jobs:
           cp dist/echarts.min.js echarts.min.js
           touch .nojekyll
 
-      # v27.1：产物一致性（7 品种末根 / data 与 dist/data / 页面与数据包 / 策略口径 / built）。
-      # 不一致就阻断提交，由 guard.yml 下一轮派发补跑，绝不推残缺数据上线。
+      # 产物一致性（7 品种末根 / 当日日线 / data 与 dist/data / 页面与数据包 /
+      # 策略口径 / built）。不通过就阻断「提交更新」，绝不推残缺数据上线。
       - name: 产物一致性校验
+        if: steps.guard.outputs.proceed == '1'
         run: python fresh_guard.py --verify
 
-      # v17：静默观察期 —— 扫描后生成当天极简日志（只记录，不改任何交易逻辑）
       - name: 生成每日极简日志
+        if: steps.guard.outputs.proceed == '1'
         run: python daily_log.py
 
       - name: 校验数据新鲜度
+        if: steps.guard.outputs.proceed == '1'
         run: |
           python - <<'PY'
           import json, os, datetime
-          # v27.1：品种池必须与当前 7 品种一致。旧版读的 RB/UR/JD 已在 v25
-          # 清理历史垃圾时从仓库删除；继续读会抛 FileNotFoundError，
-          # 让本步骤失败、后面的「提交更新」根本不执行（数据就永远不更新）。
           codes = ('MA', 'HC', 'Y', 'SM', 'FG', 'P', 'M')
           last, missing = None, []
           for c in codes:
@@ -99,11 +124,19 @@ jobs:
 
       # v11.1：微信推送统一由 daily.py 完成（品种白名单 + 进场/出场/离场/趋势四类），
       # 不再调用 notify.py，避免同一条信号重复发两遍。
-
       - name: 提交更新
+        if: steps.guard.outputs.proceed == '1'
         run: |
           git config user.name "bot"
           git config user.email "bot@users.noreply.github.com"
           git add -A state.json index.html dist/ data/ echarts.min.js .nojekyll logs/ LIVE_LOG.md daily_log.py
           git diff --cached --quiet || git commit -m "scan $(date -u +%F-%H:%M) [skip ci]"
           git push
+
+      - name: 本班跳过说明
+        if: steps.guard.outputs.proceed != '1'
+        run: |
+          echo "::notice::本班未写盘：${{ steps.guard.outputs.skip_reason }}"
+          echo "原因：GitHub schedule 迟到，或当日日线尚未出数。"
+          echo "处理：外部精确触发器会在北京时间 15:20 触发本 workflow；"
+          echo "      watchdog 继续只读巡检，本班不产生任何文件改动。"

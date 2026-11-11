@@ -86,10 +86,14 @@ def parse_built(s):
 def main():
     now = bj_now()
     print("[watch] 北京时间 %s · 检查线上 %s" % (now.strftime("%Y-%m-%d %H:%M"), REPO))
-    if not in_window(now):
-        print("::warning:: [watch] 已过 20:00 夜盘闸门，本轮【不触发】任何写盘补跑；"
-              "夜盘只读预警由 night.yml 负责。")
-        return 0
+    # v27.2：GitHub schedule 实测延迟 6~10 小时，watchdog 的 7 个 cron 也几乎
+    # 全部落在 20:00 之后。旧版在这里直接 return，等于整条自愈链路静默失效。
+    # 现在迟到班次仍做【只读巡检】并打印数据状态，只是不派发写盘补跑。
+    late = not in_window(now)
+    if late:
+        print("::warning:: [watch] 北京时间 %s 不在 15:00-20:00 窗口（schedule 迟到），"
+              "本轮只读巡检，不触发写盘补跑；外部精确触发器负责正式班次。"
+              % now.strftime("%Y-%m-%d %H:%M"))
 
     try:
         idx = read_json("data/index.json")
@@ -115,6 +119,12 @@ def main():
 
     if fresh and consistent:
         print("[watch] ✔ 今日正式数据已到位且 7 品种一致，无需补跑。")
+        return 0
+    if late:
+        print("[watch] 迟到班次巡检结果：built=%s · 末根=%s · 一致=%s · 当日已更新=%s"
+              % (built, "/".join(sorted(set(lasts.values()))) or "-", consistent, fresh))
+        print("::warning:: [watch] 迟到班次不派发补跑；请确认外部精确触发器"
+              "（tools/dispatch_daily.py）已在北京时间 15:20 正常派发。")
         return 0
     if bdt and 0 <= (now - bdt).total_seconds() < MIN_GAP_MIN * 60:
         print("[watch] 上次构建距今不足 %d 分钟，跳过本轮，避免重复触发。"
