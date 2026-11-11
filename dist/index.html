@@ -380,6 +380,47 @@ padding:16px 16px 26px;max-height:82vh;overflow-y:auto}
 background:#10151d;color:var(--tx);font-size:18px}
 .lots b{font-size:20px;min-width:44px;text-align:center}
 .empty{color:var(--dim);text-align:center;padding:22px 0;font-size:12px}
+
+/* ================= v28 盘感模拟（K 线点击 → T+1 开盘成交） =================
+   与系统理论持仓（策略持仓看板 / plan.marks）完全隔离：
+   这里只记「你手动点了什么」，数据在本机 localStorage 的 fxreplay_v1，
+   不写 state.json、不进 plan、不影响任何信号与推送。 */
+.rpbar{position:fixed;left:0;right:0;bottom:44px;z-index:60;
+background:rgba(13,18,26,.97);border-top:1px solid var(--line);
+box-shadow:0 -6px 18px rgba(0,0,0,.45);font-size:12px}
+.rpbar.hide{display:none}
+.rpbar .rw{display:flex;align-items:center;gap:14px;padding:7px 12px}
+.rpbar .ri{display:flex;flex-direction:column;line-height:1.3;min-width:0}
+.rpbar .ri .l{font-size:10px;color:var(--dim);white-space:nowrap}
+.rpbar .ri .v{font-size:13px;font-weight:700;white-space:nowrap}
+.rpbar .grow{flex:1}
+.rpbar .rbtn{background:#1b2432;border:1px solid var(--line);color:var(--tx);
+border-radius:7px;padding:5px 10px;font-size:11px;white-space:nowrap}
+.rpbar .rbtn.hot{border-color:#3a6ea8;color:#cfe6ff;background:#152436}
+.rpbody{max-height:0;overflow:hidden;transition:max-height .18s ease}
+.rpbody.on{max-height:46vh;overflow-y:auto;border-top:1px solid var(--line)}
+.rprow{display:flex;gap:9px;align-items:center;padding:8px 12px;
+border-top:1px solid var(--line)}
+.rprow:first-child{border-top:none}
+.rprow .fx{flex:1;min-width:0}
+.rprow .r1{font-size:12px;font-weight:600}
+.rprow .r2{font-size:10.5px;color:var(--dim);margin-top:2px}
+.rpside{font-size:10px;padding:1px 5px;border-radius:4px;font-weight:800;
+vertical-align:1px}
+.rpside.l{background:rgba(229,72,77,.18);color:#ff9096}
+.rpside.s{background:rgba(14,203,129,.18);color:#54e3ac}
+.rpstat{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 12px}
+.rpstat .dv{padding:5px 7px}
+.rpstat .dv .v{font-size:12px}
+.rptip{font-size:10.5px;color:var(--dim);line-height:1.65;padding:6px 12px 10px;
+border-top:1px solid var(--line)}
+.rpspark{display:block;width:100%;height:36px;margin:2px 0 0}
+.rpem{color:var(--dim);font-size:11px}
+.rpk{font-size:11px;color:var(--dim)}
+.rpnote{background:#141b25;border:1px solid #24303f;border-radius:8px;
+padding:8px 10px;font-size:11px;color:#9fb0c7;line-height:1.65;margin:8px 0 2px}
+.rpnote b{color:#e8eefa}
+body.rpon{padding-bottom:128px}
 </style>
 </head>
 <body>
@@ -561,16 +602,23 @@ background:#10151d;color:var(--tx);font-size:18px}
 <div class="page" id="pgAcct">
   <div class="acct-top">
     <div>
-      <div class="l">模拟账户权益（起始 100,000）</div>
+      <div class="l">盘感模拟账户 · 总权益（起始 100,000 ＋ 追加）</div>
       <div class="eq" id="eqBig">—</div>
     </div>
-    <button onclick="resetAcct()">重置账户</button>
+    <div style="display:flex;gap:8px">
+      <button onclick="rpAddCash()">追加资金</button>
+      <button onclick="resetAcct()">重置账户</button>
+    </div>
   </div>
   <div class="kv" id="acctKv"></div>
   <div class="ctn">
     <div class="card">
-      <h3>我的模拟持仓</h3>
+      <h3>我的模拟持仓 <span class="r">独立账本 · 与系统理论持仓无关</span></h3>
       <div id="myPos"></div>
+    </div>
+    <div class="card">
+      <h3>模拟操作分析 <span class="r">已平仓统计</span></h3>
+      <div id="rpStats"></div>
     </div>
     <div class="card">
       <h3>方法跟踪持仓 <span class="r">雷达口径 · 复盘用 · 不可操作</span></h3>
@@ -581,12 +629,30 @@ background:#10151d;color:var(--tx);font-size:18px}
       <div id="apPanel"></div>
     </div>
     <div class="card">
-      <h3>已平仓记录</h3>
+      <h3>交易流水 <span class="r" id="rpTradeCnt"></span></h3>
       <div id="closedList"></div>
     </div>
+    <div class="card">
+      <h3>账本 <span class="r">本机浏览器保存 · 换设备请导出再导入</span></h3>
+      <div id="rpIo"></div>
+    </div>
   </div>
-  <div class="note">费用按交易所+经纪主流水平估算，开平各收一次（未含平今加收与滑点）。
-  保证金占用按合约面值 × 保证金率计算。</div>
+  <div class="note">成交口径：点 K 线上某个历史交易日 T → 以 <b>T+1 开盘价</b>成交（收盘看盘、次日开盘操作）；
+  T 是最后一根 K 线时提示「次日开盘未到」，不允许成交。<br>
+  手续费开、平各收一次（未含平今加收与滑点）；保证金按合约面值 × 交易所保证金率计算。<br>
+  本账本只存在本机浏览器，与系统自动推演的「策略持仓看板 / plan.marks」<b>完全隔离</b>，不影响任何信号与微信推送。</div>
+</div>
+
+<div class="rpbar hide" id="rpBar">
+  <div class="rw">
+    <div class="ri"><span class="l">盘感权益</span><span class="v" id="rpEq">—</span></div>
+    <div class="ri"><span class="l">可用</span><span class="v" id="rpAv">—</span></div>
+    <div class="ri"><span class="l">浮盈</span><span class="v" id="rpFl">—</span></div>
+    <div class="ri"><span class="l">持仓</span><span class="v" id="rpNp">0</span></div>
+    <div class="grow"></div>
+    <button class="rbtn" id="rpCaret" onclick="rpToggle()">明细 ▴</button>
+  </div>
+  <div class="rpbody" id="rpBody"></div>
 </div>
 
 <div class="nav">
@@ -1205,6 +1271,8 @@ function renderChart(){
   var marks = [];
   // v17.1：预警头 → 失效尾 的淡连线（只在默认近窗内画，10 年全量视图不叠加）
   var defLinks = [];
+  // v28：我的盘感模拟持仓 / 成本线 / 平仓点（独立一层，金色，与系统标记不混）
+  var rpLinks = [];
   if(['D','W','M'].indexOf(cur.pt)>=0){
     var src = cur.pt==='D'? DOC.signals : cur.pt==='W'? (DOC.sigW||[]) : (DOC.sigM||[]);
     src.forEach(function(s){
@@ -1414,6 +1482,48 @@ function renderChart(){
     }
   }
 
+  // ===== v28：我的盘感模拟（金色层）=====
+  // 只画当前品种；进场点=成交日开盘价（T+1 开盘），持仓另有虚线成本线。
+  // 这一层与系统信号 / 方案回测标记完全独立，点开看的是「我自己那一笔」。
+  if(cur.pt==='D'){
+    var _ra = rpLoad();
+    function _ri(dd){ return dateIdx(dates, dd); }
+    (_ra.closed||[]).forEach(function(c){
+      if(c.sym !== cur.sym) return;
+      var i0 = _ri(c.entryDate); if(i0==null) return;
+      marks.push({value:[i0, c.entry], rpData:{k:'in', c:c},
+        symbol:'circle', symbolSize:6, z:13,
+        itemStyle:{color:'#FFD400', borderColor:'#0B0E13', borderWidth:1, opacity:.9}});
+      var i1 = _ri(c.exitDate); if(i1==null) return;
+      marks.push({value:[i1, c.exit], rpData:{k:'out', c:c},
+        symbol:'diamond', symbolSize:8, z:13,
+        itemStyle:{color:'rgba(0,0,0,0)', borderColor:'#FFD400', borderWidth:1.5}});
+      rpLinks.push([{coord:[i0, c.entry]},
+                    {coord:[i1, c.exit],
+                     lineStyle:{color:'rgba(255,212,0,.34)', width:1, type:'dotted'}}]);
+    });
+    (_ra.open||[]).forEach(function(p){
+      if(p.sym !== cur.sym) return;
+      var j0 = _ri(p.entryDate); if(j0==null) return;
+      marks.push({value:[j0, p.entry], rpData:{k:'open', p:p},
+        symbol:'circle', symbolSize:7, z:14,
+        itemStyle:{color:'#FFD400', borderColor:'#FFFFFF', borderWidth:1.4}});
+      marks.push({value:[j0, p.entry], rpData:{k:'open', p:p},
+        symbol:'circle', symbolSize:1,
+        label:{show:true, position: p.side>0?'bottom':'top',
+               formatter:'我'+(p.side>0?'多':'空')+' '+p.lots,
+               color:'#FFD400', fontSize:9.5, fontWeight:800,
+               textBorderColor:'#0B0E13', textBorderWidth:2.5}});
+      var jE = (RP.date ? _ri(RP.date) : null);
+      if(jE == null) jE = dates.length - 1;
+      if(jE > j0){
+        rpLinks.push([{coord:[j0, p.entry]},
+                      {coord:[jE, p.entry],
+                       lineStyle:{color:'rgba(255,212,0,.45)', width:1, type:'dashed'}}]);
+      }
+    });
+  }
+
   var series = [
     {name:'K', type:'candlestick', data:k, barMaxWidth:14,     itemStyle:{color:'#e5484d', color0:'#0ecb81', borderColor:'#e5484d', borderColor0:'#0ecb81'}},
     {name:'MA10', type:'line', data:m10, symbol:'none', lineStyle:{width:1,color:'#f5a524'}},
@@ -1427,7 +1537,7 @@ function renderChart(){
      markLine:{silent:true, symbol:'none', animation:false,
        label:{show:false},
        lineStyle:{color:'rgba(232,238,250,.20)', type:'dashed', width:1},
-       data: defXs.map(function(d){ return {xAxis:d}; }).concat(defLinks)}}
+       data: defXs.map(function(d){ return {xAxis:d}; }).concat(defLinks).concat(rpLinks)}}
   ];
   CH.setOption({
     animation:false,
@@ -1471,16 +1581,45 @@ function renderChart(){
   }, true);
   CH.off('click');
   // v26.2 模块一：图上所有标记统一点击闭环（原先只有 3 类可点，其余点了没反应）
+  // v28：新增 K 线本体点击 → 盘感模拟下单（T 日收盘 → T+1 开盘成交）
   CH.on('click', function(p){
+    if(p.seriesName === 'K'){                       // 点 K 线本体
+      rpSheet(p.dataIndex);
+      return;
+    }
     if(p.seriesName!=='信号' || !p.data) return;
     var d = p.data;
-    if(d.pmData)      openPlanMark(d.pmData);                       // ▮ 进/出方块 → 该笔回测详情
+    if(d.rpData)      rpDetail(d.rpData);                           // 金色 · 我自己的模拟单
+    else if(d.pmData) openPlanMark(d.pmData);                       // ▮ 进/出方块 → 该笔回测详情
     else if(d.exData) openExitTrade(d.exData, d.exKind==='warn');  // 青◇ / 白箭头 → 离场复盘
     else if(d.srcData) openExitSignal(d.srcData);                  // 黄◆ → 具体离场原因
     else if(d.vacSig) openSig(d.vacSig);                           // 动能真空 → 原信号
     else if(d.sig)    openSig(d.sig);
     else if(d.defDate) openDef(d.defDate);
     else if(d.mwDate) openMw(d.mwDate);
+  });
+  // v28：K 线很细，手指/鼠标点空白处也应能选中最近的一根 —— 用 zr 坐标反算。
+  // 实测 ECharts 5 对 candlestick 的自定义图形不派发 series click，所以这里
+  // 按「命中的 zrender 元素类型」分流：蜡烛本体 → 盘感下单；其它标记 → 交给上面的 series click。
+  var _zr = CH.getZr();
+  _zr.off('click');
+  _zr.on('click', function(e){
+    var t = e.target, tp = t ? String(t.type || '') : '';
+    if(t && tp.indexOf('andlestick') < 0) return;
+    try{
+      if(!CH.containPixel({gridIndex:0}, [e.offsetX, e.offsetY])) return;
+      // 注意：convertFromPixel 传数组给单轴会返回 null，必须传标量 x
+      var xv = CH.convertFromPixel({xAxisIndex:0}, e.offsetX);
+      var barsN = barsFor(cur.pt);
+      var i;
+      if(typeof xv === 'string') i = dateIdx(barsN.map(function(b){ return b[0]; }), xv);
+      else i = Math.round(+xv);
+      if(i == null || !isFinite(i) || i < 0 || i >= barsN.length) return;
+      var now = Date.now();
+      if(window._rpAt && now - window._rpAt < 150) return;
+      window._rpAt = now;
+      rpSheet(i);
+    }catch(err){}
   });
   // ?focus= 只执行一次，避免切换品种/周期时被反复拉回
   if(_FOCUS_PEND){
@@ -2303,202 +2442,610 @@ function toast(msg){
   setTimeout(function(){ t.remove(); }, 2200);
 }
 
-/* ================= 模拟盘 ================= */
-var AKEY = 'fxsim_v1';
-function acct(){
-  try{ return JSON.parse(localStorage.getItem(AKEY)) || newAcct(); }
-  catch(e){ return newAcct(); }
+/* ================= v28 盘感模拟（K 线点击 → T+1 开盘成交） =================
+   为什么要单独一套账本：
+     系统信号是 T 日收盘算出来的，真实操作只能发生在 T+1 开盘。
+     这个模块让你点任意历史 K 线、按自己的盘感下单，成交价强制取 T+1 开盘，
+     从而彻底排除「事后看图说话」的未来函数。
+   隔离纪律：
+     账本存在 localStorage 的 fxreplay_v1，不写 state.json、不进 plan.marks、
+     不影响任何信号与微信推送 —— 与「策略持仓看板」是两套完全独立的东西。
+   费用与保证金：
+     用 index.json products 里的真实乘数 / 交易所保证金率 / 手续费口径，
+     开、平各收一次；保证金按开仓价 × 合约面值 × 保证金率占用。
+*/
+var RKEY = 'fxreplay_v1';
+var RP = {sym:null, ct:null, date:null, idx:null};   // 当前光标（你点的那根 T 线）
+var RPL = {lots:1};                                  // 弹窗草稿
+var RPWARM = {};
+
+function rpProd(sym){
+  var arr = (MAN && MAN.products) || [];
+  for(var i=0;i<arr.length;i++) if(arr[i].sym===sym) return arr[i];
+  return {sym:sym, name:sym, mult:10, fee:['lot',2], margin:0.10};
 }
-function saveAcct(a){ try{ localStorage.setItem(AKEY, JSON.stringify(a)); }catch(e){} }
-function newAcct(){ return {start:100000, positions:[], closed:[], feeTotal:0}; }
-function feeOf(p, px){
-  var c = p.fee;
-  var f = c[0]==='lot'? c[1] : px * p.mult * p.lots * c[1] / 10000;
+function rpFee(spec, px, mult, lots){
+  if(!spec) return 0;
+  var f = (spec[0]==='lot') ? (+spec[1])*lots : px*mult*lots*(+spec[1])/10000;
   return Math.round(f*100)/100;
 }
-function floatOf(p, px){
-  return (px - p.entry) * p.side * p.mult * p.lots;
+function rpFeeTxt(spec, px, mult){
+  if(!spec) return '—';
+  var one = rpFee(spec, px, mult, 1);
+  return (spec[0]==='lot' ? (spec[1]+' 元/手') : ('万分之 '+spec[1])) 
+    + ' · 约 ' + f2(one) + ' 元/手·边';
 }
-function lastPx(sym, ct){
-  var b = KC[sym+'|'+ct];
-  if(!b || !b.d || !b.d.length) return null;
-  return b.d[b.d.length-1][4];
-}
-function suggestLots(entry, stop, mult){
-  var risk = acct().start * 0.01;
-  var dist = Math.abs(entry - stop);
-  if(dist<=0) return 1;
-  return Math.max(1, Math.floor(risk / (dist * mult)));
-}
-function simFromSig(key){
-  var s = findSig(key);
-  if(!s) return;
-  var ct = cur.ct==='0'? DOC.contracts.length? bestCt() : null : cur.ct;
-  if(!ct){ toast('请先选择一个具体合约'); return; }
-  var key = cur.sym+'|'+ct;
-  function go(px){
-    if(px==null){ toast('合约价格未加载'); return; }
-    var pmeta = MAN.products.filter(function(p){return p.sym===cur.sym;})[0];
-    var lots = suggestLots(px, s.ts!=null? s.ts : s.st, pmeta.mult);
-    simSheet({
-      sym:cur.sym, name:DOC.name, ct:ct, side: s.side==='short'? -1:1,
-      entry:px, stop:s.ts!=null? s.ts : s.st, mult:pmeta.mult, fee:pmeta.fee, margin:pmeta.margin,
-      lots:lots, sigId:sigKey(s)
-    });
+
+function rpLoad(){
+  var a = null;
+  try{ a = JSON.parse(localStorage.getItem(RKEY) || 'null'); }catch(e){ a = null; }
+  if(!a || a.ver !== 1){
+    a = {ver:1, start:100000, add:[], open:[], closed:[], seq:1, migrated:0, note:''};
+    a = rpMigrate(a);
+    rpSave(a);
   }
-  if(KC[key] && KC[key].d) go(lastPx(cur.sym, ct));
-  else fetchJ(cur.sym+'_'+ct+'.json', function(d2){
-    if(d2){ KC[key]={d:d2.d,m60:d2.m60,m15:d2.m15}; go(lastPx(cur.sym,ct)); }
+  a.add = a.add || []; a.open = a.open || []; a.closed = a.closed || [];
+  a.seq = a.seq || (a.open.length + a.closed.length + 1);
+  return a;
+}
+function rpSave(a){
+  try{ localStorage.setItem(RKEY, JSON.stringify(a)); }
+  catch(e){ toast('本机存储不可用（隐私模式？）'); }
+}
+/* 旧版 fxsim_v1（按最新价开仓的老模拟盘）一次性并入，不丢历史、不再双账本 */
+function rpMigrate(a){
+  var old = null;
+  try{ old = JSON.parse(localStorage.getItem('fxsim_v1') || 'null'); }catch(e){ old = null; }
+  a.migrated = 1;
+  if(!old) return a;
+  var nC = (old.closed||[]).length, nP = (old.positions||[]).length;
+  (old.closed||[]).forEach(function(c){
+    a.closed.push({id:a.seq++, sym:c.sym, name:c.name, ct:c.ct||'0', side:c.side,
+      lots:c.lots, entry:c.entry, entryDate:(c.time||'').slice(0,10),
+      exit:c.exit, exitDate:(c.time||'').slice(0,10),
+      mult:c.mult, margin:0, feeSpec:null, feeOpen:0, feeClose:0,
+      pnlGross:+c.pnl||0, pnlNet:+c.pnl||0, holdBars:null, src:'legacy'});
   });
+  (old.positions||[]).forEach(function(p){
+    a.open.push({id:a.seq++, sym:p.sym, name:p.name, ct:p.ct||'0', side:p.side,
+      lots:p.lots, entry:p.entry, entryDate:(p.time||'').slice(0,10), entryIdx:null,
+      mult:p.mult, margin:p.margin||0.10, feeSpec:p.fee, feeOpen:0, src:'legacy'});
+  });
+  if(nC || nP) a.note = '已并入旧版模拟盘 '+nC+' 笔平仓 / '+nP+' 个持仓（按原成交价，未重算）';
+  return a;
 }
-function bestCt(){
-  // 主力合约 = 持仓最大的活跃合约
-  var arr = DOC.contracts.slice().sort(function(a,b){return b.oi-a.oi;});
-  return arr.length? arr[0].id : null;
+
+/* ---------- 估值：始终以「光标日」为准，绝不用未来收盘价 ---------- */
+function rpDaily(sym){
+  if(sym === cur.sym) return barsFor('D');
+  var k = KC[sym + '|0'];
+  return (k && k.d) || null;
 }
-function simSheet(o){
-  var a = acct();
-  var marginNeed = o.entry * o.mult * o.lots * o.margin;
-  var feeEst = feeOf(o, o.entry);
-  var dist = Math.abs(o.entry - o.stop);
-  var riskAmt = dist * o.mult * o.lots;
-  var html = '<h3>'+(o.side<0?'模拟做空':'模拟做多')+' · '+o.name+' '+o.ct.slice(2)
+function rpMarkAt(sym, date){
+  var bars = rpDaily(sym);
+  if(!bars || !bars.length) return null;
+  if(!date) return bars[bars.length-1][4];
+  for(var i=bars.length-1;i>=0;i--){
+    if(bars[i][0] <= date) return bars[i][4];
+  }
+  return null;
+}
+function rpAddSum(a){ return (a.add||[]).reduce(function(t,x){ return t + (+x.amt||0); }, 0); }
+function rpFloat(a){
+  var v = 0;
+  (a.open||[]).forEach(function(p){
+    var px = rpMarkAt(p.sym, RP.date);
+    if(px != null) v += (px - p.entry) * p.side * p.mult * p.lots;
+  });
+  return v;
+}
+function rpEquity(a){
+  var real = (a.closed||[]).reduce(function(t,c){ return t + (+c.pnlNet||0); }, 0);
+  var feeOpenPaid = (a.open||[]).reduce(function(t,p){ return t + (+p.feeOpen||0); }, 0);
+  return (+a.start||0) + rpAddSum(a) + real + rpFloat(a) - feeOpenPaid;
+}
+function rpUsed(a){
+  return (a.open||[]).reduce(function(t,p){
+    return t + p.entry * p.mult * p.lots * (+p.margin||0);
+  }, 0);
+}
+function rpAvail(a){ return rpEquity(a) - rpUsed(a); }
+
+function rpFind(a, sym, ct, side){
+  ct = ct || '0';
+  for(var i=0;i<a.open.length;i++){
+    var p = a.open[i];
+    if(p.sym===sym && (p.ct||'0')===ct && p.side===side) return p;
+  }
+  return null;
+}
+function rpMaxLots(px, prod, a){
+  var perM = px * prod.mult * (+prod.margin||0.10);
+  var perF = rpFee(prod.fee, px, prod.mult, 1);
+  if(perM + perF <= 0) return 0;
+  return Math.max(0, Math.floor(rpAvail(a) / (perM + perF)));
+}
+
+/* ---------- 点 K 线 → 下单弹窗 ---------- */
+function rpSheet(idx){
+  if(cur.pt !== 'D'){
+    toast('盘感模拟只在日线口径可用（T 日收盘决策 → T+1 开盘成交）');
+    return;
+  }
+  var bars = barsFor('D');
+  if(!bars.length){ toast('暂无日线数据'); return; }
+  if(idx == null || idx < 0 || idx >= bars.length) return;
+  var b = bars[idx], prod = rpProd(cur.sym), a = rpLoad();
+  var hasNext = idx < bars.length - 1;
+  var fillPx = hasNext ? bars[idx+1][1] : null;
+  var fillDate = hasNext ? bars[idx+1][0] : null;
+  var ctLbl = (cur.ct === '0') ? '主力连续' : cur.ct;
+
+  RP = {sym:cur.sym, ct:cur.ct, date:b[0], idx:idx};
+  var posL = rpFind(a, cur.sym, cur.ct, 1), posS = rpFind(a, cur.sym, cur.ct, -1);
+  var maxL = hasNext ? rpMaxLots(fillPx, prod, a) : 0;
+  RPL.lots = (maxL >= 1) ? 1 : 0;
+
+  var html = '<h3>盘感模拟 · '+prod.name+' '+ctLbl+' · '+b[0]+' 收盘'
     + '<span onclick="closeSheet()">关闭 ✕</span></h3>';
-  html += '<div class="frow"><span>开仓价（最新收盘）</span><b>'+f2(o.entry)+'</b></div>';
-  html += '<div class="frow"><span>止损价（3×ATR）</span><b class="neg">'+f2(o.stop)+'</b></div>';
+  html += '<div class="frow"><span>决策日 T（你正在看的这根）</span><b>'+b[0]+' 收 '+f2(b[4])+'</b></div>';
+  if(hasNext){
+    html += '<div class="frow"><span>成交日 T+1（开盘价撮合）</span><b style="color:#FFD400">'
+      + fillDate + ' 开 ' + f2(fillPx) + '</b></div>';
+  } else {
+    html += '<div class="frow"><span>成交日 T+1</span><b class="neg">尚未到来</b></div>';
+  }
+  html += '<div class="frow"><span>合约乘数 / 保证金率</span><b>'+prod.mult+' 元/点 · '
+    + (prod.margin*100).toFixed(0) + '%（交易所）</b></div>';
+  html += '<div class="frow"><span>手续费</span><b>'+rpFeeTxt(prod.fee, hasNext?fillPx:b[4], prod.mult)+'</b></div>';
+
+  if(!hasNext){
+    html += '<div class="rpnote">⚠️ 这是最后一根 K 线（<b>'+b[0]+'</b>），<b>次日开盘还没到</b>，无法操作。<br>'
+      + '「收盘决策 → 次日开盘成交」意味着今天这根只能看、不能下单；等下一个交易日开盘后再点它。</div>';
+    html += '<div style="margin-top:14px"><button class="btn gray" style="width:100%" '
+      + 'onclick="closeSheet()">知道了</button></div>';
+    $('sheet').innerHTML = html; $('mask').classList.add('on');
+    return;
+  }
+
+  var avail = rpAvail(a);
   html += '<div class="lots"><span style="font-size:13px">手数</span>'
-    + '<button onclick="adjLots(-1)">−</button><b id="lotN">'+o.lots+'</b>'
-    + '<button onclick="adjLots(1)">＋</button>'
-    + '<span style="font-size:11px;color:var(--dim)">建议值＝1%风险÷止损距离</span></div>';
-  html += '<div class="frow"><span>每点价值</span><b>'+o.mult+' 元/点</b></div>';
-  html += '<div class="frow"><span>止损风险</span><b class="neg">'+Math.round(riskAmt)+' 元（占权益 '
-    + (riskAmt/a.start*100).toFixed(1) +'%）</b></div>';
-  html += '<div class="frow"><span>保证金占用</span><b>'+Math.round(marginNeed)+' 元</b></div>';
-  html += '<div class="frow"><span>开+平手续费</span><b>约 '+(feeEst*2).toFixed(1)+' 元</b></div>';
-  html += '<div class="frow"><span>账户可用</span><b>'+Math.round(availOf(a))+' 元</b></div>';
-  html += '<div style="margin-top:14px;display:flex;gap:10px">'
-    + '<button class="btn gray" style="flex:1" onclick="closeSheet()">取消</button>'
-    + '<button class="btn '+(o.side<0?'green':'red')+'" style="flex:2" onclick="doOpen()">确认开仓</button></div>';
-  o._marginNeed = marginNeed; o._fee = feeEst; o._risk = riskAmt;
-  window._pendSim = o;
+    + '<button onclick="rpAdj(-1)">−</button><b id="rpLotN">'+RPL.lots+'</b>'
+    + '<button onclick="rpAdj(1)">＋</button>'
+    + '<span class="rpk">最多 '+maxL+' 手（可用 '+Math.round(avail)+' 元）</span></div>';
+  html += '<div class="frow"><span>占用保证金</span><b id="rpM">—</b></div>';
+  html += '<div class="frow"><span>开仓手续费</span><b id="rpF">—</b></div>';
+  html += '<div class="frow"><span>成交后可用</span><b id="rpA">—</b></div>';
+
+  var canL = maxL >= 1 && !posL, canS = maxL >= 1 && !posS;
+  function dbtn(cls, txt, act, on){
+    return '<button class="btn '+cls+'" style="width:100%;'+(on?'':'opacity:.38')+'" '
+      + (on?('onclick="'+act+'"'):'onclick="rpWhy()"') + '>'+txt+'</button>';
+  }
+  html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">'
+    + dbtn('red',   '买入开多', "rpDo('open',1)",  canL)
+    + dbtn('green', '卖出开空', "rpDo('open',-1)", canS)
+    + dbtn('gray',  '平多'+(posL?('（'+posL.lots+' 手）'):''), "rpDo('close',1)",  !!posL)
+    + dbtn('gray',  '平空'+(posS?('（'+posS.lots+' 手）'):''), "rpDo('close',-1)", !!posS)
+    + '</div>';
+  html += '<div class="rptip">成交价固定为 T+1 开盘价，这一笔不会因为「你已经看到后面走势」而占便宜。'
+    + '同一品种同方向只允许一笔持仓，先平后开。</div>';
+
+  window._RP = {idx:idx, max:maxL, avail:avail, fill:fillPx, prod:prod};
+  $('sheet').innerHTML = html;
+  $('mask').classList.add('on');
+  rpRecalc();
+}
+function rpWhy(){
+  var o = window._RP || {};
+  var a = rpLoad();
+  if(o.max < 1){ toast('可用资金不足以开 1 手'); return; }
+  var posL = rpFind(a, cur.sym, cur.ct, 1), posS = rpFind(a, cur.sym, cur.ct, -1);
+  if(posL || posS) toast('该品种已有'+(posL?'多':'空')+'单，请先平仓再开');
+  else toast('当前不可开仓');
+}
+function rpAdj(d){
+  var o = window._RP; if(!o) return;
+  if(o.max < 1){
+    RPL.lots = 0;
+    var z = $('rpLotN'); if(z) z.textContent = 0;
+    rpRecalc(); return;
+  }
+  var n = Math.max(1, Math.min(o.max, (RPL.lots|0) + d));
+  RPL.lots = n;
+  var el = $('rpLotN'); if(el) el.textContent = n;
+  rpRecalc();
+}
+function rpRecalc(){
+  var o = window._RP; if(!o) return;
+  var lot = RPL.lots|0, prod = o.prod, px = o.fill;
+  var m = px * prod.mult * lot * (+prod.margin||0.10);
+  var f = rpFee(prod.fee, px, prod.mult, lot);
+  if($('rpM')) $('rpM').textContent = Math.round(m).toLocaleString() + ' 元';
+  if($('rpF')) $('rpF').textContent = f2(f) + ' 元（平仓再收一次）';
+  if($('rpA')) $('rpA').textContent = Math.round(o.avail - m - f).toLocaleString() + ' 元';
+}
+function rpDo(kind, side){
+  var o = window._RP;
+  if(!o) return;
+  var bars = barsFor('D'), i = o.idx, b = bars[i];
+  if(!b) return;
+  if(i >= bars.length - 1){ toast('次日开盘未到，无法操作'); return; }
+  var nx = bars[i+1];
+  var a = rpLoad(), prod = o.prod, ctLbl = (cur.ct==='0') ? '主力连续' : cur.ct;
+
+  if(kind === 'open'){
+    var lots = RPL.lots|0;
+    if(lots < 1){ toast('手数至少 1 手'); return; }
+    if(lots > o.max){ toast('超过最大可开手数（'+o.max+' 手）'); return; }
+    if(rpFind(a, cur.sym, cur.ct, side)){ toast('已有持仓，请先平仓'); return; }
+    var feeOpen = rpFee(prod.fee, nx[1], prod.mult, lots);
+    a.open.push({
+      id: a.seq++, t: Date.now(), sym: cur.sym, name: prod.name, ct: cur.ct||'0',
+      side: side, lots: lots, entry: nx[1], entryDate: nx[0], entryIdx: i+1,
+      mult: prod.mult, margin: +prod.margin||0.10, feeSpec: prod.fee,
+      feeOpen: feeOpen, src: 'replay'
+    });
+    rpSave(a); closeSheet(); refreshRp();
+    toast('已开'+(side>0?'多':'空')+' '+lots+' 手 @ '+f2(nx[1])+'（'+nx[0]+' 开盘）');
+    return;
+  }
+
+  var pos = rpFind(a, cur.sym, cur.ct, side);
+  if(!pos){ toast('没有可平的'+(side>0?'多':'空')+'单'); return; }
+  var exitPx = nx[1], exitIdx = i+1;
+  var gross = (exitPx - pos.entry) * pos.side * pos.mult * pos.lots;
+  var feeClose = rpFee(pos.feeSpec || prod.fee, exitPx, pos.mult, pos.lots);
+  var net = gross - (+pos.feeOpen||0) - feeClose;
+  a.closed.push({
+    id: a.seq++, sym: pos.sym, name: pos.name, ct: pos.ct, side: pos.side,
+    lots: pos.lots, entry: pos.entry, entryDate: pos.entryDate,
+    exit: exitPx, exitDate: nx[0], mult: pos.mult,
+    margin: pos.margin, feeSpec: pos.feeSpec, feeOpen: +pos.feeOpen||0,
+    feeClose: feeClose, pnlGross: gross, pnlNet: net,
+    holdBars: (pos.entryIdx != null) ? (exitIdx - pos.entryIdx) : null,
+    src: pos.src || 'replay'
+  });
+  a.open = a.open.filter(function(x){ return x.id !== pos.id; });
+  rpSave(a); closeSheet(); refreshRp();
+  toast('已平'+(side>0?'多':'空')+' '+pos.lots+' 手 · 净 '+(net>=0?'+':'')+Math.round(net)+' 元');
+}
+
+/* ---------- 点金色标记 → 这一笔的明细 ---------- */
+function rpDetail(d){
+  if(!d) return;
+  var isOpen = (d.k === 'open');
+  var o = isOpen ? d.p : d.c;
+  if(!o) return;
+  var side = o.side > 0 ? '多' : '空';
+  var ctLbl = (o.ct==='0' || !o.ct) ? '主力连续' : o.ct;
+  var html = '<h3>我的模拟单 · '+(o.name||o.sym)+' '+ctLbl
+    + '<span onclick="closeSheet()">关闭 ✕</span></h3>';
+  html += '<div class="frow"><span>方向 / 手数</span><b>'+side+' '+o.lots+' 手</b></div>';
+  html += '<div class="frow"><span>开仓（T+1 开盘）</span><b>'+o.entryDate+' · '+f2(o.entry)+'</b></div>';
+  if(isOpen){
+    var px = rpMarkAt(o.sym, RP.date);
+    var fl = (px!=null) ? (px-o.entry)*o.side*o.mult*o.lots : null;
+    html += '<div class="frow"><span>现价（光标日收盘）</span><b>'+(px!=null?f2(px):'—')+'</b></div>';
+    html += '<div class="frow"><span>浮动盈亏</span><b class="'+(fl>0?'pos':fl<0?'neg':'')+'">'
+      + (fl==null?'—':(fl>=0?'+':'')+Math.round(fl))+' 元</b></div>';
+    html += '<div class="frow"><span>占用保证金</span><b>'
+      + Math.round(o.entry*o.mult*o.lots*(+o.margin||0.1)).toLocaleString()+' 元</b></div>';
+    html += '<div class="frow"><span>开仓手续费</span><b>'+f2(o.feeOpen)+' 元</b></div>';
+    html += '<div class="rptip">平仓同样走「T 日收盘决策 → T+1 开盘成交」。'
+      + '切到该品种、在 K 线上点你想平仓的那一天，再选「平'+side+'」。</div>';
+  }else{
+    html += '<div class="frow"><span>平仓（T+1 开盘）</span><b>'+o.exitDate+' · '+f2(o.exit)+'</b></div>';
+    html += '<div class="frow"><span>持有</span><b>'
+      + (o.holdBars!=null? o.holdBars+' 根 K 线':'—')+'</b></div>';
+    html += '<div class="frow"><span>毛盈亏</span><b>'+sgn(o.pnlGross)+Math.round(o.pnlGross)+' 元</b></div>';
+    html += '<div class="frow"><span>手续费（双边）</span><b>'
+      + f2((+o.feeOpen||0)+(+o.feeClose||0))+' 元</b></div>';
+    html += '<div class="frow"><span>净盈亏</span><b class="'+(o.pnlNet>0?'pos':o.pnlNet<0?'neg':'')+'">'
+      + sgn(o.pnlNet)+Math.round(o.pnlNet)+' 元</b></div>';
+    html += '<div class="rptip">净盈亏已扣开、平两边手续费。'
+      + (o.src==='legacy'?' 这笔来自旧版模拟盘，按原成交价并入。':'')+'</div>';
+  }
   $('sheet').innerHTML = html;
   $('mask').classList.add('on');
 }
-function adjLots(d){
-  var o = window._pendSim;
-  o.lots = Math.max(1, o.lots + d);
-  $('lotN').textContent = o.lots;
-  var a = acct();
-  o._marginNeed = o.entry*o.mult*o.lots*o.margin;
-  o._fee = feeOf(o, o.entry);
-  o._risk = Math.abs(o.entry-o.stop)*o.mult*o.lots;
-  // 更新动态行
-  var frows = $('sheet').querySelectorAll('.frow b');
-  frows[3].textContent = Math.round(o._risk)+' 元（占权益 '+(o._risk/a.start*100).toFixed(1)+'%）';
-  frows[4].textContent = Math.round(o._marginNeed)+' 元';
-  frows[5].textContent = '约 '+(o._fee*2).toFixed(1)+' 元';
+
+/* ---------- 底部固定面板 ---------- */
+function rpToggle(){
+  var b = $('rpBody'); if(!b) return;
+  b.classList.toggle('on');
+  var c = $('rpCaret');
+  if(c) c.textContent = b.classList.contains('on') ? '明细 ▾' : '明细 ▴';
 }
-function availOf(a){
-  var used = 0;
-  a.positions.forEach(function(p){ used += p.entry*p.mult*p.lots*p.margin; });
-  var unreal = 0;
-  a.positions.forEach(function(p){
-    var px = lastPx(p.sym, p.ct);
-    if(px!=null) unreal += floatOf(p, px);
+function rpWarm(a){
+  (a.open||[]).forEach(function(p){
+    if(p.sym === cur.sym || RPWARM[p.sym]) return;
+    RPWARM[p.sym] = 1;
+    fetchJ(p.sym + '.json', function(d){
+      if(d && d.main) KC[p.sym+'|0'] = {d:d.main, m60:d.m60, m15:d.m15};
+      refreshRp();
+    });
   });
-  return a.start + closedSum(a) + unreal - used;
 }
-function closedSum(a){ return a.closed.reduce(function(t,c){return t+c.pnl;},0); }
-function doOpen(){
-  var o = window._pendSim, a = acct();
-  if(o._marginNeed > availOf(a)){ toast('保证金不足'); return; }
-  a.positions.push({
-    t: Date.now(), sym:o.sym, name:o.name, ct:o.ct, side:o.side,
-    entry:o.entry, stop:o.stop, lots:o.lots, mult:o.mult,
-    fee:o.fee, margin:o.margin, sigId:o.sigId||null, time: tsStr()
+function refreshRp(){ renderRp(); if($('myPos')) renderAcct(); }
+
+function renderRp(){
+  var bar = $('rpBar'); if(!bar) return;
+  if($('pgMain') && $('pgMain').classList.contains('on')){
+    bar.classList.remove('hide');
+    if(document.body) document.body.classList.add('rpon');
+  }
+  var a = rpLoad();
+  rpWarm(a);
+  var eq = rpEquity(a), used = rpUsed(a), av = eq - used, fl = rpFloat(a);
+  var eqEl = $('rpEq');
+  if(eqEl){
+    eqEl.textContent = Math.round(eq).toLocaleString();
+    eqEl.style.color = eq >= ((+a.start||0)+rpAddSum(a)) ? 'var(--up)' : 'var(--dn)';
+  }
+  if($('rpAv')) $('rpAv').textContent = Math.round(av).toLocaleString();
+  var flEl = $('rpFl');
+  if(flEl){
+    flEl.textContent = (fl>=0?'+':'') + Math.round(fl).toLocaleString();
+    flEl.style.color = fl>0 ? 'var(--up)' : (fl<0 ? 'var(--dn)' : 'var(--dim)');
+  }
+  if($('rpNp')) $('rpNp').textContent = a.open.length;
+
+  var b = $('rpBody'); if(!b) return;
+  var h = '';
+  if(a.open.length){
+    a.open.forEach(function(p){
+      var px = rpMarkAt(p.sym, RP.date);
+      var f = (px!=null) ? (px - p.entry)*p.side*p.mult*p.lots : null;
+      h += '<div class="rprow"><div class="fx">'
+        + '<div class="r1">'+p.name+' <span class="rpside '+(p.side>0?'l':'s')+'">'
+        + (p.side>0?'多':'空')+'</span> '+p.lots+'手 @ '+f2(p.entry)+'</div>'
+        + '<div class="r2">'+p.entryDate+' 开盘成交 · 现价 '+(px!=null?f2(px):'—')
+        + ' · 占用 '+Math.round(p.entry*p.mult*p.lots*(+p.margin||0.1)).toLocaleString()+'</div></div>'
+        + '<div class="st"><div class="p '+(f==null?'mut':cls(f))+'">'
+        + (f==null?'—':(f>=0?'+':'')+Math.round(f)) + '</div></div>'
+        + '<button class="rbtn" onclick="rpJumpClose('+p.id+')">平仓</button></div>';
+    });
+  } else {
+    h += '<div class="rprow"><span class="rpem">暂无持仓 · 在 K 线上点任意一根历史 K 线开始</span></div>';
+  }
+  var st = rpStatCalc(a);
+  h += '<div class="rpstat">'
+    + '<div class="dv"><div class="l">已平仓</div><div class="v">'+st.n+' 笔</div></div>'
+    + '<div class="dv"><div class="l">胜率</div><div class="v">'+(st.n?f2(st.win)+'%':'—')+'</div></div>'
+    + '<div class="dv"><div class="l">盈亏比</div><div class="v">'+(st.n?f2(st.pf):'—')+'</div></div>'
+    + '<div class="dv"><div class="l">累计净</div><div class="v '+(st.net>0?'up':st.net<0?'dn':'nt')+'">'
+    + (st.net>=0?'+':'')+Math.round(st.net).toLocaleString()+'</div></div>'
+    + '</div>' + rpSpark(a);
+  h += '<div class="rptip">独立账本 · 与系统「策略持仓看板 / plan.marks」完全隔离，不影响任何信号与推送。'
+    + (RP.date?(' 估值基准：<b>'+RP.date+'</b> 收盘（你点的那根）。'):'')
+    + (a.note?('<br>'+a.note):'')+'</div>';
+  b.innerHTML = h;
+}
+function rpJumpClose(id){
+  var a = rpLoad(), pos = null;
+  a.open.forEach(function(x){ if(x.id===id) pos=x; });
+  if(!pos) return;
+  if(pos.sym !== cur.sym){
+    toast('请先切换到「'+pos.name+'」再平仓（平仓日以当前 K 线为准）');
+    selectSym(pos.sym);
+    return;
+  }
+  if(!RP.idx && RP.idx !== 0){ toast('请先在 K 线上点一个交易日的 K 线，表示你要在哪天收盘决策'); return; }
+  if(cur.pt !== 'D'){ toast('请先切到日线'); return; }
+  rpSheet(RP.idx);
+}
+function rpStatCalc(a){
+  var n=a.closed.length, win=0, gp=0, gl=0, sum=0, best=0, worst=0;
+  a.closed.forEach(function(c){
+    var v = +c.pnlNet||0; sum += v;
+    if(v>0){ win++; gp += v; } else { gl += -v; }
+    if(v>best) best=v;
+    if(v<worst) worst=v;
   });
-  saveAcct(a); closeSheet(); renderAcct(); toast('已开仓');
-  showPage('Acct');
+  return {n:n, win: n?win/n*100:0, pf: gl? gp/gl : (gp?99:0),
+          net:sum, best:best, worst:worst};
 }
-function doClose(t){
-  var a = acct();
-  var i = a.positions.findIndex(function(p){return p.t===t;});
-  if(i<0) return;
-  var p = a.positions[i];
-  var px = lastPx(p.sym, p.ct);
-  if(px==null){ toast('价格未加载，无法平仓'); return; }
-  var pnl = floatOf(p, px) - feeOf(p, p.entry) - feeOf(p, px);
-  p.feeTotal = (feeOf(p,p.entry)+feeOf(p,px));
-  a.feeTotal = Math.round((a.feeTotal + p.feeTotal)*100)/100;
-  a.closed.unshift({sym:p.sym, name:p.name, ct:p.ct, side:p.side, lots:p.lots,
-    entry:p.entry, exit:px, pnl:Math.round(pnl*100)/100, time:tsStr(),
-    sigId:p.sigId});
-  a.positions.splice(i,1);
-  saveAcct(a); renderAcct(); toast('已平仓');
+function rpSpark(a){
+  var pts = [0], s = 0;
+  a.closed.slice().reverse().forEach(function(c){ s += (+c.pnlNet||0); pts.push(s); });
+  if(pts.length < 2) return '';
+  var mn = Math.min.apply(null, pts), mx = Math.max.apply(null, pts);
+  var rng = (mx-mn) || 1, W = 300, H = 36, P = 2;
+  var d = pts.map(function(v,i){
+    var x = i/(pts.length-1)*W;
+    var y = H - P - (v-mn)/rng*(H-2*P);
+    return (i?'L':'M') + x.toFixed(1) + ' ' + y.toFixed(1);
+  }).join(' ');
+  var up = pts[pts.length-1] >= 0;
+  return '<svg class="rpspark" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'
+    + '<path d="'+d+'" fill="none" stroke="'+(up?'#e5484d':'#0ecb81')+'" stroke-width="1.6"/></svg>';
+}
+
+/* ---------- 模拟盘整页 ---------- */
+function rpAddCash(){
+  var s = prompt('追加金额（元，正数追加、负数取出）：', '10000');
+  if(s == null) return;
+  var v = parseFloat(s);
+  if(!isFinite(v) || v === 0){ toast('请输入有效金额'); return; }
+  var a = rpLoad();
+  a.add.push({t: Date.now(), amt: v, at: tsStr()});
+  rpSave(a); refreshRp(); toast('已'+(v>0?'追加':'取出')+' '+Math.abs(v).toLocaleString()+' 元');
+}
+function resetAcct(){
+  var a = rpLoad();
+  if(!confirm('确认清空盘感账户？将删除 '+a.open.length+' 个持仓 / '+a.closed.length+' 笔流水，且不可恢复。')) return;
+  rpSave({ver:1, start:100000, add:[], open:[], closed:[], seq:1, migrated:1, note:''});
+  refreshRp(); toast('账户已重置为 100,000 元');
 }
 function tsStr(){
   var d = new Date();
-  function z(x){return (x<10?'0':'')+x;}
-  return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())+' '+z(d.getHours())+':'+z(d.getMinutes());
-}
-function resetAcct(){
-  if(!confirm('确认清空模拟账户重新开始？')) return;
-  saveAcct(newAcct()); renderAcct(); toast('账户已重置');
+  function z(x){ return (x<10?'0':'')+x; }
+  return d.getFullYear()+'-'+z(d.getMonth()+1)+'-'+z(d.getDate())
+    + ' ' + z(d.getHours()) + ':' + z(d.getMinutes());
 }
 function renderAcct(){
-  var a = acct();
-  var unreal = 0, usedM = 0;
-  a.positions.forEach(function(p){
-    var px = lastPx(p.sym, p.ct);
-    if(px!=null) unreal += floatOf(p, px);
-    usedM += p.entry*p.mult*p.lots*p.margin;
-  });
-  var eq = a.start + closedSum(a) + unreal;
-  $('eqBig').textContent = Math.round(eq).toLocaleString();
-  $('eqBig').style.color = eq>=a.start? 'var(--up)':'var(--dn)';
-  var retPct = (eq/a.start-1)*100;
-  $('acctKv').innerHTML =
-    '<div class="dv"><div class="l">总收益率</div><div class="v '+cls(retPct)+'">'+sgn(retPct)+f2(retPct)+'%</div></div>'
-    +'<div class="dv"><div class="l">浮动盈亏</div><div class="v '+cls(unreal)+'">'+sgn(unreal)+Math.round(unreal)+'</div></div>'
-    +'<div class="dv"><div class="l">保证金占用</div><div class="v nt">'+Math.round(usedM)+'</div></div>'
-    +'<div class="dv"><div class="l">累计手续费</div><div class="v nt">'+f2(a.feeTotal)+'</div></div>';
+  var a = rpLoad();
+  rpWarm(a);
+  var eq = rpEquity(a), used = rpUsed(a), av = eq - used;
+  var base = (+a.start||0) + rpAddSum(a);
+  var ret = base ? (eq/base - 1)*100 : 0;
+  var fl = rpFloat(a), real = (a.closed||[]).reduce(function(t,c){ return t+(+c.pnlNet||0); }, 0);
+  if($('eqBig')){
+    $('eqBig').textContent = Math.round(eq).toLocaleString();
+    $('eqBig').style.color = eq >= base ? 'var(--up)' : 'var(--dn)';
+  }
+  if($('acctKv')){
+    $('acctKv').innerHTML =
+      '<div class="dv"><div class="l">总收益率</div><div class="v '+cls(ret)+'">'+sgn(ret)+f2(ret)+'%</div></div>'
+      + '<div class="dv"><div class="l">可用资金</div><div class="v nt">'+Math.round(av).toLocaleString()+'</div></div>'
+      + '<div class="dv"><div class="l">浮动盈亏</div><div class="v '+(fl>0?'up':fl<0?'dn':'nt')+'">'+sgn(fl)+Math.round(fl).toLocaleString()+'</div></div>'
+      + '<div class="dv"><div class="l">保证金占用</div><div class="v nt">'+Math.round(used).toLocaleString()+'</div></div>'
+      + '<div class="dv"><div class="l">已实现净盈亏</div><div class="v '+(real>0?'up':real<0?'dn':'nt')+'">'+sgn(real)+Math.round(real).toLocaleString()+'</div></div>'
+      + '<div class="dv"><div class="l">累计手续费</div><div class="v nt">'
+        + f2((a.closed||[]).reduce(function(t,c){ return t+(+c.feeOpen||0)+(+c.feeClose||0); },0)
+             + (a.open||[]).reduce(function(t,p){ return t+(+p.feeOpen||0); },0)) + '</div></div>'
+      + '<div class="dv"><div class="l">累计追加</div><div class="v nt">'+Math.round(rpAddSum(a)).toLocaleString()+'</div></div>'
+      + '<div class="dv"><div class="l">持仓 / 流水</div><div class="v nt">'+a.open.length+' / '+a.closed.length+'</div></div>';
+  }
 
-  $('myPos').innerHTML = a.positions.length? a.positions.map(function(p){
-    var px = lastPx(p.sym, p.ct);
-    var fl = px==null? null : floatOf(p,px);
-    var riskPct = px==null? null : ((p.stop/px-1)*100*p.side).toFixed(1);
-    return '<div class="posrow"><div class="fx">'
-      +'<div class="r1">'+p.name+' '+p.ct.slice(2)+' <span class="'+(p.side<0?'side-s':'side-l')+'">'
-      +(p.side<0?'空':'多')+'</span> '+p.lots+'手 @ '+f2(p.entry)+'</div>'
-      +'<div class="r2">最新 '+(px!=null?f2(px):'—')+' · 止损 '+f2(p.stop)+'（'
-      +(riskPct!=null? riskPct+'%':'—')+'） · '+p.time+'</div></div>'
-      +(fl!=null? '<div class="st"><div class="p '+cls(fl)+'">'+sgn(fl)+Math.round(fl)+'</div></div>':'')
-      +'<button class="btn gray" onclick="doClose('+p.t+')">平仓</button></div>';
-  }).join('') : '<div class="empty">暂无模拟持仓 · 在行情页点信号卡 → 模拟开仓</div>';
+  if($('myPos')){
+    $('myPos').innerHTML = a.open.length ? a.open.map(function(p){
+      var px = rpMarkAt(p.sym, RP.date);
+      var f = (px!=null) ? (px-p.entry)*p.side*p.mult*p.lots : null;
+      var pct = (px!=null) ? (px/p.entry - 1)*100*p.side : null;
+      return '<div class="posrow"><div class="fx">'
+        + '<div class="r1">'+p.name+' '+(p.ct==='0'?'主力连续':p.ct.slice(2))
+        + ' <span class="'+(p.side<0?'side-s':'side-l')+'">'+(p.side<0?'空':'多')+'</span> '
+        + p.lots+' 手 @ '+f2(p.entry)+'</div>'
+        + '<div class="r2">'+p.entryDate+' 开盘成交 · 现价 '+(px!=null?f2(px):'—')
+        + (pct!=null?(' · '+sgn(pct)+f2(pct)+'%'):'')
+        + ' · 保证金 '+Math.round(p.entry*p.mult*p.lots*(+p.margin||0.1)).toLocaleString()
+        + (p.src==='legacy'?' · 旧账本':'')+'</div></div>'
+        + (f!=null? '<div class="st"><div class="p '+cls(f)+'">'+sgn(f)+Math.round(f)+'</div></div>':'')
+        + '<button class="btn gray" onclick="rpJumpClose('+p.id+')">平仓</button></div>';
+    }).join('') : '<div class="empty">暂无持仓 · 回行情页点任意历史 K 线开始模拟</div>';
+  }
+
+  if($('rpStats')){
+    var st = rpStatCalc(a);
+    $('rpStats').innerHTML =
+      '<div class="kv" style="padding:0;grid-template-columns:repeat(4,1fr)">'
+      + '<div class="dv"><div class="l">笔数</div><div class="v">'+st.n+'</div></div>'
+      + '<div class="dv"><div class="l">胜率</div><div class="v">'+(st.n?f2(st.win)+'%':'—')+'</div></div>'
+      + '<div class="dv"><div class="l">盈亏比</div><div class="v">'+(st.n?f2(st.pf):'—')+'</div></div>'
+      + '<div class="dv"><div class="l">净盈亏</div><div class="v '+(st.net>0?'up':st.net<0?'dn':'nt')+'">'
+        + (st.net>=0?'+':'')+Math.round(st.net).toLocaleString()+'</div></div>'
+      + '</div>'
+      + '<div class="kv" style="padding:0;grid-template-columns:repeat(3,1fr);margin-top:6px">'
+      + '<div class="dv"><div class="l">最大单笔盈利</div><div class="v up">+'+Math.round(st.best).toLocaleString()+'</div></div>'
+      + '<div class="dv"><div class="l">最大单笔亏损</div><div class="v dn">'+Math.round(st.worst).toLocaleString()+'</div></div>'
+      + '<div class="dv"><div class="l">平均每笔</div><div class="v '+(st.n&&st.net/st.n>0?'up':st.n&&st.net/st.n<0?'dn':'nt')+'">'
+        + (st.n?((st.net/st.n>=0?'+':'')+Math.round(st.net/st.n)):'—')+'</div></div>'
+      + '</div>' + rpSpark(a)
+      + '<div class="rptip" style="padding-left:0;padding-right:0">统计口径：只统计已平仓；净盈亏已扣开、平两边手续费。</div>';
+  }
 
   var so = MAN.strategyOpen || [];
-  $('stratPos').innerHTML = so.length? so.map(function(p){
-    return '<div class="posrow"><div class="fx">'
-      +'<div class="r1">'+p.name+' <span class="'+(p.side==='short'?'side-s':'side-l')+'">'
-      +(p.side==='short'?'空':'多')+'</span> <span style="font-size:11px;color:var(--dim)">吊灯止损跟随</span></div>'
-      +'<div class="r2">确认 '+p.cd+' · 入 '+p.en+' · 止损 '+(p.ts!=null? f2(p.ts):f2(p.st))
-      +' · 最新 '+(p.last||'—')+' · 浮动 '+(p.float!=null? sgn(p.float)+f2(p.float)+'%':'—')
-      +' · 已持 '+(p.held!=null? p.held+' 天':'—')+'</div>'
-      +(Math.max(+(p.mfe||0), +(p.R||0)) >= 1.5
-        ? '<div style="color:#FFD400;font-size:11.5px;line-height:1.6;margin-top:3px">'
-          +'💡 利润已达 1.5 ATR，可手动将止损上移至开仓价保本（仅提示，不改吊灯 / MA26）</div>'
-          + apCtrl(p)
-        : '')
-      +'</div></div>';
-  }).join('') : '<div class="empty">当前无策略持仓</div>';
+  if($('stratPos')){
+    $('stratPos').innerHTML = so.length ? so.map(function(p){
+      return '<div class="posrow"><div class="fx">'
+        + '<div class="r1">'+p.name+' <span class="'+(p.side==='short'?'side-s':'side-l')+'">'
+        + (p.side==='short'?'空':'多')+'</span> <span style="font-size:11px;color:var(--dim)">吊灯止损跟随</span></div>'
+        + '<div class="r2">确认 '+p.cd+' · 入 '+p.en+' · 止损 '+(p.ts!=null? f2(p.ts):f2(p.st))
+        + ' · 最新 '+(p.last||'—')+' · 浮动 '+(p.float!=null? sgn(p.float)+f2(p.float)+'%':'—')
+        + ' · 已持 '+(p.held!=null? p.held+' 天':'—')+'</div>'
+        + (Math.max(+(p.mfe||0), +(p.R||0)) >= 1.5
+          ? '<div style="color:#FFD400;font-size:11.5px;line-height:1.6;margin-top:3px">'
+            + '💡 利润已达 1.5 ATR，可手动将止损上移至开仓价保本（仅提示，不改吊灯 / MA26）</div>'
+            + apCtrl(p)
+          : '')
+        + '</div></div>';
+    }).join('') : '<div class="empty">当前无策略持仓</div>';
+  }
 
-  $('closedList').innerHTML = a.closed.length? a.closed.slice(0,30).map(function(c){
-    return '<div class="posrow"><div class="fx">'
-      +'<div class="r1">'+c.name+' '+c.ct.slice(2)+' <span class="'+(c.side<0?'side-s':'side-l')+'">'
-      +(c.side<0?'空':'多')+'</span> '+c.lots+'手</div>'
-      +'<div class="r2">'+f2(c.entry)+' → '+f2(c.exit)+' · '+c.time+'</div></div>'
-      +'<div class="st"><div class="p '+cls(c.pnl)+'">'+sgn(c.pnl)+Math.round(c.pnl)+'</div></div></div>';
-  }).join('') : '<div class="empty">暂无平仓记录</div>';
+  if($('rpTradeCnt')){
+    $('rpTradeCnt').textContent = a.closed.length ? ('共 '+a.closed.length+' 笔 · 按平仓时间倒序') : '';
+  }
+  if($('closedList')){
+    $('closedList').innerHTML = a.closed.length ? a.closed.slice().reverse().slice(0,40).map(function(c){
+      var hold = (c.holdBars!=null) ? (' · 持 '+c.holdBars+' 根') : '';
+      return '<div class="posrow"><div class="fx">'
+        + '<div class="r1">'+c.name+' <span class="'+(c.side<0?'side-s':'side-l')+'">'
+        + (c.side<0?'空':'多')+'</span> '+c.lots+' 手</div>'
+        + '<div class="r2">'+c.entryDate+' 开 '+f2(c.entry)+' → '+c.exitDate+' 平 '+f2(c.exit)
+        + hold+' · 手续费 '+f2((+c.feeOpen||0)+(+c.feeClose||0))+'</div></div>'
+        + '<div class="st"><div class="p '+cls(c.pnlNet)+'">'+sgn(c.pnlNet)+Math.round(c.pnlNet)+'</div></div></div>';
+    }).join('') : '<div class="empty">暂无平仓记录</div>';
+  }
+
+  if($('rpIo')){
+    $('rpIo').innerHTML =
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">'
+      + '<button class="btn gray" onclick="rpExportJSON()">导出账本 JSON</button>'
+      + '<button class="btn gray" onclick="rpExportCSV()">导出流水 CSV</button>'
+      + '<button class="btn gray" onclick="rpImport()">导入账本</button>'
+      + '</div>'
+      + '<div class="rptip" style="padding-left:0;padding-right:0">'
+      + '账本只存在本机浏览器（localStorage · fxreplay_v1），换手机 / 换浏览器请先导出再导入。'
+      + (a.note?('<br>'+a.note):'')+'</div>';
+  }
+}
+function rpExportJSON(){
+  var a = rpLoad();
+  rpDownload('盘感账本_'+new Date().toISOString().slice(0,10)+'.json',
+    JSON.stringify(a, null, 2), 'application/json');
+}
+function rpExportCSV(){
+  var a = rpLoad();
+  var rows = [['开仓日','平仓日','品种','名称','方向','手数','开仓价','平仓价',
+               '持有K线','开仓手续费','平仓手续费','毛盈亏','净盈亏']];
+  a.closed.forEach(function(c){
+    rows.push([c.entryDate, c.exitDate, c.sym, c.name, c.side>0?'多':'空', c.lots,
+      c.entry, c.exit, (c.holdBars==null?'':c.holdBars),
+      f2(c.feeOpen), f2(c.feeClose), f2(c.pnlGross), f2(c.pnlNet)]);
+  });
+  var csv = '\ufeff' + rows.map(function(x){ return x.join(','); }).join('\n');
+  rpDownload('盘感流水_'+new Date().toISOString().slice(0,10)+'.csv', csv, 'text/csv;charset=utf-8');
+}
+function rpDownload(name, text, mime){
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type:mime}));
+  a.download = name;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+}
+function rpImport(){
+  var inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = '.json,application/json';
+  inp.onchange = function(){
+    var f = inp.files && inp.files[0];
+    if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){
+      try{
+        var o = JSON.parse(r.result);
+        if(!o || !o.ver){ toast('不是有效的盘感账本文件'); return; }
+        if(!confirm('导入将覆盖当前账本（当前 '+rpLoad().open.length+' 持仓 / '
+          + rpLoad().closed.length+' 笔流水），确定？')) return;
+        rpSave(o); refreshRp(); toast('账本已导入');
+      }catch(e){ toast('文件解析失败'); }
+    };
+    r.readAsText(f);
+  };
+  inp.click();
+}
+
+/* 信号详情里的「按此信号模拟」→ 直接定位到该信号日（T 日），
+   成交仍强制走 T+1 开盘，与手动点 K 线完全同一条路径。 */
+function simFromSig(key){
+  var s = findSig(key);
+  if(!s){ toast('信号未找到'); return; }
+  if(cur.pt !== 'D'){ toast('请先切到日线再模拟'); return; }
+  var bars = barsFor('D');
+  var i = dateIdx(bars.map(function(b){ return b[0]; }), s.date);
+  if(i == null){ toast('图上找不到该日 K 线'); return; }
+  closeSheet();
+  setTimeout(function(){ rpSheet(i); }, 80);
 }
 
 /* ================= 页面切换 / 主渲染 ================= */
@@ -2507,14 +3054,14 @@ function showPage(pg){
     $('pg'+k).classList.toggle('on', k===pg);
     $('nav'+k).classList.toggle('on', k===pg);
   });
+  var rb = $('rpBar');
+  if(rb) rb.classList.toggle('hide', pg !== 'Main');
+  if(document.body) document.body.classList.toggle('rpon', pg === 'Main');
   if(pg==='Acct'){
-    ['FG','SA','C','M','RB','TA','SR','I','SC','CU'].forEach(function(s){
-      if(KC[s+'|0']) return;
-    });
     renderAcct();
     renderApPanel();
   }
-  if(pg==='Main' && CH) CH.resize();
+  if(pg==='Main'){ renderRp(); if(CH) CH.resize(); }
 }
 function renderFlipBoard(){
   var box = $('flipBoard'); if(!box) return;
@@ -2622,7 +3169,7 @@ function renderRegime(){
 }
 function renderAll(){
   renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderSigs();
-  renderFlipBoard(); renderRegime();
+  renderFlipBoard(); renderRegime(); renderRp();
   // ?expand=1 深链接：直接展开两张雷达卡明细，方便对照 / 截图
   try{
     if(new URLSearchParams(location.search).get('expand') === '1'){
