@@ -37,12 +37,26 @@ import defend_rules
 import engine
 import engine_v21 as E21
 import mw_events
+import nightgate
 import regime_lib
 import sig_pack as SP
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(ROOT, "data")
 REPORTS = os.path.join(ROOT, "reports")
+
+
+def bj_now():
+    """北京时间（naive）。**必须用它，不能用 datetime.now()。**
+
+    v28.4 修的真 bug：GitHub runner 的本地时区是 UTC，`11:33`（北京）在容器里
+    是 `03:33`。旧代码用裸 `datetime.now()` 判「是否在 9:00-15:00 日盘时段」，
+    于是正式班次永远被判成「不在日盘时段」直接 return —— 11:33 这班实际上
+    从来没按盘中口径算过。历史那几次「成功」是因为 schedule 延迟到北京
+    19:22/19:37（UTC 11:22/11:37）才触发，恰好落进 UTC 的 9-15 区间，
+    算出来的是晚上拿全天数据拼的「临时日线」，口径是错的。
+    """
+    return nightgate.bj_now()
 
 REGIME_NM = {"trend_up": "上涨趋势", "trend_dn": "下跌趋势",
              "range": "震荡", "transition": "过渡态"}
@@ -67,7 +81,7 @@ def _f(v, d=0.0):
 def live_bar(sym, now=None):
     """用分钟线拼「今日到此刻」的临时日线。期货交易日含前夜盘：
     今日 bar = 昨夜 21:00-23:00 + 今日 09:00-11:30（此刻之前）。"""
-    now = now or _dt.datetime.now()
+    now = now or bj_now()
     try:
         mm = build.fetch_minute(sym + "0", 15)
     except Exception as e:                                   # noqa: BLE001
@@ -210,13 +224,15 @@ def html_of(hits, now):
 
 
 def run_live(dry=True):
-    now = _dt.datetime.now()
+    now = bj_now()
     # v26：盘中班只允许在日盘时段跑。
     # 本脚本的 live_bar() 把「今日 09:00 之后 + 昨日 21:00 之后」拼成一根 bar，
     # 若在 23:10 执行，会拼出「今日日盘 + 今晚夜盘」的混合体（且标成今日），
     # 那是脏数据、结论也是错的。夜盘请走 night_warn.py。
+    # v28.4：时段判定必须用北京时间。runner 是 UTC，用裸 now() 会让这班空转。
     if not (9 <= now.hour < 15):
-        print("当前 %s 不在日盘时段（09:00-15:00），盘中预警不执行。" % now.strftime("%H:%M"))
+        print("当前北京时间 %s 不在日盘时段（09:00-15:00），盘中预警不执行。"
+              % now.strftime("%Y-%m-%d %H:%M"))
         print("夜盘（21:00 之后）请用：python night_warn.py")
         return
     idx = json.load(open(os.path.join(DATA, "index.json"), encoding="utf-8"))
