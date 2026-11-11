@@ -17,7 +17,8 @@ GitHub 原生 schedule 是 best-effort：官方明说高负载会延迟，低活
     # 1) 只看不建：核对将要提交的任务清单
     python cron_setup.py --dry
 
-    # 2) 建任务（幂等：同名任务已存在就跳过，不会重复创建）
+    # 2) 建任务（幂等：同名任务已存在则 PATCH 校准配置，不会重复创建）
+    #    换 PAT / 改时间 / 补开通知，都是重复跑这一条命令。
     CRONJOB_API_KEY=xxxx  GH_PAT=ghp_xxxx  python cron_setup.py --apply
 
     # 3) 看现在有哪些任务、下次什么时候跑、上次什么结果
@@ -134,7 +135,9 @@ def job_payload(spec, pat):
                 },
                 "body": json.dumps({"event_type": spec["event"]}),
             },
-            "notifications": {
+            # v28.3：字段名是单数 `notification`（写 `notifications` 会被静默忽略，
+            # 表现为通知全部关掉、失败也不发邮件）。服务端回读可用于核对。
+            "notification": {
                 "onFailure": True,          # 失败发邮件（比微信安静，也不会半夜炸）
                 "onSuccess": False,
                 "onDisable": True,
@@ -182,26 +185,70 @@ def _ts(v):
         int(v), datetime.timezone(datetime.timedelta(hours=8))).strftime("%m-%d %H:%M")
 
 
+def _verify(key):
+    """建完/改完自动回读关键字段，避免「创建成功但字段被静默忽略」。
+
+    踩过的坑：通知字段写成复数 notifications 不会报错，只会被丢掉；
+    所以必须回读而不是相信 POST/PUT 的返回值。
+    """
+    import datetime
+    d = cron_req("GET", "/jobs", key)
+    jobs = {j.get("title"): j.get("jobId") for j in (d.get("jobs") or [])}
+    print("\n──────── 配置自检（服务端回读） ────────")
+    bad = 0
+    for s in JOBS:
+        jid = jobs.get(s["title"])
+        if not jid:
+            print("  ✗ %-32s 未找到" % s["title"])
+            bad += 1
+            continue
+        det = (cron_req("GET", "/jobs/%s" % jid, key) or {}).get("jobDetails") or {}
+        sc = det.get("schedule") or {}
+        nt = det.get("notification") or {}
+        checks = [
+            ("启用", det.get("enabled") is True),
+            ("POST", det.get("requestMethod") == 1),
+            ("时区", sc.get("timezone") == TZ),
+            ("时", sc.get("hours") == s["hours"]),
+            ("分", sc.get("minutes") == s["minutes"]),
+            ("周一~五", sc.get("wdays") == WD),
+            ("失败通知", nt.get("onFailure") is True),
+        ]
+        fails = [n for n, ok in checks if not ok]
+        nxt = det.get("nextExecution") or 0
+        when = datetime.datetime.fromtimestamp(
+            int(nxt), datetime.timezone(datetime.timedelta(hours=8))
+        ).strftime("%m-%d %H:%M %a") if nxt else "—"
+        if fails:
+            bad += 1
+            print("  ✗ %-32s 下次=%-14s 异常项: %s" % (s["title"], when, ",".join(fails)))
+        else:
+            print("  ✓ %-32s 下次=%s" % (s["title"], when))
+    print("──────── %s ────────" % ("全部通过" if not bad else "有 %d 项异常，见上" % bad))
+
+
 def do_apply(key, pat):
     d = cron_req("GET", "/jobs", key)
     have = {j.get("title"): j.get("jobId") for j in (d.get("jobs") or [])}
     print("账号下已有 %d 个任务，开始对账：\n" % len(have))
     for s in JOBS:
-        if s["title"] in have:
-            print("  ✓ 已存在，跳过  %s (id=%s)" % (s["title"], have[s["title"]]))
-            continue
         body = job_payload(s, pat)
-        # 先试 POST，个别版本只认 PUT
-        try:
-            r = cron_req("POST", "/jobs", key, body)
-        except SystemExit as e:
-            if "405" not in str(e):
-                raise
-            r = cron_req("PUT", "/jobs", key, body)
+        if s["title"] in have:
+            # v28.3：已存在不再「跳过」，而是 PATCH 成全量配置。
+            # 这样换 PAT / 改时间 / 补开通知，一条 --apply 就能自愈，
+            # 不必先 --remove 再 --apply（旧版跳过逻辑会让换 PAT 很别扭）。
+            jid = have[s["title"]]
+            cron_req("PATCH", "/jobs/%s" % jid, key, body)
+            print("  = 已校准        %s (id=%s)" % (s["title"], jid))
+            continue
+        # v28.3：cron-job.org 的 v1 API 新建任务用 PUT /jobs（不是 POST）。
+        # 实测 POST 返回的是 404 而非 405，所以不能再靠「405 才回退」判断。
+        r = cron_req("PUT", "/jobs", key, body)
         jid = r.get("jobId") or r.get("job", {}).get("jobId")
         print("  + 已创建        %s (id=%s)" % (s["title"], jid))
     print("\n完成。下面是从服务端读回来的真实配置：\n")
     do_list(key)
+    _verify(key)
 
 
 def do_remove(key):
