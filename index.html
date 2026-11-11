@@ -1599,6 +1599,9 @@ function renderChart(){
     }
     if(p.seriesName!=='信号' || !p.data) return;
     var d = p.data;
+    // v28.3：告诉下面的 ZR 层「这次点击已经被信号点消费了」。
+    // 买卖只在柱体上做，信号点保持原有的详情弹窗，两者不叠加、不互相抢。
+    window._markHitAt = Date.now();
     if(d.rpData)      rpDetail(d.rpData);                           // 金色 · 我自己的模拟单
     else if(d.pmData) openPlanMark(d.pmData);                       // ▮ 进/出方块 → 该笔回测详情
     else if(d.exData) openExitTrade(d.exData, d.exKind==='warn');  // 青◇ / 白箭头 → 离场复盘
@@ -1608,29 +1611,39 @@ function renderChart(){
     else if(d.defDate) openDef(d.defDate);
     else if(d.mwDate) openMw(d.mwDate);
   });
-  // v28：K 线很细，手指/鼠标点空白处也应能选中最近的一根 —— 用 zr 坐标反算。
-  // 实测 ECharts 5 对 candlestick 的自定义图形不派发 series click，所以这里
-  // 按「命中的 zrender 元素类型」分流：蜡烛本体 → 盘感下单；其它标记 → 交给上面的 series click。
+  // v28：K 线很细，手指/鼠标点缝隙、点空白也应能选中最近的一根 —— 用 zr 坐标反算。
+  // v28.3【bug 修复】这里原来是 `_zr.off('click')`。zrender 的 off(eventType) 不传
+  // handler 时会把【该事件类型的全部监听器】清掉 —— 包括 ECharts 内部注册的那一层。
+  // 后果：K 线点买卖正常（我们自己处理），但所有信号点的 series click 全部静默，
+  // 失效打叉 / 顶底 / 结构双顶 / 方案回测那几类详情都点不出来了。
+  // 正确做法：只摘掉我们上一次挂的那个 handler，不碰 ECharts 的。
   var _zr = CH.getZr();
-  _zr.off('click');
-  _zr.on('click', function(e){
-    var t = e.target, tp = t ? String(t.type || '') : '';
-    if(t && tp.indexOf('andlestick') < 0) return;
+  if(window._rpZrClick) _zr.off('click', window._rpZrClick);
+  window._rpZrClick = function(e){
     try{
       if(!CH.containPixel({gridIndex:0}, [e.offsetX, e.offsetY])) return;
+      var barsN = barsFor(cur.pt);
       // 注意：convertFromPixel 传数组给单轴会返回 null，必须传标量 x
       var xv = CH.convertFromPixel({xAxisIndex:0}, e.offsetX);
-      var barsN = barsFor(cur.pt);
       var i;
       if(typeof xv === 'string') i = dateIdx(barsN.map(function(b){ return b[0]; }), xv);
       else i = Math.round(+xv);
       if(i == null || !isFinite(i) || i < 0 || i >= barsN.length) return;
-      var now = Date.now();
-      if(window._rpAt && now - window._rpAt < 150) return;
-      window._rpAt = now;
-      rpSheet(i);
+      var fire = function(){
+        // 命中的是信号标记 → series click 已经弹了详情，这里不再叠买卖窗。
+        // 买卖只在柱体（含柱体之间的缝隙、同列的空白）上做，两套系统互不干扰。
+        if(window._markHitAt && Date.now() - window._markHitAt < 200) return;
+        var now = Date.now();
+        if(window._rpAt && now - window._rpAt < 150) return;
+        window._rpAt = now;
+        rpSheet(i);
+      };
+      var t = e.target, tp = t ? String(t.type || '') : '';
+      if(tp.indexOf('andlestick') >= 0) fire();       // 柱体本体，立即响应
+      else setTimeout(fire, 0);                       // 缝隙 / 空白：让 series click 先跑完再判
     }catch(err){}
-  });
+  };
+  _zr.on('click', window._rpZrClick);
   // ?focus= 只执行一次，避免切换品种/周期时被反复拉回
   if(_FOCUS_PEND){
     var _f = _FOCUS_PEND; _FOCUS_PEND = null;
@@ -2585,6 +2598,13 @@ function rpSheet(idx){
   var bars = barsFor('D');
   if(!bars.length){ toast('暂无日线数据'); return; }
   if(idx == null || idx < 0 || idx >= bars.length) return;
+  // v28.3：一次点击可能同时被 series click 和 zr click 送到这里，同一根柱体
+  // 短时间重复打开会把你调好的手数拨回 1 —— 做一次幂等保护。
+  var _t0 = Date.now();
+  if(window._rpSheetAt && _t0 - window._rpSheetAt < 150
+     && window._RP && window._RP.idx === idx
+     && $('mask') && $('mask').classList.contains('on')) return;
+  window._rpSheetAt = _t0;
   var b = bars[idx], prod = rpProd(cur.sym), a = rpLoad();
   var hasNext = idx < bars.length - 1;
   var fillPx = hasNext ? bars[idx+1][1] : null;
