@@ -66,9 +66,24 @@ def asof_str(now=None):
 
 
 def _asof_trim(rows):
-    """丢掉日期晚于 asof 的行（夜盘半截 bar / 未完成日线）。"""
+    """丢掉日期晚于 asof 的行（夜盘半截 bar / 未完成日线）。
+
+    v28.1 补充：分钟线的夜盘 bar 被数据源标成【当天日期 + 21:00 之后】，
+    只按日期比较会把这些其实属于【下一交易日】的夜盘 bar 留下来 —— 实测
+    2026-11-11 21:08 那一班就在 m15 / m60 里留下了 21:15 与 22:00 两根。
+    日盘 15:00 收盘，所以「同一天里时间晚于 15:00 的分钟线」一定是夜盘，
+    与 asof 同一天时一并剔除。日线只有日期没有时间，不受影响。
+    """
     a = asof_str()
-    return [r for r in rows if (r.get("d") or "")[:10] <= a]
+    out = []
+    for r in rows:
+        d = r.get("d") or ""
+        if not d or d[:10] > a:
+            continue
+        if len(d) > 10 and d[:10] == a and d[11:19] > "15:00:00":
+            continue
+        out.append(r)
+    return out
 
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
