@@ -45,6 +45,16 @@ jobs:
       - name: 检查线上数据新鲜度，必要时派发正式班次
         run: python guard_watch.py
 
+      # v29：收盘终检。只由外部定时器（cron-job.org 20:30）以 mode=final 触发，
+      # GitHub schedule 的迟到班次不推送，避免一天重复几次打扰。
+      # 达标静默；built 没刷新 / 7 品种末根不齐 → 推一条运维微信（用户 2026-11-12 要求）。
+      - name: 收盘终检（北京 20:20 后）· 不达标推微信
+        if: github.event_name == 'repository_dispatch' && github.event.client_payload.mode == 'final'
+        env:
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python ops_alert.py --final
+
       - name: 确认没有污染正式数据
         run: |
           if [ -n "$(git status --porcelain)" ]; then

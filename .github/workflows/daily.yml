@@ -164,3 +164,17 @@ jobs:
           echo "      或当日日线尚未由数据源放出。"
           echo "处理：密集 cron 网格保证后续必有班次落进窗口；落进窗口且数据到位即自动写盘。"
           echo "      本班不产生任何文件改动。"
+
+      # v29：班次真失败时必须让用户知道（用户 2026-11-12 要求）。
+      # 这天出现过连续几班失败却全程静默：数据源没出 / 抓取残缺 / engine 崩溃，
+      # Actions 里只有红叉。这里的告警只报故障，不涉及交易信号。
+      - name: 失败告警（微信）
+        if: failure()
+        env:
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python ops_alert.py --job-failed "daily-scan 有步骤失败（run ${{ github.run_id }}）"
+
+      - name: 失败告警兜底说明
+        if: failure()
+        run: echo "::error::本班有环节失败，已通过 PushPlus 推送运维告警；详见上方失败步骤日志。"

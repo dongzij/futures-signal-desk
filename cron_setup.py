@@ -92,6 +92,15 @@ JOBS = [
         "note": "兜底。guard_watch 核对线上 7 品种是否已是当日日线，没到位就自己补跑一次。",
     },
     {
+        # v29（用户 2026-11-12 要求）：白天补不回来时必须让他知道。
+        # 20:30 已过 20:00 禁写时段，所以这一班只做终检 + 告警，不再尝试写盘。
+        "title": "期货信号·收盘终检 20:30（不达标才推微信）",
+        "event": "data-watchdog",
+        "payload": {"mode": "final"},
+        "hours": [20], "minutes": [30],
+        "note": "只读终检。达标静默；built 没刷新或 7 品种末根不齐 → 推一条运维告警微信。",
+    },
+    {
         "title": "期货信号·晚班尾单 21:53（静默）",
         "event": "daily-scan",
         "hours": [21], "minutes": [53],
@@ -101,6 +110,15 @@ JOBS = [
 
 
 # ------------------------------------------------------------------ 工具
+
+def _body(spec):
+    """仓库派发请求体。带 payload 的任务（如收盘终检 mode=final）必须把
+    client_payload 一并送过去，guard.yml 靠它区分「补触发」与「终检告警」。"""
+    b = {"event_type": spec["event"]}
+    if spec.get("payload"):
+        b["client_payload"] = spec["payload"]
+    return json.dumps(b)
+
 
 def _mask(s):
     if not s:
@@ -150,7 +168,7 @@ def job_payload(spec, pat):
                     "Content-Type": "application/json",
                     "User-Agent": "cron-job.org",
                 },
-                "body": json.dumps({"event_type": spec["event"]}),
+                "body": _body(spec),
             },
             # v28.3：字段名是单数 `notification`（写 `notifications` 会被静默忽略，
             # 表现为通知全部关掉、失败也不发邮件）。服务端回读可用于核对。
@@ -222,6 +240,10 @@ def _verify(key):
         det = (cron_req("GET", "/jobs/%s" % jid, key) or {}).get("jobDetails") or {}
         sc = det.get("schedule") or {}
         nt = det.get("notification") or {}
+        try:
+            sent = json.loads((det.get("extendedData") or {}).get("body") or "{}")
+        except Exception:                                      # noqa: BLE001
+            sent = {}
         checks = [
             ("启用", det.get("enabled") is True),
             ("POST", det.get("requestMethod") == 1),
@@ -230,6 +252,8 @@ def _verify(key):
             ("分", sc.get("minutes") == s["minutes"]),
             ("周一~五", sc.get("wdays") == WD),
             ("失败通知", nt.get("onFailure") is True),
+            ("事件", sent.get("event_type") == s["event"]),
+            ("载荷", (sent.get("client_payload") or {}) == (s.get("payload") or {})),
         ]
         fails = [n for n, ok in checks if not ok]
         nxt = det.get("nextExecution") or 0
