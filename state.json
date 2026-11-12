@@ -25432,13 +25432,13 @@
   "HC|pred|2026-09-14",
   "HC|confirm|2026-09-18"
  ],
- "runs": 15,
+ "runs": 16,
  "xsigSeen": [
   "P|2026-11-10|suggest",
   "P|2026-11-11|suggest"
  ],
  "scanDate": "2026-11-12",
- "updated": "2026-11-12 12:10",
+ "updated": "2026-11-12 12:17",
  "stats": {
   "pred": 61,
   "open": 4,
@@ -26338,7 +26338,7 @@
  "breaker": {
   "rule": "单笔浮亏 ≥ 30% 本金（约 3,000 元）→ 无条件手动平仓",
   "thresholdYuan": 3000,
-  "checkedAt": "2026-11-12 12:10",
+  "checkedAt": "2026-11-12 12:17",
   "hits": []
  },
  "bigMwSeen": [],
