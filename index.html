@@ -1002,11 +1002,17 @@ function visibleContractsFor(doc, sym){
   var FWD = 3; /* 主力连续之外再显示 3 个主约：最近主力 + 之后两个远约 */
   var keep = {};
   seq.slice(0, FWD).forEach(function(x){ keep[x] = 1; });
-  return (doc.contracts || []).filter(function(c){
+  var out = (doc.contracts || []).filter(function(c){
     var id = c.id || "";
     var yymm = parseInt(id.slice(2), 10);
     return id.length >= 6 && !isNaN(yymm) && keep[yymm];
   });
+  /* 主约窗口内但数据尚未生成的合约也占位显示（点击时若无数据会提示，不报错） */
+  seq.slice(0, FWD).forEach(function(x){
+    var has = out.some(function(c){ return parseInt((c.id||"").slice(2),10) === x; });
+    if(!has) out.push({ id: sym + ("" + x), oi: null });
+  });
+  return out;
 }
 function selectSym(sym){
   cur.sym = sym; cur.ct = '0'; cur.pt = 'D';
