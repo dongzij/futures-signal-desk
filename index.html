@@ -974,6 +974,40 @@ function renderSymChips(){
   var hint = $('symSortHint');
   if(hint){ hint.textContent = '按最近 1 年净收益从大到小排序（口径：该品种定稿方案 · 1万本金 · 含30%熔断；徽标即该数字）'; }
 }
+
+/* [合约筛选 v28.8] 只显示 主力连续 + 最近主力 + 之后两个远约（共 4 个），按浏览器日期自动轮动。
+   主约月份取自 build.py 的 MONTHS（与后端一致）；非 1/5/9 品种（HC=1/5/10 等）同样适用。
+   纯前端只读过滤，不碰任何底层数据/账本/信号/雷达。 */
+var MAIN_MONTHS = {
+  RB:[1,5,10],HC:[1,5,10],WR:[1,5,10],RU:[1,5,9],BU:[1,5,9],SP:[1,5,9],FU:[1,5,9],
+  M:[1,5,9],Y:[1,5,9],P:[1,5,9],A:[1,5,9],B:[1,5,9],C:[1,5,9],CS:[1,5,9],JD:[1,5,9],
+  L:[1,5,9],V:[1,5,9],PP:[1,5,9],EG:[1,5,9],J:[1,5,9],JM:[1,5,9],TA:[1,5,9],MA:[1,5,9],
+  SR:[1,5,9],CF:[1,5,9],FG:[1,5,9],SA:[1,5,9],UR:[1,5,9],PF:[1,5,9],SM:[1,5,9],SF:[1,5,9],
+  AP:[1,5,10],AU:[6,12],AG:[6,12]
+};
+function visibleContractsFor(doc, sym){
+  var months = MAIN_MONTHS[sym] || [1,5,9];
+  var now = new Date();
+  var curYYMM = (now.getFullYear() % 100) * 100 + (now.getMonth() + 1);
+  var seq = [], y = Math.floor(curYYMM / 100), lim = y + 4;
+  while(y <= lim){
+    for(var k = 0; k < months.length; k++){
+      var mm = months[k];
+      var yymm = (y % 100) * 100 + mm;
+      if(yymm >= curYYMM) seq.push(yymm);
+    }
+    y++;
+  }
+  seq.sort(function(a, b){ return a - b; });
+  var FWD = 3; /* 主力连续之外再显示 3 个主约：最近主力 + 之后两个远约 */
+  var keep = {};
+  seq.slice(0, FWD).forEach(function(x){ keep[x] = 1; });
+  return (doc.contracts || []).filter(function(c){
+    var id = c.id || "";
+    var yymm = parseInt(id.slice(2), 10);
+    return id.length >= 6 && !isNaN(yymm) && keep[yymm];
+  });
+}
 function selectSym(sym){
   cur.sym = sym; cur.ct = '0'; cur.pt = 'D';
   renderSymChips();
@@ -982,7 +1016,7 @@ function selectSym(sym){
     if(!doc){ $('quote').innerHTML='品种数据加载失败'; return; }
     DOC = doc;
     $('ctChips').innerHTML = ['<div class="chip on" onclick="selectCt(\'0\')">主力连续</div>']
-      .concat(doc.contracts.map(function(c){
+      .concat(visibleContractsFor(doc, cur.sym).map(function(c){
         return '<div class="chip" onclick="selectCt(\''+c.id+'\')">'+c.id.slice(2)+'<small>'
           + fmtN(c.oi) + '</small></div>';
       })).join('');
