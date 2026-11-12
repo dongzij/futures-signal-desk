@@ -22,6 +22,7 @@ import extreme_gate
 import mw_events
 import regime_lib
 import sig_pack as SP
+from nightgate import bj_now
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dist", "data")
 EXIT_ALL = []      # 跨品种出场成交汇总（算全局胜率/净 R）
@@ -70,10 +71,68 @@ SIG_NM = {"pred": "顶底雷达", "warn": "进场预警", "mw": "WM结构",
 DAILY_YEARS = 10         # 主力连续日线回看年数（支撑年/月/周视图）
 MAX_CONTRACTS = 8        # 每品种最多打包的合约数
 KEEP_MIN = 40            # 合约至少要有多少根日线才收录
+MEMBER_MIN = 20          # 主力轮动栏入选的最低日线根数（够画 MA20 即可，不因新挂牌被误杀）
+MEMBER_AHEAD = 3         # 主力连续之后，保留几个「将来会成为主力」的合约
 
 
-def probe_contracts(sym, back=2, ahead=14):
-    """探测可交易月合约（全部12个月都试，玻璃等品种是连续挂牌）。"""
+def _ct_ym(cid):
+    """"FG2701" → 202701，可直接比大小的年月整数。"""
+    try:
+        return (2000 + int(cid[-4:-2])) * 100 + int(cid[-2:])
+    except Exception:                                       # noqa: BLE001
+        return 0
+
+
+def probe_main_contracts(sym):
+    """【v29 主力轮动栏】当前主力 + 往后 3 个会成为主力的合约（共 4 个按钮）。
+
+    规则（用户 2026-11-12 拍板）：
+      · 只认该品种的主力月份 —— 复用 build.MONTHS 这一既有真源
+        （FG/MA/M/Y/P/SM = 1/5/9，HC = 1/5/10），非主力月份（如 FG2612）一律不进栏，
+        也不占用打包体积；
+      · 当前主力 = 尚未进入交割月、持仓量最大的合约，与 panama_adjust 判主力的口径一致；
+      · 之后按同一周期依次取下一批主力月份，只收「已挂牌且有真实持仓量」的，
+        未挂牌的自然跳过（如 2026-11 的 FG2801 尚未挂牌 → 该品种暂时只有 3 个按钮）；
+      · 每次构建重算：旧合约进交割月自动让位，新远月挂牌后自动补位，无需人工维护。
+    返回顺序为「当前主力 → 远月」，供前端按序渲染。
+    """
+    months = build.MONTHS.get(sym) or list(range(1, 13))
+    now = bj_now()
+    cur_ym = now.year * 100 + now.month
+    cands = []
+    for k in range(-8, 31):        # 往前 8 个月兜底（主力尚未切换）、往后 30 个月覆盖 4 个主力月
+        mm = now.month + k
+        yy = now.year + (mm - 1) // 12
+        mm = (mm - 1) % 12 + 1
+        if mm not in months:
+            continue
+        cands.append("%s%02d%02d" % (sym, yy % 100, mm))
+
+    info = {}
+    for cid in cands:
+        try:
+            bars = build.fetch_daily(cid)
+        except Exception:                                   # noqa: BLE001
+            bars = []
+        if not bars:
+            continue
+        oi = bars[-1].get("oi") or 0
+        if len(bars) < MEMBER_MIN and oi <= 0:              # 刚挂牌、还没量也没持仓 → 等它长起来
+            continue
+        info[cid] = {"n": len(bars), "last": bars[-1]["d"], "oi": oi}
+
+    # 已进入交割月（或已交割）的合约不能再当主力
+    tradable = [c for c in cands if c in info and _ct_ym(c) > cur_ym]
+    if not tradable:                                        # 极端兜底：数据全缺时按持仓量排
+        return sorted(info, key=lambda c: -info[c]["oi"])[:MEMBER_AHEAD + 1]
+
+    front = max(tradable, key=lambda c: info[c]["oi"])
+    seq = sorted(tradable, key=_ct_ym)
+    return [front] + seq[seq.index(front) + 1:][:MEMBER_AHEAD]
+
+
+def probe_contracts(sym, back=2, ahead=8):
+    """旧口径：探测全部可交易月（保留给历史脚本调用，线上主流程已改用主力轮动栏）。"""
     now = datetime.now()
     got = []
     for k in range(-back, ahead + 1):
@@ -247,8 +306,9 @@ def build_product(sym):
         return None
 
     # ---- 2) 月合约 ----
-    contracts = probe_contracts(sym)
-    print("   合约:", ", ".join(contracts))
+    # v29：主力轮动栏 = 当前主力 + 往后 3 个会成为主力的合约，非主力月份不收录
+    contracts = probe_main_contracts(sym)
+    print("   合约(主力轮动 %d):" % len(contracts), ", ".join(contracts))
     cmeta = []
     for cid in contracts:
         bars = build.fetch_daily(cid)
@@ -259,13 +319,14 @@ def build_product(sym):
             "id": cid, "n": len(bars),
             "first": bars[0]["d"], "last": last["d"],
             "c": last["c"], "oi": last.get("oi") or 0,
+            "front": not cmeta,          # v29：列表首位即当前主力
         })
     if not cmeta:
         return None
-    # 分钟线：只给活跃合约（持仓前4名 + 到期最近的2个），控制体积
-    active = sorted(cmeta, key=lambda x: -x["oi"])[:4]
-    near = sorted(cmeta, key=lambda x: x["id"])[-2:]
-    min_ids = {c["id"] for c in active} | {c["id"] for c in near}
+    # 分钟线全给这 4 个合约（原来 6 个：持仓前4 + 到期最近2，现在更省）
+    min_ids = {c["id"] for c in cmeta}
+    if cmeta:
+        print("   当前主力:", cmeta[0]["id"], "持仓 %d" % cmeta[0]["oi"])
 
     # ---- 3) 信号（日线来自 state.json；周/月用同一方法在聚合K线上现算）----
     S_main = engine.make_S(main)
@@ -602,6 +663,8 @@ def build_product(sym):
     # ---- 5) 写合约K线文件 ----
     for cid in contracts:
         bars = build.fetch_daily(cid)
+        if not bars:                                     # 兜底路径可能带进空合约，别写空文件
+            continue
         doc2 = {"sym": sym, "id": cid, "d": bars_to_arr(bars)}
         for t in (60, 15):
             if cid in min_ids:
