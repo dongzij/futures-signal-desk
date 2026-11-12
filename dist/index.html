@@ -463,9 +463,7 @@ body.rpon{padding-bottom:142px}
         <span style="color:#FFE94A;font-weight:700">◆ 强烈离场</span>
         <span style="color:#ff8a3d">┄ MA26 离场线</span>
         <span style="color:#4c8dff">— MA34 趋势线</span>
-        <span style="color:#4CC9F0;font-weight:800">▮进多</span>
-        <span style="color:#C77DFF;font-weight:800">▮进空</span>
-        <span style="color:#E8EEFA;font-weight:800">▮出（方案平仓）</span></div>
+        <span style="color:#FFD400;font-weight:800">● 我多/我空（盘感模拟成交）</span></div>
       <div id="defNav" class="defnav"></div>
     </div>
     <!-- v26：路况唯一显示在行情条 #regimeBox（横向两行），旧的 K 线下方大字卡已合并下线 -->
@@ -474,7 +472,7 @@ body.rpon{padding-bottom:142px}
       <div class="siglegend">
         <span class="slbtn" onclick="toggleSigLegend()">ⓘ 图上标记对照 <span id="slArrow">▾</span></span>
         <div class="slbody hide" id="slBody">
-          <div class="slrow"><span class="slk">图上点开</span><span>蓝▼/紫▲、灰◆ → 信号明细；○ 白圈 → 失效明细；★ 金▲/紫▼ → 结构形态；<b>黄◆ → 离场原因</b>；青◇ / 白箭头 → 离场复盘；<b>▮方块 → 方案该笔回测详情</b>。鼠标悬停（手机长按）先看文字提示。</span></div>
+          <div class="slrow"><span class="slk">图上点开</span><span>蓝▼/紫▲、灰◆ → 信号明细；○ 白圈 → 失效明细；★ 金▲/紫▼ → 结构形态；<b>黄◆ → 离场原因</b>；青◇ / 白箭头 → 离场复盘；<b>金色 ● → 我自己的盘感模拟成交</b>（点开看那一笔盈亏）。鼠标悬停（手机长按）先看文字提示。</span></div>
           <div class="slrow"><span class="slk">列表里看</span><span>反转预警 / 顶底到位 / 失效 → 本栏；方案逐笔账本 → 策略持仓看板；雷达口径离场线 → 出场雷达。</span></div>
           <div class="slrow"><span class="slk warnc">研究参考</span><span>🏔 大结构与转折确认形态的归档行统一带 <b class="archTag">[研究参考·非建仓指令]</b>，只记形态、无任何操作字眼；大结构随第⑤通道做信息推送，小结构只归档不推。</span></div>
           <div class="slrow"><span class="slk">口径提醒</span><span>本栏恒为日线归档；切到周 / 月 / 分钟线时标题旁会亮起警示，图上标记随周期变、本栏不变。</span></div>
@@ -1114,15 +1112,6 @@ function tipFoot(t){ return '<div style="color:#8a95a8;font-size:10.5px;margin-t
 function markTip(d){
   if(!d) return '';
   var H = '<div style="font-size:12px;font-weight:700;color:#e8eefa;margin-bottom:3px">';
-  if(d.pmData){
-    var m = d.pmData;
-    return H+'▮ 方案回测记录 · '+tipEsc(m.d)+'</div>'
-      + tipLine('记录端 <b>'+(m.t==='in'?'起始':'结束')+'</b> · 形态 '+tipEsc(m.k))
-      + tipLine('价格 '+tipEsc(m.px)
-        + (m.net!=null?' · 净 '+tipEsc(m.net)+' 元':'')
-        + (m.bars!=null?' · 持有 '+tipEsc(m.bars)+' 根':''))
-      + tipFoot('点击看该笔回测详情');
-  }
   if(d.exData){
     var t = d.exData;
     return H+(d.exKind==='warn'?'◇ 盘整预警':'➤ 实际离场')+' · '+tipEsc(t.d)+'</div>'
@@ -1149,26 +1138,6 @@ function markTip(d){
   if(d.mwDate) return H+'★ 结构双顶/底 · '+tipEsc(d.mwDate)+'</div>'
     + tipLine('点击看形态明细') + tipFoot(ARCH_TAG);
   return '';
-}
-function openPlanMark(m){
-  var html = '<h3>▮ 方案回测 · 该笔明细 <span onclick="closeSheet()">关闭 ✕</span></h3>';
-  html += '<div style="font-size:11px;color:#8a95a8;line-height:1.7;margin-bottom:8px">'
-    + tipEsc(DOC.name)+' · '+tipEsc(m.d)+' · 来自定稿方案在 v21 引擎上的真实回测账本，'
-    + '与「策略持仓看板」逐笔清单同源。</div>';
-  html += '<div class="frow"><span>记录端</span><b>'+(m.t==='in'?'起始':'结束')+'</b></div>';
-  html += '<div class="frow"><span>触发形态</span><b>'+tipEsc(m.k)+'</b></div>';
-  html += '<div class="frow"><span>方向标记</span><b>'
-    + (m.side==='short'?'空头方向':'多头方向')+'</b></div>';
-  html += '<div class="frow"><span>成交价</span><b>'+tipEsc(m.px)+'</b></div>';
-  if(m.net!=null) html += '<div class="frow"><span>该笔净额</span><b style="color:'
-    + (m.net>=0?'#ff6b6f':'#2ee6a0')+'">'+(m.net>=0?'+':'')+tipEsc(m.net)+' 元</b></div>';
-  if(m.bars!=null) html += '<div class="frow"><span>持有根数</span><b>'
-    + tipEsc(m.bars)+' 根</b></div>';
-  html += '<div style="margin-top:10px;padding:8px 10px;background:rgba(255,176,32,.10);'
-    + 'border-left:3px solid #FFB020;border-radius:4px;font-size:11.5px;line-height:1.7;'
-    + 'color:#FFB020"><b>'+ARCH_TAG+'</b><br>历史回测记录，不构成任何操作指令；'
-    + '实盘以定稿方案的 ②🔥方案内信号 与出场线为准。</div>';
-  $('sheet').innerHTML = html; $('mask').classList.add('on');
 }
 function openExitSignal(h){
   var html = '<h3>◆ 顶底到位预警 · 离场原因 <span onclick="closeSheet()">关闭 ✕</span></h3>';
@@ -1434,38 +1403,10 @@ function renderChart(){
       }
     });
   }
-  // ===== v22：方案进出标识（最外层）=====
-  // 每一笔都来自该品种定稿方案在 v21 引擎上的真实回测结果（DOC.plan.marks），
-  // 不是事后标注：进场=信号次日开盘，出场=防守/底线/熔断三者之一。
-  // 放在信号层之外（±2.1ATR 进 / ±2.95ATR 出），与原始信号标记分带显示，互不遮挡。
-  if(cur.pt==='D' && DOC.plan && DOC.plan.marks){
-    var WHY={defend:'失效',xsig_strong:'强离场',ma_exit:'破MA26',chandelier:'吊灯',
-             stop30:'熔断',max_hold:'到期',flip:'反手'};
-    (DOC.plan.marks||[]).forEach(function(m){
-      var ix=dateIdx(dates,m.d); if(ix==null) return;
-      var a=A(ix), b=bars[ix], isS=(m.side==='short');
-      if(m.t==='in'){
-        var yin = isS ? (b[2] + 2.1*a) : (b[3] - 2.1*a);
-        marks.push({value:[ix,yin], pm:'in', pmData:m,
-          symbol:'roundRect', symbolSize:[30,17], z:12,
-          itemStyle:{color: isS? '#3b1e6e':'#0b3444',
-                     borderColor: isS? '#C77DFF':'#4CC9F0', borderWidth:1.5,
-                     shadowBlur:8, shadowColor: isS? 'rgba(199,125,255,.65)':'rgba(76,201,240,.65)'},
-          label:{show:true, position:'inside', formatter: isS?'进空':'进多',
-                 color: isS? '#E9D5FF':'#C8F0FA', fontSize:10, fontWeight:800}});
-      }else{
-        var yout = isS ? (b[2] + 2.95*a) : (b[3] - 2.95*a);
-        var wnm = WHY[m.k] || m.k || '出';
-        var col = (m.k==='stop30')? '#FF2D2D'
-                : (m.k==='defend'||m.k==='xsig_strong')? '#E8EEFA' : '#ff8a3d';
-        marks.push({value:[ix,yout], pm:'out', pmData:m,
-          symbol:'roundRect', symbolSize:[34,16], z:11,
-          itemStyle:{color:'rgba(11,14,19,.88)', borderColor:col, borderWidth:1.3},
-          label:{show:true, position:'inside', formatter:'出·'+wnm,
-                 color:col, fontSize:9.5, fontWeight:700}});
-      }
-    });
-  }
+  // ===== v22 方案回测标识已下架（2026-11-12 用户拍板）=====
+  // 用户要求 K 线图上只保留「真实预警/信号」+「自己手动的盘感模拟成交」，
+  // 方案逐笔回测账本改由「策略持仓看板」面板与「信号栏」列表承载（仍读 DOC.plan.marks），
+  // 不再画在图上，避免与真实预警混淆。
   // v15：全量失效导航 —— 总数 / 最近一次 / 默认窗口内可见数 + 一键铺满 10 年
   var dn = $('defNav');
   if(dn){
@@ -1603,7 +1544,6 @@ function renderChart(){
     // 买卖只在柱体上做，信号点保持原有的详情弹窗，两者不叠加、不互相抢。
     window._markHitAt = Date.now();
     if(d.rpData)      rpDetail(d.rpData);                           // 金色 · 我自己的模拟单
-    else if(d.pmData) openPlanMark(d.pmData);                       // ▮ 进/出方块 → 该笔回测详情
     else if(d.exData) openExitTrade(d.exData, d.exKind==='warn');  // 青◇ / 白箭头 → 离场复盘
     else if(d.srcData) openExitSignal(d.srcData);                  // 黄◆ → 具体离场原因
     else if(d.vacSig) openSig(d.vacSig);                           // 动能真空 → 原信号
