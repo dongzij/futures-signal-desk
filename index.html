@@ -465,7 +465,9 @@ body.rpon{padding-bottom:142px}
         <span style="color:#4c8dff">— MA34 趋势线</span>
         <span style="color:#4CC9F0;font-weight:800">▮进多</span>
         <span style="color:#C77DFF;font-weight:800">▮进空</span>
-        <span style="color:#E8EEFA;font-weight:800">▮出（方案平仓）</span></div>
+        <span style="color:#E8EEFA;font-weight:800">▮出（方案平仓）</span>
+        <span style="color:#cfd6e2">⬇ 破位顺势·空</span>
+        <span style="color:#cfd6e2">⬆ 破位顺势·多</span></div>
       <div id="defNav" class="defnav"></div>
     </div>
     <!-- v26：路况唯一显示在行情条 #regimeBox（横向两行），旧的 K 线下方大字卡已合并下线 -->
@@ -1244,6 +1246,57 @@ function toggleSigLegend(){
   b.classList.toggle('hide');
   var a = $('slArrow'); if(a) a.textContent = b.classList.contains('hide')?'▾':'▴';
 }
+
+/* ===== v28.7 破位顺势预警（纯前端只读叠加，不改底层账本） =====
+   口径与离线回测 breakout_alert.py 完全一致：
+     · 唐奇安20日突破：收盘跌破过去20根最低价(low) → 做空预警；
+                       收盘突破过去20根最高价(high) → 做多预警。
+     · MA34 闸门：做空需 MA34 斜率向下 或 收盘<MA34；做多需 MA34 斜率向上。
+     · 路况过滤：causal_regime 判为「震荡」或「na」不报，只在过渡态/明确趋势报。
+     · 同侧10根冷却防刷屏。
+   全部在浏览器内用日线 base().d 计算；不写文件、不改信号/账本/推送/交易引擎。 */
+function bSma(xs,n){ var out=[],ss=0; for(var i=0;i<xs.length;i++){ ss+=xs[i]; if(i>=n) ss-=xs[i-n]; out.push(i>=n-1? ss/n : null); } return out; }
+function bAtr(bars){ var trs=[],out=[],N=14,i,q,ss,h,l,pc;
+  for(i=0;i<bars.length;i++){ h=bars[i][2]; l=bars[i][3]; pc=i>0?bars[i-1][4]:bars[i][1];
+    trs.push(Math.max(h-l, Math.abs(h-pc), Math.abs(l-pc))); }
+  if(bars.length<N) return out;
+  ss=0; for(q=0;q<N;q++) ss+=trs[q]; ss/=N; out[N-1]=ss;
+  for(i=N;i<bars.length;i++) out[i]=(out[i-1]*(N-1)+trs[i])/N;
+  for(i=0;i<N-1;i++) out[i]=ss; return out; }
+function bAt(S,i){ var a=S.atr[i]; return a?a:1e-9; }
+function bCross(bars,S,t,w){ var cnt=0,prev=null,m;
+  for(var j=Math.max(0,t-w+1);j<=t;j++){ m=S.ma34[j]; if(!m) continue;
+    var sg=bars[j][4]>m?1:-1; if(prev!==null&&sg!==prev) cnt++; prev=sg; } return cnt; }
+function bIsRange(bars,S,t){ var W=20; if(t<W+34) return false;
+  var seg=bars.slice(t-W+1,t+1), hi=seg[0][2], lo=seg[0][3], mid=0;
+  for(var x=0;x<seg.length;x++){ hi=Math.max(hi,seg[x][2]); lo=Math.min(lo,seg[x][3]); mid+=seg[x][4]; }
+  mid/=seg.length; var amp=(hi-lo)/mid, cr=bCross(bars,S,t,W), mt=S.ma34[t], mp=S.ma34[t-W];
+  if(!mt||!mp) return false; var rel=Math.abs(mt-mp)/((hi-lo)||1);
+  return (amp<0.10)&&(cr>=3)&&(rel<0.50); }
+function bRegime(bars,S,t){ if(t<60) return 'na'; var w=20, mt=S.ma34[t], mp=S.ma34[t-w];
+  var a=bAt(S,t); if(!mt||!mp) return 'na'; var slope=(mt-mp)/a;
+  var seg=bars.slice(t-w+1,t+1), ext_hi=seg[0][2], ext_lo=seg[0][3];
+  for(var x=0;x<seg.length;x++){ ext_hi=Math.max(ext_hi,seg[x][2]); ext_lo=Math.min(ext_lo,seg[x][3]); }
+  var c=bars[t][4], up_amp=ext_lo? c/ext_lo-1:0, dn_amp=ext_hi? 1-c/ext_hi:0;
+  if(Math.abs(slope)>=0.8){ var room=slope>0?up_amp:dn_amp;
+    if(room>=0.12 || room*c>=3.0*a) return slope>0?'trend_up':'trend_dn'; }
+  if(bIsRange(bars,S,t)) return 'range'; return 'transition'; }
+function breakoutScan(daily){ var n=daily.length, closes=[], i, j, S, hi20=[], lo20=[], sigs=[], lastS=-999, lastL=-999, N=20, COOL=10;
+  for(i=0;i<n;i++) closes.push(daily[i][4]);
+  S={ma34:bSma(closes,34), atr:bAtr(daily)};
+  for(i=N;i<n;i++){ var h=-1e15,l=1e15; for(j=i-N;j<i;j++){ if(daily[j][2]>h)h=daily[j][2]; if(daily[j][3]<l)l=daily[j][3]; } hi20[i]=h; lo20[i]=l; }
+  for(i=0;i<n;i++){ if(hi20[i]==null) continue; var m34=S.ma34[i], a=S.atr[i]; if(!m34||!a) continue;
+    var sl=(i>=N&&S.ma34[i-N])?(m34-S.ma34[i-N])/a:0, c=daily[i][4], reg=bRegime(daily,S,i);
+    if(reg==='range'||reg==='na') continue;
+    if(c<lo20[i] && (sl<0||c<m34) && (i-lastS)>COOL){ sigs.push({i:i,d:daily[i][0],side:-1}); lastS=i; }
+    else if(c>hi20[i] && sl>0 && (i-lastL)>COOL){ sigs.push({i:i,d:daily[i][0],side:1}); lastL=i; } }
+  return sigs; }
+function breakoutTip(d){ if(!d) return '';
+  return '<div style="font-size:12px;font-weight:700;color:#e8eefa">'+tipEsc(d.lbl)+'</div>'
+    + '<div style="font-size:11px;line-height:1.7;margin-top:2px">'+tipEsc(d.d)
+    + '<br>开 '+tipEsc(d.o)+' · 收 '+tipEsc(d.cl)
+    + '<br>低 '+tipEsc(d.l)+' · 高 '+tipEsc(d.h)+'</div>'
+    + '<div style="color:#8a95a8;font-size:10px;margin-top:3px">[预警·非建仓指令·不改底层账本]</div>'; }
 function renderChart(){
   if(typeof echarts==='undefined') return;
   var bars = barsFor(cur.pt);
@@ -1549,6 +1602,34 @@ function renderChart(){
        lineStyle:{color:'rgba(232,238,250,.20)', type:'dashed', width:1},
        data: defXs.map(function(d){ return {xAxis:d}; }).concat(defLinks).concat(rpLinks)}}
   ];
+  // ===== v28.7 破位顺势预警（纯前端只读叠加，不碰底层账本）=====
+  (function(){
+    try{
+      var _bd = base().d, _bo = breakoutScan(_bd), _bs=[], _bl=[];
+      for(var _s=0;_s<_bo.length;_s++){
+        var sg=_bo[_s], pos=-1, lo=0, hi=dates.length-1;
+        while(lo<=hi){ var mid=(lo+hi)>>1; if(dates[mid]<=sg.d){pos=mid;lo=mid+1;} else hi=mid-1; }
+        if(pos<0) continue;
+        var bar=bars[pos], rng=(bar[2]-bar[3])||1, off=rng*0.7;
+        var yv = sg.side<0 ? bar[3]-off : bar[2]+off;
+        var pt={value:[dates[pos], +yv.toFixed(2)], side:sg.side, d:sg.d,
+          lbl: sg.side<0?'\u{1F680} 破位顺势·空':'\u{1F680} 破位顺势·多',
+          o:bar[1],h:bar[2],l:bar[3],cl:bar[4]};
+        (sg.side<0?_bs:_bl).push(pt);
+      }
+      series.push({name:'破位空', type:'scatter', data:_bs, z:16, cursor:'pointer',
+        symbol:'path://M -0.18,-1 L 0.18,-1 L 0.18,-0.15 L 0.5,-0.15 L 0,0.9 L -0.5,-0.15 L -0.18,-0.15 Z',
+        symbolSize:16, itemStyle:{color:'#0d0f13', borderColor:'rgba(255,255,255,.5)', borderWidth:1.2},
+        label:{show:true, position:'bottom', distance:3, color:'#e8eefa', fontSize:10,
+          formatter:function(pp){return pp.data.lbl;}}, labelLayout:{hideOverlap:true}});
+      series.push({name:'破位多', type:'scatter', data:_bl, z:16, cursor:'pointer',
+        symbol:'path://M -0.18,1 L 0.18,1 L 0.18,0.15 L 0.5,0.15 L 0,-0.9 L -0.5,0.15 L -0.18,0.15 Z',
+        symbolSize:16, itemStyle:{color:'#0d0f13', borderColor:'rgba(255,255,255,.5)', borderWidth:1.2},
+        label:{show:true, position:'top', distance:3, color:'#e8eefa', fontSize:10,
+          formatter:function(pp){return pp.data.lbl;}}, labelLayout:{hideOverlap:true}});
+    }catch(e){}
+  })();
+
   CH.setOption({
     animation:false,
     // v26.2 模块一：全局 tooltip —— 悬停 / 手机长按先看文字，再点开看明细。
@@ -1558,7 +1639,8 @@ function renderChart(){
       padding:[7,10], textStyle:{color:'#e8eefa',fontSize:11},
       extraCssText:'max-width:320px;border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,.5);',
       formatter:function(p){
-        if(p.seriesName==='信号') return markTip(p.data);
+        if(p.seriesName==='破位空'||p.seriesName==='破位多') return breakoutTip(p.data);
+  if(p.seriesName==='信号') return markTip(p.data);
         if(p.seriesName==='K'){
           var v = p.value || p.data;
           if(!Array.isArray(v)) return '';
