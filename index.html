@@ -1613,18 +1613,18 @@ function renderChart(){
         var bar=bars[pos], rng=(bar[2]-bar[3])||1, off=rng*0.7;
         var yv = sg.side<0 ? bar[3]-off : bar[2]+off;
         var pt={value:[dates[pos], +yv.toFixed(2)], side:sg.side, d:sg.d,
-          lbl: sg.side<0?'\u{1F680} 破位顺势·空':'\u{1F680} 破位顺势·多',
+          lbl: sg.side<0?'🚀 破位顺势·空':'🚀 破位顺势·多',
           o:bar[1],h:bar[2],l:bar[3],cl:bar[4]};
         (sg.side<0?_bs:_bl).push(pt);
       }
       series.push({name:'破位空', type:'scatter', data:_bs, z:16, cursor:'pointer',
         symbol:'path://M -0.18,-1 L 0.18,-1 L 0.18,-0.15 L 0.5,-0.15 L 0,0.9 L -0.5,-0.15 L -0.18,-0.15 Z',
-        symbolSize:16, itemStyle:{color:'#0d0f13', borderColor:'rgba(255,255,255,.5)', borderWidth:1.2},
+        symbolSize:26, itemStyle:{color:'#000000', borderColor:'rgba(255,255,255,.6)', borderWidth:1.4},
         label:{show:true, position:'bottom', distance:3, color:'#e8eefa', fontSize:10,
           formatter:function(pp){return pp.data.lbl;}}, labelLayout:{hideOverlap:true}});
       series.push({name:'破位多', type:'scatter', data:_bl, z:16, cursor:'pointer',
         symbol:'path://M -0.18,1 L 0.18,1 L 0.18,0.15 L 0.5,0.15 L 0,-0.9 L -0.5,0.15 L -0.18,0.15 Z',
-        symbolSize:16, itemStyle:{color:'#0d0f13', borderColor:'rgba(255,255,255,.5)', borderWidth:1.2},
+        symbolSize:26, itemStyle:{color:'#000000', borderColor:'rgba(255,255,255,.6)', borderWidth:1.4},
         label:{show:true, position:'top', distance:3, color:'#e8eefa', fontSize:10,
           formatter:function(pp){return pp.data.lbl;}}, labelLayout:{hideOverlap:true}});
     }catch(e){}
