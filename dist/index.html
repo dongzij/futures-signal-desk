@@ -166,6 +166,10 @@ white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:0 1 auto;min-widt
 .rgb .rallow{font-size:9.5px;color:#7fb3ff;line-height:1.3;white-space:nowrap;
 overflow:hidden;text-overflow:ellipsis;min-width:0}
 .rgb .rquiet{font-size:9px;color:#ff9a9d;line-height:1.3;white-space:nowrap}
+/* v30 叠加：资金背离状态灯（只显示） */
+.rgb .dlamp{display:inline-block;padding:2px 9px;border-radius:10px;
+  background:rgba(255,138,61,.14);border:1px solid #ff8a3d;color:#ff8a3d;
+  font-size:10px;font-weight:700;line-height:1.5;cursor:help}
 .rgb .rver{font-size:9.5px;color:#9aa7ba;line-height:1.3;white-space:nowrap;flex:0 0 auto}
 /* 高盈亏比品种（如锰硅 G4）：盈亏比当主角、胜率退为脚注——低胜率高赔率，不拿胜率当卖点 */
 .rgb .rpf{color:#FFD400;font-weight:800;font-size:9.5px;letter-spacing:.2px;margin-left:2px;
@@ -463,6 +467,7 @@ body.rpon{padding-bottom:142px}
         <span style="color:#FFE94A;font-weight:700">◆ 强烈离场</span>
         <span style="color:#ff8a3d">┄ MA26 离场线</span>
         <span style="color:#4c8dff">— MA34 趋势线</span>
+        <span style="color:#ff8a3d;font-weight:800">⚠ 顶风险确认（资金背离）</span>
         <span style="color:#FFD400;font-weight:800">● 我多/我空（盘感模拟成交）</span></div>
       <div id="defNav" class="defnav"></div>
     </div>
@@ -472,7 +477,7 @@ body.rpon{padding-bottom:142px}
       <div class="siglegend">
         <span class="slbtn" onclick="toggleSigLegend()">ⓘ 图上标记对照 <span id="slArrow">▾</span></span>
         <div class="slbody hide" id="slBody">
-          <div class="slrow"><span class="slk">图上点开</span><span>蓝▼/紫▲、灰◆ → 信号明细；○ 白圈 → 失效明细；★ 金▲/紫▼ → 结构形态；<b>黄◆ → 离场原因</b>；青◇ / 白箭头 → 离场复盘；<b>金色 ● → 我自己的盘感模拟成交</b>（点开看那一笔盈亏）。鼠标悬停（手机长按）先看文字提示。</span></div>
+          <div class="slrow"><span class="slk">图上点开</span><span>蓝▼/紫▲、灰◆ → 信号明细；○ 白圈 → 失效明细；★ 金▲/紫▼ → 结构形态；<b>黄◆ → 离场原因</b>；青◇ / 白箭头 → 离场复盘；<b>橙⚠ → 顶部风险确认（资金背离）</b>；<b>金色 ● → 我自己的盘感模拟成交</b>（点开看那一笔盈亏）。鼠标悬停（手机长按）先看文字提示。</span></div>
           <div class="slrow"><span class="slk">列表里看</span><span>反转预警 / 顶底到位 / 失效 → 本栏；方案逐笔账本 → 策略持仓看板；雷达口径离场线 → 出场雷达。</span></div>
           <div class="slrow"><span class="slk warnc">研究参考</span><span>🏔 大结构与转折确认形态的归档行统一带 <b class="archTag">[研究参考·非建仓指令]</b>，只记形态、无任何操作字眼；大结构随第⑤通道做信息推送，小结构只归档不推。</span></div>
           <div class="slrow"><span class="slk">口径提醒</span><span>本栏恒为日线归档；切到周 / 月 / 分钟线时标题旁会亮起警示，图上标记随周期变、本栏不变。</span></div>
@@ -1112,6 +1117,14 @@ function tipFoot(t){ return '<div style="color:#8a95a8;font-size:10.5px;margin-t
 function markTip(d){
   if(!d) return '';
   var H = '<div style="font-size:12px;font-weight:700;color:#e8eefa;margin-bottom:3px">';
+  if(d.divEv){
+    var e = d.divEv;
+    return H+'⚠ 顶部风险确认 · '+tipEsc(e.d)+'</div>'
+      + tipLine('收盘 '+tipEsc(e.px)+' · 跌破前 10 日最低价')
+      + tipLine('近 7 天背离 '+tipEsc(e.lampDays)+' 天'
+        + (e.oiDrop!=null ? ' · 10 日持仓变动 '+e.oiDrop+'%' : ''))
+      + tipFoot('资金背离雷达 · 风险确认，非做空指令');
+  }
   if(d.exData){
     var t = d.exData;
     return H+(d.exKind==='warn'?'◇ 盘整预警':'➤ 实际离场')+' · '+tipEsc(t.d)+'</div>'
@@ -1138,6 +1151,25 @@ function markTip(d){
   if(d.mwDate) return H+'★ 结构双顶/底 · '+tipEsc(d.mwDate)+'</div>'
     + tipLine('点击看形态明细') + tipFoot(ARCH_TAG);
   return '';
+}
+/* v30：点 ⚠ → 顶部风险确认明细（资金背离雷达 L2） */
+function openDivAlert(ev){
+  var html = '<h3>⚠ 顶部风险确认 · '+tipEsc(ev.d)+' <span onclick="closeSheet()">关闭 ✕</span></h3>';
+  html += '<div style="font-size:11px;color:#8a95a8;line-height:1.7;margin-bottom:8px">'
+    + tipEsc(DOC.name)+' · 资金背离雷达（v30 叠加层）</div>';
+  html += '<div class="frow"><span>触发条件</span><b>收盘 '+tipEsc(ev.px)
+    +' 跌破前 10 日最低价</b></div>';
+  html += '<div class="frow"><span>背离背景</span><b>近 7 天 '+tipEsc(ev.lampDays)
+    +' 天「价高位＋持仓萎缩」</b></div>';
+  html += '<div class="frow"><span>10 日持仓</span><b>'
+    + (ev.oiDrop!=null ? '变动 '+tipEsc(ev.oiDrop)+'%' : '—')+'</b></div>';
+  html += '<div style="margin-top:10px;padding:8px 10px;background:rgba(255,138,61,.10);'
+    + 'border-left:3px solid #ff8a3d;border-radius:4px;font-size:11.5px;line-height:1.7;'
+    + 'color:#ff8a3d"><b>含义</b><br>无资金支持的上涨出现破位：多头获利了结、没有新资金接盘。'
+    + '这是风险确认而非做空指令——持仓多单应收紧防守（吊灯 3ATR / MA26 照常执行），'
+    + '空单决策仍以既有信号为准。<br>该口径 10 年 7 品种仅 25 次，'
+    + '触发后 20 根内跌 ≥3ATR 的比例约 45%（基线 30%）；不响不代表没有顶。</div>';
+  $('sheet').innerHTML = html; $('mask').classList.add('on');
 }
 function openExitSignal(h){
   var html = '<h3>◆ 顶底到位预警 · 离场原因 <span onclick="closeSheet()">关闭 ✕</span></h3>';
@@ -1475,6 +1507,21 @@ function renderChart(){
     });
   }
 
+  // ===== v30 叠加：资金背离 L2 确认标记（橙色倒三角 ⚠，只读 DOC.divradar） =====
+  // 这是真实预警（用户 2026-11-12 拍板上线），与方案回测无关；不改动任何既有标记。
+  if(cur.pt==='D' && DOC.divradar && DOC.divradar.events){
+    DOC.divradar.events.forEach(function(ev){
+      var ix = dateIdx(dates, ev.d); if(ix==null) return;
+      var a = A(ix), b = bars[ix];
+      marks.push({value:[ix, b[2] + 1.7*a], divEv:ev,
+        symbol:'triangle', symbolSize:9, z:11, rotation:Math.PI,
+        itemStyle:{color:'rgba(255,138,61,.92)', borderColor:'#0B0E13', borderWidth:1},
+        label:{show:true, position:'top', formatter:'⚠', fontSize:11,
+               color:'#ff8a3d', fontWeight:800,
+               textBorderColor:'#0B0E13', textBorderWidth:2.5}});
+    });
+  }
+
   var series = [
     {name:'K', type:'candlestick', data:k, barMaxWidth:14,     itemStyle:{color:'#e5484d', color0:'#0ecb81', borderColor:'#e5484d', borderColor0:'#0ecb81'}},
     {name:'MA10', type:'line', data:m10, symbol:'none', lineStyle:{width:1,color:'#f5a524'}},
@@ -1544,6 +1591,7 @@ function renderChart(){
     // 买卖只在柱体上做，信号点保持原有的详情弹窗，两者不叠加、不互相抢。
     window._markHitAt = Date.now();
     if(d.rpData)      rpDetail(d.rpData);                           // 金色 · 我自己的模拟单
+    else if(d.divEv)  openDivAlert(d.divEv);                        // ⚠ → 顶部风险确认（v30）
     else if(d.exData) openExitTrade(d.exData, d.exKind==='warn');  // 青◇ / 白箭头 → 离场复盘
     else if(d.srcData) openExitSignal(d.srcData);                  // 黄◆ → 具体离场原因
     else if(d.vacSig) openSig(d.vacSig);                           // 动能真空 → 原信号
@@ -3112,8 +3160,20 @@ function renderRegime(){
   var el = $('regimeBox'); if(!el) return;
   var p = DOC.plan || {}, rg = p.regime;
   var mini = $('mktMini');
+  // v30 叠加：资金背离状态灯（只显示，不干预任何信号；规则见 div_radar.py）
+  var _dr = DOC.divradar;
+  var _lampOn = !!(_dr && _dr.lamp && _dr.lamp.on);
+  var _lampHtml = '<div class="rrow"><span class="dlamp" title="近 7 天有 '
+    + ((_dr && _dr.lamp && _dr.lamp.days) || '3+') + ' 天收盘处于 20 日高位区而持仓量萎缩'
+    + '——上涨缺乏新增资金支持。仅为状态提示，不构成信号；破位确认见图上 ⚠ 标记。">'
+    + '⚠ 无量上行 · 资金撤退中（近7天 ' + ((_dr && _dr.lamp && _dr.lamp.days) || '') + ' 天）</span></div>';
   if(!rg){
-    el.style.display = 'none';
+    if(_lampOn){
+      el.className = 'rgb tr'; el.style.display = 'flex';
+      el.innerHTML = _lampHtml;
+    } else {
+      el.style.display = 'none';
+    }
     if(mini) mini.style.display = 'none';
     return;
   }
@@ -3146,7 +3206,8 @@ function renderRegime(){
             ? '<span class="rquiet">静默 · 不推信号</span>'
             : '<span class="rallow">✓ '+rg.allow+'</span>')
       + '</div>'
-      + regimeEvidence(rg);        // v26：第三行默认收起，顶部 ⓘ 展开
+      + regimeEvidence(rg)        // v26：第三行默认收起，顶部 ⓘ 展开
+      + (_lampOn ? _lampHtml : '');  // v30 叠加：资金背离状态灯（尾部追加，不动原结构）
 }
 function renderAll(){
   renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderSigs();

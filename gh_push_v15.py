@@ -166,6 +166,8 @@ def collect():
         "index.html", "echarts.min.js", ".nojekyll",
         "state.json", "config.ci.json", "README.md", "LIVE_LOG.md",
         "engine.py", "daily.py", "data_build.py", "defend_rules.py",
+        # ---- v30：资金背离雷达（data_build / daily 都 import，漏发会 ImportError）----
+        "div_radar.py",
         # ---- v27.1：CI 真实依赖闭环。build.py / cyc.py 此前只在线上历史遗留，
         #      不在清单 → 本地改了不会同步（本次就改了 build.py 的取数重试）。
         #      fresh_guard / guard_watch / ci_audit / guard.yml 是自愈与审计入口。----

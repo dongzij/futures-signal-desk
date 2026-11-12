@@ -22,6 +22,7 @@ import extreme_gate
 import mw_events
 import regime_lib
 import sig_pack as SP
+import div_radar          # v30 叠加层：资金背离雷达（只读 OHLC+OI，不改任何信号）
 from nightgate import bj_now
 
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dist", "data")
@@ -660,6 +661,11 @@ def build_product(sym):
     except Exception as e:                              # noqa: BLE001
         print("   plan 构建失败 %s: %s" % (sym, e))
         doc["plan"] = {}
+    # v30 叠加：资金背离雷达（L1 状态灯 + L2 确认事件）。纯只读，失败不影响主档。
+    try:
+        doc["divradar"] = div_radar.scan(main)
+    except Exception as e:                              # noqa: BLE001
+        print("   divradar 构建失败 %s: %s" % (sym, e))
     json.dump(doc, open(os.path.join(OUT, "%s.json" % sym), "w",
                         encoding="utf-8"), ensure_ascii=False,
               separators=(",", ":"))

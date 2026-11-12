@@ -20,6 +20,7 @@ import urllib.parse
 import urllib.request
 
 import defend_rules
+import div_radar          # v30 叠加层：资金背离雷达（不改任何既有信号）
 import engine
 import extreme_gate
 import mw_events
@@ -883,13 +884,52 @@ def main():
         ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
         print("push exit-warn:", ok)
 
+    # ---------- v30 叠加：资金背离 L2 确认（并入第⑤通道，不新增通道） ----------
+    # 规则见 div_radar.py。只认"确认事件日=今天"的全新事件；state["divSeen"] 去重。
+    div_fresh = []
+    seen_div = state.setdefault("divSeen", [])
+    if not first:
+        for c in codes:
+            try:
+                rr = div_radar.scan(engine_bars(c))
+            except Exception as e:                          # noqa: BLE001
+                print("divradar %s failed: %s" % (c, e), file=sys.stderr)
+                continue
+            evs = [e for e in rr.get("events", []) if e.get("d") == today]
+            if not evs:
+                continue
+            key = "%s|%s" % (c, today)
+            if key in seen_div or not allow_push(c):
+                continue
+            seen_div.append(key)
+            div_fresh.append({"sym": c, "ev": evs[-1]})
+        state["divSeen"] = seen_div[-300:]
+
     # ---------- 推送：独立出场信号（顶/底）＋ v26.2 大级别结构双顶/底 ----------
     # v25：出场类通道，**不过路况闸门**——震荡市顶/底雷达照样推，只是不推进场。
     # v26.2：仍是第 ⑤ 条通道、仍是一次 post_push，只是消息里多了一种「大结构」事件，
     #        与顶底预警同一优先级、同一版式；小结构不进这条消息。
-    if (xs_fresh or big_mw_fresh) and push_token:
+    # v30：再叠加「⚠ 顶部风险确认」（资金背离雷达 L2），同样不新增通道。
+    if (xs_fresh or big_mw_fresh or div_fresh) and push_token:
         site = cfg.get("siteUrl", "")
         cards = []
+        for r in div_fresh:
+            ev = r["ev"]
+            cards.append(
+                '<div style="margin-bottom:16px">'
+                '<div style="font-size:16px;font-weight:700;color:#ff8a3d">'
+                '⚠ 顶部风险确认：%s %s</div>'
+                '<div style="background:#fff7ed;padding:10px;border-radius:6px;'
+                'font-size:13px;line-height:1.9;margin-top:6px">'
+                '触发日 <b>%s</b> · 收盘 <b>%s</b> 跌破前 10 日最低价<br>'
+                '背景：近 7 天 <b>%s</b> 天「价高位＋持仓萎缩」背离'
+                '（10 日持仓 %s）<br>'
+                '<span style="color:#666;font-size:12px">含义：无资金支持的上涨出现破位。'
+                '这是风险确认而非做空指令——持仓多单应收紧防守（吊灯 / MA26 照常），'
+                '空单决策仍以既有信号为准。</span></div></div>'
+                % (r["sym"], engine.NAMES.get(r["sym"], ""), ev.get("d"), ev.get("px"),
+                   ev.get("lampDays"),
+                   ('变动 %s%%' % ev["oiDrop"]) if ev.get("oiDrop") is not None else '—'))
         for r in xs_fresh:
             col = "#dc2626" if r["level"] == "strong" else "#d97706"
             lvl = "强烈建议离场" if r["level"] == "strong" else "建议减仓"
@@ -952,9 +992,12 @@ def main():
                 len(big_mw_fresh), "、".join(
                     "%s%s" % (r.get("sym"), "双顶" if r.get("dir") == "顶部" else "双底")
                     for r in big_mw_fresh)))
+        if div_fresh:
+            parts.append("⚠ 顶风险确认 %d 条：%s" % (
+                len(div_fresh), "、".join(r["sym"] for r in div_fresh)))
         title = " · ".join(parts)
         ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
-        print("push xsig:", ok, "big-mw:", len(big_mw_fresh))
+        print("push xsig:", ok, "big-mw:", len(big_mw_fresh), "div:", len(div_fresh))
 
     # ---------- v25：旧的「趋势确认（tf）」推送已删除 ----------
     # 原来是第 6 条通道（📈 趋势确认 N 条），走 engine.tf_live 的独立 v9 逻辑。
