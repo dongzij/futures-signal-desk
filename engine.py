@@ -979,6 +979,15 @@ def day1_fail(bars, S, i, exp):
 
 
 def _pivot(bars, lo, hi, w=3, high=False):
+    # v28.5 边界修复：一个 pivot 要成立，必须左右各 w 根 K 线都存在。
+    # 调用方 swing_ref 传的 hi = _trend_start(...)，它可能返回 len(bars)
+    # （趋势起点正好是最后一根 K 线）。此时 k = hi-1 = n-1，读 bars[k+w]
+    # 直接 IndexError，整条日更在 signal_meta → struct_break → swing_ref 处崩掉。
+    # 钳制点：k + w <= n - 1，即 hi <= n - w，只在数组末端那几根不判定 pivot
+    # （它们本来就没有右侧确认，不可能是合格 pivot）。
+    # 当 hi <= n - w 时 min() 是恒等变换，已有信号的判定结果一个字节都不变。
+    n = len(bars)
+    hi = min(hi, n - w)
     for k in range(hi - 1, max(lo + w, w), -1):
         if high:
             if all(bars[k]["h"] >= bars[k - j]["h"] for j in range(1, w + 1)) and \
