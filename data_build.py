@@ -72,7 +72,7 @@ MAX_CONTRACTS = 8        # 每品种最多打包的合约数
 KEEP_MIN = 40            # 合约至少要有多少根日线才收录
 
 
-def probe_contracts(sym, back=2, ahead=8):
+def probe_contracts(sym, back=2, ahead=14):
     """探测可交易月合约（全部12个月都试，玻璃等品种是连续挂牌）。"""
     now = datetime.now()
     got = []
