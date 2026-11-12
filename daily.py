@@ -895,41 +895,54 @@ def main():
             except Exception as e:                          # noqa: BLE001
                 print("divradar %s failed: %s" % (c, e), file=sys.stderr)
                 continue
-            evs = [e for e in rr.get("events", []) if e.get("d") == today]
-            if not evs:
-                continue
-            key = "%s|%s" % (c, today)
-            if key in seen_div or not allow_push(c):
-                continue
-            seen_div.append(key)
-            div_fresh.append({"sym": c, "ev": evs[-1]})
+            evs_top = [e for e in rr.get("events", {}).get("top", []) if e.get("d") == today]
+            evs_bot = [e for e in rr.get("events", {}).get("bottom", []) if e.get("d") == today]
+            for side, evs in (("top", evs_top), ("bottom", evs_bot)):
+                if not evs:
+                    continue
+                key = "%s|%s|%s" % (c, side, today)
+                if key in seen_div or not allow_push(c):
+                    continue
+                seen_div.append(key)
+                div_fresh.append({"sym": c, "side": side, "ev": evs[-1]})
         state["divSeen"] = seen_div[-300:]
 
     # ---------- 推送：独立出场信号（顶/底）＋ v26.2 大级别结构双顶/底 ----------
     # v25：出场类通道，**不过路况闸门**——震荡市顶/底雷达照样推，只是不推进场。
     # v26.2：仍是第 ⑤ 条通道、仍是一次 post_push，只是消息里多了一种「大结构」事件，
     #        与顶底预警同一优先级、同一版式；小结构不进这条消息。
-    # v30：再叠加「⚠ 顶部风险确认」（资金背离雷达 L2），同样不新增通道。
+    # v30b：再叠加「⚠ 顶/底风险确认」（资金背离雷达 L2，顶底对称），同样不新增通道。
     if (xs_fresh or big_mw_fresh or div_fresh) and push_token:
         site = cfg.get("siteUrl", "")
         cards = []
         for r in div_fresh:
             ev = r["ev"]
+            if r["side"] == "top":
+                head = "⚠ 顶部风险确认：%s %s" % (r["sym"], engine.NAMES.get(r["sym"], ""))
+                hcol, bgcol = "#ff8a3d", "#fff7ed"
+                broke = "收盘 <b>%s</b> 跌破前 10 日最低价" % ev.get("px")
+                bg = ("背景：近 7 天 <b>%s</b> 天「价高位＋持仓萎缩」背离"
+                      "（10 日持仓 %s）" % (ev.get("lampDays"),
+                       ('变动 %s%%' % ev["oiDrop"]) if ev.get("oiDrop") is not None else '—'))
+                meaning = ("含义：无资金支持的上涨出现破位。这是风险确认而非做空指令——"
+                           "持仓多单应收紧防守（吊灯 / MA26 照常），空单决策仍以既有信号为准。")
+            else:
+                head = "⚠ 底部风险确认：%s %s" % (r["sym"], engine.NAMES.get(r["sym"], ""))
+                hcol, bgcol = "#2563eb", "#eff6ff"
+                broke = "收盘 <b>%s</b> 升破前 10 日最高价" % ev.get("px")
+                bg = ("背景：近 7 天 <b>%s</b> 天「价低位＋持仓溃散」背离"
+                      "（10 日持仓 %s）" % (ev.get("lampDays"),
+                       ('变动 %s%%' % ev["oiDrop"]) if ev.get("oiDrop") is not None else '—'))
+                meaning = ("含义：抛压耗尽、持仓溃散后的低位出现突破。这是风险确认而非做多指令——"
+                           "持仓空单应收紧防守（吊灯 / MA26 照常），多单决策仍以既有信号为准。")
             cards.append(
                 '<div style="margin-bottom:16px">'
-                '<div style="font-size:16px;font-weight:700;color:#ff8a3d">'
-                '⚠ 顶部风险确认：%s %s</div>'
-                '<div style="background:#fff7ed;padding:10px;border-radius:6px;'
+                '<div style="font-size:16px;font-weight:700;color:%s">%s</div>'
+                '<div style="background:%s;padding:10px;border-radius:6px;'
                 'font-size:13px;line-height:1.9;margin-top:6px">'
-                '触发日 <b>%s</b> · 收盘 <b>%s</b> 跌破前 10 日最低价<br>'
-                '背景：近 7 天 <b>%s</b> 天「价高位＋持仓萎缩」背离'
-                '（10 日持仓 %s）<br>'
-                '<span style="color:#666;font-size:12px">含义：无资金支持的上涨出现破位。'
-                '这是风险确认而非做空指令——持仓多单应收紧防守（吊灯 / MA26 照常），'
-                '空单决策仍以既有信号为准。</span></div></div>'
-                % (r["sym"], engine.NAMES.get(r["sym"], ""), ev.get("d"), ev.get("px"),
-                   ev.get("lampDays"),
-                   ('变动 %s%%' % ev["oiDrop"]) if ev.get("oiDrop") is not None else '—'))
+                '触发日 <b>%s</b> · %s<br>%s<br>'
+                '<span style="color:#666;font-size:12px">%s</span></div></div>'
+                % (hcol, head, bgcol, ev.get("d"), broke, bg, meaning))
         for r in xs_fresh:
             col = "#dc2626" if r["level"] == "strong" else "#d97706"
             lvl = "强烈建议离场" if r["level"] == "strong" else "建议减仓"
@@ -993,8 +1006,16 @@ def main():
                     "%s%s" % (r.get("sym"), "双顶" if r.get("dir") == "顶部" else "双底")
                     for r in big_mw_fresh)))
         if div_fresh:
-            parts.append("⚠ 顶风险确认 %d 条：%s" % (
-                len(div_fresh), "、".join(r["sym"] for r in div_fresh)))
+            top_n = sum(1 for r in div_fresh if r["side"] == "top")
+            bot_n = sum(1 for r in div_fresh if r["side"] == "bottom")
+            div_parts = []
+            if top_n:
+                div_parts.append("⚠ 顶风险确认 %d 条：%s" % (
+                    top_n, "、".join(r["sym"] for r in div_fresh if r["side"] == "top")))
+            if bot_n:
+                div_parts.append("⚠ 底风险确认 %d 条：%s" % (
+                    bot_n, "、".join(r["sym"] for r in div_fresh if r["side"] == "bottom")))
+            parts.append(" · ".join(div_parts))
         title = " · ".join(parts)
         ok = post_push(push_token, title, "".join(cards) + IRON_RULE)
         print("push xsig:", ok, "big-mw:", len(big_mw_fresh), "div:", len(div_fresh))
