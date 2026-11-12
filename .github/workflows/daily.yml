@@ -154,7 +154,18 @@ jobs:
           git config user.email "bot@users.noreply.github.com"
           git add -A state.json index.html dist/ data/ echarts.min.js .nojekyll logs/ LIVE_LOG.md daily_log.py
           git diff --cached --quiet || git commit -m "scan $(date -u +%F-%H:%M) [skip ci]"
-          git push
+          # v29：构建要跑十几分钟，期间只要有人推了代码，裸 git push 就会被
+          # `! [rejected] main -> main (fetch first)` 拒掉 —— 2026-11-12 晚上就是这样
+          # 白跑了一整班（数据全对，只差最后一步没推上去）。
+          # 现在先 rebase 再推，失败退避重试 3 轮；冲突时保留本次构建产物（--autostash 已保证不丢改动）。
+          for i in 1 2 3; do
+            git pull --rebase --autostash origin main || { git rebase --abort 2>/dev/null || true; }
+            if git push; then echo "✔ 已推送（第 $i 次尝试）"; break; fi
+            if [ "$i" = "3" ]; then
+              echo "::error::3 次重试仍无法推送，本班构建产物未上线"; exit 1
+            fi
+            echo "推送被拒，退避 10 秒后重试…"; sleep 10
+          done
 
       - name: 本班跳过说明
         if: steps.guard.outputs.proceed != '1'
