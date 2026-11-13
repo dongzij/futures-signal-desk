@@ -275,7 +275,8 @@ def build_plan(sym, doc, main, S):
     marks = []
     for t in r["trades"]:
         marks.append({"d": t["entry_date"], "t": "in", "side": t["side"],
-                      "k": SIG_NM.get(t["kind"], t["kind"]), "px": round(t["entry"], 1)})
+                      "k": SIG_NM.get(t["kind"], t["kind"]), "px": round(t["entry"], 1),
+                      "lv": ("watch" if t["kind"] == "warn" else "plan")})
         marks.append({"d": t["exit_date"], "t": "out", "side": t["side"],
                       "k": t["why"], "px": round(t["exit"], 1),
                       "net": round(t["net"]), "bars": t["bars"]})
@@ -314,6 +315,14 @@ def build_plan(sym, doc, main, S):
         nxt = "等待「%s」信号出现 → 次日开盘顺势开仓" % allow_txt
 
     te, tr_, fu, rc = v["test"], v["train"], v["full"], v["recent"]
+    # v34：进场预警（warn）定为「观察档」——它可以建仓，但只作盯盘提示，
+    # 不并入定稿方案口径。这里单独统计，供页面把两者分开讲清楚（不删任何交易）。
+    _wt = [t for t in r["trades"] if t["kind"] == "warn" and t.get("net") is not None]
+    _ww = [t for t in _wt if t["net"] > 0]
+    watch_stat = {"n": len(_wt),
+                  "win": (round(len(_ww) * 100.0 / len(_wt), 1) if _wt else None),
+                  "net": (round(sum(t["net"] for t in _wt)) if _wt else 0),
+                  "label": "观察档"}
     return {
         "v": "v22",
         "method": v["method"], "methodLabel": v["methodLabel"],
@@ -334,6 +343,7 @@ def build_plan(sym, doc, main, S):
                   "float": pos["float"]} if pos else None),
         "openDate": (r["trades"][-1]["entry_date"] if (pos and r["trades"]) else None),
         "marks": marks,
+        "watchStat": watch_stat,
         "next": nxt,
         # v27：铁律过滤说明。verify 仍是 v22 双段盲测的【原始报告值】，不篡改历史验证；
         # full / marks / open 则是按 v27 铁律过滤后重算的真实账本，两者口径须分清。
