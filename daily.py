@@ -572,7 +572,8 @@ def tc_push_scan(push_token, allow_push, syms, state):
         if not allow_push(sym):
             continue
         for s in d["tcSignals"]:
-            if s.get("idx") == n - 1:                # 只认最后一根，历史信号永不入选
+            if s.get("idx") == n - 1 and s.get("first", True):
+                # 只认最后一根（历史永不入选）+ v33 只认一个大方向的第一个中继信号
                 fresh.append((sym, s))
     if not fresh:
         return
