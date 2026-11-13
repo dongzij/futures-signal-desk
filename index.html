@@ -3115,7 +3115,7 @@ function renderFlipBoard(){
           + '　<small style="color:#6b7689;font-weight:400">已持 '+(p.open.bars||0)+' 根 · 浮盈 '
           + (p.open.float>=0?'+':'') + p.open.float + ' 元</small></b></div>';
     html += '<div class="frow"><span>最近触发</span><b>'+(p.openDate||'—')+' · '+p.open.kind
-          + (p.open.kind==='进场预警'? ' <small style="color:#6b7689;font-weight:400">预警级</small>':'')
+          + (p.open.kind==='反转预警'? ' <small style="color:#6b7689;font-weight:400">预警级</small>':'')
           + '</b></div>';
   } else {
     html += '<div class="frow"><span>当前持仓 · 方案</span><b style="color:#8b95a7">空仓（无持仓）</b></div>';
@@ -3147,7 +3147,7 @@ function renderFlipBoard(){
     + '<b>v27 极值禁令</b>（全页唯一说明）</div>'
     + '<div class="frl"><i>①</i><span><b>白圈失效</b>：连续 2 根收破 MA26/MA34 且超出 0.5 ATR；'
       + '单根暴破 ≥0.8 ATR 立即失效（保命，不等确认）。只覆盖 '+scope
-      + '；方案内的 WM结构 / 转折确认 进场没有白圈。</span></div>'
+      + '；方案内的结构双顶底 / 转折确认 进场没有白圈。</span></div>'
     + '<div class="frl"><i>②</i><span><b>基础出场</b>：MA26 反向穿越 ＋ 吊灯 3ATR，一字未改；'
       + '出场预警、独立出场雷达照常推送。</span></div>'
     + '<div class="frl hot"><i>③</i><span><b>🚨 30% 熔断</b>：任一持仓浮亏达本金 30%（约 3,000 元）'
