@@ -3303,28 +3303,40 @@ function tcPctCell(c){
   if(!c || c.wr === null || c.wr === undefined) return '—';
   return (c.wr * 100).toFixed(1) + '%' + (c.n ? '（' + c.wins + '/' + c.n + '）' : '');
 }
+function tcMonitorLine(hl){
+  if(!hl || !hl.status) return '';
+  var N = (hl.rule && hl.rule.lookback) ? hl.rule.lookback : 12;
+  var s = hl.status.short, l = hl.status.long;
+  function one(st, nm){
+    if(!st) return nm + ' —';
+    if(st.wr === null || st.wr === undefined) return nm + ' 样本累积中 ' + (st.n || 0) + '/' + N;
+    return nm + ' 最近 ' + N + ' 笔 ' + (st.wr * 100).toFixed(1) + '%（' + st.wins + '/' + st.n + '）'
+         + (st.paused ? ' · ⏸ 已暂停' : '');
+  }
+  return '衰减监控：' + one(s, '空头') + ' ｜ ' + one(l, '多头');
+}
 function tcHealthBanner(hl){
   var el = document.getElementById('tcHealthBar');
   if(!el) return;
   if(!hl || !hl.status){ el.style.display = 'none'; el.innerHTML = ''; return; }
   var s = hl.status.short, l = hl.status.long;
   if(!(s && s.paused) && !(l && l.paused)){ el.style.display = 'none'; el.innerHTML = ''; return; }
-  var sn = (hl.snapshots && hl.snapshots.length) ? hl.snapshots[hl.snapshots.length - 1] : null;
+  var N = (hl.rule && hl.rule.lookback) ? hl.rule.lookback : 12;
   var rows = [];
-  if(s && s.paused) rows.push({c:'#ff3b30', t:'空头中继已暂停提示', cell: sn ? sn.short : null, why: s.reason});
-  if(l && l.paused) rows.push({c:'#ffb020', t:'多头中继已暂停提示', cell: sn ? sn.long : null, why: l.reason});
+  if(s && s.paused) rows.push({c:'#ff3b30', t:'空头中继已暂停提示', cell: s, why: s.reason});
+  if(l && l.paused) rows.push({c:'#ffb020', t:'多头中继已暂停提示', cell: l, why: l.reason});
   var html = '';
   for(var i = 0; i < rows.length; i++){
     var r = rows[i];
     html += '<div style="margin-top:' + (i ? '7px' : '0') + '">'
          +  '<b style="color:' + r.c + '">⚠ ' + r.t + '</b>'
-         +  '<span style="color:#e6e9ef">　近 3 月胜率 ' + tcPctCell(r.cell) + '</span>'
+         +  '<span style="color:#e6e9ef">　最近 ' + N + ' 笔胜率 ' + tcPctCell(r.cell) + '</span>'
          +  '<div style="color:#9aa3b2;font-size:11px;margin-top:2px">' + (r.why || '') + '</div></div>';
   }
   html += '<div style="color:#6b7686;font-size:10.5px;margin-top:7px;line-height:1.6">'
-       +  '判定口径：近 3 个自然月、7 品种合并、次日开盘进场 / 持 20 根收盘离场、扣双边成本；'
-       +  '空头连续 2 个月 &lt;45%、多头单月 &lt;40%，且窗口样本 n≥' + (hl.rule ? hl.rule.minN : 3)
-       +  ' 才判定。该方向箭头已转灰，仅供回看，不作为进场提示。</div>';
+       +  '判定口径：最近 ' + N + ' 笔已完成信号、7 品种合并、次日开盘进场 / 持 20 根收盘离场、扣双边成本；'
+       +  '空头 &lt;45%、多头 &lt;40%，且满 ' + N + ' 笔才判定（不满不判）。'
+       +  '该方向箭头已转灰，仅供回看，不作为进场提示。</div>';
   html += '<span onclick="this.parentNode.style.display=\'none\'" title="收起" '
        +  'style="position:absolute;top:6px;right:9px;cursor:pointer;color:#7b8391;font-size:13px">✕</span>';
   el.style.position = 'relative';
@@ -3391,7 +3403,7 @@ function openTcSheet(tc){
     var st = (tc.health && tc.health.status) ? (tc.side < 0 ? tc.health.status.short : tc.health.status.long) : null;
     html += '<div style="margin-bottom:8px;padding:8px 10px;background:rgba(255,176,32,.10);'
          +  'border-left:3px solid #ffb020;border-radius:4px;font-size:11.5px;line-height:1.7;color:#ffb020">'
-         +  '<b>⏸ 该方向当前处于暂停提示状态</b><br/>' + ((st && st.reason) || '近 3 月胜率低于阈值')
+         +  '<b>⏸ 该方向当前处于暂停提示状态</b><br/>' + ((st && st.reason) || '最近 12 笔胜率低于阈值')
          +  '<br/><span style="color:#8a95a8">此标记仅供回看与复盘，不作为进场提示。</span></div>';
   }
   html += '<div style="font-size:11px;color:#8a95a8;line-height:1.7;margin-bottom:8px">纯视觉预警，不是建仓指令，也不改动任何底层交易账本或平仓线。是否参与、怎么下单由你决定。</div>';
@@ -3407,6 +3419,7 @@ function openTcSheet(tc){
   html += '<div class="frow"><span>单笔风险%</span><input id="tcRisk" type="number" value="1" step="0.5" style="width:110px" oninput="tcRecalc()"></div>';
   html += '<div class="frow"><span>保证金率%</span><input id="tcMg" type="number" value="' + ((tc.margin || 0.10) * 100) + '" step="1" style="width:110px" oninput="tcRecalc()"></div>';
   html += '<div id="tcOut" style="margin-top:10px;padding:8px 10px;background:rgba(76,141,255,.10);border-left:3px solid #4c8dff;border-radius:4px;font-size:12px;line-height:1.8"></div>';
+  html += '<div style="margin-top:8px;padding-top:7px;border-top:1px solid #232b38;font-size:11px;color:#8a95a8;line-height:1.7">' + tcMonitorLine(tc.health) + '</div>';
   html += '<div style="margin-top:8px;font-size:11px;color:#8a95a8">每手 1ATR 风险 = ATR×乘数；建议手数 = 总资金×风险% ÷ 每手1ATR风险（取整）。仅供参考，非投资建议。</div>';
   $('sheet').innerHTML = html; $('mask').classList.add('on');
   window.tcCtx = {riskPerLot:riskPerLot, price:tc.price, mult:tc.mult};
