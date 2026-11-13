@@ -1514,7 +1514,11 @@ function renderChart(){
     });
   }
 
-  var series = [
+  var tcProd = (MAN.products||[]).filter(function(p){return (p.sym||p.symbol||'')===cur.sym;})[0];
+  var tcMult = (tcProd && tcProd.mult) ? tcProd.mult : 10;
+  var tcMargin = (tcProd && tcProd.margin) ? tcProd.margin : 0.10;
+  var tcSeries = tcBuildSeries(bars, cur.sym, tcMult, tcMargin, cur.pt);
+  var series = [tcSeries,
     {name:'K', type:'candlestick', data:k, barMaxWidth:14,     itemStyle:{color:'#e5484d', color0:'#0ecb81', borderColor:'#e5484d', borderColor0:'#0ecb81'}},
     {name:'MA10', type:'line', data:m10, symbol:'none', lineStyle:{width:1,color:'#f5a524'}},
     {name:'MA26', type:'line', data:m26, symbol:'none',
@@ -1573,6 +1577,7 @@ function renderChart(){
   // v26.2 模块一：图上所有标记统一点击闭环（原先只有 3 类可点，其余点了没反应）
   // v28：新增 K 线本体点击 → 盘感模拟下单（T 日收盘 → T+1 开盘成交）
   CH.on('click', function(p){
+    if(p.seriesName==='强顺势中继' && p.data && p.data.tc){ openTcSheet(p.data.tc); return; }
     if(p.seriesName === 'K'){                       // 点 K 线本体
       rpSheet(p.dataIndex);
       return;
@@ -3240,6 +3245,110 @@ fetchJ('index.json', function(man){
   sc.onload = function(){ ECREADY = true; if(DOC) renderChart(); };
   document.head.appendChild(sc);
 })();
+</script>
+<script>
+/* ================= 强顺势中继 · 纯视觉预警（v30.x 叠加，不影响底层账本） ================= */
+function tcBuildSeries(bars, sym, mult, margin, pt){
+  var data = [];
+  if(pt !== 'D'){
+    return {name:'强顺势中继', type:'scatter', data:data, silent:true, tooltip:{show:false}};
+  }
+  var n = bars.length;
+  if(n < 65) return {name:'强顺势中继', type:'scatter', data:data, silent:true, tooltip:{show:false}};
+  /* Wilder ATR(14) */
+  var atr = [], trs = [];
+  for(var i=0;i<n;i++){
+    var h=bars[i][2], l=bars[i][3], c=bars[i][4];
+    if(i===0){ trs.push(h-l); }
+    else { var pc=bars[i-1][4]; trs.push(Math.max(h-l, Math.abs(h-pc), Math.abs(l-pc))); }
+  }
+  var first=0; for(var i=0;i<14;i++) first+=trs[i]; first/=14;
+  atr[13]=first;
+  for(var i=14;i<n;i++){ atr[i]=(atr[i-1]*(14-1)+trs[i])/14; }
+  for(var i=0;i<13;i++) atr[i]=first;
+  var last={}; last[1]=-999; last[-1]=-999; var COOL=40;
+  for(var i=65;i<n;i++){
+    var a = atr[i] || ((bars[i][4]-bars[i][3])||1);
+    var ret10 = (bars[i][4]-bars[i-10])/a;
+    if(Math.abs(ret10) < 3.0) continue;
+    var side = ret10>0 ? 1 : -1;
+    if(i-last[side] < COOL) continue;
+    var body = (bars[i][4]-bars[i][1])/a;            /* 顺势强K */
+    if(body*side < 1.0) continue;
+    var hh=-1e15, ll=1e15;
+    for(var j=i-10;j<i;j++){ if(bars[j][4]>hh) hh=bars[j][4]; if(bars[j][4]<ll) ll=bars[j][4]; }
+    if(side>0 && !(bars[i][4]>hh)) continue;         /* 创10日新高(不含当日) */
+    if(side<0 && !(bars[i][4]<ll)) continue;         /* 创10日新低(不含当日) */
+    last[side]=i;
+    var isShort = side<0;
+    var y = isShort ? (bars[i][4]+0.9*a) : (bars[i][3]-0.9*a);
+    data.push({
+      value:[i, y],
+      tc:{sym:sym, date:bars[i][0], side:side, price:bars[i][4], atr:a, mult:mult, margin:margin, ret10:ret10},
+      symbol:'arrow', symbolSize:22, symbolRotate: isShort?180:0,
+      itemStyle:{color: isShort ? '#ff3b30' : '#00d26a', borderColor:'#0B0E13', borderWidth:1},
+      label:{show:true, position: isShort?'top':'bottom',
+        formatter:'🚀 强顺势中继',
+        color: isShort ? '#ff3b30' : '#8a95a8',
+        fontWeight: isShort ? 'bold' : 'normal', fontSize:10,
+        textBorderColor:'#0B0E13', textBorderWidth:2}
+    });
+  }
+  return {
+    name:'强顺势中继', type:'scatter', data:data, z:5,
+    tooltip:{ trigger:'item', confine:true,
+      formatter:function(p){
+        var t=p.data.tc; if(!t) return '';
+        var tag = t.side>0 ? '多头偏弱 · 谨慎参与' : '高胜率顺势';
+        return '<b>🚀 强顺势中继</b><br/>'+t.sym+' '+t.date+' · '+(t.side>0?'做多':'做空')+
+               '<br/>10日净位移 '+t.ret10.toFixed(2)+' ATR<br/>ATR '+t.atr.toFixed(1)+
+               '<br/><span style="color:'+(t.side>0?'#8a95a8':'#ff3b30')+'">'+tag+'</span>'+
+               '<br/><span style="color:#8a95a8">点击查看仓位测算</span>';
+      }
+    }
+  };
+}
+function openTcSheet(tc){
+  var riskPerLot = tc.atr * tc.mult;
+  var marginPerLot = tc.price * tc.mult * (tc.margin||0.10);
+  var dir = tc.side>0 ? '做多' : '做空';
+  var html = '';
+  html += '<h3>🚀 强顺势中继 · 仓位测算 <span onclick="closeSheet()">关闭 ✕</span></h3>';
+  html += '<div style="font-size:11px;color:#8a95a8;line-height:1.7;margin-bottom:8px">纯视觉预警，不是建仓指令，也不改动任何底层交易账本或平仓线。是否参与、怎么下单由你决定。</div>';
+  html += '<div class="frow"><span>品种 / 日期</span><b>'+tc.sym+' · '+tc.date+' · '+dir+'</b></div>';
+  html += '<div class="frow"><span>10日净位移</span><b>'+tc.ret10.toFixed(2)+' ATR</b></div>';
+  html += '<div class="frow"><span>信号收盘价</span><b>'+tc.price.toFixed(tc.price>1000?0:2)+'</b></div>';
+  html += '<div class="frow"><span>ATR(14)</span><b>'+tc.atr.toFixed(2)+'</b></div>';
+  html += '<div class="frow"><span>合约乘数</span><b>'+tc.mult+' 元/点</b></div>';
+  html += '<div class="frow"><span>每手 1ATR 风险</span><b style="color:#ff8a3d">'+Math.round(riskPerLot)+' 元</b></div>';
+  html += '<div class="frow"><span>每手保证金(估)</span><b>'+Math.round(marginPerLot)+' 元</b></div>';
+  html += '<hr style="border-color:#232b38;margin:8px 0">';
+  html += '<div class="frow"><span>总资金(元)</span><input id="tcCap" type="number" value="100000" style="width:110px" oninput="tcRecalc()"></div>';
+  html += '<div class="frow"><span>单笔风险%</span><input id="tcRisk" type="number" value="1" step="0.5" style="width:110px" oninput="tcRecalc()"></div>';
+  html += '<div class="frow"><span>保证金率%</span><input id="tcMg" type="number" value="'+((tc.margin||0.10)*100)+'" step="1" style="width:110px" oninput="tcRecalc()"></div>';
+  html += '<div id="tcOut" style="margin-top:10px;padding:8px 10px;background:rgba(76,141,255,.10);border-left:3px solid #4c8dff;border-radius:4px;font-size:12px;line-height:1.8"></div>';
+  html += '<div style="margin-top:8px;font-size:11px;color:#8a95a8">每手 1ATR 风险 = ATR×乘数；建议手数 = 总资金×风险% ÷ 每手1ATR风险（取整）。仅供参考，非投资建议。</div>';
+  $('sheet').innerHTML = html; $('mask').classList.add('on');
+  window.tcCtx = {riskPerLot:riskPerLot, price:tc.price, mult:tc.mult};
+  tcRecalc();
+}
+function tcRecalc(){
+  var c = window.tcCtx; if(!c) return;
+  var cap = parseFloat($('tcCap').value)||0;
+  var risk = (parseFloat($('tcRisk').value)||0)/100;
+  var mg = (parseFloat($('tcMg').value)||10)/100;
+  var marginPerLot = c.price * c.mult * mg;
+  var lots = risk>0 ? Math.floor(cap*risk / c.riskPerLot) : 0;
+  var occupy = lots * marginPerLot;
+  var occPct = cap>0 ? (occupy/cap*100) : 0;
+  var oneLotPct = cap>0 ? (marginPerLot/cap*100) : 0;
+  $('tcOut').innerHTML =
+    '每手 1ATR 风险：<b>'+Math.round(c.riskPerLot)+' 元</b><br/>'+
+    '每手保证金：<b>'+Math.round(marginPerLot)+' 元</b>（占资 '+oneLotPct.toFixed(1)+'%）'+'<br/>'+
+    '建议手数：<b style="color:#4c8dff;font-size:14px">'+lots+' 手</b><br/>'+
+    '建议占用保证金：<b>'+Math.round(occupy)+' 元</b> · 占资 <b>'+occPct.toFixed(2)+'%</b>';
+}
+
 </script>
 </body>
 </html>
