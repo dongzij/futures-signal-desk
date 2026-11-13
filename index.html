@@ -3317,10 +3317,10 @@ function tcBuildSeries(tcList, hl){
   for(var k = 0; k < tcList.length; k++){
     var t = tcList[k], isShort = t.side < 0, a = t.atr || 1;
     /* v33：一个大方向趋势只标第一个中继信号，后续同向不再提示（防吃山顶）。
-       同一方向超过 120 根（约半年）没出现反向信号，视为新趋势重新起算。
+       同一方向超过 250 根（约 1 年）没出现反向信号，视为新趋势重新起算。
        后端已写 t.first；万一旧 JSON 没有该字段，这里按同一规则自算兜底。 */
     var isFirst = (t.first === undefined)
-      ? ((t.side !== prevSide) || ((t.idx - prevHead) >= 120))
+      ? ((t.side !== prevSide) || ((t.idx - prevHead) >= 250))
       : !!t.first;
     if(isFirst){ prevSide = t.side; prevHead = t.idx; }
     if(!isFirst) continue;
