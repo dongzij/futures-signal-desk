@@ -226,9 +226,15 @@ def compute_tc_signals(main, mult, margin):
     # 只在出现反向信号时重新起算，避免趋势走到后半段还在追、吃到山顶。
     # 该字段纯展示用，不参与账本、不改算法参数、不改 tc_monitor 的胜率口径。
     _prev = 0
+    _head = 0
     for _s in out:
-        _s["first"] = (_s["side"] != _prev)
-        _prev = _s["side"]
+        # 换方向 => 新趋势；同向但距链首已满 120 根（约半年）=> 也视为新趋势重开，
+        # 否则一条链可能拖 1-2 年全静默（实测中位 154 根、最长 564 根）。
+        _new = (_s["side"] != _prev) or ((_s["idx"] - _head) >= 120)
+        _s["first"] = _new
+        if _new:
+            _prev = _s["side"]
+            _head = _s["idx"]
     return out
 
 
