@@ -477,7 +477,7 @@ body.rpon{padding-bottom:142px}
       <div class="siglegend">
         <span class="slbtn" onclick="toggleSigLegend()">ⓘ 图上标记对照 <span id="slArrow">▾</span></span>
         <div class="slbody hide" id="slBody">
-          <div class="slrow"><span class="slk">图上点开</span><span>蓝▼/紫▲、灰◆ → 信号明细；○ 白圈 → 失效明细；★ 金▲/紫▼ → 结构形态；<b>黄◆ → 离场原因</b>；青◇ / 白箭头 → 离场复盘；<b>橙⚠ → 顶部风险确认（资金背离）</b>；<b>金色 ● → 我自己的盘感模拟成交</b>（点开看那一笔盈亏）。鼠标悬停（手机长按）先看文字提示。</span></div>
+          <div class="slrow"><span class="slk">图上点开</span><span>蓝▼/紫▲、灰◆ → 信号明细；○ 白圈 → 失效明细；★ 金▲/紫▼ → 结构形态；<b>黄◆ → 离场原因</b>；青◇ → 离场复盘；<b>橙⚠ → 顶部风险确认（资金背离）</b>；<b>金色 ● → 我自己的盘感模拟成交</b>（点开看那一笔盈亏）。鼠标悬停（手机长按）先看文字提示。</span></div>
           <div class="slrow"><span class="slk">列表里看</span><span>反转预警 / 顶底到位 / 失效 → 本栏；方案逐笔账本 → 策略持仓看板；雷达口径离场线 → 出场雷达。</span></div>
           <div class="slrow"><span class="slk warnc">研究参考</span><span>🏔 大结构与转折确认形态的归档行统一带 <b class="archTag">[研究参考·非建仓指令]</b>，只记形态、无任何操作字眼；大结构随第⑤通道做信息推送，小结构只归档不推。</span></div>
           <div class="slrow"><span class="slk">口径提醒</span><span>本栏恒为日线归档；切到周 / 月 / 分钟线时标题旁会亮起警示，图上标记随周期变、本栏不变。</span></div>
@@ -1381,14 +1381,6 @@ function renderChart(){
             itemStyle:{color:'transparent', borderColor:'#22D3EE', borderWidth:1.8}});
         }
       }
-      var io = dateIdx(dates, t.out);
-      if(io!=null){
-        var ao = A(io);
-        marks.push({value:[io, t.sd==='long'? (bars[io][3]-1.55*ao) : (bars[io][4]+1.55*ao)],
-          exData:t, exKind:'out',
-          symbol:'arrow', symbolRotate: t.sd==='long'? 180 : 0, symbolSize:11,
-          itemStyle:{color:'#F2F6FF', borderColor:'#0B0E13', borderWidth:.6}});
-      }
     });
   }
   // 独立出场信号（v10）：顶部/底部到位，黄=建议 亮黄=强烈
@@ -1592,7 +1584,7 @@ function renderChart(){
     window._markHitAt = Date.now();
     if(d.rpData)      rpDetail(d.rpData);                           // 金色 · 我自己的模拟单
     else if(d.divEv)  openDivAlert(d.divEv);                        // ⚠ → 顶部风险确认（v30）
-    else if(d.exData) openExitTrade(d.exData, d.exKind==='warn');  // 青◇ / 白箭头 → 离场复盘
+    else if(d.exData) openExitTrade(d.exData, d.exKind==='warn');  // 青◇ → 离场复盘
     else if(d.srcData) openExitSignal(d.srcData);                  // 黄◆ → 具体离场原因
     else if(d.vacSig) openSig(d.vacSig);                           // 动能真空 → 原信号
     else if(d.sig)    openSig(d.sig);
