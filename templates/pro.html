@@ -3350,8 +3350,14 @@ function tcBuildSeries(tcList, hl){
     tcHealthBanner(hl);
     return {name:'强顺势中继', type:'scatter', data:data, silent:true, tooltip:{show:false}};
   }
+  var prevSide = 0;
   for(var k = 0; k < tcList.length; k++){
     var t = tcList[k], isShort = t.side < 0, a = t.atr || 1;
+    /* v33：一个大方向趋势只标第一个中继信号，后续同向不再提示（防吃山顶）。
+       后端已写 t.first；万一旧 JSON 没有该字段，这里按「同向链首标」自算兜底。 */
+    var isFirst = (t.first === undefined) ? (t.side !== prevSide) : !!t.first;
+    prevSide = t.side;
+    if(!isFirst) continue;
     var paused = tcSidePaused(hl, t.side, t.date);
     var symName = t.sym || ((typeof DOC !== 'undefined' && DOC && DOC.sym) ? DOC.sym : '');
     var y = isShort ? (t.price + 0.9 * a) : (t.price - 0.9 * a);
@@ -3361,7 +3367,7 @@ function tcBuildSeries(tcList, hl){
       value:[t.idx, y],
       tc:{sym:symName, date:t.date, side:t.side, price:t.price, atr:a,
           mult:t.mult, margin:t.margin, ret10:t.ret10, paused:paused, health:hl},
-      symbol:'arrow', symbolSize: paused ? 18 : 22, symbolRotate: isShort ? 180 : 0,
+      symbol:'arrow', symbolSize: paused ? [9, 13] : [12, 18], symbolRotate: isShort ? 180 : 0,
       itemStyle:{color:col, borderColor:'#0B0E13', borderWidth:1, opacity: paused ? 0.55 : 1},
       label:{show:true, position: isShort ? 'top' : 'bottom', formatter:lab,
         color: paused ? '#6b7686' : (isShort ? '#ff3b30' : '#8a95a8'),
