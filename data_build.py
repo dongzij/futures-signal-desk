@@ -168,6 +168,62 @@ def bars_to_arr(bars):
     return [[b["d"], b["o"], b["h"], b["l"], b["c"], b.get("v") or 0, b.get("oi") or 0]
             for b in bars]
 
+def compute_tc_signals(main, mult, margin):
+    """【右侧趋势中继 · 纯视觉预警】非交易类标记，不进账本/不开平仓/不改任何交易逻辑。
+
+    算法口径与前端 tcBuildSeries 逐行一致（Wilder ATR(14) 同源），由 daily 每日
+    更新时一并算好写进 data/{sym}.json 的 tcSignals，与现有 signals/radar 走同一条
+    「数据更新 → 计算 → 标注」管线。MOM(N=10,K=3) 确认趋势 + TR1(顺势强K且创10日
+    新高/低) 触发 + 同侧 40 根冷却。返回 list of {idx,date,side(1多/-1空),price,atr,
+    mult,margin,ret10}。
+    """
+    n = len(main)
+    if n < 65:
+        return []
+    trs = []
+    for i in range(n):
+        h = main[i]["h"]; l = main[i]["l"]; c = main[i]["c"]
+        if i == 0:
+            trs.append(h - l)
+        else:
+            pc = main[i - 1]["c"]
+            trs.append(max(h - l, abs(h - pc), abs(l - pc)))
+    atr = [0.0] * n
+    first = sum(trs[0:14]) / 14.0
+    for i in range(0, 14):
+        atr[i] = first
+    for i in range(14, n):
+        atr[i] = (atr[i - 1] * 13 + trs[i]) / 14.0
+    COOL = 40
+    last = {1: -999, -1: -999}
+    out = []
+    for i in range(65, n - 20):
+        a = atr[i] if atr[i] else ((main[i]["c"] - main[i]["l"]) or 1)
+        ret10 = (main[i]["c"] - main[i - 10]["c"]) / a
+        if abs(ret10) < 3.0:
+            continue
+        side = 1 if ret10 > 0 else -1
+        if i - last[side] < COOL:
+            continue
+        body = (main[i]["c"] - main[i]["o"]) / a
+        if body * side < 1.0:
+            continue
+        hh = -1e15; ll = 1e15
+        for j in range(i - 10, i):
+            if main[j]["c"] > hh:
+                hh = main[j]["c"]
+            if main[j]["c"] < ll:
+                ll = main[j]["c"]
+        if side > 0 and not (main[i]["c"] > hh):
+            continue
+        if side < 0 and not (main[i]["c"] < ll):
+            continue
+        last[side] = i
+        out.append({"idx": i, "date": main[i]["d"], "side": side,
+                    "price": main[i]["c"], "atr": a, "mult": mult,
+                    "margin": margin, "ret10": ret10})
+    return out
+
 
 def _regime_since(bars, S, label):
     """当前路况已持续多少根（同日口径，逐日回溯同一判定函数）"""
@@ -652,6 +708,8 @@ def build_product(sym):
                    "confirm2Bars": engine.CONFIRM2_BARS,
                    "volRatioTag": engine.VOL_RATIO_TAG},
     }
+    doc["tcSignals"] = compute_tc_signals(main, cfg["mult"], cfg["margin"])
+
     if _old.get("bestCombo"):
         doc["bestCombo"] = _old["bestCombo"]
     # v22：路况指示器 + 方案持仓 + 进出标识（替代 v20 的 bestCombo 双轨标签）
