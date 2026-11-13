@@ -1,10 +1,6 @@
 name: tc-push-selftest
 
-# 临时工作流：只验证「强顺势中继」微信推送通道能否发出。
-# 仅手动触发；contents: read（物理上无法提交任何文件）；运行的是每日任务里的自检分支，
-# 只发一条写死的示例消息，不读行情、不写 state.json / dist / data。
-# 验证通过后本文件即删除。
-
+# 临时工作流：只验证「强顺势中继」微信推送通道，不写任何数据（contents: read）。
 on:
   workflow_dispatch:
 
@@ -19,7 +15,27 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: 发一条自检推送（不写任何数据）
+
+      - name: 诊断 PushPlus 原始返回
         env:
           PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
-        run: python daily.py --tc-selftest
+        run: |
+          python - <<'EOF'
+          import os, json, urllib.parse, urllib.request
+          t = (os.environ.get("PUSHPLUS_TOKEN") or "").strip()
+          print("token len:", len(t), "| head:", t[:2] + "***")
+          body = urllib.parse.urlencode({
+              "token": t,
+              "title": "🧪 pushplus 通道诊断",
+              "content": "<b>通道诊断</b>：收到即说明 token 正常。",
+              "template": "html"}).encode()
+          req = urllib.request.Request("https://www.pushplus.plus/send", data=body,
+              headers={"Content-Type": "application/x-www-form-urlencoded"})
+          try:
+              with urllib.request.urlopen(req, timeout=20) as r:
+                  print("http:", r.status, "raw:", r.read().decode("utf-8", "ignore")[:500])
+          except urllib.error.HTTPError as e:
+              print("http err:", e.code, e.read().decode("utf-8", "ignore")[:500])
+          except Exception as e:
+              print("conn err:", type(e).__name__, e)
+          EOF
