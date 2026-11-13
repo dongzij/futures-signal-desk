@@ -1738,6 +1738,10 @@ function openDef(date){
   html += '<div style="font-size:11.5px;color:var(--dim);line-height:1.7;margin:4px 0 10px">'
     + '四条标准任一成立即标记：① 反向 &gt;1.5 ATR　② 收盘破 MA26/MA34　'
     + '③ 5 根内未创新高/低并收破信号日极值　④ 触发 MA26 / 吊灯 3ATR 原版止损。<br>'
+    + '<b style="color:#9fb0c9">强顺势中继（🚀）另按三条口径判定：① 收盘反向跌破/突破'
+    + '信号当根极值 → 多失效/空失效；② 10 根内顺势浮盈不足 1 ATR（横着走）→ '
+    + '多失效/空失效；③ 已走出 ≥2 ATR 后自极值回撤 ≥1.5 ATR（见顶/见底）→ '
+    + '多到顶/空到底。它不涉及持仓，只是提示有效期结束。</b><br>'
     + '<b style="color:#9fb0c9">◌ 弱叉 = 顶底雷达 &amp; 打叉日 ADX≥30：数据保留、图上空心圈、'
     + '列表标「弱」、不单独推微信（10 年 155 条 / 33.3%，误报率 43.9%）。</b><br>'
     + '<b style="color:#E8EEFA">仅作提示，MA34 进场与 MA26 + 吊灯出场机制完全不变。</b><br>'
@@ -1747,8 +1751,10 @@ function openDef(date){
     var sd = e.side==='short'? '空':'多';
     var canOpen = (e.sigKind==='pred'||e.sigKind==='warn')
       && DOC.signals.some(function(s){return s.kind===e.sigKind && s.date===e.sigDate;});
+    var tcHit = (e.sigKind === 'tc');
     var onclick = canOpen? ' onclick="openSig(\''+e.sigKind+'|'+e.sigDate+'\')"' : '';
-    html += '<div class="dv" style="margin:8px 0;cursor:'+(canOpen?'pointer':'default')
+    if(tcHit) onclick = ' onclick="tcOpenBySig(\''+e.sigDate+'\',\''+e.side+'\')"';
+    html += '<div class="dv" style="margin:8px 0;cursor:'+((canOpen||tcHit)?'pointer':'default')
       + ';border-left:3px solid rgba(232,238,250,.55)"'+onclick+'>'
       + '<div style="font-size:13px;font-weight:700;color:'+(e.weak?'#9fb0c9':'#E8EEFA')+'">'
       + (e.weak? '◌ 弱 · ' : '○ ')
@@ -1760,7 +1766,7 @@ function openDef(date){
           return '· <b>'+r.label+'</b>：'+r.detail;
         }).join('<br>')
       + '</div>'
-      + (canOpen? '<div style="font-size:10.5px;color:var(--dim);margin-top:4px">点此回看原信号 →</div>':'')
+      + ((canOpen||tcHit)? '<div style="font-size:10.5px;color:var(--dim);margin-top:4px">点此回看原信号 →</div>':'')
       + '<div style="margin-top:6px">'
       + '<span class="dnb" onclick="event.stopPropagation();zoomToSrc(\''+e.sigDate+'\')">'
       + '⌖ 定位源预警 '+e.sigDate+'（头尾同屏）</span></div>'
@@ -1772,7 +1778,25 @@ function openDef(date){
 /* v16 模块一：失效类型一目了然 —— 顶/底=顶底雷达，多/空=建仓与预警 */
 function defTypeName(e){
   if(e.sigKind === 'radar') return e.side === 'short' ? '顶失效' : '底失效';
+  /* v36 强顺势中继：被走势证伪 → 多失效/空失效；趋势走完 → 多到顶/空到底 */
+  if(e.sigKind === 'tc')
+    return (e.reason === 'tc_done')
+      ? (e.side === 'short' ? '空到底' : '多到顶')
+      : (e.side === 'long' ? '多失效' : '空失效');
   return e.side === 'long' ? '多失效' : '空失效';
+}
+/* v36：失效明细里回看「强顺势中继」原信号（头尾同源） */
+function tcOpenBySig(date, side){
+  var l = (typeof DOC !== 'undefined' && DOC && DOC.tcSignals) ? DOC.tcSignals : [];
+  for(var i = 0; i < l.length; i++){
+    var t = l[i];
+    if(t.date === date && ((side === 'long' && t.side > 0) || (side === 'short' && t.side < 0))){
+      openTcSheet({sym:(DOC.sym || ''), date:t.date, side:t.side, price:t.price,
+        atr:t.atr || 1, mult:t.mult, margin:t.margin, ret10:t.ret10,
+        paused:tcSidePaused(tcHealthOf(), t.side, t.date), health:tcHealthOf()});
+      return;
+    }
+  }
 }
 function dateIdx(dates, d){
   // 精确匹配；没有则找第一个 >= d 的
@@ -2238,10 +2262,20 @@ function renderSigs(){
     if(r.kind === 'def'){
       var e = r.e, sd = e.side === 'short' ? '空' : '多';
       /* v17 弱叉：降级为空心圈 + 标「弱」，只记录、不推微信；数据一条不删 */
-      var head = (e.weak ? '◌ 弱叉 · ' : '○ ')
-        + defTypeName(e) + '：' + (e.name || e.sym)
-        + '（' + e.sym + '）' + sd + '方向被走势证伪'
-        + (e.weak ? '（弱信号，仅记录）' : '，建议止损平仓');
+      var head;
+      if(e.sigKind === 'tc'){
+        /* v36：中继是纯视觉预警，不是持仓 —— 不写「止损平仓」 */
+        head = '○ ' + defTypeName(e) + '：' + (e.name || e.sym) + '（' + e.sym + '）'
+          + (e.reason === 'tc_done'
+              ? ('强顺势中继行情走完（' + sd + '头见' + (e.side === 'short' ? '底' : '顶')
+                 + '），该信号有效期结束')
+              : ('强顺势中继（' + sd + '）被走势证伪，提示作废（纯视觉，不涉及持仓）'));
+      } else {
+        head = (e.weak ? '◌ 弱叉 · ' : '○ ')
+          + defTypeName(e) + '：' + (e.name || e.sym)
+          + '（' + e.sym + '）' + sd + '方向被走势证伪'
+          + (e.weak ? '（弱信号，仅记录）' : '，建议止损平仓');
+      }
       return '<div class="sgr defrow' + (e.weak ? ' weak' : '')
         + '" onclick="openDef(\'' + e.date + '\')">'
         + '<span class="dt">' + e.date + '</span>'
