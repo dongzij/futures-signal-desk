@@ -1,0 +1,25 @@
+name: tc-push-selftest
+
+# 临时工作流：只验证「强顺势中继」微信推送通道能否发出。
+# 仅手动触发；contents: read（物理上无法提交任何文件）；运行的是每日任务里的自检分支，
+# 只发一条写死的示例消息，不读行情、不写 state.json / dist / data。
+# 验证通过后本文件即删除。
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: 发一条自检推送（不写任何数据）
+        env:
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+        run: python daily.py --tc-selftest
