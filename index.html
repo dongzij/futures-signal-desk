@@ -2254,13 +2254,13 @@ function renderSigs(){
     }
     if(r.kind === 'in'){
       var s = r.s;
-      var nm = s.kind === 'pred' ? '建仓' : (s.kind === 'warn' ? '预警' : '信号');
+      var nm = s.kind === 'pred' ? '建仓' : (s.kind === 'warn' ? '预警 · 观察档' : '信号');
       var sd = s.side === 'short' ? '空' : '多';
       var cls = s.kind === 'pred' ? 'in' : 'in';
       var desc;
       if(s.kind === 'warn'){
         desc = '命中 ' + (s.k || 0) + ' 条 · 5日反转概率 '
-          + Math.round((((s.prob || {})['5']) || 0) * 100) + '%';
+          + Math.round((((s.prob || {})['5']) || 0) * 100) + '% · 仅盯盘，不计入方案建仓';
       } else if(s.kind === 'pred'){
         var _n6 = (s.k || 0) + (s.strong ? (s.checksS || []).filter(function(c){return c.ok;}).length : 0);
         desc = '命中 ' + _n6 + ' 条'
@@ -2297,7 +2297,7 @@ function openSig(key){
   var s = findSig(key);
   if(!s || s.kind==='confirm') return;   // v11：兑现状态不在前端展示
   var isPred = s.kind==='pred', isWarn = s.kind==='warn';
-  var title = isWarn? '反转预警' : isPred? '准备反转 · 可建仓' : '信号明细';
+  var title = isWarn? '反转预警 · 观察档' : isPred? '准备反转 · 可建仓' : '信号明细';
   var html = '<h3>'+title+' · '+(s.side==='short'?'顶部 · 做空方向':'底部 · 做多方向')
     + ' · ' + DOC.name + '<span onclick="closeSheet()">关闭 ✕</span></h3>';
   html += '<div class="frow"><span>信号日</span><b>'+s.date+'</b></div>';
@@ -2332,7 +2332,11 @@ function openSig(key){
   if(isWarn){
     html += '<div style="font-size:12px;color:var(--dim);line-height:1.7;margin:6px 0">'
       + '命中 3 条只到预警区，历史对应 5 日内反转概率约 58%。等第 4 条出现且 ADX 回到 20 以上，'
-      + '系统才给建仓提示。</div>';
+      + '系统才给建仓提示。</div>'
+      + '<div style="font-size:12px;color:#8b95a7;line-height:1.7;margin:6px 0 2px;'
+      + 'border-left:2px solid #4a5568;padding-left:8px">'
+      + '<b>观察档</b>：预警触发时价格紧贴 MA34，方向本身未定。本提示只用于盯盘，'
+      + '不并入定稿方案的建仓口径，也不单独计入方案胜率。</div>';
   }
   // v11 甲方案 + v12 三层风险标签
   if(s.meta){
@@ -3110,7 +3114,9 @@ function renderFlipBoard(){
     html += '<div class="frow"><span>当前持仓 · 方案</span><b style="color:'+col+'">'+dirTxt
           + '　<small style="color:#6b7689;font-weight:400">已持 '+(p.open.bars||0)+' 根 · 浮盈 '
           + (p.open.float>=0?'+':'') + p.open.float + ' 元</small></b></div>';
-    html += '<div class="frow"><span>最近触发</span><b>'+(p.openDate||'—')+' · '+p.open.kind+'</b></div>';
+    html += '<div class="frow"><span>最近触发</span><b>'+(p.openDate||'—')+' · '+p.open.kind
+          + (p.open.kind==='进场预警'? ' <small style="color:#6b7689;font-weight:400">观察档</small>':'')
+          + '</b></div>';
   } else {
     html += '<div class="frow"><span>当前持仓 · 方案</span><b style="color:#8b95a7">空仓（无持仓）</b></div>';
     html += '<div class="frow"><span>最近一笔</span><b>'
@@ -3125,6 +3131,13 @@ function renderFlipBoard(){
         + (fu.n||0) + ' 笔 · 胜率 ' + (fu.win!=null?fu.win.toFixed(1):'—') + '% · 年化 '
         + (fu.ann>=0?'+':'') + (fu.ann!=null?fu.ann.toFixed(1):'—') + '% · 期末 '
         + (fu.final||0) + ' 元</b></div>';
+  var ws = p.watchStat;
+  if(ws && ws.n){
+    html += '<div class="frow"><span>其中预警级建仓</span><b style="color:#8b95a7">'
+          + ws.n + ' 笔 · 胜率 ' + (ws.win!=null? ws.win.toFixed(1):'—') + '% · 净 '
+          + (ws.net>=0?'+':'') + ws.net + ' 元　'
+          + '<small style="color:#6b7689;font-weight:400">观察档 · 不计入方案口径</small></b></div>';
+  }
   // v26：原先散落在看板红块、方法说明、推送面板、两张雷达里的规则，收成一处说明。
   var dc = (MAN && MAN.defendCfg) || {};
   var eg = (MAN && MAN.extGate) || {};
