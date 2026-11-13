@@ -13,7 +13,7 @@
    "sym": "M",
    "name": "豆粕",
    "method": "G1",
-   "methodLabel": "趋势WM+兑现｜过渡雷达",
+   "methodLabel": "趋势结构双顶底+兑现｜过渡雷达",
    "spec": {
     "entry": {
      "trend_up": [
@@ -143,7 +143,7 @@
    "sym": "FG",
    "name": "玻璃",
    "method": "G1",
-   "methodLabel": "趋势WM+兑现｜过渡雷达",
+   "methodLabel": "趋势结构双顶底+兑现｜过渡雷达",
    "spec": {
     "entry": {
      "trend_up": [
@@ -273,7 +273,7 @@
    "sym": "MA",
    "name": "甲醇",
    "method": "G1",
-   "methodLabel": "趋势WM+兑现｜过渡雷达",
+   "methodLabel": "趋势结构双顶底+兑现｜过渡雷达",
    "spec": {
     "entry": {
      "trend_up": [
@@ -663,7 +663,7 @@
    "sym": "HC",
    "name": "热卷",
    "method": "G8",
-   "methodLabel": "趋势WM+兑现｜过渡雷达+WM",
+   "methodLabel": "趋势结构双顶底+兑现｜过渡雷达+结构双顶底",
    "spec": {
     "entry": {
      "trend_up": [
@@ -794,7 +794,7 @@
    "sym": "SM",
    "name": "锰硅",
    "method": "G4",
-   "methodLabel": "趋势WM+兑现｜过渡雷达+预警",
+   "methodLabel": "趋势结构双顶底+兑现｜过渡雷达+反转预警",
    "spec": {
     "entry": {
      "trend_up": [
