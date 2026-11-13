@@ -1445,8 +1445,10 @@ function renderChart(){
       var mw2 = (DOC.mw || []).filter(function(x){ return x.hiConf; })
         .slice().sort(function(x,y){ return x.date < y.date ? -1 : 1; });
       var nWeak = dl2.filter(function(e){ return e.weak; }).length;
+      var nTc = dl2.filter(function(e){ return e.sigKind === 'tc'; }).length;
       dn.innerHTML = '<span class="dnb" onclick="jumpDef()">○ 失效 ' + dl2.length
-        + ' 条 / ' + dkeys.length + ' 天 · 最近 ' + lastD.date + '（点此定位）</span>'
+        + ' 条' + (nTc ? '（其中中继 ' + nTc + '）' : '') + ' / ' + dkeys.length
+        + ' 天 · 最近 ' + lastD.date + '（点此定位）</span>'
         + (nWeak ? ' <span class="dnb" style="margin-left:6px;opacity:.7">◌ 弱叉 '
             + nWeak + ' 条 · 仅记录 / 不推微信</span>' : '')
         + ' <span class="dnb" style="margin-left:6px" onclick="showAllDef()">🗓 10 年全量（近窗 ' + nWin + ' 天）</span>'
