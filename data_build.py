@@ -222,6 +222,13 @@ def compute_tc_signals(main, mult, margin):
         out.append({"idx": i, "date": main[i]["d"], "side": side,
                     "price": main[i]["c"], "atr": a, "mult": mult,
                     "margin": margin, "ret10": ret10})
+    # v33【一个大方向只标第一个】：同向链首标 first=True，后续同向信号 first=False。
+    # 只在出现反向信号时重新起算，避免趋势走到后半段还在追、吃到山顶。
+    # 该字段纯展示用，不参与账本、不改算法参数、不改 tc_monitor 的胜率口径。
+    _prev = 0
+    for _s in out:
+        _s["first"] = (_s["side"] != _prev)
+        _prev = _s["side"]
     return out
 
 
