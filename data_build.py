@@ -322,7 +322,7 @@ def build_plan(sym, doc, main, S):
     watch_stat = {"n": len(_wt),
                   "win": (round(len(_ww) * 100.0 / len(_wt), 1) if _wt else None),
                   "net": (round(sum(t["net"] for t in _wt)) if _wt else 0),
-                  "label": "观察档"}
+                  "label": "预警级"}
     return {
         "v": "v22",
         "method": v["method"], "methodLabel": v["methodLabel"],
