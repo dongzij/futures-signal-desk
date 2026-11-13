@@ -3287,10 +3287,17 @@ fetchJ('index.json', function(man){
    信号由 data_build.py 每日算好写入 DOC.tcSignals；监控由 tc_monitor.py 写入 DOC.tcHealth。
    这里只负责「渲染 + 预警展示」，不参与任何交易、账本、平仓、推送决策。 */
 function tcHealthOf(){ return (typeof DOC !== 'undefined' && DOC) ? (DOC.tcHealth || null) : null; }
-function tcSidePaused(hl, side){
-  if(!hl || !hl.status) return false;
+function tcPauseState(hl, side){
+  if(!hl || !hl.status) return null;
   var s = side < 0 ? hl.status.short : hl.status.long;
-  return !!(s && s.paused);
+  return (s && s.paused) ? s : null;
+}
+function tcSidePaused(hl, side, date){
+  var s = tcPauseState(hl, side);
+  if(!s) return false;
+  /* 只灰化「暂停生效月及之后」的信号：历史信号保留当时的真实颜色，不篡改可读性 */
+  if(s.since && date && date < (s.since + '-01')) return false;
+  return true;
 }
 function tcPctCell(c){
   if(!c || c.wr === null || c.wr === undefined) return '—';
@@ -3333,7 +3340,7 @@ function tcBuildSeries(tcList, hl){
   }
   for(var k = 0; k < tcList.length; k++){
     var t = tcList[k], isShort = t.side < 0, a = t.atr || 1;
-    var paused = tcSidePaused(hl, t.side);
+    var paused = tcSidePaused(hl, t.side, t.date);
     var symName = t.sym || ((typeof DOC !== 'undefined' && DOC && DOC.sym) ? DOC.sym : '');
     var y = isShort ? (t.price + 0.9 * a) : (t.price - 0.9 * a);
     var col = paused ? '#4a5364' : (isShort ? '#ff3b30' : '#00d26a');
