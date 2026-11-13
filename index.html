@@ -3313,13 +3313,16 @@ function tcBuildSeries(tcList, hl){
     tcHealthBanner(hl);
     return {name:'强顺势中继', type:'scatter', data:data, silent:true, tooltip:{show:false}};
   }
-  var prevSide = 0;
+  var prevSide = 0, prevHead = 0;
   for(var k = 0; k < tcList.length; k++){
     var t = tcList[k], isShort = t.side < 0, a = t.atr || 1;
     /* v33：一个大方向趋势只标第一个中继信号，后续同向不再提示（防吃山顶）。
-       后端已写 t.first；万一旧 JSON 没有该字段，这里按「同向链首标」自算兜底。 */
-    var isFirst = (t.first === undefined) ? (t.side !== prevSide) : !!t.first;
-    prevSide = t.side;
+       同一方向超过 120 根（约半年）没出现反向信号，视为新趋势重新起算。
+       后端已写 t.first；万一旧 JSON 没有该字段，这里按同一规则自算兜底。 */
+    var isFirst = (t.first === undefined)
+      ? ((t.side !== prevSide) || ((t.idx - prevHead) >= 120))
+      : !!t.first;
+    if(isFirst){ prevSide = t.side; prevHead = t.idx; }
     if(!isFirst) continue;
     var paused = tcSidePaused(hl, t.side, t.date);
     var symName = t.sym || ((typeof DOC !== 'undefined' && DOC && DOC.sym) ? DOC.sym : '');
