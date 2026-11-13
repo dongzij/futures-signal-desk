@@ -485,7 +485,158 @@ def best_match(found, signals, allow_push):
 
 # ---------------------------------------------------------------- 主流程
 
+# ---------------------------------------------------------------- v32 强顺势中继推送
+# 用户 2026-11-13：只推「最后一根 K 线」上新形成的信号，绝不补推历史 180+ 个；
+# 若该方向处于暂停状态（tc_monitor 判定的胜率衰减），只留页面展示、禁止推送。
+# 与交易完全解耦：不读不写账本，不影响 entry/exit/radar，只多发一条微信。
+TC_FOOT = ('<div style="margin-top:12px;padding:8px 10px;background:#f6f8fa;'
+           'border-left:3px solid #9aa3b2;border-radius:4px;font-size:12px;'
+           'line-height:1.8;color:#555">'
+           '纯视觉预警：只提示「大趋势没结束，这里可以上车」，'
+           '<b>不改任何账本、不自动开平仓、不设止损</b>。'
+           '是否参与、仓位多少由你人工判断（页面点击箭头可算 ATR 仓位）。</div>')
+
+
+def tc_scan_docs(syms):
+    """用与 data_build 完全同源的 bars 与算法算出 tcSignals（纯内存，不写任何文件）。"""
+    import data_build as _db
+    keep = int(getattr(_db, "DAILY_YEARS", 10) * 244)
+    docs = {}
+    for sym in syms:
+        if sym not in getattr(_db, "PRODUCTS", {}):
+            continue
+        try:
+            main = engine_bars(sym)
+            if not main:
+                continue
+            if len(main) > keep:
+                main = main[-keep:]
+            c = _db.PRODUCTS.get(sym) or {}
+            sigs = _db.compute_tc_signals(main, c.get("mult", 10), c.get("margin", 0.08))
+            docs[sym] = {
+                "main": [[b["d"], b["o"], b["h"], b["l"], b["c"]] for b in main],
+                "tcSignals": sigs,
+            }
+        except Exception as e:                       # noqa: BLE001
+            print("tc scan %s failed: %s" % (sym, e), file=sys.stderr)
+    return docs
+
+
+def tc_card_html(sym, s, name, health):
+    """单条信号卡片。空头/多头文案严格按用户指定区分。"""
+    import tc_monitor as _tm
+    short = s["side"] < 0
+    lb = int(((health or {}).get("rule") or {}).get("lookback") or _tm.LOOKBACK_N)
+    cell = ((health or {}).get("status") or {}).get("short" if short else "long") or {}
+    wr = cell.get("wr")
+    pct = ("%.1f%%" % (wr * 100)) if wr is not None else "—"
+    if short:
+        head = "🚀 强顺势中继·空：高胜率顺势（历史空头胜率极高），建议评估入场。"
+        col, bg, bd = "#d93025", "#fff0f0", "#f3c2c2"
+        wline = "最近 %d 笔空头胜率 %s（%d/%d）" % (lb, pct, cell.get("wins", 0), cell.get("n", 0))
+    else:
+        head = "🚀 强顺势中继·多：多头偏弱（近期多头胜率仅 %s），建议轻仓/谨慎参与。" % pct
+        col, bg, bd = "#8a6d00", "#fffdf0", "#f0e0a0"
+        wline = "最近 %d 笔多头胜率 %s（%d/%d）" % (lb, pct, cell.get("wins", 0), cell.get("n", 0))
+    risk = s.get("atr", 0) * s.get("mult", 10)
+    return (
+        '<div style="margin-bottom:16px">'
+        '<div style="font-size:16px;font-weight:700;color:%s">%s</div>'
+        '<div style="background:%s;padding:10px;border-radius:6px;border:1px solid %s;'
+        'font-size:13px;line-height:1.9;margin-top:6px">'
+        '品种 <b>%s %s</b> · 方向 <b>%s</b> · 信号日 <b>%s</b><br>'
+        '收盘 <b>%.6g</b> · ATR %.2f · 10 日净位移 <b>%+.2f ATR</b><br>'
+        '每手 1ATR 风险约 <b>%d 元</b>（乘数 %s）<br>'
+        '<span style="color:#666">%s</span>'
+        '</div></div>'
+        % (col, head, bg, bd, sym, name, "空" if short else "多", s.get("date"),
+           s.get("price", 0), s.get("atr", 0), s.get("ret10", 0), round(risk),
+           s.get("mult", 10), wline))
+
+
+def tc_push_scan(push_token, allow_push, syms, state):
+    """只推最后一根 K 线的新信号；暂停方向静默；同 sym|date 只推一次。"""
+    if not push_token:
+        return
+    docs = tc_scan_docs(syms)
+    if not docs:
+        return
+    import tc_monitor as _tm
+    health = _tm.compute_health(docs)
+    newest = max(d["main"][-1][0] for d in docs.values() if d["main"])
+    fresh = []
+    for sym, d in docs.items():
+        n = len(d["main"])
+        if not n or d["main"][-1][0] != newest:      # 数据没到最新一根的品种不推
+            continue
+        if not allow_push(sym):
+            continue
+        for s in d["tcSignals"]:
+            if s.get("idx") == n - 1:                # 只认最后一根，历史信号永不入选
+                fresh.append((sym, s))
+    if not fresh:
+        return
+    st = health.get("status") or {}
+    blocked = {1: bool((st.get("long") or {}).get("paused")),
+               -1: bool((st.get("short") or {}).get("paused"))}
+    keep = [x for x in fresh if not blocked[x[1]["side"]]]
+    if len(keep) < len(fresh):
+        print("tc push 暂停方向已静默：%s"
+              % "、".join("%s %s" % (a, b.get("date")) for a, b in fresh if blocked[b["side"]]))
+    if not keep:
+        return
+    pushed = state.setdefault("tcPushed", {})
+    todo = [(sym, s) for sym, s in keep if not pushed.get("%s|%s" % (sym, s.get("date")))]
+    if not todo:
+        return
+    cards = "".join(tc_card_html(sym, s, engine.NAMES.get(sym, ""), health) for sym, s in todo)
+    if len(todo) == 1:
+        sym, s = todo[0]
+        title = "🚀 强顺势中继·%s：%s %s" % ("空" if s["side"] < 0 else "多",
+                                            sym, engine.NAMES.get(sym, ""))
+    else:
+        title = "🚀 强顺势中继 %d 条：%s" % (
+            len(todo), "、".join("%s·%s" % (a, "空" if b["side"] < 0 else "多") for a, b in todo))
+    ok = post_push(push_token, title, cards + TC_FOOT)
+    print("push tc: %s（%d 条：%s）" % (ok, len(todo), title))
+    if ok:
+        for sym, s in todo:
+            pushed["%s|%s" % (sym, s.get("date"))] = 1
+        state["tcPushed"] = dict(list(pushed.items())[-300:])
+
+
+def tc_selftest():
+    """--tc-selftest：强制发一条写死的测试信号，只验证通道；不读行情、不写任何文件。"""
+    cfg = load_json(CONF, {})
+    token = (cfg.get("pushplus") or os.environ.get("PUSHPLUS_TOKEN") or "").strip()
+    print("token present:", bool(token))
+    if not token:
+        print("缺少 PUSHPLUS_TOKEN，无法自检")
+        return 1
+    today = _dt.datetime.now(_dt.timezone(_dt.timedelta(hours=8))).strftime("%Y-%m-%d")
+    health = {"rule": {"lookback": 12},
+              "status": {"short": {"wr": 0.6667, "wins": 8, "n": 12, "paused": False},
+                         "long": {"wr": 0.4167, "wins": 5, "n": 12, "paused": False}}}
+    fake_s = {"date": today, "side": -1, "price": 2318.0, "atr": 41.2, "mult": 10, "ret10": -4.31}
+    fake_l = {"date": today, "side": 1, "price": 7240.0, "atr": 96.5, "mult": 10, "ret10": 3.28}
+    head = ('<div style="padding:8px 10px;background:#fff8e1;border-left:3px solid #ffb020;'
+            'border-radius:4px;font-size:13px;line-height:1.8;color:#8a6d00;margin-bottom:14px">'
+            '<b>🧪 这是推送通道自检，不是真实信号。</b><br>'
+            '下面两条只用来看「空/多」两种文案的实际观感，'
+            '数据是写死的样例，请忽略价格与日期。</div>')
+    cards = (tc_card_html("MA", fake_s, "甲醇", health)
+             + tc_card_html("Y", fake_l, "豆油", health))
+    ok = post_push(token, "🧪 通道自检 · 🚀 强顺势中继（空/多文案预览）", head + cards + TC_FOOT,
+                   gated=False)
+    print("selftest push result:", ok)
+    return 0 if ok else 1
+
+
 def main():
+    # v32 推送通道自检：只在 CI 手动触发时走这一条，纯发消息、不写任何数据
+    if "--tc-selftest" in sys.argv:
+        sys.exit(tc_selftest())
+
     # ---- 夜盘闸门（v26）：北京时间 20:00-08:00 一律拒绝写盘 ----
     # 23:10 那班只允许跑 night_warn.py（只读+只推）；夜盘半截行情属于下一交易日，
     # 一旦写进 state.json / data/ 就是永久污染。15:20 / 15:50 两班不受影响。
@@ -1068,6 +1219,11 @@ def main():
         "hits": [s["sym"] for s in breaker_hits],
     }
 
+    # ---------- v32 推送：强顺势中继（只推最后一根新信号；暂停方向静默）----------
+    try:
+        tc_push_scan(push_token, allow_push, codes, state)
+    except Exception as _tc_e:                      # noqa: BLE001
+        print("tc push skipped: %s" % _tc_e, file=sys.stderr)
     json.dump(state, open(STATE, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print("scan done  found=%d  pushed=%d  pred=%d open=%d closed=%d win=%s%% sumYuan=%s"
           % (len(found), len(fresh), len(preds), len(opens), len(closed),
