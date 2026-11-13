@@ -6,11 +6,13 @@
   信号日收盘触发 → 次日开盘进场 → 持 H=20 根收盘离场 → 扣双边成本 0.0008*(entry+exit)
   net = side*(exit-entry) - cost ；net > 0 记为「胜」。
 
-监控规则（用户 2026-11-13 指定）：
-  · 每月一次月末快照，统计「过去 3 个自然月」信号的实际胜率（按方向分别统计，7 品种合并）。
-  · 空头：连续 2 个月末快照胜率 < 45%  → 暂停空头提示。
-  · 多头：最近 1 个月末快照胜率 < 40%  → 暂停多头提示。
-  · 样本不足（窗口内已走完的信号数 < MIN_N）不参与判定，只展示，避免小样本误杀。
+监控规则（用户 2026-11-13 二次指定：改为按「笔数」而非「时间窗口」）：
+  · 统计对象：最近 LOOKBACK_N=12 笔【已完成】的该方向信号（7 品种合并，按离场时间排序）。
+  · 多头：满 12 笔且胜率 < 40% → 暂停多头提示。
+  · 空头：满 12 笔且胜率 < 45% → 暂停空头提示。
+  · 不满 12 笔一律不判定（保持正常显示），避免用小样本误杀。
+  说明：本策略极低频（≈0.37 次/品种/年），按时间窗口取样会出现「0~2 笔就定生死」，
+        故按笔数取样更稳；样本量随交易自然累积，不需要额外调参。
 
 输出：写进每个 data/{sym}.json 的 "tcHealth" 字段（7 个文件内容相同，7 品种合并口径），
       前端直接读 DOC.tcHealth 渲染横幅与灰化，无需额外请求。
@@ -22,23 +24,14 @@ import datetime
 
 H = 20                 # 持仓根数（与回测一致）
 COST = 0.0008          # 双边成本系数（与 money.py 一致）
-WINDOW_MONTHS = 3      # 滚动窗口
+LOOKBACK_N = 12        # 判定窗口：最近 N 笔已完成信号
 SHORT_WR = 0.45        # 空头阈值
 LONG_WR = 0.40         # 多头阈值
-SHORT_CONSEC = 2       # 空头连续月数
-MIN_N = 3              # 窗口内最少已走完样本数（单笔即判会把噪声当趋势）
-KEEP_SNAPSHOTS = 18    # 输出保留的月末快照数
 
 
 # ---------------------------------------------------------------- 月份工具
 def _month_of(d):
     return d[:7]
-
-
-def _shift_month(m, k):
-    y, mo = int(m[:4]), int(m[5:7])
-    idx = y * 12 + (mo - 1) + k
-    return "%04d-%02d" % (idx // 12, idx % 12 + 1)
 
 
 def _month_start(m):
@@ -81,12 +74,54 @@ def trades_of(main, tc_sigs):
     return out
 
 
-def _wr(rows):
+def _cell(rows):
+    """rows 已经是「要统计的那批」，返回样本与胜率。"""
     n = len(rows)
     if not n:
         return {"n": 0, "wins": 0, "wr": None}
     w = sum(r["win"] for r in rows)
     return {"n": n, "wins": w, "wr": round(w / float(n), 4)}
+
+
+def _side_status(rows, thr, side_name, today):
+    """按「最近 LOOKBACK_N 笔」判定某方向是否暂停。rows 已按离场时间升序。"""
+    total = len(rows)
+    tail = rows[-LOOKBACK_N:] if total > LOOKBACK_N else rows
+    cell = _cell(tail)
+    recent = [{
+        "date": r["date"], "sym": r.get("sym") or "",
+        "exitDate": r["exitDate"], "pts": round(r["pts"], 2), "win": r["win"],
+    } for r in tail]
+
+    paused, reason, since = False, "", None
+    if total < LOOKBACK_N:
+        reason = ("样本累积中：已完成 %d/%d 笔，未达判定门槛，暂不判定"
+                  % (total, LOOKBACK_N))
+    else:
+        span = "%s ~ %s" % (tail[0]["date"], tail[-1]["date"])
+        if cell["wr"] < thr:
+            paused = True
+            since = _month_of(today)
+            reason = ("%s最近 %d 笔胜率 %.1f%%（%d/%d，%s）低于 %d%%，已暂停该方向提示"
+                      % (side_name, LOOKBACK_N, cell["wr"] * 100, cell["wins"], cell["n"],
+                         span, int(thr * 100)))
+        else:
+            reason = ("%s最近 %d 笔胜率 %.1f%%（%d/%d，%s），高于 %d%%，正常"
+                      % (side_name, LOOKBACK_N, cell["wr"] * 100, cell["wins"], cell["n"],
+                         span, int(thr * 100)))
+
+    return {
+        "paused": paused,
+        "since": since,
+        "wr": cell["wr"],
+        "n": cell["n"],
+        "wins": cell["wins"],
+        "need": LOOKBACK_N,
+        "total": total,
+        "reason": reason,
+        "rule": "最近 %d 笔满额且胜率 < %d%% 即暂停" % (LOOKBACK_N, int(thr * 100)),
+        "recent": recent,
+    }
 
 
 def compute_health(docs, today=None):
@@ -99,105 +134,33 @@ def compute_health(docs, today=None):
             t["sym"] = sym
             all_tr.append(t)
 
-    # 全局交易日历（用于确定「该月最后交易日」）
-    all_dates = sorted({d for doc in docs.values() for d in
-                        [b[0] for b in (doc.get("main") or [])]})
+    # 按「完成时间」排序：先离场的先计入，最新离场的排最后
+    all_tr.sort(key=lambda t: (t["exitDate"], t["date"], t.get("sym") or ""))
 
     today = today or datetime.date.today().isoformat()
-    cur_m = _month_of(today)
-    # 已完成月份：严格早于当前自然月，且必须是【连续自然月】（空仓月也要有快照，
-    # 否则「连续两个月」会跨过没有信号的月份，判定失真）。
-    sig_months = sorted({_month_of(t["date"]) for t in all_tr})
-    months = []
-    if sig_months:
-        first_m = sig_months[0]
-        m = first_m
-        last_done = _shift_month(cur_m, -1)
-        while m <= last_done:
-            months.append(m)
-            m = _shift_month(m, 1)
-
-    # 月末快照：以该月最后一个交易日为 as-of，只统计当月及之前已走完的信号
-    snaps = []
-    for m in months:
-        m_end = max([d for d in all_dates if _month_of(d) == m] or [_month_end(m)])
-        w_start = _month_start(_shift_month(m, -(WINDOW_MONTHS - 1)))
-        elig = [t for t in all_tr if w_start <= t["date"] <= m_end and t["exitDate"] <= m_end]
-        snaps.append({
-            "m": m, "end": m_end,
-            "from": w_start,
-            "short": _wr([t for t in elig if t["side"] < 0]),
-            "long": _wr([t for t in elig if t["side"] > 0]),
-        })
-
-    def _trip_ok(cell):
-        return cell["n"] >= MIN_N and cell["wr"] is not None
-
-    status = {}
-    if snaps:
-        last = snaps[-1]
-        # 空头：最近两个月末快照连续 < 45%
-        short_paused, short_reason, short_since = False, "", None
-        if len(snaps) >= SHORT_CONSEC:
-            a, b = snaps[-2], snaps[-1]
-            ca, cb = a["short"], b["short"]
-            if (_trip_ok(ca) and _trip_ok(cb)
-                    and ca["wr"] < SHORT_WR and cb["wr"] < SHORT_WR):
-                short_paused = True
-                short_since = a["m"]
-                short_reason = ("空头中继近 3 月胜率连续 2 个月低于 %d%%（%s %.1f%% / %s %.1f%%，样本 %d/%d）"
-                                % (int(SHORT_WR * 100), a["m"], ca["wr"] * 100,
-                                   b["m"], cb["wr"] * 100, ca["n"], cb["n"]))
-            elif _trip_ok(cb) and cb["wr"] < SHORT_WR:
-                short_reason = ("空头中继近 3 月胜率 %s 已降至 %.1f%%（<%d%%），等待下月确认"
-                                % (b["m"], cb["wr"] * 100, int(SHORT_WR * 100)))
-        status["short"] = {
-            "paused": short_paused,
-            "since": short_since,
-            "wr": last["short"]["wr"],
-            "n": last["short"]["n"],
-            "reason": short_reason,
-            "rule": "连续 %d 个月末 < %d%% 即暂停" % (SHORT_CONSEC, int(SHORT_WR * 100)),
-        }
-
-        long_paused = False
-        cl = last["long"]
-        long_reason = ""
-        if _trip_ok(cl) and cl["wr"] < LONG_WR:
-            long_paused = True
-            long_reason = ("多头中继近 3 月胜率 %s 仅 %.1f%%（<%d%%，样本 %d）"
-                           % (last["m"], cl["wr"] * 100, int(LONG_WR * 100), cl["n"]))
-        status["long"] = {
-            "paused": long_paused,
-            "since": last["m"] if long_paused else None,
-            "wr": cl["wr"],
-            "n": cl["n"],
-            "reason": long_reason,
-            "rule": "单月 < %d%% 即暂停" % int(LONG_WR * 100),
-        }
-
-    # 实时口径（截至今日、滚动 3 个自然月），仅展示，不参与暂停判定
-    w_start_live = _month_start(_shift_month(cur_m, -(WINDOW_MONTHS - 1)))
-    live_elig = [t for t in all_tr if t["date"] >= w_start_live and t["exitDate"] <= today]
-    live = {
-        "from": w_start_live, "to": today,
-        "short": _wr([t for t in live_elig if t["side"] < 0]),
-        "long": _wr([t for t in live_elig if t["side"] > 0]),
-    }
+    shorts = [t for t in all_tr if t["side"] < 0]
+    longs = [t for t in all_tr if t["side"] > 0]
 
     return {
-        "version": 1,
+        "version": 2,
         "built": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "asOf": today,
         "rule": {
-            "windowMonths": WINDOW_MONTHS, "H": H, "cost": COST, "minN": MIN_N,
-            "short": {"wr": SHORT_WR, "consec": SHORT_CONSEC},
-            "long": {"wr": LONG_WR, "consec": 1},
+            "mode": "lastN",
+            "lookback": LOOKBACK_N,
+            "H": H,
+            "cost": COST,
+            "short": {"wr": SHORT_WR},
+            "long": {"wr": LONG_WR},
+            "requireFull": True,
         },
-        "live": live,
-        "snapshots": snaps[-KEEP_SNAPSHOTS:],
-        "status": status,
+        "status": {
+            "short": _side_status(shorts, SHORT_WR, "空头中继", today),
+            "long": _side_status(longs, LONG_WR, "多头中继", today),
+        },
         "totalSignals": len(all_tr),
+        "totalShort": len(shorts),
+        "totalLong": len(longs),
     }
 
 
@@ -232,24 +195,16 @@ def apply_health_to_dir(data_dir):
 
 
 def _print_table(h):
-    print("规则: 窗口 %d 月 / 空 <%.0f%% 连续 %d 月 / 多 <%.0f%% 单月 / 最少样本 %d"
-          % (h["rule"]["windowMonths"], h["rule"]["short"]["wr"] * 100,
-             h["rule"]["short"]["consec"], h["rule"]["long"]["wr"] * 100, h["rule"]["minN"]))
-    print("月末快照（近 12）：")
-    print("  月份     空n  空胜率   多n  多胜率")
-    for s in h["snapshots"][-12:]:
-        f = lambda c: ("%5.1f%%" % (c["wr"] * 100)) if c["wr"] is not None else "    -"
-        print("  %s  %3d  %7s  %3d  %7s" % (s["m"], s["short"]["n"], f(s["short"]),
-                                            s["long"]["n"], f(s["long"])))
-    lv = h["live"]
-    print("实时（%s~%s）：空 n=%d wr=%s / 多 n=%d wr=%s"
-          % (lv["from"], lv["to"], lv["short"]["n"],
-             "%.1f%%" % (lv["short"]["wr"] * 100) if lv["short"]["wr"] is not None else "-",
-             lv["long"]["n"],
-             "%.1f%%" % (lv["long"]["wr"] * 100) if lv["long"]["wr"] is not None else "-"))
+    print("规则: 最近 %d 笔已完成 / 空 <%.0f%% / 多 <%.0f%% / 不满 %d 笔不判定"
+          % (h["rule"]["lookback"], h["rule"]["short"]["wr"] * 100,
+             h["rule"]["long"]["wr"] * 100, h["rule"]["lookback"]))
+    print("已完成合计 %d 笔（多 %d / 空 %d）"
+          % (h["totalSignals"], h["totalLong"], h["totalShort"]))
     for side in ("short", "long"):
         st = h["status"][side]
-        print("%s: paused=%s wr=%s n=%s %s" % (side, st["paused"], st["wr"], st["n"], st["reason"]))
+        f = ("%.1f%%" % (st["wr"] * 100)) if st["wr"] is not None else "-"
+        print("%s: paused=%-5s wr=%6s (%d/%d, 累计 %d) %s"
+              % (side, st["paused"], f, st["wins"], st["n"], st["total"], st["reason"]))
 
 
 if __name__ == "__main__":
