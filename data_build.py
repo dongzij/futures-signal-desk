@@ -197,7 +197,7 @@ def compute_tc_signals(main, mult, margin):
     COOL = 40
     last = {1: -999, -1: -999}
     out = []
-    for i in range(65, n - 20):
+    for i in range(65, n):        # v31：扫描到最后一根（原先 n-20 会让新信号晚 20 根才出现）
         a = atr[i] if atr[i] else ((main[i]["c"] - main[i]["l"]) or 1)
         ret10 = (main[i]["c"] - main[i - 10]["c"]) / a
         if abs(ret10) < 3.0:
@@ -955,6 +955,20 @@ def main():
             "stat": _exit_all_stat(),
         },
     }
+    # ---- v31 强顺势中继 · 多空衰减监控（纯统计层，只写 tcHealth）----
+    # 7 品种合并统计近 3 个自然月的实际胜率；空头连续 2 月 <45% / 多头单月 <40% 即标记暂停。
+    # 不参与任何交易、账本、平仓、推送决策，只影响页面上的灰化与横幅。
+    try:
+        import tc_monitor as _tcm
+        _h = _tcm.apply_health_to_dir(OUT)
+        if _h:
+            print("   tcHealth：空头%s / 多头%s（样本 %d 笔）" % (
+                "暂停" if _h["status"]["short"]["paused"] else "正常",
+                "暂停" if _h["status"]["long"]["paused"] else "正常",
+                _h.get("totalSignals", 0)))
+    except Exception as _e:
+        print("   tcHealth 生成跳过：%s" % _e)
+
     json.dump(manifest, open(os.path.join(OUT, "index.json"), "w",
                              encoding="utf-8"), ensure_ascii=False,
               separators=(",", ":"))
