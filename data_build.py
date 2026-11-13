@@ -67,8 +67,8 @@ ORDER = V22.get("order") or ["MA", "HC", "Y", "SM", "FG", "P", "M"]
 
 REGIME_NM = {"trend_up": "上涨趋势", "trend_dn": "下跌趋势",
              "range": "震荡", "transition": "过渡态"}
-SIG_NM = {"pred": "顶底雷达", "warn": "进场预警", "mw": "WM结构",
-          "confirm": "反转兑现", "tf": "转折确认"}
+SIG_NM = {"pred": "顶底雷达", "warn": "反转预警", "mw": "结构双顶底",
+          "confirm": "强确认建仓", "tf": "转折确认"}
 DAILY_YEARS = 10         # 主力连续日线回看年数（支撑年/月/周视图）
 MAX_CONTRACTS = 8        # 每品种最多打包的合约数
 KEEP_MIN = 40            # 合约至少要有多少根日线才收录
@@ -315,7 +315,7 @@ def build_plan(sym, doc, main, S):
         nxt = "等待「%s」信号出现 → 次日开盘顺势开仓" % allow_txt
 
     te, tr_, fu, rc = v["test"], v["train"], v["full"], v["recent"]
-    # v34：进场预警（warn）定为「观察档」——它可以建仓，但只作盯盘提示，
+    # v34：反转预警定为「预警级」——它可以建仓，但只作盯盘提示，
     # 不并入定稿方案口径。这里单独统计，供页面把两者分开讲清楚（不删任何交易）。
     _wt = [t for t in r["trades"] if t["kind"] == "warn" and t.get("net") is not None]
     _ww = [t for t in _wt if t["net"] > 0]
