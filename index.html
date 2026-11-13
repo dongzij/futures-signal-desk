@@ -1514,14 +1514,8 @@ function renderChart(){
     });
   }
 
-  var tcProd = (MAN.products||[]).filter(function(p){return (p.sym||p.symbol||'')===cur.sym;})[0];
-  var tcMult = (tcProd && tcProd.mult) ? tcProd.mult : 10;
-  var tcMargin = (tcProd && tcProd.margin) ? tcProd.margin : 0.10;
-  var tcSeries = tcBuildSeries(bars, cur.sym, tcMult, tcMargin, cur.pt);
-  var tcProd = (MAN.products||[]).filter(function(p){return (p.sym||p.symbol||'')===cur.sym;})[0];
-  var tcMult = (tcProd && tcProd.mult) ? tcProd.mult : 10;
-  var tcMargin = (tcProd && tcProd.margin) ? tcProd.margin : 0.10;
-  var tcSeries = tcBuildSeries(bars, cur.sym, tcMult, tcMargin, cur.pt);
+    var tcSeries = tcBuildSeries(DOC && DOC.tcSignals ? DOC.tcSignals : []);
+    var tcSeries = tcBuildSeries(DOC && DOC.tcSignals ? DOC.tcSignals : []);
   var series = [tcSeries,tcSeries,
     {name:'K', type:'candlestick', data:k, barMaxWidth:14,     itemStyle:{color:'#e5484d', color0:'#0ecb81', borderColor:'#e5484d', borderColor0:'#0ecb81'}},
     {name:'MA10', type:'line', data:m10, symbol:'none', lineStyle:{width:1,color:'#f5a524'}},
@@ -3253,43 +3247,19 @@ fetchJ('index.json', function(man){
 </script>
 <script>
 /* ================= 强顺势中继 · 纯视觉预警（v30.x 叠加，不影响底层账本） ================= */
-function tcBuildSeries(bars, sym, mult, margin, pt){
+function tcBuildSeries(tcList){
+  /* 强顺势中继 · 纯视觉预警：信号由 daily.py 在每日数据更新时算好写入 DOC.tcSignals，
+     此处仅负责渲染（绿多/红空箭头 + 标签 + 点击仓位测算），不改任何交易逻辑。 */
   var data = [];
-  if(pt !== 'D'){
-    return {name:'强顺势中继', type:'scatter', data:data, silent:true, tooltip:{show:false}};
-  }
-  var n = bars.length;
-  if(n < 65) return {name:'强顺势中继', type:'scatter', data:data, silent:true, tooltip:{show:false}};
-  /* Wilder ATR(14) */
-  var atr = [], trs = [];
-  for(var i=0;i<n;i++){
-    var h=bars[i][2], l=bars[i][3], c=bars[i][4];
-    if(i===0){ trs.push(h-l); }
-    else { var pc=bars[i-1][4]; trs.push(Math.max(h-l, Math.abs(h-pc), Math.abs(l-pc))); }
-  }
-  var first=0; for(var i=0;i<14;i++) first+=trs[i]; first/=14;
-  atr[13]=first;
-  for(var i=14;i<n;i++){ atr[i]=(atr[i-1]*(14-1)+trs[i])/14; }
-  for(var i=0;i<13;i++) atr[i]=first;
-  var last={}; last[1]=-999; last[-1]=-999; var COOL=40;
-  for(var i=65;i<n-20;i++){
-    var a = atr[i] || ((bars[i][4]-bars[i][3])||1);
-    var ret10 = (bars[i][4]-bars[i-10][4])/a;
-    if(Math.abs(ret10) < 3.0) continue;
-    var side = ret10>0 ? 1 : -1;
-    if(i-last[side] < COOL) continue;
-    var body = (bars[i][4]-bars[i][1])/a;            /* 顺势强K */
-    if(body*side < 1.0) continue;
-    var hh=-1e15, ll=1e15;
-    for(var j=i-10;j<i;j++){ if(bars[j][4]>hh) hh=bars[j][4]; if(bars[j][4]<ll) ll=bars[j][4]; }
-    if(side>0 && !(bars[i][4]>hh)) continue;         /* 创10日新高(不含当日) */
-    if(side<0 && !(bars[i][4]<ll)) continue;         /* 创10日新低(不含当日) */
-    last[side]=i;
-    var isShort = side<0;
-    var y = isShort ? (bars[i][4]+0.9*a) : (bars[i][3]-0.9*a);
+  if(!tcList || !tcList.length) return {name:'强顺势中继', type:'scatter', data:data, silent:true, tooltip:{show:false}};
+  for(var k=0;k<tcList.length;k++){
+    var t = tcList[k];
+    var isShort = t.side < 0;
+    var a = t.atr || 1;
+    var y = isShort ? (t.price + 0.9*a) : (t.price - 0.9*a);
     data.push({
-      value:[i, y],
-      tc:{sym:sym, date:bars[i][0], side:side, price:bars[i][4], atr:a, mult:mult, margin:margin, ret10:ret10},
+      value:[t.idx, y],
+      tc:{sym:t.sym||'', date:t.date, side:t.side, price:t.price, atr:a, mult:t.mult, margin:t.margin, ret10:t.ret10},
       symbol:'arrow', symbolSize:22, symbolRotate: isShort?180:0,
       itemStyle:{color: isShort ? '#ff3b30' : '#00d26a', borderColor:'#0B0E13', borderWidth:1},
       label:{show:true, position: isShort?'top':'bottom',
