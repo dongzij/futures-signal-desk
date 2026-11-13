@@ -235,6 +235,43 @@ def compute_tc_signals(main, mult, margin):
         if _new:
             _prev = _s["side"]
             _head = _s["idx"]
+    # v36【失效标记】只给「已显示」的信号算（first=True），隐藏的同向后续信号不画。
+    # 三条口径，取最早成立的一条；纯展示，不改算法参数、不碰账本与胜率口径：
+    #   反向：收盘跌破（多）/突破（空）信号当根 K 线的反向极值 —— 走势已经走反
+    #   震荡：10 根内顺势最大浮盈不足 1 ATR —— 压根没走起来
+    #   走完：已走出 ≥2 ATR 后自最佳收盘回撤 ≥1.5 ATR —— 趋势见顶/见底，有效期结束
+    _shown = [x for x in out if x.get("first")]
+    for _k, _s in enumerate(_shown):
+        _i = _s["idx"]; _side = _s["side"]; _a = _s["atr"] or 1.0; _px = _s["price"]
+        _end = n
+        for _j in range(_k + 1, len(_shown)):
+            if _shown[_j]["side"] != _side:      # 下一条反向中继出现 = 天然边界
+                _end = _shown[_j]["idx"]
+                break
+        _sl = main[_i]["l"]; _sh = main[_i]["h"]; _best = _px
+        for _t in range(_i + 1, _end):
+            _c = main[_t]["c"]
+            _adv = (_px - _c) * _side / _a
+            # 反向：收盘收在信号当根极值之外，且逆势已达 1.5 ATR（小回踩不算走反）
+            if ((_side > 0 and _c < _sl) or (_side < 0 and _c > _sh)) and _adv >= 1.5:
+                _s["fail"] = {"idx": _t, "day": _t - _i, "why": "反向",
+                              "px": _c, "mfe": round((_best - _px) * _side / _a, 2),
+                              "dd": 0.0}
+                break
+            if (_side > 0 and _c > _best) or (_side < 0 and _c < _best):
+                _best = _c
+            _mfe = (_best - _px) * _side / _a
+            _dd = (_best - _c) * _side / _a
+            # 走完：顺势段已经走出来（≥2 ATR），随后自极值回撤 ≥1.5 ATR —— 见顶/见底
+            if _mfe >= 2.0 and _dd >= 1.5:
+                _s["fail"] = {"idx": _t, "day": _t - _i, "why": "走完",
+                              "px": _c, "mfe": round(_mfe, 2), "dd": round(_dd, 2)}
+                break
+            # 震荡：10 根过去仍没走出 1 ATR，且收盘还在信号价附近（原地打转）
+            if _t - _i >= 10 and _mfe < 1.0 and abs(_c - _px) / _a < 0.5:
+                _s["fail"] = {"idx": _t, "day": _t - _i, "why": "震荡",
+                              "px": _c, "mfe": round(_mfe, 2), "dd": round(_dd, 2)}
+                break
     return out
 
 
@@ -747,6 +784,68 @@ def build_product(sym):
         doc["divradar"] = div_radar.scan(main)
     except Exception as e:                              # noqa: BLE001
         print("   divradar 构建失败 %s: %s" % (sym, e))
+    # ---- v36 强顺势中继失效：并入既有「失效白圈」事件流（sigKind="tc"）----
+    # 复用前端已有的白圈画法、失效导航、失效明细与信号栏，不新建任何图标；
+    # 只在文案层按 sigKind 分支（多失效/空失效；走完 → 多到顶/空到底）。
+    # 一条中继信号最多一条失效；纯展示，不改账本、不改 tc_monitor 胜率口径、不推微信。
+    try:
+        _tc_n = 0
+        _tc_rs = {"反向": ("tc_rev", "中继失效·反向"),
+                  "震荡": ("tc_range", "中继失效·震荡"),
+                  "走完": ("tc_done", "中继走完")}
+        _tc_bad = set()
+        _tc_old = [e for e in (doc.get("defend") or [])
+                   if e.get("sigKind") != "tc"]
+        for _t in (doc.get("tcSignals") or []):
+            _fc = _t.get("fail")
+            if not _fc:
+                continue
+            _fi = _fc.get("idx")
+            if _fi is None or not (0 <= _fi < len(main)):
+                continue
+            _sd = 1 if _t["side"] > 0 else -1
+            _why = _fc.get("why") or "反向"
+            _key, _lab = _tc_rs.get(_why, ("tc_rev", "中继失效"))
+            _a = _t.get("atr") or 1.0
+            _px = _fc.get("px")
+            if _px is None:
+                _px = main[_fi]["c"]
+            _fav = _fc.get("mfe") or 0.0
+            if _why == "反向":
+                _edge = main[_fi]["l"] if _sd > 0 else main[_fi]["h"]
+                _det = ("信号后第 %d 根收盘 %.0f，%s信号当根%s %.0f（逆势 %.1f ATR），"
+                        "%s头中继作废") % (
+                    _fc.get("day") or 0, _px,
+                    "跌破" if _sd > 0 else "突破",
+                    "最低" if _sd > 0 else "最高", _edge,
+                    abs(_px - _t["price"]) / _a,
+                    "多" if _sd > 0 else "空")
+            elif _why == "震荡":
+                _det = ("信号后 %d 根内顺势最大浮盈仅 %.1f ATR（未达 1 ATR），"
+                        "行情横着走，%s头中继未启动") % (
+                    _fc.get("day") or 0, _fav, "多" if _sd > 0 else "空")
+            else:
+                _det = ("顺势最大浮盈 %.1f ATR 后自极值回撤 %.1f ATR，趋势走完（%s），"
+                        "中继信号有效期结束") % (
+                    _fav, _fc.get("dd") or 0.0, "见顶" if _sd > 0 else "见底")
+            _tc_bad.add((_t["date"], _sd))
+            _tc_old.append({
+                "weak": False, "adx": None, "kind": "def", "date": main[_fi]["d"],
+                "sym": sym, "name": cfg["name"],
+                "side": "long" if _sd > 0 else "short",
+                "sigDate": _t["date"], "sigKind": "tc", "sigLabel": "强顺势中继",
+                "reason": _key, "label": _lab, "detail": _det,
+                "reasons": [{"key": _key, "label": _lab, "detail": _det}],
+                "day": _fc.get("day") or 0, "price": _px, "atr": _t.get("atr"),
+                "entry": None, "level": None,
+            })
+            _tc_n += 1
+        if _tc_n:
+            _tc_old.sort(key=lambda x: (x.get("date") or "", x.get("sigKind") or ""))
+            doc["defend"] = _tc_old
+            print("   tc 失效标记：本品种 %d 条（复用失效白圈）" % _tc_n)
+    except Exception as _tce:                            # noqa: BLE001
+        print("   tc 失效标记跳过 %s: %s" % (sym, _tce))
     json.dump(doc, open(os.path.join(OUT, "%s.json" % sym), "w",
                         encoding="utf-8"), ensure_ascii=False,
               separators=(",", ":"))
