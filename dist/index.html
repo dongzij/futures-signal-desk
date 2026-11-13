@@ -448,6 +448,7 @@ body.rpon{padding-bottom:142px}
     </div>
   </div>
   <div class="sorthint" id="symSortHint"></div>
+  <div id="tcHealthBar" style="display:none;margin:0 0 8px;padding:9px 26px 9px 12px;border-radius:8px;background:rgba(255,59,48,.10);border:1px solid rgba(255,59,48,.35);font-size:12px;line-height:1.6"></div>
   <div class="chips" id="symChips"></div>
   <div class="chips" id="ctChips"></div>
   <div class="quote" id="quote"></div>
@@ -468,6 +469,7 @@ body.rpon{padding-bottom:142px}
         <span style="color:#ff8a3d">┄ MA26 离场线</span>
         <span style="color:#4c8dff">— MA34 趋势线</span>
         <span style="color:#ff8a3d;font-weight:800">⚠ 顶风险确认（资金背离）</span>
+        <span style="color:#2563eb;font-weight:800">⚠ 底风险确认（资金背离）</span>
         <span style="color:#FFD400;font-weight:800">● 我多/我空（盘感模拟成交）</span></div>
       <div id="defNav" class="defnav"></div>
     </div>
@@ -477,7 +479,7 @@ body.rpon{padding-bottom:142px}
       <div class="siglegend">
         <span class="slbtn" onclick="toggleSigLegend()">ⓘ 图上标记对照 <span id="slArrow">▾</span></span>
         <div class="slbody hide" id="slBody">
-          <div class="slrow"><span class="slk">图上点开</span><span>蓝▼/紫▲、灰◆ → 信号明细；○ 白圈 → 失效明细；★ 金▲/紫▼ → 结构形态；<b>黄◆ → 离场原因</b>；青◇ / 白箭头 → 离场复盘；<b>橙⚠ → 顶部风险确认（资金背离）</b>；<b>金色 ● → 我自己的盘感模拟成交</b>（点开看那一笔盈亏）。鼠标悬停（手机长按）先看文字提示。</span></div>
+          <div class="slrow"><span class="slk">图上点开</span><span>蓝▼/紫▲、灰◆ → 信号明细；○ 白圈 → 失效明细；★ 金▲/紫▼ → 结构形态；<b>黄◆ → 离场原因</b>；青◇ / 白箭头 → 离场复盘；<b>橙⚠ → 顶部风险确认（资金背离）</b>；<b>蓝⚠ → 底部风险确认（资金背离）</b>；<b>金色 ● → 我自己的盘感模拟成交</b>（点开看那一笔盈亏）。鼠标悬停（手机长按）先看文字提示。</span></div>
           <div class="slrow"><span class="slk">列表里看</span><span>反转预警 / 顶底到位 / 失效 → 本栏；方案逐笔账本 → 策略持仓看板；雷达口径离场线 → 出场雷达。</span></div>
           <div class="slrow"><span class="slk warnc">研究参考</span><span>🏔 大结构与转折确认形态的归档行统一带 <b class="archTag">[研究参考·非建仓指令]</b>，只记形态、无任何操作字眼；大结构随第⑤通道做信息推送，小结构只归档不推。</span></div>
           <div class="slrow"><span class="slk">口径提醒</span><span>本栏恒为日线归档；切到周 / 月 / 分钟线时标题旁会亮起警示，图上标记随周期变、本栏不变。</span></div>
@@ -1118,12 +1120,12 @@ function markTip(d){
   if(!d) return '';
   var H = '<div style="font-size:12px;font-weight:700;color:#e8eefa;margin-bottom:3px">';
   if(d.divEv){
-    var e = d.divEv;
-    return H+'⚠ 顶部风险确认 · '+tipEsc(e.d)+'</div>'
-      + tipLine('收盘 '+tipEsc(e.px)+' · 跌破前 10 日最低价')
+    var e = d.divEv, _top = d.divSide!=='bottom';
+    return H+(_top?'⚠ 顶部风险确认':'⚠ 底部风险确认')+' · '+tipEsc(e.d)+'</div>'
+      + tipLine('收盘 '+tipEsc(e.px)+(_top?' · 跌破前 10 日最低价':' · 升破前 10 日最高价'))
       + tipLine('近 7 天背离 '+tipEsc(e.lampDays)+' 天'
         + (e.oiDrop!=null ? ' · 10 日持仓变动 '+e.oiDrop+'%' : ''))
-      + tipFoot('资金背离雷达 · 风险确认，非做空指令');
+      + tipFoot('资金背离雷达 · 风险确认，非'+(_top?'做空':'做多')+'指令');
   }
   if(d.exData){
     var t = d.exData;
@@ -1152,23 +1154,34 @@ function markTip(d){
     + tipLine('点击看形态明细') + tipFoot(ARCH_TAG);
   return '';
 }
-/* v30：点 ⚠ → 顶部风险确认明细（资金背离雷达 L2） */
-function openDivAlert(ev){
-  var html = '<h3>⚠ 顶部风险确认 · '+tipEsc(ev.d)+' <span onclick="closeSheet()">关闭 ✕</span></h3>';
+/* v30b：点 ⚠ → 顶/底风险确认明细（资金背离雷达 L2，顶底对称） */
+function openDivAlert(ev, side){
+  var top = side!=='bottom';
+  var html = '<h3>'+(top?'⚠ 顶部风险确认':'⚠ 底部风险确认')+' · '+tipEsc(ev.d)
+    +' <span onclick="closeSheet()">关闭 ✕</span></h3>';
   html += '<div style="font-size:11px;color:#8a95a8;line-height:1.7;margin-bottom:8px">'
-    + tipEsc(DOC.name)+' · 资金背离雷达（v30 叠加层）</div>';
+    + tipEsc(DOC.name)+' · 资金背离雷达（v30b 叠加层）</div>';
   html += '<div class="frow"><span>触发条件</span><b>收盘 '+tipEsc(ev.px)
-    +' 跌破前 10 日最低价</b></div>';
+    + (top?' 跌破前 10 日最低价':' 升破前 10 日最高价')+'</b></div>';
   html += '<div class="frow"><span>背离背景</span><b>近 7 天 '+tipEsc(ev.lampDays)
-    +' 天「价高位＋持仓萎缩」</b></div>';
+    + (top?' 天「价高位＋持仓萎缩」':' 天「价低位＋持仓溃散」')+'</b></div>';
   html += '<div class="frow"><span>10 日持仓</span><b>'
     + (ev.oiDrop!=null ? '变动 '+tipEsc(ev.oiDrop)+'%' : '—')+'</b></div>';
-  html += '<div style="margin-top:10px;padding:8px 10px;background:rgba(255,138,61,.10);'
-    + 'border-left:3px solid #ff8a3d;border-radius:4px;font-size:11.5px;line-height:1.7;'
-    + 'color:#ff8a3d"><b>含义</b><br>无资金支持的上涨出现破位：多头获利了结、没有新资金接盘。'
-    + '这是风险确认而非做空指令——持仓多单应收紧防守（吊灯 3ATR / MA26 照常执行），'
-    + '空单决策仍以既有信号为准。<br>该口径 10 年 7 品种仅 25 次，'
-    + '触发后 20 根内跌 ≥3ATR 的比例约 45%（基线 30%）；不响不代表没有顶。</div>';
+  if(top){
+    html += '<div style="margin-top:10px;padding:8px 10px;background:rgba(255,138,61,.10);'
+      + 'border-left:3px solid #ff8a3d;border-radius:4px;font-size:11.5px;line-height:1.7;'
+      + 'color:#ff8a3d"><b>含义</b><br>无资金支持的上涨出现破位：多头获利了结、没有新资金接盘。'
+      + '这是风险确认而非做空指令——持仓多单应收紧防守（吊灯 3ATR / MA26 照常执行），'
+      + '空单决策仍以既有信号为准。<br>该口径 10 年 7 品种仅 25 次，'
+      + '触发后 20 根内跌 ≥3ATR 的比例约 45%（基线 30%）；不响不代表没有顶。</div>';
+  } else {
+    html += '<div style="margin-top:10px;padding:8px 10px;background:rgba(37,99,235,.10);'
+      + 'border-left:3px solid #2563eb;border-radius:4px;font-size:11.5px;line-height:1.7;'
+      + 'color:#2563eb"><b>含义</b><br>抛压耗尽、持仓溃散后的低位出现突破：空头回补、没有新卖盘压价。'
+      + '这是风险确认而非做多指令——持仓空单应收紧防守（吊灯 3ATR / MA26 照常执行），'
+      + '多单决策仍以既有信号为准。<br>该口径 10 年 7 品种约 17 次，'
+      + '触发后 20 根内涨 ≥3ATR 的比例与顶部同类（基线 33%）；不响不代表没有底。</div>';
+  }
   $('sheet').innerHTML = html; $('mask').classList.add('on');
 }
 function openExitSignal(h){
@@ -1452,8 +1465,10 @@ function renderChart(){
       var mw2 = (DOC.mw || []).filter(function(x){ return x.hiConf; })
         .slice().sort(function(x,y){ return x.date < y.date ? -1 : 1; });
       var nWeak = dl2.filter(function(e){ return e.weak; }).length;
+      var nTc = dl2.filter(function(e){ return e.sigKind === 'tc'; }).length;
       dn.innerHTML = '<span class="dnb" onclick="jumpDef()">○ 失效 ' + dl2.length
-        + ' 条 / ' + dkeys.length + ' 天 · 最近 ' + lastD.date + '（点此定位）</span>'
+        + ' 条' + (nTc ? '（其中中继 ' + nTc + '）' : '') + ' / ' + dkeys.length
+        + ' 天 · 最近 ' + lastD.date + '（点此定位）</span>'
         + (nWeak ? ' <span class="dnb" style="margin-left:6px;opacity:.7">◌ 弱叉 '
             + nWeak + ' 条 · 仅记录 / 不推微信</span>' : '')
         + ' <span class="dnb" style="margin-left:6px" onclick="showAllDef()">🗓 10 年全量（近窗 ' + nWin + ' 天）</span>'
@@ -1507,22 +1522,28 @@ function renderChart(){
     });
   }
 
-  // ===== v30 叠加：资金背离 L2 确认标记（橙色倒三角 ⚠，只读 DOC.divradar） =====
+  // ===== v30b 叠加：资金背离 L2 确认标记（顶部橙⚠ / 底部蓝⚠，只读 DOC.divradar） =====
   // 这是真实预警（用户 2026-11-12 拍板上线），与方案回测无关；不改动任何既有标记。
   if(cur.pt==='D' && DOC.divradar && DOC.divradar.events){
-    DOC.divradar.events.forEach(function(ev){
-      var ix = dateIdx(dates, ev.d); if(ix==null) return;
-      var a = A(ix), b = bars[ix];
-      marks.push({value:[ix, b[2] + 1.7*a], divEv:ev,
-        symbol:'triangle', symbolSize:9, z:11, rotation:Math.PI,
-        itemStyle:{color:'rgba(255,138,61,.92)', borderColor:'#0B0E13', borderWidth:1},
-        label:{show:true, position:'top', formatter:'⚠', fontSize:11,
-               color:'#ff8a3d', fontWeight:800,
-               textBorderColor:'#0B0E13', textBorderWidth:2.5}});
+    var _divArrays = [['top', DOC.divradar.events.top, 'rgba(255,138,61,.92)', '#ff8a3d', Math.PI, 1.7],
+                      ['bottom', DOC.divradar.events.bottom, 'rgba(37,99,235,.92)', '#2563eb', 0, -1.7]];
+    _divArrays.forEach(function(t){
+      var side = t[0], arr = t[1] || [], col = t[2], fc = t[3], rot = t[4], off = t[5];
+      (arr).forEach(function(ev){
+        var ix = dateIdx(dates, ev.d); if(ix==null) return;
+        var a = A(ix), b = bars[ix];
+        marks.push({value:[ix, b[2] + off*a], divEv:ev, divSide:side,
+          symbol:'triangle', symbolSize:9, z:11, rotation:rot,
+          itemStyle:{color:col, borderColor:'#0B0E13', borderWidth:1},
+          label:{show:true, position:'top', formatter:'⚠', fontSize:11,
+                 color:fc, fontWeight:800,
+                 textBorderColor:'#0B0E13', textBorderWidth:2.5}});
+      });
     });
   }
 
-  var series = [
+  var tcSeries = tcBuildSeries(DOC && DOC.tcSignals ? DOC.tcSignals : [], DOC && DOC.tcHealth ? DOC.tcHealth : null);
+  var series = [tcSeries,
     {name:'K', type:'candlestick', data:k, barMaxWidth:14,     itemStyle:{color:'#e5484d', color0:'#0ecb81', borderColor:'#e5484d', borderColor0:'#0ecb81'}},
     {name:'MA10', type:'line', data:m10, symbol:'none', lineStyle:{width:1,color:'#f5a524'}},
     {name:'MA26', type:'line', data:m26, symbol:'none',
@@ -1581,6 +1602,7 @@ function renderChart(){
   // v26.2 模块一：图上所有标记统一点击闭环（原先只有 3 类可点，其余点了没反应）
   // v28：新增 K 线本体点击 → 盘感模拟下单（T 日收盘 → T+1 开盘成交）
   CH.on('click', function(p){
+    if(p.seriesName==='强顺势中继' && p.data && p.data.tc){ openTcSheet(p.data.tc); return; }
     if(p.seriesName === 'K'){                       // 点 K 线本体
       rpSheet(p.dataIndex);
       return;
@@ -1591,7 +1613,7 @@ function renderChart(){
     // 买卖只在柱体上做，信号点保持原有的详情弹窗，两者不叠加、不互相抢。
     window._markHitAt = Date.now();
     if(d.rpData)      rpDetail(d.rpData);                           // 金色 · 我自己的模拟单
-    else if(d.divEv)  openDivAlert(d.divEv);                        // ⚠ → 顶部风险确认（v30）
+    else if(d.divEv)  openDivAlert(d.divEv, d.divSide);             // ⚠ → 顶/底风险确认（v30b）
     else if(d.exData) openExitTrade(d.exData, d.exKind==='warn');  // 青◇ / 白箭头 → 离场复盘
     else if(d.srcData) openExitSignal(d.srcData);                  // 黄◆ → 具体离场原因
     else if(d.vacSig) openSig(d.vacSig);                           // 动能真空 → 原信号
@@ -1742,6 +1764,10 @@ function openDef(date){
   html += '<div style="font-size:11.5px;color:var(--dim);line-height:1.7;margin:4px 0 10px">'
     + '四条标准任一成立即标记：① 反向 &gt;1.5 ATR　② 收盘破 MA26/MA34　'
     + '③ 5 根内未创新高/低并收破信号日极值　④ 触发 MA26 / 吊灯 3ATR 原版止损。<br>'
+    + '<b style="color:#9fb0c9">强顺势中继（🚀）另按三条口径判定：① 收盘反向跌破/突破'
+    + '信号当根极值 → 多失效/空失效；② 10 根内顺势浮盈不足 1 ATR（横着走）→ '
+    + '多失效/空失效；③ 已走出 ≥2 ATR 后自极值回撤 ≥1.5 ATR（见顶/见底）→ '
+    + '多到顶/空到底。它不涉及持仓，只是提示有效期结束。</b><br>'
     + '<b style="color:#9fb0c9">◌ 弱叉 = 顶底雷达 &amp; 打叉日 ADX≥30：数据保留、图上空心圈、'
     + '列表标「弱」、不单独推微信（10 年 155 条 / 33.3%，误报率 43.9%）。</b><br>'
     + '<b style="color:#E8EEFA">仅作提示，MA34 进场与 MA26 + 吊灯出场机制完全不变。</b><br>'
@@ -1751,8 +1777,10 @@ function openDef(date){
     var sd = e.side==='short'? '空':'多';
     var canOpen = (e.sigKind==='pred'||e.sigKind==='warn')
       && DOC.signals.some(function(s){return s.kind===e.sigKind && s.date===e.sigDate;});
+    var tcHit = (e.sigKind === 'tc');
     var onclick = canOpen? ' onclick="openSig(\''+e.sigKind+'|'+e.sigDate+'\')"' : '';
-    html += '<div class="dv" style="margin:8px 0;cursor:'+(canOpen?'pointer':'default')
+    if(tcHit) onclick = ' onclick="tcOpenBySig(\''+e.sigDate+'\',\''+e.side+'\')"';
+    html += '<div class="dv" style="margin:8px 0;cursor:'+((canOpen||tcHit)?'pointer':'default')
       + ';border-left:3px solid rgba(232,238,250,.55)"'+onclick+'>'
       + '<div style="font-size:13px;font-weight:700;color:'+(e.weak?'#9fb0c9':'#E8EEFA')+'">'
       + (e.weak? '◌ 弱 · ' : '○ ')
@@ -1764,7 +1792,7 @@ function openDef(date){
           return '· <b>'+r.label+'</b>：'+r.detail;
         }).join('<br>')
       + '</div>'
-      + (canOpen? '<div style="font-size:10.5px;color:var(--dim);margin-top:4px">点此回看原信号 →</div>':'')
+      + ((canOpen||tcHit)? '<div style="font-size:10.5px;color:var(--dim);margin-top:4px">点此回看原信号 →</div>':'')
       + '<div style="margin-top:6px">'
       + '<span class="dnb" onclick="event.stopPropagation();zoomToSrc(\''+e.sigDate+'\')">'
       + '⌖ 定位源预警 '+e.sigDate+'（头尾同屏）</span></div>'
@@ -1776,7 +1804,25 @@ function openDef(date){
 /* v16 模块一：失效类型一目了然 —— 顶/底=顶底雷达，多/空=建仓与预警 */
 function defTypeName(e){
   if(e.sigKind === 'radar') return e.side === 'short' ? '顶失效' : '底失效';
+  /* v36 强顺势中继：被走势证伪 → 多失效/空失效；趋势走完 → 多到顶/空到底 */
+  if(e.sigKind === 'tc')
+    return (e.reason === 'tc_done')
+      ? (e.side === 'short' ? '空到底' : '多到顶')
+      : (e.side === 'long' ? '多失效' : '空失效');
   return e.side === 'long' ? '多失效' : '空失效';
+}
+/* v36：失效明细里回看「强顺势中继」原信号（头尾同源） */
+function tcOpenBySig(date, side){
+  var l = (typeof DOC !== 'undefined' && DOC && DOC.tcSignals) ? DOC.tcSignals : [];
+  for(var i = 0; i < l.length; i++){
+    var t = l[i];
+    if(t.date === date && ((side === 'long' && t.side > 0) || (side === 'short' && t.side < 0))){
+      openTcSheet({sym:(DOC.sym || ''), date:t.date, side:t.side, price:t.price,
+        atr:t.atr || 1, mult:t.mult, margin:t.margin, ret10:t.ret10,
+        paused:tcSidePaused(tcHealthOf(), t.side, t.date), health:tcHealthOf()});
+      return;
+    }
+  }
 }
 function dateIdx(dates, d){
   // 精确匹配；没有则找第一个 >= d 的
@@ -2242,10 +2288,20 @@ function renderSigs(){
     if(r.kind === 'def'){
       var e = r.e, sd = e.side === 'short' ? '空' : '多';
       /* v17 弱叉：降级为空心圈 + 标「弱」，只记录、不推微信；数据一条不删 */
-      var head = (e.weak ? '◌ 弱叉 · ' : '○ ')
-        + defTypeName(e) + '：' + (e.name || e.sym)
-        + '（' + e.sym + '）' + sd + '方向被走势证伪'
-        + (e.weak ? '（弱信号，仅记录）' : '，建议止损平仓');
+      var head;
+      if(e.sigKind === 'tc'){
+        /* v36：中继是纯视觉预警，不是持仓 —— 不写「止损平仓」 */
+        head = '○ ' + defTypeName(e) + '：' + (e.name || e.sym) + '（' + e.sym + '）'
+          + (e.reason === 'tc_done'
+              ? ('强顺势中继行情走完（' + sd + '头见' + (e.side === 'short' ? '底' : '顶')
+                 + '），该信号有效期结束')
+              : ('强顺势中继（' + sd + '）被走势证伪，提示作废（纯视觉，不涉及持仓）'));
+      } else {
+        head = (e.weak ? '◌ 弱叉 · ' : '○ ')
+          + defTypeName(e) + '：' + (e.name || e.sym)
+          + '（' + e.sym + '）' + sd + '方向被走势证伪'
+          + (e.weak ? '（弱信号，仅记录）' : '，建议止损平仓');
+      }
       return '<div class="sgr defrow' + (e.weak ? ' weak' : '')
         + '" onclick="openDef(\'' + e.date + '\')">'
         + '<span class="dt">' + e.date + '</span>'
@@ -2264,7 +2320,7 @@ function renderSigs(){
       var desc;
       if(s.kind === 'warn'){
         desc = '命中 ' + (s.k || 0) + ' 条 · 5日反转概率 '
-          + Math.round((((s.prob || {})['5']) || 0) * 100) + '%';
+          + Math.round((((s.prob || {})['5']) || 0) * 100) + '% · 仅盯盘，不计入方案建仓';
       } else if(s.kind === 'pred'){
         var _n6 = (s.k || 0) + (s.strong ? (s.checksS || []).filter(function(c){return c.ok;}).length : 0);
         desc = '命中 ' + _n6 + ' 条'
@@ -2336,7 +2392,11 @@ function openSig(key){
   if(isWarn){
     html += '<div style="font-size:12px;color:var(--dim);line-height:1.7;margin:6px 0">'
       + '命中 3 条只到预警区，历史对应 5 日内反转概率约 58%。等第 4 条出现且 ADX 回到 20 以上，'
-      + '系统才给建仓提示。</div>';
+      + '系统才给建仓提示。</div>'
+      + '<div style="font-size:12px;color:#8b95a7;line-height:1.7;margin:6px 0 2px;'
+      + 'border-left:2px solid #4a5568;padding-left:8px">'
+      + '<b>预警级</b>：预警触发时价格紧贴 MA34，方向本身未定。本提示只用于盯盘，'
+      + '不并入定稿方案的建仓口径，也不单独计入方案胜率。</div>';
   }
   // v11 甲方案 + v12 三层风险标签
   if(s.meta){
@@ -3114,7 +3174,9 @@ function renderFlipBoard(){
     html += '<div class="frow"><span>当前持仓 · 方案</span><b style="color:'+col+'">'+dirTxt
           + '　<small style="color:#6b7689;font-weight:400">已持 '+(p.open.bars||0)+' 根 · 浮盈 '
           + (p.open.float>=0?'+':'') + p.open.float + ' 元</small></b></div>';
-    html += '<div class="frow"><span>最近触发</span><b>'+(p.openDate||'—')+' · '+p.open.kind+'</b></div>';
+    html += '<div class="frow"><span>最近触发</span><b>'+(p.openDate||'—')+' · '+p.open.kind
+          + (p.open.kind==='反转预警'? ' <small style="color:#6b7689;font-weight:400">预警级</small>':'')
+          + '</b></div>';
   } else {
     html += '<div class="frow"><span>当前持仓 · 方案</span><b style="color:#8b95a7">空仓（无持仓）</b></div>';
     html += '<div class="frow"><span>最近一笔</span><b>'
@@ -3129,6 +3191,13 @@ function renderFlipBoard(){
         + (fu.n||0) + ' 笔 · 胜率 ' + (fu.win!=null?fu.win.toFixed(1):'—') + '% · 年化 '
         + (fu.ann>=0?'+':'') + (fu.ann!=null?fu.ann.toFixed(1):'—') + '% · 期末 '
         + (fu.final||0) + ' 元</b></div>';
+  var ws = p.watchStat;
+  if(ws && ws.n){
+    html += '<div class="frow"><span>其中预警级建仓</span><b style="color:#8b95a7">'
+          + ws.n + ' 笔 · 胜率 ' + (ws.win!=null? ws.win.toFixed(1):'—') + '% · 净 '
+          + (ws.net>=0?'+':'') + ws.net + ' 元　'
+          + '<small style="color:#6b7689;font-weight:400">预警级 · 不计入方案口径</small></b></div>';
+  }
   // v26：原先散落在看板红块、方法说明、推送面板、两张雷达里的规则，收成一处说明。
   var dc = (MAN && MAN.defendCfg) || {};
   var eg = (MAN && MAN.extGate) || {};
@@ -3138,7 +3207,7 @@ function renderFlipBoard(){
     + '<b>v27 极值禁令</b>（全页唯一说明）</div>'
     + '<div class="frl"><i>①</i><span><b>白圈失效</b>：连续 2 根收破 MA26/MA34 且超出 0.5 ATR；'
       + '单根暴破 ≥0.8 ATR 立即失效（保命，不等确认）。只覆盖 '+scope
-      + '；方案内的 WM结构 / 转折确认 进场没有白圈。</span></div>'
+      + '；方案内的结构双顶底 / 转折确认 进场没有白圈。</span></div>'
     + '<div class="frl"><i>②</i><span><b>基础出场</b>：MA26 反向穿越 ＋ 吊灯 3ATR，一字未改；'
       + '出场预警、独立出场雷达照常推送。</span></div>'
     + '<div class="frl hot"><i>③</i><span><b>🚨 30% 熔断</b>：任一持仓浮亏达本金 30%（约 3,000 元）'
@@ -3160,13 +3229,26 @@ function renderRegime(){
   var el = $('regimeBox'); if(!el) return;
   var p = DOC.plan || {}, rg = p.regime;
   var mini = $('mktMini');
-  // v30 叠加：资金背离状态灯（只显示，不干预任何信号；规则见 div_radar.py）
+  // v30b 叠加：资金背离状态灯（顶/底对称，只显示，不干预任何信号；规则见 div_radar.py）
   var _dr = DOC.divradar;
-  var _lampOn = !!(_dr && _dr.lamp && _dr.lamp.on);
-  var _lampHtml = '<div class="rrow"><span class="dlamp" title="近 7 天有 '
-    + ((_dr && _dr.lamp && _dr.lamp.days) || '3+') + ' 天收盘处于 20 日高位区而持仓量萎缩'
-    + '——上涨缺乏新增资金支持。仅为状态提示，不构成信号；破位确认见图上 ⚠ 标记。">'
-    + '⚠ 无量上行 · 资金撤退中（近7天 ' + ((_dr && _dr.lamp && _dr.lamp.days) || '') + ' 天）</span></div>';
+  var _lampTop = _dr && _dr.lamp && _dr.lamp.top;
+  var _lampBot = _dr && _dr.lamp && _dr.lamp.bottom;
+  function _lampChip(lp, side){
+    if(!(lp && lp.on)) return '';
+    var top = side==='top';
+    var col = top ? '#ff8a3d' : '#2563eb';
+    var bg  = top ? 'rgba(255,138,61,.14)' : 'rgba(37,99,235,.14)';
+    var title = top
+      ? ('近 7 天有 '+lp.days+' 天收盘处于 20 日高位区而持仓量萎缩——上涨缺乏新增资金支持。仅为状态提示，不构成信号；破位确认见图上 ⚠ 标记。')
+      : ('近 7 天有 '+lp.days+' 天收盘处于 20 日低位区而持仓量溃散——下跌缺乏新增卖盘、抛压耗尽。仅为状态提示，不构成信号；突破确认见图上 ⚠ 标记。');
+    var txt = top
+      ? ('⚠ 无量上行 · 资金撤退中（近7天 '+lp.days+' 天）')
+      : ('⚠ 抛压耗尽 · 资金溃散中（近7天 '+lp.days+' 天）');
+    return '<div class="rrow"><span class="dlamp" style="background:'+bg
+      + ';border-color:'+col+';color:'+col+'" title="'+title+'">'+txt+'</span></div>';
+  }
+  var _lampHtml = _lampChip(_lampTop,'top') + _lampChip(_lampBot,'bottom');
+  var _lampOn = !!_lampHtml;
   if(!rg){
     if(_lampOn){
       el.className = 'rgb tr'; el.style.display = 'flex';
@@ -3207,7 +3289,7 @@ function renderRegime(){
             : '<span class="rallow">✓ '+rg.allow+'</span>')
       + '</div>'
       + regimeEvidence(rg)        // v26：第三行默认收起，顶部 ⓘ 展开
-      + (_lampOn ? _lampHtml : '');  // v30 叠加：资金背离状态灯（尾部追加，不动原结构）
+      + _lampHtml;  // v30b 叠加：资金背离状态灯（顶/底，尾部追加，不动原结构）
 }
 function renderAll(){
   renderPt(); renderQuote(); renderChart(); renderDec(); renderXs(); renderSigs();
@@ -3248,6 +3330,175 @@ fetchJ('index.json', function(man){
   sc.onload = function(){ ECREADY = true; if(DOC) renderChart(); };
   document.head.appendChild(sc);
 })();
+</script>
+<script>
+/* ================= 强顺势中继 · 纯视觉预警 + 多空衰减监控（不影响底层账本） =================
+   信号由 data_build.py 每日算好写入 DOC.tcSignals；监控由 tc_monitor.py 写入 DOC.tcHealth。
+   这里只负责「渲染 + 预警展示」，不参与任何交易、账本、平仓、推送决策。 */
+function tcHealthOf(){ return (typeof DOC !== 'undefined' && DOC) ? (DOC.tcHealth || null) : null; }
+function tcPauseState(hl, side){
+  if(!hl || !hl.status) return null;
+  var s = side < 0 ? hl.status.short : hl.status.long;
+  return (s && s.paused) ? s : null;
+}
+function tcSidePaused(hl, side, date){
+  var s = tcPauseState(hl, side);
+  if(!s) return false;
+  /* 只灰化「暂停生效月及之后」的信号：历史信号保留当时的真实颜色，不篡改可读性 */
+  if(s.since && date && date < (s.since + '-01')) return false;
+  return true;
+}
+function tcPctCell(c){
+  if(!c || c.wr === null || c.wr === undefined) return '—';
+  return (c.wr * 100).toFixed(1) + '%' + (c.n ? '（' + c.wins + '/' + c.n + '）' : '');
+}
+function tcMonitorLine(hl){
+  if(!hl || !hl.status) return '';
+  var N = (hl.rule && hl.rule.lookback) ? hl.rule.lookback : 12;
+  var s = hl.status.short, l = hl.status.long;
+  function one(st, nm){
+    if(!st) return nm + ' —';
+    if(st.wr === null || st.wr === undefined) return nm + ' 样本累积中 ' + (st.n || 0) + '/' + N;
+    return nm + ' 最近 ' + N + ' 笔 ' + (st.wr * 100).toFixed(1) + '%（' + st.wins + '/' + st.n + '）'
+         + (st.paused ? ' · ⏸ 已暂停' : '');
+  }
+  return '衰减监控：' + one(s, '空头') + ' ｜ ' + one(l, '多头');
+}
+function tcHealthBanner(hl){
+  var el = document.getElementById('tcHealthBar');
+  if(!el) return;
+  if(!hl || !hl.status){ el.style.display = 'none'; el.innerHTML = ''; return; }
+  var s = hl.status.short, l = hl.status.long;
+  if(!(s && s.paused) && !(l && l.paused)){ el.style.display = 'none'; el.innerHTML = ''; return; }
+  var N = (hl.rule && hl.rule.lookback) ? hl.rule.lookback : 12;
+  var rows = [];
+  if(s && s.paused) rows.push({c:'#ff3b30', t:'空头中继已暂停提示', cell: s, why: s.reason});
+  if(l && l.paused) rows.push({c:'#ffb020', t:'多头中继已暂停提示', cell: l, why: l.reason});
+  var html = '';
+  for(var i = 0; i < rows.length; i++){
+    var r = rows[i];
+    html += '<div style="margin-top:' + (i ? '7px' : '0') + '">'
+         +  '<b style="color:' + r.c + '">⚠ ' + r.t + '</b>'
+         +  '<span style="color:#e6e9ef">　最近 ' + N + ' 笔胜率 ' + tcPctCell(r.cell) + '</span>'
+         +  '<div style="color:#9aa3b2;font-size:11px;margin-top:2px">' + (r.why || '') + '</div></div>';
+  }
+  html += '<div style="color:#6b7686;font-size:10.5px;margin-top:7px;line-height:1.6">'
+       +  '判定口径：最近 ' + N + ' 笔已完成信号、7 品种合并、次日开盘进场 / 持 20 根收盘离场、扣双边成本；'
+       +  '空头 &lt;45%、多头 &lt;40%，且满 ' + N + ' 笔才判定（不满不判）。'
+       +  '该方向箭头已转灰，仅供回看，不作为进场提示。</div>';
+  html += '<span onclick="this.parentNode.style.display=\'none\'" title="收起" '
+       +  'style="position:absolute;top:6px;right:9px;cursor:pointer;color:#7b8391;font-size:13px">✕</span>';
+  el.style.position = 'relative';
+  el.innerHTML = html;
+  el.style.display = 'block';
+}
+function tcBuildSeries(tcList, hl){
+  if(hl === undefined) hl = tcHealthOf();
+  var data = [];
+  if(!tcList || !tcList.length){
+    tcHealthBanner(hl);
+    return {name:'强顺势中继', type:'scatter', data:data, silent:true, tooltip:{show:false}};
+  }
+  var prevSide = 0, prevHead = 0;
+  for(var k = 0; k < tcList.length; k++){
+    var t = tcList[k], isShort = t.side < 0, a = t.atr || 1;
+    /* v33：一个大方向趋势只标第一个中继信号，后续同向不再提示（防吃山顶）。
+       同一方向超过 250 根（约 1 年）没出现反向信号，视为新趋势重新起算。
+       后端已写 t.first；万一旧 JSON 没有该字段，这里按同一规则自算兜底。 */
+    var isFirst = (t.first === undefined)
+      ? ((t.side !== prevSide) || ((t.idx - prevHead) >= 250))
+      : !!t.first;
+    if(isFirst){ prevSide = t.side; prevHead = t.idx; }
+    if(!isFirst) continue;
+    var paused = tcSidePaused(hl, t.side, t.date);
+    var symName = t.sym || ((typeof DOC !== 'undefined' && DOC && DOC.sym) ? DOC.sym : '');
+    var y = isShort ? (t.price + 0.9 * a) : (t.price - 0.9 * a);
+    var col = paused ? '#4a5364' : (isShort ? '#ff3b30' : '#00d26a');
+    var lab = paused ? ('⏸ ' + (isShort ? '空' : '多') + '头中继 · 已暂停') : '🚀 强顺势中继';
+    data.push({
+      value:[t.idx, y],
+      tc:{sym:symName, date:t.date, side:t.side, price:t.price, atr:a,
+          mult:t.mult, margin:t.margin, ret10:t.ret10, paused:paused, health:hl},
+      symbol:'arrow', symbolSize: paused ? [9, 13] : [12, 18], symbolRotate: isShort ? 180 : 0,
+      itemStyle:{color:col, borderColor:'#0B0E13', borderWidth:1, opacity: paused ? 0.55 : 1},
+      label:{show:true, position: isShort ? 'top' : 'bottom', formatter:lab,
+        color: paused ? '#6b7686' : (isShort ? '#ff3b30' : '#8a95a8'),
+        fontWeight: (isShort && !paused) ? 'bold' : 'normal', fontSize:10,
+        textBorderColor:'#0B0E13', textBorderWidth:2}
+    });
+  }
+  tcHealthBanner(hl);
+  return {
+    name:'强顺势中继', type:'scatter', data:data, z:5,
+    tooltip:{ trigger:'item', confine:true,
+      formatter:function(p){
+        var t = p.data.tc; if(!t) return '';
+        var tag = t.side > 0 ? '多头偏弱 · 谨慎参与' : '高胜率顺势';
+        var head = t.paused
+          ? '<span style="color:#ffb020">⏸ 该方向已暂停提示（胜率衰减）</span><br/>'
+          : '';
+        var why = '';
+        if(t.paused && t.health && t.health.status){
+          var st = t.side < 0 ? t.health.status.short : t.health.status.long;
+          if(st && st.reason) why = '<br/><span style="color:#8a95a8">' + st.reason + '</span>';
+        }
+        return head + '<b>🚀 强顺势中继</b><br/>' + t.sym + ' ' + t.date + ' · ' + (t.side > 0 ? '做多' : '做空')
+             + '<br/>10日净位移 ' + t.ret10.toFixed(2) + ' ATR<br/>ATR ' + t.atr.toFixed(1)
+             + '<br/><span style="color:' + (t.side > 0 ? '#8a95a8' : '#ff3b30') + '">' + tag + '</span>'
+             + why
+             + '<br/><span style="color:#8a95a8">点击查看仓位测算</span>';
+      }
+    }
+  };
+}
+function openTcSheet(tc){
+  var riskPerLot = tc.atr * tc.mult;
+  var marginPerLot = tc.price * tc.mult * (tc.margin || 0.10);
+  var dir = tc.side > 0 ? '做多' : '做空';
+  var html = '';
+  html += '<h3>🚀 强顺势中继 · 仓位测算 <span onclick="closeSheet()">关闭 ✕</span></h3>';
+  if(tc.paused){
+    var st = (tc.health && tc.health.status) ? (tc.side < 0 ? tc.health.status.short : tc.health.status.long) : null;
+    html += '<div style="margin-bottom:8px;padding:8px 10px;background:rgba(255,176,32,.10);'
+         +  'border-left:3px solid #ffb020;border-radius:4px;font-size:11.5px;line-height:1.7;color:#ffb020">'
+         +  '<b>⏸ 该方向当前处于暂停提示状态</b><br/>' + ((st && st.reason) || '最近 12 笔胜率低于阈值')
+         +  '<br/><span style="color:#8a95a8">此标记仅供回看与复盘，不作为进场提示。</span></div>';
+  }
+  html += '<div style="font-size:11px;color:#8a95a8;line-height:1.7;margin-bottom:8px">纯视觉预警，不是建仓指令，也不改动任何底层交易账本或平仓线。是否参与、怎么下单由你决定。</div>';
+  html += '<div class="frow"><span>品种 / 日期</span><b>' + tc.sym + ' · ' + tc.date + ' · ' + dir + '</b></div>';
+  html += '<div class="frow"><span>10日净位移</span><b>' + tc.ret10.toFixed(2) + ' ATR</b></div>';
+  html += '<div class="frow"><span>信号收盘价</span><b>' + tc.price.toFixed(tc.price > 1000 ? 0 : 2) + '</b></div>';
+  html += '<div class="frow"><span>ATR(14)</span><b>' + tc.atr.toFixed(2) + '</b></div>';
+  html += '<div class="frow"><span>合约乘数</span><b>' + tc.mult + ' 元/点</b></div>';
+  html += '<div class="frow"><span>每手 1ATR 风险</span><b style="color:#ff8a3d">' + Math.round(riskPerLot) + ' 元</b></div>';
+  html += '<div class="frow"><span>每手保证金(估)</span><b>' + Math.round(marginPerLot) + ' 元</b></div>';
+  html += '<hr style="border-color:#232b38;margin:8px 0">';
+  html += '<div class="frow"><span>总资金(元)</span><input id="tcCap" type="number" value="100000" style="width:110px" oninput="tcRecalc()"></div>';
+  html += '<div class="frow"><span>单笔风险%</span><input id="tcRisk" type="number" value="1" step="0.5" style="width:110px" oninput="tcRecalc()"></div>';
+  html += '<div class="frow"><span>保证金率%</span><input id="tcMg" type="number" value="' + ((tc.margin || 0.10) * 100) + '" step="1" style="width:110px" oninput="tcRecalc()"></div>';
+  html += '<div id="tcOut" style="margin-top:10px;padding:8px 10px;background:rgba(76,141,255,.10);border-left:3px solid #4c8dff;border-radius:4px;font-size:12px;line-height:1.8"></div>';
+  html += '<div style="margin-top:8px;padding-top:7px;border-top:1px solid #232b38;font-size:11px;color:#8a95a8;line-height:1.7">' + tcMonitorLine(tc.health) + '</div>';
+  html += '<div style="margin-top:8px;font-size:11px;color:#8a95a8">每手 1ATR 风险 = ATR×乘数；建议手数 = 总资金×风险% ÷ 每手1ATR风险（取整）。仅供参考，非投资建议。</div>';
+  $('sheet').innerHTML = html; $('mask').classList.add('on');
+  window.tcCtx = {riskPerLot:riskPerLot, price:tc.price, mult:tc.mult};
+  tcRecalc();
+}
+function tcRecalc(){
+  var c = window.tcCtx; if(!c) return;
+  var cap = parseFloat($('tcCap').value) || 0;
+  var risk = (parseFloat($('tcRisk').value) || 0) / 100;
+  var mg = (parseFloat($('tcMg').value) || 10) / 100;
+  var marginPerLot = c.price * c.mult * mg;
+  var lots = risk > 0 ? Math.floor(cap * risk / c.riskPerLot) : 0;
+  var occupy = lots * marginPerLot;
+  var occPct = cap > 0 ? (occupy / cap * 100) : 0;
+  var oneLotPct = cap > 0 ? (marginPerLot / cap * 100) : 0;
+  $('tcOut').innerHTML =
+    '每手 1ATR 风险：<b>' + Math.round(c.riskPerLot) + ' 元</b><br/>' +
+    '每手保证金：<b>' + Math.round(marginPerLot) + ' 元</b>（占资 ' + oneLotPct.toFixed(1) + '%）<br/>' +
+    '建议手数：<b style="color:#4c8dff;font-size:14px">' + lots + ' 手</b><br/>' +
+    '建议占用保证金：<b>' + Math.round(occupy) + ' 元</b> · 占资 <b>' + occPct.toFixed(2) + '%</b>';
+}
 </script>
 </body>
 </html>
