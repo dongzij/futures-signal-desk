@@ -1,6 +1,8 @@
 name: tc-push-selftest
 
-# 临时工作流：只验证「强顺势中继」微信推送通道，不写任何数据（contents: read）。
+# 临时工作流：验证「强顺势中继」推送链路。contents: read（无法提交任何文件）。
+#   · 通道诊断：看 PushPlus 是否放行
+#   · 干跑：用真实行情跑一遍 tc_scan_docs，确认只认最后一根、不会补推历史
 on:
   workflow_dispatch:
 
@@ -16,26 +18,42 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: 诊断 PushPlus 原始返回
+      - name: 通道诊断
         env:
           PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
         run: |
           python - <<'EOF'
-          import os, json, urllib.parse, urllib.request
+          import os, urllib.parse, urllib.request
           t = (os.environ.get("PUSHPLUS_TOKEN") or "").strip()
-          print("token len:", len(t), "| head:", t[:2] + "***")
-          body = urllib.parse.urlencode({
-              "token": t,
-              "title": "🧪 pushplus 通道诊断",
-              "content": "<b>通道诊断</b>：收到即说明 token 正常。",
-              "template": "html"}).encode()
+          body = urllib.parse.urlencode({"token": t, "title": "🧪 通道诊断",
+              "content": "<b>通道诊断</b>", "template": "html"}).encode()
           req = urllib.request.Request("https://www.pushplus.plus/send", data=body,
               headers={"Content-Type": "application/x-www-form-urlencoded"})
-          try:
-              with urllib.request.urlopen(req, timeout=20) as r:
-                  print("http:", r.status, "raw:", r.read().decode("utf-8", "ignore")[:500])
-          except urllib.error.HTTPError as e:
-              print("http err:", e.code, e.read().decode("utf-8", "ignore")[:500])
-          except Exception as e:
-              print("conn err:", type(e).__name__, e)
+          print("token len:", len(t))
+          with urllib.request.urlopen(req, timeout=20) as r:
+              print("raw:", r.read().decode("utf-8", "ignore")[:300])
+          EOF
+
+      - name: 真实行情干跑（不发消息、不写文件）
+        run: |
+          python - <<'EOF'
+          import json, daily, tc_monitor
+          syms = ["M", "FG", "MA", "Y", "P", "HC", "SM"]
+          docs = daily.tc_scan_docs(syms)
+          print("品种数:", len(docs))
+          for s, d in docs.items():
+              print("  %-3s bars=%d last=%s sigs=%d" % (
+                  s, len(d["main"]), d["main"][-1][0], len(d["tcSignals"])))
+          tot = sum(len(d["tcSignals"]) for d in docs.values())
+          newest = max(d["main"][-1][0] for d in docs.values())
+          fresh = [(s, x["date"], x["side"]) for s, d in docs.items()
+                   for x in d["tcSignals"] if x["idx"] == len(d["main"]) - 1]
+          h = tc_monitor.compute_health(docs)
+          print("信号合计:", tot, "| 最新交易日:", newest)
+          print("最后一根上的新信号:", fresh if fresh else "无（今天不该推任何东西）")
+          print("健康度: 空 %.1f%%(%d/%d) 暂停=%s | 多 %.1f%%(%d/%d) 暂停=%s" % (
+              h["status"]["short"]["wr"]*100, h["status"]["short"]["wins"],
+              h["status"]["short"]["n"], h["status"]["short"]["paused"],
+              h["status"]["long"]["wr"]*100, h["status"]["long"]["wins"],
+              h["status"]["long"]["n"], h["status"]["long"]["paused"]))
           EOF
