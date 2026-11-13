@@ -228,9 +228,9 @@ def compute_tc_signals(main, mult, margin):
     _prev = 0
     _head = 0
     for _s in out:
-        # 换方向 => 新趋势；同向但距链首已满 120 根（约半年）=> 也视为新趋势重开，
+        # 换方向 => 新趋势；同向但距链首已满 250 根（约 1 年）=> 也视为新趋势重开，
         # 否则一条链可能拖 1-2 年全静默（实测中位 154 根、最长 564 根）。
-        _new = (_s["side"] != _prev) or ((_s["idx"] - _head) >= 120)
+        _new = (_s["side"] != _prev) or ((_s["idx"] - _head) >= 250)
         _s["first"] = _new
         if _new:
             _prev = _s["side"]
