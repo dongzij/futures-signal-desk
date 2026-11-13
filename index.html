@@ -3272,9 +3272,9 @@ function tcBuildSeries(bars, sym, mult, margin, pt){
   for(var i=14;i<n;i++){ atr[i]=(atr[i-1]*(14-1)+trs[i])/14; }
   for(var i=0;i<13;i++) atr[i]=first;
   var last={}; last[1]=-999; last[-1]=-999; var COOL=40;
-  for(var i=65;i<n;i++){
+  for(var i=65;i<n-20;i++){
     var a = atr[i] || ((bars[i][4]-bars[i][3])||1);
-    var ret10 = (bars[i][4]-bars[i-10])/a;
+    var ret10 = (bars[i][4]-bars[i-10][4])/a;
     if(Math.abs(ret10) < 3.0) continue;
     var side = ret10>0 ? 1 : -1;
     if(i-last[side] < COOL) continue;
