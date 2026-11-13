@@ -34,6 +34,11 @@ jobs:
               print("raw:", r.read().decode("utf-8", "ignore")[:300])
           EOF
 
+      - name: 发送自检推送（空 / 多两种文案）
+        env:
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+        run: python daily.py --tc-selftest
+
       - name: 真实行情干跑（不发消息、不写文件）
         run: |
           python - <<'EOF'
